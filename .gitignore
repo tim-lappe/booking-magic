@@ -1,0 +1,6 @@
+/vendor/
+/node_modules/
+/assets/js/dist/
+/assets/js/old/
+/assets/js/.cache/
+/.idea

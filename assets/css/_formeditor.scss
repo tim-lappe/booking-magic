@@ -1,0 +1,213 @@
+.tlbm-form-editor {
+  .tlbm-form-container {
+    padding: 0 10px 10px 10px;
+    background-color: #ffffff;
+    margin: 20px 0 0 0;
+    border: 2px solid #f5f5f5;
+
+    .tlbm-form-dragdrop-container {
+      padding: 20px 0;
+    }
+  }
+  .tlbm-draggable {
+    min-height: 50px;
+
+    .tlbm-form-item-box {
+      background-color: white;
+      color: black;
+      font-weight: bold;
+      padding: 20px;
+      border: 1px solid #d6d6d6;
+    }
+
+    .tlbm-form-item-columns {
+      display: flex;
+
+      .tlbm-form-column {
+        padding: 10px 10px;
+        background-color: transparent;
+        border: 1px solid #d6d6d6;
+        flex-grow: 1;
+        min-height: 100px;
+        flex-basis: 0;
+        margin: 0 10px 0 0;
+
+        &:last-child {
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .tlbm-form-item-container {
+    position: relative;
+    margin: 0 0 10px 0;
+    transition-property: box-shadow;
+    transition-duration: 0.15s;
+    overflow: hidden;
+
+    .tlbm-form-item-hr {
+      margin: 30px 0;
+    }
+
+    .tlbm-form-item-calendar {
+      height: 200px;
+      background-color: #efefef;
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &.tlbm-item-mouse-over {
+      box-shadow: 0 0 5px 0 #d9d9d9;
+    }
+
+    &.tlbm-item-selected {
+      border: 2px solid #99beec;
+      border-radius: 5px;
+    }
+
+    .tlbm-form-settings-print-subtitle {
+      color: #bfbfbf;
+      font-weight: normal;
+      margin-left: 10px;
+    }
+
+    .tlbm-form-settings-print-required {
+      margin-left: 10px;
+      font-weight: normal;
+      padding: 5px 10px;
+      border-radius: 5px;
+      background: rgb(255, 224, 224);
+    }
+  }
+}
+
+.tlbm-window-outer.closed {
+  display: none;
+  opacity: 0;
+}
+
+.tlbm-window-outer {
+  position: fixed;
+  z-index: 9991;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  display: flex;
+
+  .tlbm-window-inner {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 30px 0 gray;
+    max-width: 80%;
+  }
+}
+
+.tlbm-form-editor-select-element-window {
+  .tlbm-add-elements-window-inner {
+    .tlbm-form-elements-list {
+      display: flex;
+      flex-wrap: wrap;
+      overflow-y: scroll;
+      max-height: 75vh;
+
+      h3 {
+        display: block;
+        width: 100%;
+      }
+    }
+
+    .tlbm-close-button {
+      float: right;
+      margin-left: 20px;
+    }
+
+    .tlbm-element-list-item {
+      display: flex;
+      padding: 10px;
+      background-color: #fcfcfc;
+      margin: 0 10px 10px 0;
+      min-width: 200px;
+      max-width: 200px;
+      flex-direction: column;
+      cursor: pointer;
+      flex-basis: 300px;
+      flex-grow: 1;
+      flex-shrink: 0;
+      border: 1px solid rgb(215, 215, 215);
+      transition-property: box-shadow, background-color;
+      transition-duration: 0.2s;
+      font-size: 16px;
+
+      .tlbm-elem-description {
+        font-size: 13px;
+        color: gray;
+        margin-top: 5px;
+      }
+
+      &:hover {
+        background-color: rgb(245, 245, 245);
+        box-shadow: 0 0 4px 0 #c8c8c8;
+      }
+
+      &:active {
+        background-color: rgb(219, 219, 219);
+        box-shadow: 0 0 4px 0 #c8c8c8;
+      }
+    }
+  }
+}
+
+.tlbm-form-editor-element-settings-window {
+  .tlbm-element-settings-window-inner {
+    min-width: 500px;
+    width: 80%;
+    max-width: 1200px;
+
+    .tlbm-form-settings-container  {
+      h2 {
+        padding: 0 !important;
+        margin-bottom: 10px !important;
+        font-size: 24px !important;
+      }
+
+      .tlbm-form-settings-items-collection {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 10px 0 20px 0;
+
+        .form-item-settings-control {
+          min-width: 150px;
+          margin: 0 20px 20px 0;
+          flex-grow: 1;
+          flex-basis: 0;
+
+          select, input {
+            margin: 5px 0 0 0;
+            width: 100%;
+          }
+
+          &.form-item-expand {
+            flex-basis: 100%;
+            flex-grow: 1;
+          }
+
+          &.form-item-stretch {
+
+          }
+        }
+      }
+    }
+  }
+}
