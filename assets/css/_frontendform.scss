@@ -1,0 +1,16 @@
+.tlbm-fe-columns {
+  display: flex;
+
+  .tlbm-fe-column {
+    flex-basis: min-content;
+    margin-right: 20px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.tlbm-fe-form-control {
+  margin-bottom: 20px;
+}

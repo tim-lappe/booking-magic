@@ -1,0 +1,20 @@
+{
+  "name": "tl-booking",
+  "description": "flexible and powerful Booking-Plugin for WordPress",
+  "license": "MIT",
+  "version": "1.0.0",
+  "scripts": {
+    "env:start": "docker-compose up -d",
+    "env:stop": "docker-compose stop",
+    "build": "webpack",
+    "watch": "cd assets/js; webpack --watch",
+    "test": "./vendor/bin/phpunit tests/php/includes"
+  },
+  "devDependencies": {
+    "ftp-deploy": "^2.4.1",
+    "ts-loader": "^8.0.17",
+    "typescript": "^4.2.3",
+    "webpack": "^5.24.3",
+    "webpack-cli": "^4.5.0"
+  }
+}

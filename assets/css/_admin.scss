@@ -1,0 +1,300 @@
+.tlbm-radio-item {
+  padding: 10px;
+  margin: 0 0 10px 0;
+
+  background-color: $admin-item-bg-color;
+  border-radius: 10px;
+}
+
+.tlbm-timespan-part {
+  display: inline-block;
+  margin: 0 20px 0 0 ;
+  min-width: 150px;
+  select {
+    min-width: 80px;
+  }
+}
+
+.tlbm-ruleeditor-rule-container {
+  padding: 10px;
+  margin: 0 0 10px 0;
+
+  background-color: $admin-item-bg-color;
+  border-radius: 10px;
+}
+
+.tlbm-select-datetime {
+  display: flex;
+  justify-content: flex-start;
+  .tlbm-date {
+
+  }
+  .tlbm-time {
+    margin-left: 20px;
+  }
+}
+
+.tlbm-calendar-select-panel {
+  margin-top: 20px;
+  width: auto;
+  overflow: auto;
+  scroll-behavior: smooth;
+  max-height: 400px;
+
+  .tlbm-calendar-select-item {
+    display: inline-block;
+    margin: 0 30px 10px 0;
+  }
+}
+
+.tlbm-weekday-picker {
+  display: flex;
+  flex-wrap: wrap;
+
+  .tlbm-weekday-pick-item {
+    background-color: $admin-item-bg-color-disabled;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 0 10px 10px 0;
+    min-width: 350px;
+    -webkit-transition: background-color 200ms ease-in-out;
+    transition: background-color 200ms ease-in-out;
+
+    &.tlbm-weekday-pick-item-active {
+      background-color: $admin-item-bg-color-activated;
+    }
+
+    &:not(.tlbm-weekday-pick-item-active) *:not(label) {
+      color: lightgray;
+    }
+
+    .tlbm-weekday-checkbox-label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .tlbm-weekday-pick-item-timeblock-container {
+      display: flex;
+      justify-content: space-between;
+      background-color: white;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 0 0 10px 0;
+      position: relative;
+
+      .button-link-delete {
+        position: absolute;
+        right: 2px;
+        top: 2px;
+      }
+
+      .tlbm-weekday-pick-item-timeblock:first-child {
+        margin: 0 20px 0 0;
+      }
+    }
+  }
+}
+
+.tlbm-endless-checkbox-container {
+  margin: 5px 0 10px 0;
+}
+
+.tlbm-shortcode-label {
+  background-color: #efefef;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-weight: bolder;
+  font-family: monospace;
+}
+
+.tlbm-form-values-table {
+  font-size: 16px;
+
+  .tlbm-value-title {
+    min-width: 200px;
+  }
+
+  tr {
+    height: 30px;
+  }
+}
+
+.button-timeslot-delete {
+  height: 30px;
+  width: 30px;
+  padding: 4px !important;
+  color: red !important;
+  border-color: red !important;
+}
+
+.tlbm-date-daterange-label {
+  margin: 0 !important;
+}
+
+.tlbm-period-item {
+
+  .tlbm-period-delete {
+    float: right;
+    margin-left: 20px;
+  }
+
+  label {
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+
+  .tlbm-button-add-range {
+    margin-top: 10px;
+  }
+
+  .tlbm-weekdays-checkboxes {
+    label {
+      display: block;
+    }
+  }
+  .tlbm-horizontal {
+    display: flex;
+    align-items: flex-start;
+    justify-content: stretch;
+    flex-direction: row;
+
+    & > * {
+      flex-grow: 1;
+      flex-basis: 0;
+    }
+  }
+
+  .tlbm-main-panel {
+    margin-bottom: 10px;
+    background: white;
+    border-radius: 5px;
+    padding: 10px;
+  }
+
+  .tlbm-timeslots {
+    margin-left: 10px;
+    .tlbm-timeslot-item {
+      display: flex;
+      margin-bottom: 10px;
+      background: white;
+      border-radius: 5px;
+      padding: 10px;
+      align-items: end;
+
+      .tlbm-time-select {
+        margin-right: 10px;
+      }
+
+      .button-link-delete {
+        opacity: 0;
+        margin-left: auto;
+        margin-right: 10px;
+        transition-property: opacity;
+        transition-duration: 0.2s;
+      }
+
+      &:hover .button-link-delete {
+        opacity: 1;
+        margin-left: auto;
+        margin-right: 10px;
+      }
+    }
+  }
+}
+.tlbm-flex-date-range {
+  display: flex;
+  flex-wrap: wrap;
+  transition-property: max-height;
+  transition-duration: 0.5s;
+
+  > div:first-child {
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+}
+
+.tlbm-dateselect-to {
+  margin-left: 10px;
+}
+
+.tlbm-gray-container {
+  background: $admin-item-bg-color;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.tlbm-rule-actions-field {
+  .tlbm-action-rule-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+
+    &:first-child {
+      .tlbm-up-down-buttons {
+        button.tlbm-ud-button-up {
+          display: none;
+        }
+      }
+    }
+
+    &:last-child {
+      .tlbm-up-down-buttons {
+        button.tlbm-ud-button-down {
+          display: none;
+        }
+      }
+    }
+
+    .tlbm-up-down-buttons {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      left: -40px;
+      top: 0;
+      justify-content: center;
+      align-items: stretch;
+      align-content: stretch;
+      height: 100%;
+
+      button {
+        background: #f6f6f6;
+        border: none;
+        cursor: pointer;
+        margin: 2px 0;
+        padding: 5px;
+
+        &:hover {
+          background: #e8e8e8;
+        }
+
+        &[disabled] {
+          background: none;
+          opacity: 0.3;
+          &:hover {
+            background: none;
+          }
+        }
+      }
+    }
+  }
+  .tlbm-action-item-form {
+    flex-grow: 1;
+  }
+  .tlbm-action-item-delete {
+    margin-left: 10px;
+    color: red !important;
+    height: 30px;
+    width: 30px;
+    padding: 4px !important;
+    border-color: red !important;
+  }
+
+}
+
+.tlbm-table-list-state {
+  padding: 7px 14px;
+  background-color: #a9cbd9;
+  display: inline-block;
+}

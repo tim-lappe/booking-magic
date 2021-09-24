@@ -1,0 +1,102 @@
+$calendar-table-background: #f5f5f5;
+$calendar-table-cell-background: #ffffff;
+$calendar-table-cell-today-background: #bee5ff;
+
+.tlbm-no-calendar-alert {
+  border: 1px solid red;
+  padding: 20px;
+  color: red;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.tlbm-calendar-container {
+  max-width: 1000px;
+  margin: auto auto 20px auto;
+
+  .tlbm-button-select-another {
+    margin-top: 20px;
+    padding: 5px 10px;
+  }
+
+  .tlbm-calendar {
+    .tlbm-calendar-table {
+      width: 100%;
+      background-color: $calendar-table-background;
+      table-layout: fixed;
+
+      .tlbm-head-row th {
+        padding: 10px 0 !important;
+        text-align: center !important;
+      }
+
+      .tlbm-cell {
+        padding: 10px;
+        height: 50px;
+
+        .tlbm-datenumber-span {
+          border-radius: 50%;
+          background: rgba(0, 0, 0, 0.02);
+          display: flex;
+          width: 2em;
+          height: 2em;
+          justify-content: center;
+          align-items: center;
+          padding: 0;
+        }
+
+        &.tlbm-cell-not-empty {
+          background-color: $calendar-table-cell-background;
+        }
+
+        &.tlbm-cell-today {
+          background-color: $calendar-table-cell-today-background;
+        }
+
+        &.tlbm-cell-selectable {
+          &:hover {
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.05);
+          }
+        }
+
+        &.tlbm-cell-not-bookable {
+          opacity: 0.4;
+        }
+      }
+    }
+
+    .tlbm-month-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+
+      .tlbm-month-title {
+        font-size: 20px;
+      }
+
+      .tlbm-next-month, .tlbm-prev-month {
+        width: 120px;
+        padding: 5px;
+      }
+    }
+  }
+}
+
+.tlbm-calendar-date-selected {
+  margin-bottom: 20px;
+}
+
+.tlbm-selected-date-finished-container {
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.tlbm-input-title {
+  display: block;
+}
+
+.tlbm-input-field {
+  width: 100%;
+}
