@@ -1,9 +1,56 @@
 version: "3.7"
 
 services:
-  wordpress:
+  #
+  # WordPress Testing Environment. Starting PHP-Unit after WordPress
+  #
+  wordpress_it:
     image: wordpress:latest
+    restart: "no"
+    volumes:
+      - ./:/var/www/html/wp-content/plugins/booking-magic
+      - wpit:/var/www/html
 
+    environment:
+      WORDPRESS_DB_HOST: wordpress_database_it
+      WORDPRESS_DB_USER: dbuser
+      WORDPRESS_DB_PASSWORD: password
+      WORDPRESS_DB_NAME: wordpress_db
+      WORDPRESS_DEBUG: 1
+      WP_TESTS_DIR: /var/www/html
+
+    depends_on:
+      wordpress_database_it:
+        condition: service_healthy
+
+  #
+  # MariaDB Service for Integration Tests when testing plugin
+  #
+  wordpress_database_it:
+    image: mariadb
+    restart: "no"
+
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_USER: dbuser
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: wordpress_db
+
+    healthcheck:
+      test: "/usr/bin/mysql --user=dbuser --password=password --execute \"SHOW DATABASES;\""
+      timeout: 5s
+      retries: 30
+
+    ports:
+      - 3336
+
+  #
+  # WordPress Enviromnent for Development.
+  # The site is available on localhost:8080 after the container starts.
+  #
+  wordpress:
+    build: docker/dev
+    restart: "no"
     volumes:
     - ./:/var/www/html/wp-content/plugins/booking-magic
 
@@ -17,9 +64,15 @@ services:
       WORDPRESS_DB_NAME: wordpress_db
       WORDPRESS_DEBUG: 1
 
+    depends_on:
+      - wordpress_database
+
+  #
+  # MariaDB Service for WordPress Enviromnent
+  #
   wordpress_database:
     image: mariadb
-
+    restart: "no"
     volumes:
     - mariadb:/var/lib/mysql
 
@@ -34,4 +87,5 @@ services:
 
 volumes:
   mariadb: {}
+  wpit: {}
 
