@@ -4,11 +4,11 @@
   "license": "MIT",
   "version": "1.0.0",
   "scripts": {
-    "env:start": "docker-compose up -d",
+    "dev-startup": "composer update; npm run env:start; npm run test; npm run watch",
+    "env:start": "docker-compose up -d wordpress",
     "env:stop": "docker-compose stop",
-    "build": "webpack",
     "watch": "cd assets/js; webpack --watch",
-    "test": "./vendor/bin/phpunit tests/php/includes"
+    "test": "docker-compose run -w /var/www/html/wp-content/plugins/booking-magic wordpress_it php ./vendor/bin/phpunit"
   },
   "devDependencies": {
     "ftp-deploy": "^2.4.1",

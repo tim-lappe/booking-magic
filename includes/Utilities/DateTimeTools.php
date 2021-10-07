@@ -3,7 +3,6 @@
 namespace TL_Booking\Utilities;
 
 use DateTime;
-use http\Encoding\Stream;
 
 if( ! defined( 'ABSPATH' ) ) {
     return;
