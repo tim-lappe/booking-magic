@@ -47,10 +47,7 @@ class ShowBookingOverview extends RequestBase {
 				$booking_values = $booking_processing->ReadBookingValues();
 				$booking = $booking_processing->GetProcessedBooking();
 
-			/*	$html .= "<pre>";
-				$html .= var_export($booking, true);
-				$html .= "</pre>";
-*/
+				$html .= "<form action='".$_SERVER['REQUEST_URI']."' method='post'>";
 				$html .= "<div class='tlbm-booking-overview-box'><div class='tlbm-formular-content'>";
 
 				if(isset($booking_values["first_name"]) && isset($booking_values["last_name"])) {
@@ -78,7 +75,16 @@ class ShowBookingOverview extends RequestBase {
 
 				$html .= "</div></div>";
 
+				$echovars = array_diff_key($vars, array("_wpnonce" => 0, "form" => 0));
+				foreach ($echovars as $key => $value) {
+					$html .= "<input type='hidden' name='".$key."' value='".$value."'>";
+				}
+
+				$html .= "<input type='hidden' name='action' value='dobooking'>";
+				$html .= "<input type='hidden' name='form' value='" . $form_id . "'>";
+				$html .= wp_nonce_field("dobooking_action", "_wpnonce", true, false);
 				$html .= "<button class='tlbm-book-now-btn'>".__("Book Now", TLBM_TEXT_DOMAIN)."</button>";
+				$html .= "</form>";
 
 				return $html;
 			}
