@@ -22,5 +22,12 @@ abstract class RequestBase {
 
     public function OnAction( $vars ) { }
 
-    public function GetHtmlOutput( $vars ) { }
+	/**
+	 * @param $vars
+	 *
+	 * @return string
+	 */
+    public function GetHtmlOutput( $vars ): string {
+    	return "";
+    }
 }

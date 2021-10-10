@@ -16,16 +16,18 @@ if( ! defined( 'ABSPATH' ) ) {
 
 class DoBookingRequest extends RequestBase {
 
+	public $booking_successed = false;
+
     public function __construct() {
         parent::__construct();
 
         $this->action = "dobooking";
-
 	    $this->html_output = true;
     }
 
     public function OnAction( $vars ) {
-        if(isset($vars['form']) && intval($vars['form']) > 0 && wp_verify_nonce($vars['_wpnonce'], "dobooking_action")) {
+    	$verifyed = wp_verify_nonce($vars['_wpnonce'], "dobooking_action");
+        if(isset($vars['form']) && intval($vars['form']) > 0 && $verifyed) {
             $form_id = $vars['form'];
             $form = FormManager::GetForm($form_id);
             if($form) {
@@ -35,6 +37,7 @@ class DoBookingRequest extends RequestBase {
                     $booking = $booking_processing->GetProcessedBooking();
 
                     BookingManager::SetBooking($booking);
+                    $this->booking_successed = true;
 
                 } else {
 					FrontendMessenger::AddFrontendMsg(__("Not all required fields were filled out",TLBM_TEXT_DOMAIN));
@@ -44,9 +47,10 @@ class DoBookingRequest extends RequestBase {
     }
 
     public function GetHtmlOutput( $vars ): string {
-	    return "
-	    <h2>Die Buchung ist erfolgreich eingegangen.</h2>
-	    <p>Sie erhalten in kürze eine Bestätigungsmail</p>
-		";
+    	if($this->booking_successed === true) {
+		    return "<h2>Die Buchung ist erfolgreich eingegangen.</h2><p>Sie erhalten in kürze eine Bestätigungsmail</p>";
+	    } else {
+		    return "<h2>Es ist ein Fehler aufgetreten</h2><p>Ihre Buchung konnte nicht bearbeitet werden, da ein unbekannter Fehler aufgetreten ist</p>" . "<p>" . $this->booking_successed . "</p>";
+	    }
     }
 }

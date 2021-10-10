@@ -9,6 +9,7 @@ if( ! defined( 'ABSPATH' ) ) {
 
 
 use TL_Booking\Output\FormPrint;
+use TL_Booking\Request\RequestBase;
 
 class RegisterShortcodes {
 	public function __construct() {
@@ -23,8 +24,8 @@ class RegisterShortcodes {
 		$request = $GLOBALS['TLBM_REQUEST'];
 		if(is_array($args) && sizeof($args) > 0) {
 			if(isset($args['id'])) {
-				if($request != null && $request->current_action != null && $request->current_action->html_output) {
-					return $request->current_action->GetHtmlOutput($_REQUEST);
+				if ( $request instanceof Request && $request->current_action != null && $request->current_action->html_output ) {
+					return $request->current_action->GetHtmlOutput( $_REQUEST );
 				} else {
 					return FormPrint::PrintForm( $args['id'] );
 				}
