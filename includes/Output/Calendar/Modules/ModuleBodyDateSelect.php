@@ -7,6 +7,7 @@ namespace TL_Booking\Output\Calendar\Modules;
 use DateInterval;
 use DatePeriod;
 use DateTime;
+use TL_Booking\Admin\Settings\SingleSettings\Text\WeekdayLabels;
 use TL_Booking\Booking\BookingCapacities;
 use TL_Booking\Calendar\CalendarManager;
 use TL_Booking\Model\Calendar;
@@ -23,14 +24,13 @@ class ModuleBodyDateSelect implements ICalendarPrintModule {
         $date = new DateTime();
         $date->setTimestamp($data['focused_tstamp']);
 
-        $calendar_setup = $calendar->calendar_setup;
-
         $html = "<table class='tlbm-calendar-table'>";
         $html .= "<thead>";
 
         $html .= "<tr class='tlbm-head-row'>";
 
-        foreach($calendar_setup->weekdays as $key => $weekday) {
+        $weekdays = WeekdayLabels::GetWeekdayLabels($data['weekday_form']);
+        foreach($weekdays as $key => $weekday) {
             $html .= "<th class='tlbm-weekday tlbm-weekday-". $key ."'>";
             $html .= $weekday;
             $html .= "</th>";
@@ -49,11 +49,6 @@ class ModuleBodyDateSelect implements ICalendarPrintModule {
         $current_weekday_column = 0;
         $c = 0;
 
-        if($calendar_setup) {
-            $weekdays = array_values($calendar_setup->weekdays);
-        } else {
-            $weekdays = array_values(CalendarSetup::GetDefaultWeekdays());
-        }
 
         $html .= "<tr>";
 
@@ -76,7 +71,7 @@ class ModuleBodyDateSelect implements ICalendarPrintModule {
                 $current_weekday_column = 0;
             }
 
-            if(in_array($weekday - 1, array_keys($weekdays))) {
+            if(in_array($weekday - 1, array_keys(array_values($weekdays)))) {
                 $html .= $this->GetCellOutput($data, $calendar, $dt);
             }
 

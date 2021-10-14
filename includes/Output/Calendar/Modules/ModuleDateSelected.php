@@ -17,7 +17,7 @@ class ModuleDateSelected implements ICalendarPrintModule {
 
         $html = "<div class='tlbm-selected-date-finished-container'>";
         $html .= "<p>" . __("Selected date: ", TLBM_TEXT_DOMAIN) ."</p>";
-        $html .= "<h3><strong>". DateTimeTools::Format($data['selected_tstamp']) . "</strong></h3>";
+        $html .= "<p class='tlbm-calendar-show-selected-date'><strong>". DateTimeTools::Format($data['selected_tstamp']) . "</strong></p>";
         $html .= "<button class='tlbm-button-select-another'>" . __("Select antoher Date", TLBM_TEXT_DOMAIN) ."</button>";
         $html .= "<input type='hidden' name='".$data['form_name']."' value='".$data['selected_tstamp']."'>";
         $html .= "</div>";

@@ -15,7 +15,7 @@ class EmailBookingConfirmation extends SettingsBase {
 	function PrintField() {
 		?>
 		<label>
-			<textarea class="regular-text" name="<?php echo $this->option_name ?>"><?php echo get_option($this->option_name); ?></textarea>
+			<textarea class="regular-text tlbm-admin-textarea" name="<?php echo $this->option_name ?>"><?php echo get_option($this->option_name); ?></textarea>
 		</label>
 		<?php
 	}

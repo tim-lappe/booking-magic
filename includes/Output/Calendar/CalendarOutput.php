@@ -48,15 +48,17 @@ class CalendarOutput {
 
 	/**
 	 * @param $id
+	 * @param string $weekday_form
 	 * @param string $form_name
 	 *
 	 * @return string
 	 */
-    public static function GetCalendarContainerShell($id, $form_name = ""): string {
+    public static function GetCalendarContainerShell($id, $weekday_form = "short", $form_name = ""): string {
         $data = array(
             "id" => $id,
             "focused_tstamp" => time(),
             "selectable" => true,
+	        "weekday_form" => $weekday_form,
 	        "form_name" => empty($form_name) ? "calendar_" .  $id : $form_name
         );
 

@@ -14,6 +14,10 @@
   margin-top: 20px;
   padding: 5px 10px;
 }
+.tlbm-calendar-container .tlbm-calendar-show-selected-date {
+  font-size: 2rem;
+  margin: 0;
+}
 .tlbm-calendar-container .tlbm-calendar .tlbm-calendar-table {
   width: 100%;
   background-color: #f5f5f5;
@@ -336,6 +340,18 @@
   display: inline-block;
 }
 
+.tlbm-admin-textarea {
+  min-height: 150px;
+  width: 50em;
+}
+
+.tlbm-inner-settings-table th {
+  padding: 0 0 10px 0;
+}
+.tlbm-inner-settings-table td {
+  padding: 5px 5px 5px 0;
+}
+
 .tlbm-form-editor .tlbm-form-container {
   padding: 0 10px 10px 10px;
   background-color: #ffffff;
@@ -551,9 +567,9 @@
 }
 
 .tlbm-booking-overview-box {
-  padding: 20px;
-  border: 1px solid lightgray;
+  padding: 20px 0;
   display: flex;
+  justify-content: stretch;
 }
 .tlbm-booking-overview-box h3.tlbm-overview-section-title {
   margin-top: 2em;
@@ -563,7 +579,11 @@
   margin-top: 0;
 }
 .tlbm-booking-overview-box .tlbm-formular-booked-calendar {
+  flex-grow: 1;
   margin-left: 40px;
+}
+.tlbm-booking-overview-box .tlbm-formular-content {
+  flex-grow: 1;
 }
 
 .tlbm-book-now-btn {

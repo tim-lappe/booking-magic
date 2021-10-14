@@ -298,3 +298,18 @@
   background-color: #a9cbd9;
   display: inline-block;
 }
+
+.tlbm-admin-textarea {
+  min-height: 150px;
+  width: 50em;
+}
+
+.tlbm-inner-settings-table {
+  th {
+    padding: 0 0 10px 0;
+  }
+
+  td {
+    padding: 5px 5px 5px 0;
+  }
+}

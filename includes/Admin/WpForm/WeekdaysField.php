@@ -8,6 +8,7 @@ if( ! defined( 'ABSPATH' ) ) {
 }
 
 use DateTime;
+use TL_Booking\Admin\Settings\SingleSettings\Text\WeekdayLabels;
 use TL_Booking\Model\CalendarSetup;
 
 class WeekdaysField extends FormFieldBase {
@@ -15,7 +16,7 @@ class WeekdaysField extends FormFieldBase {
 	public $weekdays;
 
 	public function __construct( $name, $title, $weekdays = false, $value = "" ) {
-		$this->weekdays = !$weekdays ? CalendarSetup::GetDefaultWeekdays() : $weekdays;
+		$this->weekdays = !$weekdays ? WeekdayLabels::GetLongWeekdayLabels() : $weekdays;
 
 		if(!is_array($value)) {
 			$value = array();
