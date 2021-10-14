@@ -17,6 +17,7 @@ if( ! defined( 'ABSPATH' ) ) {
 class DoBookingRequest extends RequestBase {
 
 	public $booking_successed = false;
+	public $error = false;
 
     public function __construct() {
         parent::__construct();
@@ -41,16 +42,21 @@ class DoBookingRequest extends RequestBase {
 
                 } else {
 					FrontendMessenger::AddFrontendMsg(__("Not all required fields were filled out",TLBM_TEXT_DOMAIN));
+	                $this->html_output = false;
                 }
             }
+        } else {
+	        $this->error = true;
         }
     }
 
     public function GetHtmlOutput( $vars ): string {
     	if($this->booking_successed === true) {
 		    return "<h2>Die Buchung ist erfolgreich eingegangen.</h2><p>Sie erhalten in kürze eine Bestätigungsmail</p>";
-	    } else {
+	    } else if($this->error) {
 		    return "<h2>Es ist ein Fehler aufgetreten</h2><p>Ihre Buchung konnte nicht bearbeitet werden, da ein unbekannter Fehler aufgetreten ist</p>" . "<p>" . $this->booking_successed . "</p>";
+	    } else {
+    		return "";
 	    }
     }
 }

@@ -19,6 +19,11 @@ $calendar-table-cell-today-background: #bee5ff;
     padding: 5px 10px;
   }
 
+  .tlbm-calendar-show-selected-date {
+    font-size: 2rem;
+    margin: 0;
+  }
+
   .tlbm-calendar {
     .tlbm-calendar-table {
       width: 100%;
@@ -28,6 +33,7 @@ $calendar-table-cell-today-background: #bee5ff;
       .tlbm-head-row th {
         padding: 10px 0 !important;
         text-align: center !important;
+        //font-size: 1rem;
       }
 
       .tlbm-cell {
