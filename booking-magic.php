@@ -18,6 +18,7 @@ define("TLBM_VERSION", "Dev 1.0");
 define("TLBM_DIR", __DIR__ );
 define("TLBM_PLUGIN_FILE", __FILE__ );
 define("TLBM_INCLUDES_DIR", TLBM_DIR . "/includes/");
+define("TLBM_MAIL_TEMPLATES", TLBM_DIR . "/templats/email/");
 
 define("TLBM_PT_CALENDAR", "tlbm_calendar");
 define("TLBM_PT_RULES", "tlbm_calendar_rules");

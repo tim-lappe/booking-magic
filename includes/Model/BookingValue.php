@@ -24,4 +24,5 @@ class BookingValue {
      * @var string
      */
     public $title;
+
 }
