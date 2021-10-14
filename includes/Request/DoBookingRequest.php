@@ -5,6 +5,7 @@ namespace TL_Booking\Request;
 
 use TL_Booking\Booking\BookingManager;
 use TL_Booking\Booking\BookingProcessing;
+use TL_Booking\Email\MailSender;
 use TL_Booking\Form\FormManager;
 use TL_Booking\Model\Booking;
 use TL_Booking\Output\FrontendMessenger;
@@ -36,8 +37,17 @@ class DoBookingRequest extends RequestBase {
                 $not_filled_dps = $booking_processing->Validate();
                 if(sizeof($not_filled_dps) == 0) {
                     $booking = $booking_processing->GetProcessedBooking();
-
                     BookingManager::SetBooking($booking);
+
+                    if($booking->booking_values['contact_email']) {
+                    	$vars = array();
+                    	foreach ($booking->booking_values as $value) {
+                    		$vars[$value->key] = $value->value;
+	                    }
+
+	                    MailSender::SendTemplate($booking->booking_values['contact_email']->value, "email_booking_confirmation", $vars);
+                    }
+
                     $this->booking_successed = true;
 
                 } else {

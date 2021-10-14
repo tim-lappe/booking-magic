@@ -30,4 +30,8 @@ class Booking {
 	 * @var int
 	 */
     public $priority;
+
+    public function __get( $name ) {
+
+    }
 }

@@ -1,12 +1,15 @@
 <?php
 
 
-namespace TL_Booking\Admin\Settings\SingleSettings\BookingProcess;
+namespace TL_Booking\Admin\Settings\SingleSettings\Text;
 
 
-class TextBookingReceived extends \TL_Booking\Admin\Settings\SingleSettings\SettingsBase {
+use TL_Booking\Admin\Settings\SingleSettings\SettingsBase;
+
+class TextBookingReceived extends SettingsBase {
+
 	public function __construct() {
-		parent::__construct( "booking_process", "text_booking_received", __("Booking Received", TLBM_TEXT_DOMAIN),
+		parent::__construct( "text", "text_booking_received", __("Booking Received", TLBM_TEXT_DOMAIN),
 			__("<h2>Your booking has been received successfully</h2><p>You will receive a confirmation email soon</p>", TLBM_TEXT_DOMAIN));
 	}
 

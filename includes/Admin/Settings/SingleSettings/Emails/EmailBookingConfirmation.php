@@ -5,18 +5,17 @@ namespace TL_Booking\Admin\Settings\SingleSettings\Emails;
 
 
 use TL_Booking\Admin\Settings\SingleSettings\SettingsBase;
+use TL_Booking\Email\MailSender;
 
-class EmailBookingConfirmation extends SettingsBase {
+class EmailBookingConfirmation extends EmailSetting {
 
 	public function __construct() {
-		parent::__construct( "emails", "email_booking_confirmation", __("Booking Confirmation", TLBM_TEXT_DOMAIN), "" );
+		parent::__construct( "email_booking_confirmation",
+            __("Booking Confirmation", TLBM_TEXT_DOMAIN),
+            __("Your Booking Confirmation"));
 	}
 
-	function PrintField() {
-		?>
-		<label>
-			<textarea class="regular-text tlbm-admin-textarea" name="<?php echo $this->option_name ?>"><?php echo get_option($this->option_name); ?></textarea>
-		</label>
-		<?php
+	public function GetDefaultTemplate(): string {
+	    return file_get_contents(TLBM_DIR . "/templates/email/booking_confirmation.html");
 	}
 }

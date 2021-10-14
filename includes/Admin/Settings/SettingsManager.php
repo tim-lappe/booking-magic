@@ -6,10 +6,10 @@ namespace TL_Booking\Admin\Settings;
 
 use InvalidArgumentException;
 use TL_Booking\Admin\Settings\SingleSettings\BookingProcess\SinglePageBooking;
-use TL_Booking\Admin\Settings\SingleSettings\BookingProcess\TextBookingReceived;
 use TL_Booking\Admin\Settings\SingleSettings\General\AdminMail;
 use TL_Booking\Admin\Settings\SingleSettings\Emails\EmailBookingConfirmation;
 use TL_Booking\Admin\Settings\SingleSettings\SettingsBase;
+use TL_Booking\Admin\Settings\SingleSettings\Text\TextBookingReceived;
 use TL_Booking\Admin\Settings\SingleSettings\Text\WeekdayLabels;
 
 class SettingsManager {
@@ -21,8 +21,7 @@ class SettingsManager {
 
 	public static array $groups = array();
 
-
-	public static function LoadSettings() {
+	public static function DefineSettings() {
 		self::$groups = array(
 			"general" => __("General", TLBM_TEXT_DOMAIN),
 			"booking_process" => __("Booking Process", TLBM_TEXT_DOMAIN),
@@ -35,22 +34,19 @@ class SettingsManager {
 			 * General
 			 */
 			new AdminMail(),
-
 			/**
 			 * Booking Process,
 			 */
 			new SinglePageBooking(),
-			new TextBookingReceived(),
-
 			/**
 			 * E-Mail
 			 */
 			new EmailBookingConfirmation(),
-
 			/**
 			 * Text
 			 */
-			new WeekdayLabels()
+			new WeekdayLabels(),
+			new TextBookingReceived(),
 
 		);
 	}
@@ -71,10 +67,6 @@ class SettingsManager {
 	}
 
 	public static function RegisterSettings() {
-		if(sizeof(self::$settings) == 0) {
-			self::LoadSettings();
-		}
-
 		foreach (self::$groups as $key => $group) {
 			add_settings_section("tlbm_" . $key . "_section", $group, null, "tlbm_settings_" . $key);
 		}
