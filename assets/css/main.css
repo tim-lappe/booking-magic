@@ -9,6 +9,9 @@
 .tlbm-calendar-container {
   max-width: 1000px;
   margin: auto auto 20px auto;
+  transition-property: opacity;
+  transition-delay: 0.5s;
+  transition-duration: 0.2s;
 }
 .tlbm-calendar-container .tlbm-button-select-another {
   margin-top: 20px;
@@ -347,9 +350,14 @@
 
 .tlbm-inner-settings-table th {
   padding: 0 0 10px 0;
+  width: auto;
+  min-width: 100px;
 }
 .tlbm-inner-settings-table td {
   padding: 5px 5px 5px 0;
+}
+.tlbm-inner-settings-table td .tlbm-settings-table-short-input {
+  margin-right: 2em;
 }
 
 .tlbm-form-editor .tlbm-form-container {

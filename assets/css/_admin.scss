@@ -305,11 +305,22 @@
 }
 
 .tlbm-inner-settings-table {
+
   th {
     padding: 0 0 10px 0;
+    width: auto;
+    min-width: 100px;
+
   }
 
   td {
     padding: 5px 5px 5px 0;
+
+    .tlbm-settings-table-short-input {
+      margin-right: 2em;
+    }
   }
+}
+
+.tlbm-status-name-input {
 }
