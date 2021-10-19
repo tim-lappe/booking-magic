@@ -6,9 +6,8 @@ namespace TL_Booking\Admin\Settings\SingleSettings\Text;
 
 use TL_Booking\Admin\Settings\SettingsManager;
 use TL_Booking\Admin\Settings\SingleSettings\SettingsBase;
-use function Symfony\Component\String\s;
 
-class WeekdayLabels extends \TL_Booking\Admin\Settings\SingleSettings\SettingsBase {
+class WeekdayLabels extends SettingsBase {
 
 	public function __construct() {
 		parent::__construct( "text", "weekday_labels", __("Weekdays", TLBM_TEXT_DOMAIN), array(
@@ -64,7 +63,7 @@ class WeekdayLabels extends \TL_Booking\Admin\Settings\SingleSettings\SettingsBa
 	/**
 	 * @return bool
 	 */
-	private function CheckOptions() {
+	private function CheckOptions(): bool {
 	    $option = get_option($this->option_name);
 	    $keys = array("mon", "tue", "wed", "thu", "fri", "sat", "sun");
 	    $fail = false;

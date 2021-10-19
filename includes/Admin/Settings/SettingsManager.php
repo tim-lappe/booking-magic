@@ -5,6 +5,7 @@ namespace TL_Booking\Admin\Settings;
 
 
 use InvalidArgumentException;
+use TL_Booking\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
 use TL_Booking\Admin\Settings\SingleSettings\BookingProcess\SinglePageBooking;
 use TL_Booking\Admin\Settings\SingleSettings\General\AdminMail;
 use TL_Booking\Admin\Settings\SingleSettings\Emails\EmailBookingConfirmation;
@@ -26,7 +27,8 @@ class SettingsManager {
 			"general" => __("General", TLBM_TEXT_DOMAIN),
 			"booking_process" => __("Booking Process", TLBM_TEXT_DOMAIN),
 			"emails" => __("E-Mails", TLBM_TEXT_DOMAIN),
-			"text" => __("Text", TLBM_TEXT_DOMAIN)
+			"text" => __("Text", TLBM_TEXT_DOMAIN),
+			"advanced" => __("Advanced", TLBM_TEXT_DOMAIN)
 		);
 
 		self::$settings = array(
@@ -38,6 +40,7 @@ class SettingsManager {
 			 * Booking Process,
 			 */
 			new SinglePageBooking(),
+			new BookingStates(),
 			/**
 			 * E-Mail
 			 */

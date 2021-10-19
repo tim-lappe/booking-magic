@@ -1,12 +1,15 @@
 import FormEditor from "./Formeditor/FormEditor";
 import CalendarRulesEditing from "./CalendarRules/CalendarRulesEditing";
 import FormFields from "./FormFields/FormFields";
+import {BookingStatesSettingEditor} from "./BookingStatesSetting/BookingStatesSettingEditor";
 
 export default class Admin {
     public static initAdmin() {
         this.attachFormEditor();
         this.attachCalendarRulesEditing();
         this.attachFormFields();
+
+        BookingStatesSettingEditor.init();
     }
 
     private static attachFormFields() {

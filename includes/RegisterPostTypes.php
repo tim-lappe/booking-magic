@@ -10,12 +10,6 @@ class RegisterPostTypes {
 
 	public function __construct() {
 		add_action("init", array($this, "register_post_types"));
-		add_action('admin_menu',  array($this, "edit_admin_menu"));
-	}
-
-	function edit_admin_menu() {
-		global $submenu;
-		unset($submenu['edit.php?post_type=' . TLBM_PT_CALENDAR][10]);
 	}
 
 	public function register_post_types() {
@@ -79,7 +73,7 @@ class RegisterPostTypes {
             "rewrite" => array("slug" => "booking"),
             "show_ui" => true,
             "menu_icon" => "dashicons-calendar-alt",
-            "supports" => array("title")
+            "supports" => array("title"),
         ));
 
 		register_post_type(TLBM_PT_RULES, array(
@@ -143,6 +137,5 @@ class RegisterPostTypes {
 			"show_in_menu" => false,
 			"supports" => array("title")
 		));
-
 	}
 }

@@ -13,12 +13,15 @@ export abstract class CalendarBase {
     }
 
     public loadCalendar(): void {
+        this.calendarContainerElem.style.opacity = "0.5";
+
         Api.Post("loadCalendar", this.calendarData, response => {
             let responseData = JSON.parse(response);
 
             this.calendarContainerElem.innerHTML = responseData.html;
             this.calendarData = responseData.data;
             this.onCalendarLoaded();
+            this.calendarContainerElem.style.opacity = "1";
 
         }, () => {
             console.error("Cannot load Calendar");
