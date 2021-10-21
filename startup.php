@@ -1,16 +1,16 @@
 <?php
 
 
-use TL_Booking\Admin\FormEditor\FormElementsCollection;
-use TL_Booking\AdminPages;
-use TL_Booking\Ajax;
-use TL_Booking\EnqueueAssets;
-use TL_Booking\Metaboxes;
-use TL_Booking\Output\Calendar\CalendarOutput;
-use TL_Booking\RegisterPostTypes;
-use TL_Booking\RegisterShortcodes;
-use TL_Booking\Request;
-use TL_Booking\Settings;
+use TLBM\Admin\FormEditor\FormElementsCollection;
+use TLBM\AdminPages;
+use TLBM\Ajax;
+use TLBM\EnqueueAssets;
+use TLBM\Metaboxes;
+use TLBM\Output\Calendar\CalendarOutput;
+use TLBM\RegisterPostTypes;
+use TLBM\RegisterShortcodes;
+use TLBM\Request;
+use TLBM\Settings;
 
 if( ! defined( 'ABSPATH' ) ) {
     return;
@@ -19,16 +19,16 @@ if( ! defined( 'ABSPATH' ) ) {
 /**
  * Make Instances of Important Classes
  */
-TL_Booking_Magic::MakeInstance(RegisterPostTypes::class);
-TL_Booking_Magic::MakeInstance(RegisterShortcodes::class);
-TL_Booking_Magic::MakeInstance(EnqueueAssets::class);
-TL_Booking_Magic::MakeInstance(Metaboxes::class);
-TL_Booking_Magic::MakeInstance(Ajax::class);
+TLBookingMagic::MakeInstance(RegisterPostTypes::class);
+TLBookingMagic::MakeInstance(RegisterShortcodes::class);
+TLBookingMagic::MakeInstance(EnqueueAssets::class);
+TLBookingMagic::MakeInstance(Metaboxes::class);
+TLBookingMagic::MakeInstance(Ajax::class);
 
-$GLOBALS['TLBM_REQUEST'] = TL_Booking_Magic::MakeInstance(Request::class);
+$GLOBALS['TLBM_REQUEST'] = TLBookingMagic::MakeInstance(Request::class);
 
-TL_Booking_Magic::MakeInstance(Settings::class);
-TL_Booking_Magic::MakeInstance(AdminPages::class);
+TLBookingMagic::MakeInstance(Settings::class);
+TLBookingMagic::MakeInstance(AdminPages::class);
 /**
  * Register all FormElements for the Formeditor
  */

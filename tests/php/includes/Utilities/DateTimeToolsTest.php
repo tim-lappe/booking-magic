@@ -4,7 +4,7 @@
 namespace php\includes\Utilities;
 
 
-use TL_Booking\Utilities\DateTimeTools;
+use TLBM\Utilities\DateTimeTools;
 
 class DateTimeToolsTest extends \PHPUnit\Framework\TestCase {
 

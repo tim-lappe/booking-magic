@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: TL Booking
+Plugin Name: Booking Magic
 Description: Das All-in-one Buchungstool
 Version: Dev 1.0
 Author: Tim Lappe
@@ -36,7 +36,7 @@ define("TLBM_TEXT_DOMAIN", "tl-booking-calendar");
 
 define("TLBM_SHORTCODETAG_FORM", "booking_magic_form");
 
-class TL_Booking_Magic {
+class TLBookingMagic {
 
 	private static $instance = false;
 
@@ -49,7 +49,7 @@ class TL_Booking_Magic {
 	/**
 	 * Returns the singleton
 	 *
-	 * @return bool|TL_Booking_Magic
+	 * @return bool|TLBookingMagic
 	 */
 	private static function GetSingleton() {
 		return self::$instance;
@@ -67,6 +67,6 @@ class TL_Booking_Magic {
 	}
 }
 
-$tl_booking_object = new TL_Booking_Magic();
+$tl_booking_object = new TLBookingMagic();
 
 require_once __DIR__ . "/startup.php";

@@ -3,7 +3,7 @@
   "description": "flexible and powerful Booking-Plugin for WordPress",
   "license": "GPL-2.0-or-later",
   "autoload": {
-    "psr-4": { "TL_Booking\\": "includes/" }
+    "psr-4": { "TLBM\\": "src/" }
   },
   "require": {
     "ext-json": "*"
