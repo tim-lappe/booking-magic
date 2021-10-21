@@ -9,29 +9,26 @@ class Booking {
     /**
      * @var int $wp_post_id The WP Post Id
      */
-    public $wp_post_id;
+    public int $wp_post_id = 0;
 
     /**
      * @var BookingValue[] Array of Form Values e.g. Name, Address etc.
      */
-    public $booking_values = array();
+    public array $booking_values = array();
 
 	/**
 	 * @var CalendarSlot[]
 	 */
-    public $calendar_slots = array();
+    public array $calendar_slots = array();
 
 	/**
 	 * @var string
 	 */
-    public $title;
+    public string $title = "";
 
 	/**
 	 * @var int
 	 */
-    public $priority;
+    public int $priority = 10;
 
-    public function __get( $name ) {
-
-    }
 }

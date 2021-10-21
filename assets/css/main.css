@@ -360,6 +360,32 @@
   margin-right: 2em;
 }
 
+.tlbm-admin-booking-information {
+  padding: 20px;
+  margin-top: 12px;
+  background-color: rgba(77, 120, 141, 0.05);
+}
+.tlbm-admin-booking-information .tlbm-admin-booking-information-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+.tlbm-admin-booking-information .tlbm-admin-booking-information-list .tlbm-admin-booking-information-item {
+  margin-right: 10%;
+}
+.tlbm-admin-booking-information .tlbm-admin-booking-information-list .tlbm-admin-booking-information-item .tlbm-admin-booked-calendar-values {
+  display: inline-block;
+  font-size: 2.5em;
+  margin: 10px 0;
+  font-weight: normal;
+}
+.tlbm-admin-booking-information .tlbm-admin-booking-information-list .tlbm-admin-booking-information-item .tlbm-admin-booking-headline {
+  font-size: 1.6em;
+  font-weight: bold;
+}
+.tlbm-admin-booking-information .tlbm-admin-booking-information-list .tlbm-admin-booking-information-item .tlbm-admin-booking-values {
+  font-size: 1.4em;
+}
+
 .tlbm-form-editor .tlbm-form-container {
   padding: 0 10px 10px 10px;
   background-color: #ffffff;
