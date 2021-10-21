@@ -30,16 +30,10 @@ class BookingsPage extends PageBase {
 
                 $bookings = BookingManager::GetAllBookings();
 
-                if(sizeof($bookings) > 0) {
-                    $post_list_table = new BookingListTable();
-                    $post_list_table->views();
-                    $post_list_table->prepare_items();
-                    $post_list_table->display();
-                } else {
-                    ?>
-                    There are no Bookings
-                    <?php
-                }
+                $post_list_table = new BookingListTable();
+                $post_list_table->views();
+                $post_list_table->prepare_items();
+                $post_list_table->display();
                 ?>
             </form>
 		</div>

@@ -85,6 +85,16 @@ services:
     ports:
     - 3336
 
+  wordpress_phpmyadmin:
+    image: phpmyadmin
+    restart: "no"
+    environment:
+      PMA_HOSTS: wordpress_database
+      PMA_USER: dbuser
+      PMA_PASSWORD: password
+    ports:
+    - 8081:80
+
 volumes:
   mariadb: {}
   wpit: {}
