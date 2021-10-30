@@ -16,7 +16,7 @@ class MBBookingInformations extends MetaBoxBase {
     }
 
     function RegisterMetaBox() {
-        $this->AddMetaBox("booking_informations", "Form Values");
+        $this->AddMetaBox("booking_informations", "Booking Information");
     }
 
     function PrintMetaBox(WP_Post $post) {
@@ -44,16 +44,29 @@ class MBBookingInformations extends MetaBoxBase {
                     echo "<p class='tlbm-admin-booking-values'>" . $mainvalues->GetContactEmail() . "</p>";
                     echo "</div>";
                 }
+                if($mainvalues->HasCustomValues()) {
+	                echo "<div class='tlbm-admin-booking-information-item'>";
+	                echo "<span class='tlbm-admin-booking-headline'>".__("Additional", TLBM_TEXT_DOMAIN)."</span><br>";
+                    foreach ($mainvalues->GetCustomValues() as $value) {
+	                    echo "<p class='tlbm-admin-booking-values'><strong>" . $value->title . "</strong><br>" . $value->value  . "</p>";
+                    }
+	                echo "</div>";
+                }
                 ?>
             </div>
         </div>
         <?php if($mainvalues->HasCalendar()): ?>
             <div class="tlbm-admin-booking-information">
                 <div class="tlbm-admin-booking-information-list">
-                    <div class="tlbm-admin-booking-information-item">
-                        <span class='tlbm-admin-booked-calendar-values'><?php echo DateTimeTools::FormatWithTime($booking->calendar_slots[0]->timestamp) ?></span><br>
-                        <span class='tlbm-admin-booking-values'><a href="<?php echo get_edit_post_link($booking->calendar_slots[0]->booked_calendar_id); ?>"><?php echo $mainvalues->GetCalendarName(); ?></a></span>
-                    </div>
+                    <?php for ($i = 0; $i < $mainvalues->GetCalendarCount(); $i++): ?>
+                        <div class="tlbm-admin-booking-information-item">
+                            <?php if($mainvalues->GetCalendarCount() > 1): ?>
+                                <span class='tlbm-admin-booked-calendar-title'><?php echo $mainvalues->GetCalendarFormName($i) ?></span><br>
+                            <?php endif; ?>
+                            <span class='tlbm-admin-booked-calendar-values'><?php echo $mainvalues->GetCalendarTimeFormat($i) ?></span><br>
+                            <span class='tlbm-admin-booking-values'><a href="<?php echo get_edit_post_link($mainvalues->GetCalendarId($i)); ?>"><?php echo $mainvalues->GetCalendarName($i); ?></a></span>
+                        </div>
+                    <?php endfor; ?>
                 </div>
             </div>
         <?php endif; ?>

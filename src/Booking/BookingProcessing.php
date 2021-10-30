@@ -70,6 +70,7 @@ class BookingProcessing {
 					$calendar_slot->timestamp          = $inputdata;
 					$calendar_slot->name               = $form_datapack->GetSettingValue("name");
 					$calendar_slot->form_id            = $this->form->wp_post_id;
+					$calendar_slot->title              = $form_datapack->GetSettingValue("title");
 
 					$booked_cid = BookingCapacities::PreBookCalendarSeat( $calendar_slot );
 					if($booked_cid) {

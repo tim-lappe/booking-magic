@@ -7,6 +7,7 @@ if( ! defined( 'ABSPATH' ) ) {
     return;
 }
 
+use TLBM\Admin\Metaboxes\MBBookingActions;
 use TLBM\Admin\Metaboxes\MBBookingCalendarSlots;
 use TLBM\Admin\Metaboxes\MBBookingDebug;
 use TLBM\Admin\Metaboxes\MBBookingInformations;
@@ -29,7 +30,7 @@ class Metaboxes {
 
     public function EnqueueMetaboxes() {
         TLBookingMagic::MakeInstance(MBCalendarPreview::class);
-        TLBookingMagic::MakeInstance(MBCalendarSetup::class);
+    //    TLBookingMagic::MakeInstance(MBCalendarSetup::class);
         TLBookingMagic::MakeInstance(MBCalendarRules::class);
 
         TLBookingMagic::MakeInstance(MBCapacityRuleCalendars::class);
@@ -41,6 +42,6 @@ class Metaboxes {
         TLBookingMagic::MakeInstance(MBFormSideInfo::class);
 
         TLBookingMagic::MakeInstance(MBBookingInformations::class);
-	    TLBookingMagic::MakeInstance(MBBookingDebug::class);
+	    TLBookingMagic::MakeInstance(MBBookingActions::class);
     }
 }

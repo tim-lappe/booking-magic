@@ -12,6 +12,30 @@ class BookingStates extends SettingsBase {
 		parent::__construct( "booking_process", "booking_states", __("Booking States", TLBM_TEXT_DOMAIN), self::GetDefaultStates());
 	}
 
+	public static function GetStates(): array {
+	    return get_option("booking_states", self::GetDefaultStates());
+    }
+
+    public static function GetStatesKeyValue(): array {
+	    $states = self::GetStates();
+	    $stateskeyval = array();
+	    foreach ($states as $state) {
+	        $stateskeyval[$state['name']] = $state['title'];
+        }
+	    return $stateskeyval;
+    }
+
+    public static function GetStateByName($name): array {
+	    $name = empty($name) ? DefaultBookingState::GetDefaultName() : $name;
+	    $states = self::GetStates();
+	    foreach ($states as $state) {
+	        if($state['name'] == $name) {
+	            return $state;
+            }
+        }
+
+	    return array();
+    }
 
 	function PrintField() {
         $states = get_option("booking_states", self::GetDefaultStates());
