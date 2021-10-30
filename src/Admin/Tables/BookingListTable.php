@@ -4,9 +4,12 @@
 namespace TLBM\Admin\Tables;
 
 
+use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
+use TLBM\Admin\Settings\SingleSettings\BookingProcess\DefaultBookingState;
 use TLBM\Booking\BookingManager;
 use TLBM\Calendar\CalendarManager;
 use TLBM\Model\Booking;
+use TLBM\Utilities\Colors;
 use TLBM\Utilities\DateTimeTools;
 
 class BookingListTable extends TableBase {
@@ -49,6 +52,10 @@ class BookingListTable extends TableBase {
 				}
 			}
 
+			if(isset($_REQUEST['filter']) && $_REQUEST['filter'] == "new") {
+				$add = $booking->state == DefaultBookingState::GetDefaultName() || empty($booking->state);
+            }
+
 			if($add) {
 				$filteredbookings[] = $booking;
 			}
@@ -60,7 +67,7 @@ class BookingListTable extends TableBase {
 	protected function GetViews(): array {
 		return array(
 			"all" => __("All", TLBM_TEXT_DOMAIN),
-			"open" => __("Open", TLBM_TEXT_DOMAIN),
+			"new" => __("New", TLBM_TEXT_DOMAIN),
 			"trashed" => __("Trash", TLBM_TEXT_DOMAIN)
 		);
 	}
@@ -146,7 +153,12 @@ class BookingListTable extends TableBase {
 			$calendar = CalendarManager::GetCalendar($calendar_slot->booked_calendar_id);
 			if($calendar) {
 				$link = get_edit_post_link( $calendar_slot->booked_calendar_id );
-				echo "<a href='" . $link . "'>" . $calendar->title . "</a>&nbsp;&nbsp;&nbsp;" . DateTimeTools::FormatWithTime( $calendar_slot->timestamp ) . "<br>";
+				$prefix = "";
+				if(sizeof($calslots) > 1) {
+				    $prefix = $calendar_slot->title . "&nbsp;&nbsp;&nbsp;";
+				}
+
+				echo $prefix . "<a href='" . $link . "'>" . $calendar->title . "</a>&nbsp;&nbsp;&nbsp;" . DateTimeTools::FormatWithTime( $calendar_slot->timestamp ) . "<br>";
 			} else {
 			    echo "<strong>" . __("Calendar deleted", TLBM_TEXT_DOMAIN) . "</strong>";
 			}
@@ -161,7 +173,14 @@ class BookingListTable extends TableBase {
 	 * @param Booking $item
 	 */
 	public function column_state($item) {
-		echo "<div class='tlbm-table-list-state'><strong>Das ist ein Test</strong></div>";
+	    $state = BookingStates::GetStateByName($item->state);
+        $rgb = Colors::GetRgbFromHex($state['color']);
+
+		?>
+        <div class='tlbm-table-list-state' style="background-color: rgba(<?php echo $rgb[0] . "," . $rgb[1] . "," . $rgb[2] ?>, 0.4)">
+            <strong><?php echo $state['title'] ?></strong>
+        </div>
+        <?php
 	}
 
 	/**

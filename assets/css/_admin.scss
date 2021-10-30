@@ -295,7 +295,7 @@
 
 .tlbm-table-list-state {
   padding: 7px 14px;
-  background-color: #a9cbd9;
+  color: #1c1c1c;
   display: inline-block;
 }
 
@@ -344,6 +344,12 @@
         font-weight: normal;
       }
 
+      .tlbm-admin-booked-calendar-title {
+        display: inline-block;
+        font-size: 1.6em;
+        font-weight: bold;
+      }
+
       .tlbm-admin-booking-headline {
         font-size: 1.6em;
         font-weight: bold;
@@ -352,6 +358,8 @@
       .tlbm-admin-booking-values{
         font-size: 1.4em;
       }
+
+
     }
   }
 }

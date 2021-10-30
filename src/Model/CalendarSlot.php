@@ -13,7 +13,6 @@ class CalendarSlot {
 	 */
 	public $timestamp;
 
-
 	/**
 	 * @var
 	 */
@@ -22,15 +21,20 @@ class CalendarSlot {
 	/**
 	 * @var int
 	 */
-	public $booked_calendar_id;
+	public $booked_calendar_id = 0;
 
 	/**
 	 * @var string
 	 */
-	public $name;
+	public $name = "";
+
+	/**
+	 * @var string
+	 */
+	public $title = "";
 
 	/**
 	 * @var int
 	 */
-	public $form_id;
+	public $form_id = 0;
 }

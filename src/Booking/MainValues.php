@@ -4,9 +4,13 @@
 namespace TLBM\Booking;
 
 
+use phpDocumentor\Reflection\Types\This;
+use TLBM\Admin\FormEditor\FormElementsCollection;
 use TLBM\Calendar\CalendarManager;
 use TLBM\Model\Booking;
+use TLBM\Model\BookingValue;
 use TLBM\Model\Calendar;
+use TLBM\Utilities\DateTimeTools;
 
 class MainValues {
 
@@ -34,6 +38,7 @@ class MainValues {
 
 		return "";
 	}
+
 
 	public function HasAll(...$names): bool {
 		$arr_names = (array)$names;
@@ -71,11 +76,64 @@ class MainValues {
 		return sizeof( $this->booking->calendar_slots ) > 0;
 	}
 
+	public function HasCustomValues(): bool {
+		return sizeof($this->GetCustomValues()) > 0;
+	}
+
+	/**
+	 * @return BookingValue[]
+	 */
+	public function GetCustomValues(): array {
+		$elements = FormElementsCollection::GetRegisteredFormElements();
+		$fixednames = array();
+		$custom = array();
+		foreach ($elements as $elem) {
+			$st = $elem->GetSettingsType("name");
+			if($st && $st->readonly) {
+				$fixednames[] = $st->default_value;
+			}
+		}
+
+		foreach ($this->booking_values as $booking_value) {
+			if(!in_array($booking_value->key, $fixednames)) {
+				$custom[] = $booking_value;
+			}
+		}
+
+		return $custom;
+	}
+
+	public function GetCalendarCount(): int {
+		return sizeof($this->calendars);
+	}
+
+	public function GetCalendarId($index = 0): int {
+		if(isset($this->booking->calendar_slots[$index])) {
+			return $this->booking->calendar_slots[$index]->booked_calendar_id;
+		} else {
+			return 0;
+		}
+	}
+
+	public function GetCalendarTimeFormat($index = 0): string {
+		if(isset($this->booking->calendar_slots[$index])) {
+			return DateTimeTools::FormatWithTime( $this->booking->calendar_slots[ $index ]->timestamp );
+		} else {
+			return "";
+		}
+	}
+
+	public function GetCalendarFormName($index = 0): string {
+		if(isset($this->booking->calendar_slots[$index])) {
+			return $this->booking->calendar_slots[$index]->title;
+		}
+		return "";
+	}
+
 	public function GetCalendarName($index = 0): string {
 		if(isset($this->calendars[$index])) {
 			return $this->calendars[$index]->title;
 		}
-
 		return "";
 	}
 

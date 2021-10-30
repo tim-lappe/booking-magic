@@ -6,6 +6,7 @@ namespace TLBM\Admin\Settings;
 
 use InvalidArgumentException;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
+use TLBM\Admin\Settings\SingleSettings\BookingProcess\DefaultBookingState;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\SinglePageBooking;
 use TLBM\Admin\Settings\SingleSettings\General\AdminMail;
 use TLBM\Admin\Settings\SingleSettings\Emails\EmailBookingConfirmation;
@@ -41,6 +42,7 @@ class SettingsManager {
 			 */
 			new SinglePageBooking(),
 			new BookingStates(),
+			new DefaultBookingState(),
 			/**
 			 * E-Mail
 			 */

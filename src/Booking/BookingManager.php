@@ -4,6 +4,8 @@
 namespace TLBM\Booking;
 
 
+use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
+use TLBM\Admin\Settings\SingleSettings\BookingProcess\DefaultBookingState;
 use TLBM\Model\Booking;
 
 if( ! defined( 'ABSPATH' ) ) {
@@ -74,6 +76,7 @@ class BookingManager {
             } else {
             	$booking = new Booking();
             	$booking->wp_post_id = $wp_post_id;
+            	$booking->state = DefaultBookingState::GetDefaultName();
             	return $booking;
             }
         }

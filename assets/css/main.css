@@ -339,7 +339,7 @@
 
 .tlbm-table-list-state {
   padding: 7px 14px;
-  background-color: #a9cbd9;
+  color: #1c1c1c;
   display: inline-block;
 }
 
@@ -377,6 +377,11 @@
   font-size: 2.5em;
   margin: 10px 0;
   font-weight: normal;
+}
+.tlbm-admin-booking-information .tlbm-admin-booking-information-list .tlbm-admin-booking-information-item .tlbm-admin-booked-calendar-title {
+  display: inline-block;
+  font-size: 1.6em;
+  font-weight: bold;
 }
 .tlbm-admin-booking-information .tlbm-admin-booking-information-list .tlbm-admin-booking-information-item .tlbm-admin-booking-headline {
   font-size: 1.6em;
