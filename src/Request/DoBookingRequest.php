@@ -5,6 +5,7 @@ namespace TLBM\Request;
 
 use TLBM\Booking\BookingManager;
 use TLBM\Booking\BookingProcessing;
+use TLBM\Booking\MainValues;
 use TLBM\Email\MailSender;
 use TLBM\Form\FormManager;
 use TLBM\Model\Booking;
@@ -37,6 +38,18 @@ class DoBookingRequest extends RequestBase {
                 $not_filled_dps = $booking_processing->Validate();
                 if(sizeof($not_filled_dps) == 0) {
                     $booking = $booking_processing->GetProcessedBooking();
+                    $mainvals = new MainValues($booking);
+                    $title = "";
+
+                    if($mainvals->HasName()) {
+						$title = $mainvals->GetFullName();
+                    }
+                    if($mainvals->HasCalendar()) {
+                    	$title .= " " . $mainvals->GetCalendarTimeFormat();
+                    }
+
+                    $title = trim($title);
+                    $booking->title = $title;
                     BookingManager::SetBooking($booking);
 
                     if($booking->booking_values['contact_email']) {

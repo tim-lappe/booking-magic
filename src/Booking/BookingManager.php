@@ -20,7 +20,7 @@ class BookingManager {
     public static function SetBooking(Booking $booking) {
         if(!(intval($booking->wp_post_id) > 0)) {
             $post_id = wp_insert_post(array(
-                'post_title' => time(),
+                'post_title' => empty($booking->title) ? time() : $booking->title,
                 'post_status' => 'publish',
                 'post_type' => TLBM_PT_BOOKING
             ));

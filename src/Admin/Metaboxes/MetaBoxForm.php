@@ -15,6 +15,11 @@ abstract class MetaBoxForm extends MetaBoxBase {
 	public function __construct() {
 		parent::__construct();
 		add_action("save_post", array($this, "SavePostAction" ), 10, 3);
+		add_action("admin_notices", array( $this, 'AdminNotice' ) );
+	}
+
+	public function AdminNotice() {
+
 	}
 
     /**
@@ -25,9 +30,8 @@ abstract class MetaBoxForm extends MetaBoxBase {
 		if(in_array($post_type, $this->GetOnPostTypes())) {
 			remove_action( 'save_post', array($this, "SavePostAction" ));
 
-			$this->OnSave($post_id);
-
 			add_action("save_post", array($this, "SavePostAction" ), 10, 3);
+			$this->OnSave($post_id);
 		}
 	}
 

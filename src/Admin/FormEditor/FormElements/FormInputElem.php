@@ -19,7 +19,7 @@ abstract class FormInputElem extends FormElem {
 		$this->editor_output = "<div class='tlbm-form-item-box'><span class='tlbm-form-settings-print-title'>" . $title . "</span><span class='tlbm-form-settings-print-subtitle'></span><span class='tlbm-form-settings-print-required'></span></div>";
 
 		$this->settings[] = new Input( "title", __("Title", TLBM_TEXT_DOMAIN), "text", new SettingsPrinting("title", array(), array("" => $title)));
-		$this->settings[] = new Input( "name", __("Name", TLBM_TEXT_DOMAIN), "text", new SettingsPrinting("subtitle"));
+		$this->settings[] = new Input( "name", __("Name", TLBM_TEXT_DOMAIN), "text", new SettingsPrinting("subtitle"), true);
 
 		$this->settings[] = new Select( "required", __("Requied", TLBM_TEXT_DOMAIN),
 			array("yes" => __("Yes", TLBM_TEXT_DOMAIN), "no" => __("No", TLBM_TEXT_DOMAIN)),

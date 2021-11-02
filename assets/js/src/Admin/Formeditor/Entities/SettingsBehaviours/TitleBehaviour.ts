@@ -11,11 +11,9 @@ export class TitleBehaviour extends FormElementSettingsBehaviour {
                     .replaceAll(/[^a-zA-Z0-9]/g,'');
             }
         }
-
-        console.log("tesstt hallooo hoooo 22222");
     }
 
     onSettingsWindowOpened(args: any): void {
-        console.log("tesstt hallooo hoooo");
+
     }
 }

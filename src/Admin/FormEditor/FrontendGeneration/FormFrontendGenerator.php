@@ -8,6 +8,7 @@ if( ! defined( 'ABSPATH' ) ) {
 }
 
 
+use InvalidArgumentException;
 use TLBM\Admin\FormEditor\Formeditor;
 use TLBM\Admin\FormEditor\FormElements\FormElem;
 use TLBM\Admin\FormEditor\FormElementsCollection;
