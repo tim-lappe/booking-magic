@@ -12,6 +12,13 @@ use WP_Post;
 
 class MBFormEditor extends MetaBoxForm {
 
+
+    public function __construct() {
+	    parent::__construct();
+
+
+    }
+
 	/**
 	 * @return array
 	 */
@@ -66,13 +73,49 @@ class MBFormEditor extends MetaBoxForm {
 	function OnSave( $post_id ) {
 	    if(isset($_REQUEST['tlbm-form-editor-data'])) {
 		    $form_data = $_REQUEST['tlbm-form-editor-data'];
-		    update_post_meta( $post_id, "form-data", $form_data );
-
 		    $form_data     = json_decode( htmlspecialchars_decode( $form_data ) );
 		    $ffg           = new FormFrontendGenerator( $form_data );
 		    $frontend_html = $ffg->GenerateHtml();
 
-		    update_post_meta( $post_id, "frontend-html", $frontend_html );
+		    if (!$this->HasDuplicateNames( $form_data ) ) {
+			    update_post_meta( $post_id, "form-data", $_REQUEST['tlbm-form-editor-data']);
+			    update_post_meta( $post_id, "frontend-html", $frontend_html );
+
+		    } else {
+			    add_filter( 'redirect_post_location', array( $this, 'OnErrorDuplicateName' ), 99 );
+		    }
 	    }
+	}
+
+	function OnErrorDuplicateName($location): string {
+		remove_filter( 'redirect_post_location', array( $this, 'OnErrorDuplicateName' ), 99 );
+		return add_query_arg( array( 'err_duplicate_name' => 'true' ), $location );
+	}
+
+	public function AdminNotice() {
+		if(isset($_REQUEST['err_duplicate_name'])) {
+            ?>
+            <div class="notice notice-error is-dismissible">
+                <p><?php _e( '<strong>Could not save Form!</strong><br> Duplicate names are not allowed', TLBM_TEXT_DOMAIN ); ?></p>
+            </div>
+            <?php
+        }
+	}
+
+	function HasDuplicateNames($form_data): bool {
+		if(is_array($form_data)) {
+			$ri = new \RecursiveIteratorIterator( new \RecursiveArrayIterator( $form_data ), \RecursiveIteratorIterator::SELF_FIRST );
+			$names = array();
+			foreach ($ri as $elem) {
+				if(isset($elem->name)) {
+				    if(!in_array($elem->name, $names)) {
+				        $names[] = $elem->name;
+				    } else {
+				        return true;
+				    }
+				}
+			}
+		}
+		return false;
 	}
 }

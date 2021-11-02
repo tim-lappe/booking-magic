@@ -36,26 +36,6 @@ class MBFormSideInfo extends MetaBoxForm {
 		<p class="tlbm-shortcode-label">
 			[<?php echo TLBM_SHORTCODETAG_FORM ?> id=<?php echo $post->ID ?>]
 		</p>
-		<p>
-			<?php echo __("Alternative you can select a Page, to display this formular after the content: ", TLBM_TEXT_DOMAIN) ?>
-		</p>
-		<select name="show_on_page_id">
-			<option value=""><?php echo __("No Page", TLBM_TEXT_DOMAIN) ?></option>
-		<?php
-
-		/**
-		 * @var WP_Post[] $pages
-		 */
-		$pages = get_pages();
-		$show_on_page_id = get_post_meta($post->ID, "show_on_page_id", true);
-
-		foreach ($pages as $page) {
-			?>
-			<option <?php selected($show_on_page_id == $page->ID) ?> value="<?php echo $page->ID ?>"><?php echo $page->post_title ?></option>
-			<?php
-		}
-		?>
-		</select>
 		<?php
 	}
 

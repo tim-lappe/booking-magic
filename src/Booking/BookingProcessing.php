@@ -4,6 +4,7 @@
 namespace TLBM\Booking;
 
 
+use phpDocumentor\Reflection\Types\This;
 use TLBM\Admin\FormEditor\FormElements\CalendarElem;
 use TLBM\Admin\FormEditor\FormElementsCollection;
 use TLBM\Model\Booking;
@@ -30,7 +31,7 @@ class BookingProcessing {
     private $form;
 
     public function __construct($input_vars, $form) {
-        $this->input_vars = $input_vars;
+        $this->input_vars = $this->EscapeInputVars($input_vars);;
         $this->form = $form;
     }
 
@@ -119,7 +120,6 @@ class BookingProcessing {
      */
     public function ParseFormDataToFormElements($form_data, array $input_vars = array()): array {
         $it = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($form_data, \RecursiveArrayIterator::CHILD_ARRAYS_ONLY), \RecursiveIteratorIterator::SELF_FIRST);
-
         $elements = array();
         foreach($it as $key => $value) {
             if(is_array($value)) {
@@ -142,5 +142,13 @@ class BookingProcessing {
         }
 
         return $elements;
+    }
+
+    public function EscapeInputVars($input_vars): array {
+    	$escaped = array();
+    	foreach ($input_vars as $key => $input_var) {
+    		$escaped[$key] = strip_tags($input_var);
+	    }
+    	return $escaped;
     }
 }

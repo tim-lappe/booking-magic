@@ -391,6 +391,17 @@
   font-size: 1.4em;
 }
 
+#tlbm_mb_tlbm_save .inside {
+  margin: 0;
+  padding: 0;
+}
+#tlbm_mb_tlbm_save .inside .spinner {
+  float: right;
+}
+#tlbm_mb_tlbm_save .inside input {
+  display: block;
+}
+
 .tlbm-form-editor .tlbm-form-container {
   padding: 0 10px 10px 10px;
   background-color: #ffffff;

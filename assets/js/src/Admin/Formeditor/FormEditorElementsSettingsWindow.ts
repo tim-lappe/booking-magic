@@ -55,6 +55,12 @@ export default class FormEditorElementsSettingsWindow {
 
     public closeSettingsWindow(save: boolean) {
         let settingswindow = document.querySelector(".tlbm-form-editor-element-settings-window") as HTMLElement;
+
+        document.querySelectorAll(".tlbm-form-editor-element-settings-window [unique]").forEach((elem) => {
+            let name = elem.getAttribute("name");
+
+        })
+
         if(settingswindow !== null) {
             settingswindow.classList.add("closed");
         }
@@ -97,6 +103,15 @@ export default class FormEditorElementsSettingsWindow {
 
         html += "</div>";
         settingscontainer.innerHTML = html;
+
+        settingscontainer.querySelectorAll("input,select,textarea").forEach((elem: HTMLElement) => {
+            elem.addEventListener("keydown", (event) => {
+                if (event.key == "Enter") {
+                    this.closeSettingsWindow(true);
+                    event.preventDefault();
+                }
+            });
+        });
     }
 
     public loadElementFormData() {

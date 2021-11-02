@@ -36,22 +36,26 @@ class CalendarPickerField extends FormFieldBase {
                     <div class="tlbm-calendar-select-panel" <?php echo $this->value->selection_type !== "all" ? "style='display: block'" : "style='display: none'" ?>>
                         <?php
                             $cals = CalendarManager::GetAllCalendars();
-                            foreach($cals as $calendar) {
-                                $calendar = get_post($calendar->wp_post_id);
-                                ?>
-                                <div class="tlbm-calendar-select-item">
-                                <label>
-                                    <input name="<?php echo $this->name . "_selection[]"; ?>" value="<?php echo $calendar->ID ?>" <?php echo in_array($calendar->ID, $this->value->selected_calendar_ids) ? "checked='checked'" : "" ?> type="checkbox">
-                                    <?php
-                                    if(!empty($calendar->post_title)) {
-                                        echo $calendar->post_title;
-                                    } else {
-                                        echo "ID: " .  $calendar->ID . " <span style='color: rgba(0, 0, 0, 0.5)'>(" . __("No Name", TLBM_TEXT_DOMAIN) . ")</span>";
-                                    }
+                            if(sizeof($cals) > 0) {
+                                foreach($cals as $calendar) {
+                                    $calendar = get_post($calendar->wp_post_id);
                                     ?>
-                                </label>
-                                </div>
-                                <?php
+                                    <div class="tlbm-calendar-select-item">
+                                    <label>
+                                        <input name="<?php echo $this->name . "_selection[]"; ?>" value="<?php echo $calendar->ID ?>" <?php echo in_array($calendar->ID, $this->value->selected_calendar_ids) ? "checked='checked'" : "" ?> type="checkbox">
+                                        <?php
+                                        if(!empty($calendar->post_title)) {
+                                            echo $calendar->post_title;
+                                        } else {
+                                            echo "ID: " .  $calendar->ID . " <span style='color: rgba(0, 0, 0, 0.5)'>(" . __("No Name", TLBM_TEXT_DOMAIN) . ")</span>";
+                                        }
+                                        ?>
+                                    </label>
+                                    </div>
+                                    <?php
+                                }
+                            } else {
+                                echo "<p>" . __("There are no calendars to select.", TLBM_TEXT_DOMAIN) . "<br><a href='".admin_url() . "/post-new.php?post_type=". TLBM_PT_CALENDAR ."'>".__("Create new calendar", TLBM_TEXT_DOMAIN)."</a></p>";
                             }
                         ?>
                     </div>

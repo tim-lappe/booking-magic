@@ -1,5 +1,6 @@
 import {TitleBehaviour} from "./Entities/SettingsBehaviours/TitleBehaviour";
 import {FormElementSettingsBehaviour} from "./Entities/FormElementSettingsBehaviour";
+import {NameBehaviour} from "./Entities/SettingsBehaviours/NameBehaviour";
 
 export default class FormElementsSettingsBehavioursCollection {
 
@@ -7,6 +8,7 @@ export default class FormElementsSettingsBehavioursCollection {
     public static registerSettingsBehaviours() {
         this.behaviourList = [];
         this.behaviourList.push(new TitleBehaviour());
+        this.behaviourList.push(new NameBehaviour());
     }
 
     public static getList(): FormElementSettingsBehaviour[] {

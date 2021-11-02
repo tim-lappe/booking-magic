@@ -29,7 +29,7 @@ class DaySlotAction extends RuleActionFieldBase {
 					<select name="capacity_mode">
 		                '.FormContents::GetCapacityModeSelectOptions() . '
 					</select>
-					<input type="number" name="capacity"> 
+					<input type="number" min="0" name="capacity"> 
 				</div>
 			</div>
         </div>

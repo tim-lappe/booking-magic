@@ -8,7 +8,6 @@ if( ! defined( 'ABSPATH' ) ) {
 }
 
 use TLBM\Admin\Metaboxes\MBBookingActions;
-use TLBM\Admin\Metaboxes\MBBookingCalendarSlots;
 use TLBM\Admin\Metaboxes\MBBookingDebug;
 use TLBM\Admin\Metaboxes\MBBookingInformations;
 use TLBM\Admin\Metaboxes\MBCalendarPreview;
@@ -20,17 +19,21 @@ use TLBM\Admin\Metaboxes\MBCapacityRulePriority;
 use TLBM\Admin\Metaboxes\MBFormEditor;
 use TLBM\Admin\Metaboxes\MBFormSideInfo;
 use TLBM\Admin\Metaboxes\MBRuleActions;
+use TLBM\Admin\Metaboxes\MBSave;
 use TLBookingMagic;
 
 class Metaboxes {
 
     public function __construct() {
         $this->EnqueueMetaboxes();
+
+	    add_action( 'do_meta_boxes', array($this, "RemoveDefaultPublishBox"));
     }
 
     public function EnqueueMetaboxes() {
+    	TLBookingMagic::MakeInstance(MBSave::class);
+
         TLBookingMagic::MakeInstance(MBCalendarPreview::class);
-    //    TLBookingMagic::MakeInstance(MBCalendarSetup::class);
         TLBookingMagic::MakeInstance(MBCalendarRules::class);
 
         TLBookingMagic::MakeInstance(MBCapacityRuleCalendars::class);
@@ -43,5 +46,12 @@ class Metaboxes {
 
         TLBookingMagic::MakeInstance(MBBookingInformations::class);
 	    TLBookingMagic::MakeInstance(MBBookingActions::class);
+    }
+
+    public function RemoveDefaultPublishBox() {
+    	remove_meta_box( 'submitdiv', TLBM_PT_CALENDAR, 'side' );
+	    remove_meta_box( 'submitdiv', TLBM_PT_RULES, 'side' );
+	    remove_meta_box( 'submitdiv', TLBM_PT_FORMULAR, 'side' );
+	    remove_meta_box( 'submitdiv', TLBM_PT_BOOKING, 'side' );
     }
 }

@@ -364,3 +364,18 @@
   }
 }
 
+#tlbm_mb_tlbm_save {
+  .inside {
+    margin: 0;
+    padding: 0;
+
+    .spinner {
+      float: right;
+    }
+    input {
+      display: block;
+    //  width: 50%;
+    //  float: right;
+    }
+  }
+}
