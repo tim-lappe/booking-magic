@@ -140,7 +140,7 @@ export class FormFieldRuleActionFields {
 
         let parsed = JSON.stringify(actionitemarr);
         parsed = parsed.replace(/"/g, "&quot;");
-        this.datafield.value = parsed;
+        this.datafield.setAttribute("value", parsed);
     }
 
     public getActionFieldByName(name: string) {

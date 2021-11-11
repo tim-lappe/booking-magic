@@ -79,7 +79,7 @@ export default class FormLoader {
                 }
             }
 
-            this.attachedInputElement.value = JSON.stringify(this.formData).replace(/"/g, '&quot;');
+            this.attachedInputElement.setAttribute("value", JSON.stringify(this.formData).replace(/"/g, '&quot;'));
         }
     }
 

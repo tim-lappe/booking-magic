@@ -173,7 +173,7 @@ export default class FormFieldPeriodsSelector {
             }
         });
 
-        this.periodDataInput.value = JSON.stringify(this.periodData).replace(/"/g, '&quot;');
+        this.periodDataInput.setAttribute("value", JSON.stringify(this.periodData).replace(/"/g, '&quot;'));
 
         console.log(this.periodDataInput.value);
     }
