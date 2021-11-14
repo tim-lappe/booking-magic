@@ -17,12 +17,15 @@ export abstract class CalendarBase {
 
         Api.Post("loadCalendar", this.calendarData, response => {
             let responseData = JSON.parse(response);
-
-            this.calendarContainerElem.innerHTML = responseData.html;
-            this.calendarData = responseData.data;
-            this.onCalendarLoaded();
-            this.calendarContainerElem.style.opacity = "1";
-
+            if(responseData.html != null && responseData.data != null) {
+                this.calendarContainerElem.innerHTML = responseData.html;
+                this.calendarData = responseData.data;
+                this.onCalendarLoaded();
+                this.calendarContainerElem.style.opacity = "1";
+            } else {
+                console.error("Cannot load Calendar");
+                this.calendarContainerElem.innerHTML = "Error while trying to load the calendar picker";
+            }
         }, () => {
             console.error("Cannot load Calendar");
         });
@@ -32,7 +35,6 @@ export abstract class CalendarBase {
         let calendarData = this.calendarContainerElem.getAttribute("data");
         calendarData = JSON.parse(calendarData);
         this.calendarData = calendarData;
-
         this.onCalendarDataReaded();
     }
 

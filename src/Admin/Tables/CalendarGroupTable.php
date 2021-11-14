@@ -4,16 +4,18 @@
 namespace TLBM\Admin\Tables;
 
 
-use TLBM\Booking\BookingManager;
+use TLBM\Calendar\CalendarGroupManager;
 use TLBM\Calendar\CalendarManager;
 use TLBM\Model\Calendar;
+use TLBM\Model\CalendarGroup;
 use TLBM\Utilities\DateTimeTools;
 
-class CalendarListTable extends TableBase {
+class CalendarGroupTable extends TableBase {
 
 	public function __construct() {
-		parent::__construct(__("Calendars", TLBM_TEXT_DOMAIN), __("Calendar", TLBM_TEXT_DOMAIN));
+		parent::__construct(__("Groups", TLBM_TEXT_DOMAIN), __("Group", TLBM_TEXT_DOMAIN));
 	}
+
 
 	protected function ProcessBuldActions() {
 		if(isset($_REQUEST['wp_post_ids'])) {
@@ -43,8 +45,7 @@ class CalendarListTable extends TableBase {
 			$pt_args = array("post_status" => "trash");
 		}
 
-		$calendars = CalendarManager::GetAllCalendars($pt_args, $orderby, $order);
-		return $calendars;
+		return CalendarGroupManager::GetAllGroups($pt_args, $orderby, $order);
 	}
 
 	protected function GetViews(): array {
@@ -58,6 +59,8 @@ class CalendarListTable extends TableBase {
 		return array(
 			"cb"    => "<input type='checkbox' />",
 			"title" => __('Title', TLBM_TEXT_DOMAIN),
+			"selected_calendars" => __('Selected Calendars', TLBM_TEXT_DOMAIN),
+			"booking_distribution" => __('Booking Distribution', TLBM_TEXT_DOMAIN),
 			"datetime" => __('Date', TLBM_TEXT_DOMAIN)
 		);
 	}
@@ -87,10 +90,52 @@ class CalendarListTable extends TableBase {
 	}
 
 	/**
-	 * @param Calendar $item
+	 * @param CalendarGroup $item
+	 */
+	public function column_booking_distribution($item) {
+		if($item->booking_distribution == TLBM_BOOKING_DISTRIBUTION_EVENLY) {
+			echo "Evenly";
+		} else if($item->booking_distribution == TLBM_BOOKING_DISTRIBUTION_FILL_ONE) {
+			echo "Fill One First";
+		}
+	}
+
+	/**
+	 * @param CalendarGroup $item
+	 */
+	public function column_selected_calendars($item) {
+		$selection = $item->calendar_selection;
+		if($selection->selection_type == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
+			echo __("All", TLBM_TEXT_DOMAIN);
+		} else if($selection->selection_type == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
+			foreach($selection->selected_calendar_ids as $key => $id) {
+				$cal = CalendarManager::GetCalendar($id);
+				$link = get_edit_post_link( $id );
+				if($key > 0) {
+					echo ", ";
+				}
+				echo "<a href='" . $link . "'>" . $cal->title . "</a>";
+			}
+		} else if($selection->selection_type == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
+			echo __("All but ", TLBM_TEXT_DOMAIN);
+			foreach($selection->selected_calendar_ids as $key => $id) {
+				$cal = CalendarManager::GetCalendar($id);
+				$link = get_edit_post_link( $id );
+				if($key > 0) {
+					echo ", ";
+				}
+				echo "<a href='" . $link . "'><s>" . $cal->title . "</s></a>";
+			}
+		}
+	}
+
+
+
+	/**
+	 * @param CalendarGroup $item
 	 */
 	public function column_title($item) {
-		$link = get_edit_post_link($item->wp_post_id);
+		$link = get_edit_post_link( $item->wp_post_id );
 		if ( ! empty( $item->title ) ) {
 			echo "<strong><a href='" . $link . "'>" . $item->title . "</a></strong>";
 		} else {
@@ -99,7 +144,7 @@ class CalendarListTable extends TableBase {
 	}
 
 	/**
-	 * @param Calendar $item
+	 * @param CalendarGroup $item
 	 */
 	public function column_datetime($item) {
 		$p = get_post($item->wp_post_id);

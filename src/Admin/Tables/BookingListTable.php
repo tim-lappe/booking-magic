@@ -29,6 +29,11 @@ class BookingListTable extends TableBase {
 					) );
 				} else if ( $action == "delete_permanently" ) {
 					wp_delete_post( $id );
+				} else if ( $action == "restore" ) {
+					wp_update_post( array(
+						"ID"          => $id,
+						"post_status" => "publish"
+					));
 				}
 			}
 		}
@@ -92,7 +97,8 @@ class BookingListTable extends TableBase {
 	protected function GetBulkActions(): array {
 		if(isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
 			return array(
-				'delete_permanently' => __( 'Delete permanently', TLBM_TEXT_DOMAIN )
+				'delete_permanently' => __( 'Delete permanently', TLBM_TEXT_DOMAIN ),
+				'restore' => __( 'Restore', TLBM_TEXT_DOMAIN )
 			);
 		} else {
 			return array(
@@ -151,16 +157,16 @@ class BookingListTable extends TableBase {
 		$calslots = $item->calendar_slots;
 		foreach ($calslots as $calendar_slot) {
 			$calendar = CalendarManager::GetCalendar($calendar_slot->booked_calendar_id);
-			if($calendar) {
-				$link = get_edit_post_link( $calendar_slot->booked_calendar_id );
-				$prefix = "";
-				if(sizeof($calslots) > 1) {
-				    $prefix = $calendar_slot->title . "&nbsp;&nbsp;&nbsp;";
-				}
+            $link = get_edit_post_link( $calendar_slot->booked_calendar_id );
+            $prefix = "";
+            if(sizeof($calslots) > 1) {
+                $prefix = $calendar_slot->title . "&nbsp;&nbsp;&nbsp;";
+            }
 
+			if($calendar) {
 				echo $prefix . "<a href='" . $link . "'>" . $calendar->title . "</a>&nbsp;&nbsp;&nbsp;" . DateTimeTools::FormatWithTime( $calendar_slot->timestamp ) . "<br>";
 			} else {
-			    echo "<strong>" . __("Calendar deleted", TLBM_TEXT_DOMAIN) . "</strong>";
+				echo $prefix . "<strong>" . __("Calendar deleted", TLBM_TEXT_DOMAIN) . "</strong>&nbsp;&nbsp;&nbsp;" . DateTimeTools::FormatWithTime( $calendar_slot->timestamp ) . "<br>";
 			}
 		}
 

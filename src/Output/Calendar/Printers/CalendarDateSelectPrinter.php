@@ -5,6 +5,7 @@ namespace TLBM\Output\Calendar\Printers;
 
 
 use TLBM\Model\Calendar;
+use TLBM\Model\CalendarGroup;
 use TLBM\Output\Calendar\Modules\ModuleDateSelected;
 
 class CalendarDateSelectPrinter extends CalendarMonthViewPrinter {
@@ -15,16 +16,12 @@ class CalendarDateSelectPrinter extends CalendarMonthViewPrinter {
         $this->AddModule("dateSelected", new ModuleDateSelected());
     }
 
-    /**
-     * @param Calendar $calendar
-     *
-     * @return bool
-     */
-    public function CanPrintCalendar(Calendar $calendar): bool {
-        return $calendar->calendar_setup->booking_mode == "only_date";
-    }
-
-    public function GetTsClass(Calendar $calendar): string {
-        return "CalendarDateSelect";
+	/**
+	 * @param CalendarGroup $group
+	 *
+	 * @return bool
+	 */
+    public function CanPrintGroup(CalendarGroup $group): bool {
+        return true;
     }
 }

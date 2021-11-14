@@ -7,6 +7,7 @@ namespace TLBM\Output\Calendar\Printers;
 use DateInterval;
 use DateTime;
 use TLBM\Model\Calendar;
+use TLBM\Model\CalendarGroup;
 use TLBM\Output\Calendar\Modules\ModuleBodyDateSelect;
 use TLBM\Output\Calendar\Modules\ModuleHeadMonthSelect;
 
@@ -19,12 +20,12 @@ class CalendarMonthViewPrinter extends CalendarPrinterBase {
         $this->AddModule("default", new ModuleBodyDateSelect());
     }
 
-    /**
-     * @param Calendar $calendar
-     *
-     * @return bool
-     */
-    public function CanPrintCalendar(Calendar $calendar): bool {
+	/**
+	 * @param CalendarGroup $group
+	 *
+	 * @return bool
+	 */
+    public function CanPrintGroup(CalendarGroup $group): bool {
         return true;
     }
 
@@ -43,9 +44,5 @@ class CalendarMonthViewPrinter extends CalendarPrinterBase {
         $data['focused_tstamp'] = $date->getTimestamp();
 
         parent::ProcessData($data);
-    }
-
-    public function GetTsClass(Calendar $calendar): string {
-        return "CalendarDateSelect";
     }
 }

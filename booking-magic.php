@@ -21,6 +21,7 @@ define("TLBM_INCLUDES_DIR", TLBM_DIR . "/includes/");
 define("TLBM_MAIL_TEMPLATES", TLBM_DIR . "/templats/email/");
 
 define("TLBM_PT_CALENDAR", "tlbm_calendar");
+define("TLBM_PT_CALENDAR_GROUPS", "tlbm_calendar_groups");
 define("TLBM_PT_RULES", "tlbm_calendar_rules");
 define("TLBM_PT_FORMULAR", "tlbm_fomular");
 define("TLBM_PT_BOOKING", "tlbm_booking");

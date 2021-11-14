@@ -25,6 +25,11 @@ class FormListTable extends TableBase {
 					) );
 				} else if ( $action == "delete_permanently" ) {
 					wp_delete_post( $id );
+				} else if ( $action == "restore" ) {
+					wp_update_post( array(
+						"ID"          => $id,
+						"post_status" => "publish"
+					));
 				}
 			}
 		}
@@ -63,7 +68,8 @@ class FormListTable extends TableBase {
 	protected function GetBulkActions(): array {
 		if(isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
 			return array(
-				'delete_permanently' => __( 'Delete permanently', TLBM_TEXT_DOMAIN )
+				'delete_permanently' => __( 'Delete permanently', TLBM_TEXT_DOMAIN ),
+				'restore' => __( 'Restore', TLBM_TEXT_DOMAIN )
 			);
 		} else {
 			return array(

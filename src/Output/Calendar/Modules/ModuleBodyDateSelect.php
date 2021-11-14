@@ -9,8 +9,10 @@ use DatePeriod;
 use DateTime;
 use TLBM\Admin\Settings\SingleSettings\Text\WeekdayLabels;
 use TLBM\Booking\BookingCapacities;
+use TLBM\Calendar\CalendarGroupManager;
 use TLBM\Calendar\CalendarManager;
 use TLBM\Model\Calendar;
+use TLBM\Model\CalendarGroup;
 use TLBM\Model\CalendarSetup;
 use TLBM\Rules\Capacities;
 
@@ -20,7 +22,7 @@ class ModuleBodyDateSelect implements ICalendarPrintModule {
      * @inheritDoc
      */
     public function GetOutput($data): string {
-        $calendar = CalendarManager::GetCalendar($data['id']);
+        $group = CalendarGroup::FromCalendarOrGroupId($data['id']);
         $date = new DateTime();
         $date->setTimestamp($data['focused_tstamp']);
 
@@ -72,7 +74,7 @@ class ModuleBodyDateSelect implements ICalendarPrintModule {
             }
 
             if(in_array($weekday - 1, array_keys(array_values($weekdays)))) {
-                $html .= $this->GetCellOutput($data, $calendar, $dt);
+                $html .= $this->GetCellOutput($data, $group, $dt);
             }
 
             $current_weekday_column++;
@@ -88,18 +90,16 @@ class ModuleBodyDateSelect implements ICalendarPrintModule {
 
 	/**
 	 * @param $data
-	 * @param Calendar $calendar
+	 * @param CalendarGroup $group
 	 * @param DateTime $date
 	 *
 	 * @return string
 	 */
-    public function GetCellOutput( $data, $calendar, $date ): string {
+    public function GetCellOutput( $data, $group, $date ): string {
         $html = "";
-        $calendar_setup = $calendar->calendar_setup;
-
         $classes = array();
 
-        if(!$calendar_setup && !$date) {
+        if(!$date) {
             $html .=  "<td class='tlbm-cell tlbm-cell-empty ".$classes."'></td>";
         } else {
             $today = new DateTime();
@@ -107,9 +107,10 @@ class ModuleBodyDateSelect implements ICalendarPrintModule {
                 $classes[] = "tlbm-cell-today";
             }
 
-            if($calendar != null) {
-            	$all_capacities = Capacities::GetDayCapacity($calendar, $date);
-	            $capacity = BookingCapacities::GetFreeDaySeats($calendar, $date);
+	        $all_capacities = 0;
+            if($group != null) {
+            	$all_capacities = Capacities::GetDayCapacityForGroup($group, $date);
+	            $capacity = BookingCapacities::GetFreeDaySeatsForGroup($group, $date);
             } else {
             	$capacity = 0;
             }

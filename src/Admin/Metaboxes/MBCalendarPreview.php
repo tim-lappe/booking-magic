@@ -7,6 +7,8 @@ if( ! defined( 'ABSPATH' ) ) {
     return;
 }
 
+use TLBM\Model\CalendarGroup;
+use TLBM\Model\CalendarSelection;
 use TLBM\Output\Calendar\CalendarOutput;
 
 
@@ -17,7 +19,12 @@ class MBCalendarPreview extends MetaBoxBase {
 	}
 
 	function PrintMetaBox(\WP_Post $post) {
-		echo CalendarOutput::GetCalendarContainerShell($post->ID);
+		$group = new CalendarGroup();
+		$group->calendar_selection = new CalendarSelection();
+		$group->calendar_selection->selection_type = TLBM_CALENDAR_SELECTION_TYPE_ONLY;
+		$group->calendar_selection->selected_calendar_ids = array( $post->ID );
+
+		echo CalendarOutput::GetContainerShell($group);
 	}
 
 	/**

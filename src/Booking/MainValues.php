@@ -131,9 +131,10 @@ class MainValues {
 	}
 
 	public function GetCalendarName($index = 0): string {
-		if(isset($this->calendars[$index])) {
+		if(isset($this->calendars[$index]) && $this->calendars[$index] instanceof Calendar) {
 			return $this->calendars[$index]->title;
 		}
+
 		return "";
 	}
 
