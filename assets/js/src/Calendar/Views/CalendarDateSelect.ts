@@ -1,4 +1,4 @@
-import {CalendarBase} from "./CalendarBase";
+import {CalendarBase} from "../CalendarBase";
 
 export class CalendarDateSelect extends CalendarBase {
 

@@ -18,6 +18,8 @@ use TLBM\Admin\Metaboxes\MBCapacityRulePeriods;
 use TLBM\Admin\Metaboxes\MBCapacityRulePriority;
 use TLBM\Admin\Metaboxes\MBFormEditor;
 use TLBM\Admin\Metaboxes\MBFormSideInfo;
+use TLBM\Admin\Metaboxes\MBGroupBookingOrder;
+use TLBM\Admin\Metaboxes\MBGroupCalendars;
 use TLBM\Admin\Metaboxes\MBRuleActions;
 use TLBM\Admin\Metaboxes\MBSave;
 use TLBookingMagic;
@@ -46,6 +48,9 @@ class Metaboxes {
 
         TLBookingMagic::MakeInstance(MBBookingInformations::class);
 	    TLBookingMagic::MakeInstance(MBBookingActions::class);
+
+	    TLBookingMagic::MakeInstance(MBGroupCalendars::class);
+	    TLBookingMagic::MakeInstance(MBGroupBookingOrder::class);
     }
 
     public function RemoveDefaultPublishBox() {
@@ -53,5 +58,6 @@ class Metaboxes {
 	    remove_meta_box( 'submitdiv', TLBM_PT_RULES, 'side' );
 	    remove_meta_box( 'submitdiv', TLBM_PT_FORMULAR, 'side' );
 	    remove_meta_box( 'submitdiv', TLBM_PT_BOOKING, 'side' );
+	    remove_meta_box( 'submitdiv', TLBM_PT_CALENDAR_GROUPS, 'side' );
     }
 }

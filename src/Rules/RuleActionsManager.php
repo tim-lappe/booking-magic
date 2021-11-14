@@ -22,6 +22,7 @@ class RuleActionsManager {
 		$rules = RulesManager::GetAllRulesForCalendarForDateTime($calendar->wp_post_id, $date_time);
 		$actions = array();
 		$workingactions = array();
+
 		foreach ($rules as $rule) {
 			$actions = array_merge($actions, $rule->action->actions_list);
 		}
@@ -31,6 +32,7 @@ class RuleActionsManager {
 				$workingactions[] = $action;
 			}
 		}
+
 		return $workingactions;
 	}
 }

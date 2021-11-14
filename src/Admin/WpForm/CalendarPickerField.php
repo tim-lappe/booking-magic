@@ -14,7 +14,7 @@ class CalendarPickerField extends FormFieldBase {
 
 
 
-	public function __construct( $name, $title, $value = null ) {
+	public function __construct( $name, $title, $value = null, $show_calendar_groups = true ) {
 	    if(!$value) {
             $value = new CalendarSelection();
         }

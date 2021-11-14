@@ -5,13 +5,14 @@ namespace TLBM\Output\Calendar\Printers;
 
 
 use TLBM\Model\Calendar;
+use TLBM\Model\CalendarGroup;
 
 class CalendarNoPrinter extends CalendarPrinterBase {
 
     /**
      * @inheritDoc
      */
-    public function CanPrintCalendar(Calendar $calendar): bool {
+    public function CanPrintGroup(CalendarGroup $group): bool {
         return false;
     }
 
@@ -21,9 +22,5 @@ class CalendarNoPrinter extends CalendarPrinterBase {
 
     public function ProcessData(array &$data) {
 
-    }
-
-    public function GetTsClass(Calendar $calendar): string {
-        return "";
     }
 }

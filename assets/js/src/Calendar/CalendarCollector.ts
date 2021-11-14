@@ -1,21 +1,22 @@
 import {CalendarBase} from "./CalendarBase";
-import * as CalendarsCollections from "./CalendarsCollection";
+import {CalendarDateSelect} from "./Views/CalendarDateSelect";
 
 export class CalendarCollector {
     public static Calendars: CalendarBase[] = [];
 
+    public static CalendarTypes: any = {
+        "dateselect_monthview": CalendarDateSelect
+    };
+
     public static initAllCalendars(): void {
         let calendars = document.querySelectorAll(".tlbm-calendar-container") as NodeListOf<HTMLElement>;
         calendars.forEach((calendarContainerElem) => {
-            let tsClass = calendarContainerElem.getAttribute("tsClass");
-            console.log("Init Calendar", calendarContainerElem, ", tsClass", tsClass);
-
-
-            // @ts-ignore
-            const newInstance = Object.create(CalendarsCollections[tsClass].prototype);
-            newInstance.constructor.apply(newInstance, new Array(calendarContainerElem));
-            newInstance.init();
-            this.Calendars.push(newInstance);
+            let view = calendarContainerElem.getAttribute("view");
+            if(view != null) {
+                let instance = new this.CalendarTypes[view](calendarContainerElem);
+                instance.init();
+                this.Calendars.push(instance);
+            }
         });
     }
 }

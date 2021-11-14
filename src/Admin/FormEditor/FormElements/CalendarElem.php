@@ -10,7 +10,10 @@ if( ! defined( 'ABSPATH' ) ) {
 
 use TLBM\Admin\FormEditor\FormItemSettingsElements\Select;
 use TLBM\Admin\FormEditor\FormItemSettingsElements\SettingsPrinting;
+use TLBM\Calendar\CalendarGroupManager;
 use TLBM\Calendar\CalendarManager;
+use TLBM\Model\CalendarGroup;
+use TLBM\Model\CalendarSelection;
 use TLBM\Output\Calendar\CalendarOutput;
 
 class CalendarElem extends FormInputElem {
@@ -24,7 +27,6 @@ class CalendarElem extends FormInputElem {
 
 		$calendars = CalendarManager::GetAllCalendars();
 		$calendar_kv = array();
-
 		foreach ($calendars as $calendar) {
 			$calendar = get_post( $calendar->wp_post_id );
 			if ( ! empty( $calendar->post_title ) ) {
@@ -34,8 +36,19 @@ class CalendarElem extends FormInputElem {
 			}
 		}
 
+		$groups_kv = array();
+		$calendar_groups = CalendarGroupManager::GetAllGroups();
+		foreach ($calendar_groups as $group) {
+			if ( ! empty( $group->title ) ) {
+				$groups_kv[ $group->wp_post_id ] = $group->title;
+			} else {
+				$groups_kv[ $group->wp_post_id ] = __( "No Name", TLBM_TEXT_DOMAIN ) . "ID: " . $group->wp_post_id . ")";
+			}
+		}
+
 		$calendar_select = array(
-			__("Single Calendar", TLBM_TEXT_DOMAIN) => $calendar_kv
+			__("Groups", TLBM_TEXT_DOMAIN) => $groups_kv,
+			__("Single Calendar", TLBM_TEXT_DOMAIN) => $calendar_kv,
 		);
 
 		$default_calendar = sizeof($calendar_kv) > 0 ? array_keys($calendar_kv)[0] : "";
@@ -70,8 +83,7 @@ class CalendarElem extends FormInputElem {
      */
 	public function GetFrontendOutput($data_obj, $insert_child = null): string {
 		if($data_obj->selected_calendar) {
-			$calendar = CalendarManager::GetCalendar( $data_obj->selected_calendar );
-			return CalendarOutput::GetCalendarContainerShell( $calendar->wp_post_id, $data_obj->weekdays_form, $data_obj->name );
+			return CalendarOutput::GetContainerShell($data_obj->selected_calendar, "dateselect_monthview", $data_obj->weekdays_form, $data_obj->name );
 		} else {
 			return "<div class='tlbm-no-calendar-alert'>" . __("No calendar or calendargroup selected", TLBM_TEXT_DOMAIN) . "</div>";
 		}

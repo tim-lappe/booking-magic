@@ -5,6 +5,7 @@ namespace TLBM\Output\Calendar\Printers;
 
 
 use TLBM\Model\Calendar;
+use TLBM\Model\CalendarGroup;
 use TLBM\Output\Calendar\Modules\ICalendarPrintModule;
 
 abstract class CalendarPrinterBase {
@@ -12,25 +13,18 @@ abstract class CalendarPrinterBase {
     /**
      * @var ICalendarPrintModule[] $modules ;
      */
-    private $modules;
+    private array $modules = array();
 
     public function __construct() {
 
     }
 
-    /**
-     * @param Calendar $calendar
-     *
-     * @return bool
-     */
-    public abstract function CanPrintCalendar(Calendar $calendar): bool;
-
-    /**
-     * @param Calendar $calendar
-     *
-     * @return string
-     */
-    public abstract function GetTsClass(Calendar $calendar): string;
+	/**
+	 * @param CalendarGroup $group
+	 *
+	 * @return bool
+	 */
+    public abstract function CanPrintGroup(CalendarGroup $group): bool;
 
     /**
      * @param array $data
@@ -62,7 +56,6 @@ abstract class CalendarPrinterBase {
      */
     public function GetOutput(array &$data, $process_data = true): string {
         $html = "";
-
         if($process_data) {
             $this->ProcessData($data);
         }

@@ -4,8 +4,11 @@
 namespace TLBM\Booking;
 
 
+use TLBM\Calendar\CalendarGroupManager;
 use TLBM\Calendar\CalendarManager;
+use TLBM\Calendar\CalendarSelectionHandler;
 use TLBM\Model\Calendar;
+use TLBM\Model\CalendarGroup;
 use TLBM\Model\CalendarSlot;
 use TLBM\Rules\Capacities;
 
@@ -46,6 +49,21 @@ class BookingCapacities {
 	}
 
 	/**
+	 * @param CalendarGroup $group
+	 * @param \DateTime $datetime
+	 *
+	 * @return int
+	 */
+	public static function GetFreeDaySeatsForGroup($group, $datetime): int {
+		$calendars = CalendarSelectionHandler::GetSelectedCalendarList($group->calendar_selection);
+		$capacity = 0;
+		foreach ($calendars as $calendar) {
+			$capacity += self::GetFreeDaySeats($calendar, $datetime);
+		}
+		return $capacity;
+	}
+
+	/**
 	 * @param CalendarSlot $calendar_slot
 	 *
 	 * @return int
@@ -54,8 +72,9 @@ class BookingCapacities {
 		try {
 			$datetime = new \DateTime();
 			$datetime->setTimestamp($calendar_slot->timestamp);
-			$freeseats = self::GetFreeDaySeats(CalendarManager::GetCalendar($calendar_slot->calendar_selection), $datetime);
+			$freeseats = self::GetFreeDaySeatsForGroup(CalendarGroup::FromCalendarOrGroupId($calendar_slot->calendar_selection), $datetime);
 			if($freeseats > 0) {
+
 				return $calendar_slot->calendar_selection;
 			}
 			return false;

@@ -28,6 +28,20 @@ class RegisterPostTypes {
 			10 => __('Calendar draft updated.', TLBM_TEXT_DOMAIN)
 		);
 
+		$messages[TLBM_PT_CALENDAR_GROUPS] = array(
+			0 => '',
+			1 => __('Group updated.', TLBM_TEXT_DOMAIN),
+			2 => __('Group updated.', TLBM_TEXT_DOMAIN),
+			3 => __('Group deleted.', TLBM_TEXT_DOMAIN),
+			4 => __('Group updated.', TLBM_TEXT_DOMAIN),
+			5 => '',
+			6 => __('Group published.', TLBM_TEXT_DOMAIN),
+			7 => __('Group saved.', TLBM_TEXT_DOMAIN),
+			8 => __('Group submitted.', TLBM_TEXT_DOMAIN),
+			9 => __('Group scheduled.', TLBM_TEXT_DOMAIN),
+			10 => __('Group draft updated.', TLBM_TEXT_DOMAIN)
+		);
+
 		$messages[TLBM_PT_BOOKING] = array(
 			0 => '',
 			1 => __('Booking updated.', TLBM_TEXT_DOMAIN),
@@ -76,8 +90,8 @@ class RegisterPostTypes {
 	public function register_post_types() {
 		register_post_type(TLBM_PT_CALENDAR, array(
 			"labels" => array(
-				"name" => _x("TL Booking", TLBM_PT_CALENDAR, TLBM_TEXT_DOMAIN),
-				"singular_name" => _x("Booking Calendar", TLBM_PT_CALENDAR, TLBM_TEXT_DOMAIN),
+				"name" => _x("Calendar", TLBM_PT_CALENDAR, TLBM_TEXT_DOMAIN),
+				"singular_name" => _x("Calendar", TLBM_PT_CALENDAR, TLBM_TEXT_DOMAIN),
 				"add_new" => _x("Add New", TLBM_PT_CALENDAR, TLBM_TEXT_DOMAIN),
 				"add_new_item" => _x("Add New Calendar", TLBM_PT_CALENDAR, TLBM_TEXT_DOMAIN),
 				"edit_item" => _x("Edit Calendar", TLBM_PT_CALENDAR, TLBM_TEXT_DOMAIN),
@@ -101,6 +115,39 @@ class RegisterPostTypes {
 			"hierachical" => false,
 			"show_in_rest" => false,
 			"rewrite" => array("slug" => "booking"),
+			"show_ui" => true,
+			"show_in_menu" => "admin.php?page=booking-magic-calendar",
+			"menu_icon" => "dashicons-calendar-alt",
+			"supports" => array("title")
+		));
+
+		register_post_type(TLBM_PT_CALENDAR_GROUPS, array(
+			"labels" => array(
+				"name" => _x("Calendar Groups", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"singular_name" => _x("Calendar Group", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"add_new" => _x("Add New", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"add_new_item" => _x("Add New Group", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"edit_item" => _x("Edit Group", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"new_item" => _x("New Group", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"view_item" => _x("View Group", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"view_items" => _x("View Groups", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"search_items" => _x("Search Groups", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"not_found" => _x("No Groups found", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"not_found_in_trash" => _x("No Grous found in trash", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"parent_item_colon" => _x("Parent Group", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"all_items" => _x("Groups", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"archives" => _x("Group Archives", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"attributes" => _x("Group Attributes", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"insert_into_item" => _x("Insert into Group", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"uploaded_to_this_item" => _x("Uploaded to this Group", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"item_updated" => _x("Group updated", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+				"item_published" => _x("Group updated", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+			),
+			"description" => _x("Calendar Group", TLBM_PT_CALENDAR_GROUPS, TLBM_TEXT_DOMAIN),
+			"public" => false,
+			"hierachical" => false,
+			"show_in_rest" => false,
+			"rewrite" => array("slug" => "calendargroup"),
 			"show_ui" => true,
 			"show_in_menu" => "admin.php?page=booking-magic-calendar",
 			"menu_icon" => "dashicons-calendar-alt",

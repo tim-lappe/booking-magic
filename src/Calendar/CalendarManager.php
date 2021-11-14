@@ -43,7 +43,7 @@ class CalendarManager {
 	 *
 	 * @return Calendar[]
 	 */
-	public static function GetAllCalendars($options = array(), $orderby = "priority", $order = "desc"): array {
+	public static function GetAllCalendars($options = array(), $orderby = "title", $order = "desc"): array {
         $posts = get_posts(array_merge(array(
             "post_type" => TLBM_PT_CALENDAR,
         ), $options));

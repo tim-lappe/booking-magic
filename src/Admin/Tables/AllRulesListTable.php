@@ -27,6 +27,11 @@ class AllRulesListTable extends TableBase {
 					) );
 				} else if ( $action == "delete_permanently" ) {
 					wp_delete_post( $id );
+				} else if ( $action == "restore" ) {
+					wp_update_post( array(
+						"ID"          => $id,
+						"post_status" => "publish"
+					));
 				}
 			}
 		}
@@ -53,19 +58,21 @@ class AllRulesListTable extends TableBase {
 		} else if($selection->selection_type == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
 			foreach($selection->selected_calendar_ids as $key => $id) {
 				$cal = CalendarManager::GetCalendar($id);
+				$link = get_edit_post_link( $id );
 				if($key > 0) {
 					echo ", ";
 				}
-				echo $cal->title;
+				echo "<a href='" . $link . "'>" . $cal->title . "</a>";
 			}
 		} else if($selection->selection_type == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
 			echo __("All but ", TLBM_TEXT_DOMAIN);
 			foreach($selection->selected_calendar_ids as $key => $id) {
 				$cal = CalendarManager::GetCalendar($id);
+				$link = get_edit_post_link( $id );
 				if($key > 0) {
 					echo ", ";
 				}
-				echo "<s>" . $cal->title . "</s>";
+				echo "<a href='" . $link . "'><s>" . $cal->title . "</s></a>";
 			}
 		}
 	}
@@ -108,7 +115,8 @@ class AllRulesListTable extends TableBase {
 	protected function GetBulkActions(): array {
 		if(isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
 			return array(
-				'delete_permanently' => __( 'Delete permanently', TLBM_TEXT_DOMAIN )
+				'delete_permanently' => __( 'Delete permanently', TLBM_TEXT_DOMAIN ),
+				'restore' => __( 'Restore', TLBM_TEXT_DOMAIN )
 			);
 		} else {
 			return array(

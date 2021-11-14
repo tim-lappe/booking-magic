@@ -379,3 +379,12 @@
     }
   }
 }
+
+.wrap h1.wp-heading-inline-secondary, .wrap h2.wp-heading-inline-secondary,  {
+  display: inline-block;
+  margin-right: 5px;
+  font-size: 23px;
+  font-weight: 400;
+  padding: 9px 0 4px 0;
+  line-height: 1.3;
+}
