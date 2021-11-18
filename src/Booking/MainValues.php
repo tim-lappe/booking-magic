@@ -60,6 +60,17 @@ class MainValues {
 		return false;
 	}
 
+	public function GetBookingTitle(): string {
+		$title = "";
+		if($this->HasName()) {
+			$title = $this->GetFullName();
+		}
+		if($this->HasCalendar()) {
+			$title .= " " . $this->GetCalendarTimeFormat();
+		}
+		return trim($title);
+	}
+
 	public function HasContactEmail(): bool {
 		return $this->HasOne("contact_email");
 	}

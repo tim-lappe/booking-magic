@@ -17,6 +17,7 @@ services:
       WORDPRESS_DB_PASSWORD: password
       WORDPRESS_DB_NAME: wordpress_db
       WORDPRESS_DEBUG: 1
+      SCRIPT_DEBUG: 1
       WP_TESTS_DIR: /var/www/html
 
     depends_on:

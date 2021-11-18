@@ -105,4 +105,11 @@ class CalendarListTable extends TableBase {
 		$p = get_post($item->wp_post_id);
 		echo DateTimeTools::FormatWithTime(strtotime($p->post_date));
 	}
+
+	/**
+	 * @return int
+	 */
+	protected function GetTotalItemsCount(): int {
+		return CalendarManager::GetAllCalendarsCount();
+	}
 }

@@ -100,6 +100,19 @@ class RulesManager {
         return $rules;
     }
 
+	/**
+	 * @param array $get_posts_options
+	 *
+	 * @return int
+	 */
+    public static function GetAllRulesCount($get_posts_options = array()): int {
+	    $posts = get_posts(array(
+		                       "post_type" => TLBM_PT_RULES,
+		                       "numberposts" => -1
+	                       ) + $get_posts_options);
+	    return sizeof($posts);
+    }
+
     /**
      * Get all Rules that are affecting to the specific calendar_id
      *

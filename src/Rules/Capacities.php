@@ -42,7 +42,7 @@ class Capacities {
 		foreach ($calendars as $calendar) {
 			$capacity += self::GetDayCapacity($calendar, $date_time);
 		}
-		#
+
 		return $capacity;
 	}
 }

@@ -133,4 +133,11 @@ class AllRulesListTable extends TableBase {
 	protected function GetItemId( $item ): int {
 		return $item->wp_post_id;
 	}
+
+	/**
+	 * @return int
+	 */
+	protected function GetTotalItemsCount(): int {
+		return RulesManager::GetAllRulesCount();
+	}
 }

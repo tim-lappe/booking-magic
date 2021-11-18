@@ -43,10 +43,11 @@ class CalendarManager {
 	 *
 	 * @return Calendar[]
 	 */
-	public static function GetAllCalendars($options = array(), $orderby = "title", $order = "desc"): array {
+	public static function GetAllCalendars($get_posts_options = array(), $orderby = "title", $order = "desc"): array {
         $posts = get_posts(array_merge(array(
             "post_type" => TLBM_PT_CALENDAR,
-        ), $options));
+	        "numberposts" => -1
+        ), $get_posts_options));
 
         $calendars = array();
         foreach ($posts as $post) {
@@ -64,6 +65,15 @@ class CalendarManager {
 		});
 
         return $calendars;
+	}
+
+	public static function GetAllCalendarsCount($get_posts_options = array()): int {
+		$posts = get_posts(array_merge(array(
+			"post_type" => TLBM_PT_CALENDAR,
+			"numberposts" => -1
+		), $get_posts_options));
+
+		return sizeof($posts);
 	}
 
 	/**

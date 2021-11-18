@@ -61,4 +61,13 @@ class FormManager {
 
 		return $forms;
 	}
+
+	public static function GetAllFormsCount($get_posts_options = array()): int {
+		$wp_posts = get_posts(array(
+			                      "post_type" => TLBM_PT_FORMULAR,
+			                      "numberposts" => -1
+		                      ) + $get_posts_options);
+
+		return sizeof($wp_posts);
+	}
 }

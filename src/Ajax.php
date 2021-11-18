@@ -17,6 +17,9 @@ class Ajax {
     }
 
     public function EnqueueAjaxEndpoints() {
-        TLBookingMagic::MakeInstance(AjaxLoadCalendar::class);
+	    error_reporting(E_ERROR);
+	    ini_set("display_errors", 1);
+
+	    TLBookingMagic::MakeInstance(AjaxLoadCalendar::class);
     }
 }

@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev-startup": "composer update; npm run env:start; npm run test; npm run watch",
-    "env:start": "docker-compose up -d wordpress wordpress_phpmyadmin",
+    "env:start": "docker-compose up -d wordpress wordpress_phpmyadmin; npm run watch",
     "env:stop": "docker-compose stop",
     "watch": "cd assets/js; webpack --watch",
     "test": "docker-compose run -w /var/www/html/wp-content/plugins/booking-magic wordpress_it php ./vendor/bin/phpunit"

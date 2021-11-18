@@ -4,6 +4,7 @@
 namespace TLBM\Output\Calendar\Modules;
 
 
+use Cassandra\Date;
 use DateInterval;
 use DatePeriod;
 use DateTime;
@@ -22,7 +23,7 @@ class ModuleBodyDateSelect implements ICalendarPrintModule {
      * @inheritDoc
      */
     public function GetOutput($data): string {
-        $group = CalendarGroup::FromCalendarOrGroupId($data['id']);
+        $group = CalendarGroup::FromCalendarOrGroupId((int)$data['id']);
         $date = new DateTime();
         $date->setTimestamp($data['focused_tstamp']);
 
@@ -90,12 +91,12 @@ class ModuleBodyDateSelect implements ICalendarPrintModule {
 
 	/**
 	 * @param $data
-	 * @param CalendarGroup $group
-	 * @param DateTime $date
+	 * @param CalendarGroup|null $group
+	 * @param DateTime|null $date
 	 *
 	 * @return string
 	 */
-    public function GetCellOutput( $data, $group, $date ): string {
+    public function GetCellOutput( $data, ?CalendarGroup $group, ?DateTime $date ): string {
         $html = "";
         $classes = array();
 
