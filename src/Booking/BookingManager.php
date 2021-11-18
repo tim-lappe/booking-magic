@@ -62,6 +62,19 @@ class BookingManager {
     	return $bookings;
     }
 
+	/**
+	 * @param array $get_posts_options
+	 *
+	 * @return int
+	 */
+    public static function GetAllBookingsCount($get_posts_options = array()): int {
+	    $wp_posts = get_posts(array(
+		                          "post_type" => TLBM_PT_BOOKING,
+		                          "numberposts" => -1
+	                          ) + $get_posts_options);
+	    return sizeof($wp_posts);
+    }
+
     /**
      * @param int $wp_post_id
      *

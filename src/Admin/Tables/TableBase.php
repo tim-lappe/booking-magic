@@ -7,12 +7,14 @@ abstract class TableBase extends \WP_List_Table {
 
 	public $items_per_page = 10;
 
-	public function __construct($title_plural, $title_singular) {
+	public function __construct($title_plural, $title_singular, $items_per_page = 10) {
 		parent::__construct(array(
 			"plural" => $title_plural,
 			"singular" => $title_singular,
 			"screen" => null
 		));
+
+		$this->items_per_page = $items_per_page;
 	}
 
 	public function process_bulk_action() {
@@ -36,11 +38,12 @@ abstract class TableBase extends \WP_List_Table {
 
 		$this->_column_headers = array($this->get_columns(), array(), $this->get_sortable_columns());
 		$this->items = $this->GetItems($orderby, $order);
+		$total = $this->GetTotalItemsCount();
 
 		$this->set_pagination_args(array(
-			'total_items' => sizeof($this->items),
+			'total_items' => $total,
 			'per_page' => $this->items_per_page,
-			'total_pages' => ceil(sizeof($this->items)/10)
+			'total_pages' => ceil($total/$this->items_per_page)
 		));
 	}
 
@@ -89,6 +92,8 @@ abstract class TableBase extends \WP_List_Table {
 	protected abstract function ProcessBuldActions();
 
 	protected abstract function GetItems($orderby, $order) : array;
+
+	protected abstract function GetTotalItemsCount(): int;
 
 	protected abstract function GetViews(): array;
 

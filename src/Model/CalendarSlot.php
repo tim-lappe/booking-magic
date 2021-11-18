@@ -11,30 +11,30 @@ class CalendarSlot {
 	/**
 	 * @var int
 	 */
-	public $timestamp;
-
-	/**
-	 * @var
-	 */
-	public $calendar_selection;
+	public int $timestamp = 0;
 
 	/**
 	 * @var int
 	 */
-	public $booked_calendar_id = 0;
-
-	/**
-	 * @var string
-	 */
-	public $name = "";
-
-	/**
-	 * @var string
-	 */
-	public $title = "";
+	public int $calendar_selection_id = 0;
 
 	/**
 	 * @var int
 	 */
-	public $form_id = 0;
+	public int $booked_calendar_id = 0;
+
+	/**
+	 * @var string
+	 */
+	public string $name = "";
+
+	/**
+	 * @var string
+	 */
+	public string $title = "";
+
+	/**
+	 * @var int
+	 */
+	public int $form_id = 0;
 }

@@ -39,10 +39,19 @@ class BookingListTable extends TableBase {
 		}
 	}
 
+	protected function GetTotalItemsCount(): int {
+        return BookingManager::GetAllBookingsCount();
+	}
+
 	protected function GetItems( $orderby, $order ): array {
 		$pt_args = array();
 		if(isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
 			$pt_args = array("post_status" => "trash");
+		}
+
+		$pt_args['posts_per_page'] = 10;
+		if(isset($_REQUEST['paged'])) {
+		    $pt_args['paged'] = $_REQUEST['paged'];
 		}
 
 		$filteredbookings = array();
@@ -80,7 +89,7 @@ class BookingListTable extends TableBase {
 	protected function GetColumns(): array {
 		return array(
 			"cb"    => "<input type='checkbox' />",
-			"title" => __('Title', TLBM_TEXT_DOMAIN),
+			"id" => __('ID', TLBM_TEXT_DOMAIN),
 			"calendar" => __('Calendar', TLBM_TEXT_DOMAIN),
 			"state" => __('State', TLBM_TEXT_DOMAIN),
 			"datetime" => __('Date', TLBM_TEXT_DOMAIN)
@@ -89,7 +98,7 @@ class BookingListTable extends TableBase {
 
 	protected function GetSortableColumns(): array {
 		return array(
-			'title' => array('title', true),
+			'id' => array('id', true),
 			'datetime' => array('datetime', true)
 		);
 	}
@@ -137,9 +146,9 @@ class BookingListTable extends TableBase {
 	/**
 	 * @param Booking|object $item
 	 */
-	public function column_title($item) {
+	public function column_id($item) {
 		$link = get_edit_post_link($item->wp_post_id);
-		echo "<strong><a href='".$link."'># ".$item->wp_post_id."</a></strong>";
+		echo "<strong><a href ='".$link."'># ".$item->wp_post_id."</a></strong>";
 	}
 
 	/**

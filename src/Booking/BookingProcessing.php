@@ -63,12 +63,12 @@ class BookingProcessing {
 	    $form_datapacks = $this->ParseFormDataToFormElements($this->form->GetFormData(), $this->input_vars);
 		foreach ($form_datapacks as $form_datapack) {
 			if($form_datapack->form_element instanceof CalendarElem) {
-				$selected_calendar = $form_datapack->GetSettingValue('selected_calendar');
+				$selected_calendar_or_group_id = $form_datapack->GetSettingValue('selected_calendar');
 				$inputdata = $form_datapack->GetInputValue($form_datapack->GetSettingValue("name"));
 				if(!empty($inputdata)) {
 					$calendar_slot                     = new CalendarSlot();
-					$calendar_slot->calendar_selection = $selected_calendar;
-					$calendar_slot->timestamp          = $inputdata;
+					$calendar_slot->calendar_selection_id = intval($selected_calendar_or_group_id);
+					$calendar_slot->timestamp          = intval($inputdata);
 					$calendar_slot->name               = $form_datapack->GetSettingValue("name");
 					$calendar_slot->form_id            = $this->form->wp_post_id;
 					$calendar_slot->title              = $form_datapack->GetSettingValue("title");

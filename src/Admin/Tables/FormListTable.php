@@ -99,4 +99,12 @@ class FormListTable extends TableBase {
 			echo "<strong><a href='" . $link . "'>" . $item->wp_post_id . "</a></strong>";
 		}
 	}
+
+	/**
+	 * @return int
+	 */
+
+	protected function GetTotalItemsCount(): int {
+		return FormManager::GetAllFormsCount();
+	}
 }

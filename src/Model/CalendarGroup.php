@@ -16,7 +16,7 @@ class CalendarGroup {
 
 	public ?CalendarSelection $calendar_selection = null;
 
-	public static function FromCalendarOrGroupId($id): CalendarGroup {
+	public static function FromCalendarOrGroupId(int $id): ?CalendarGroup {
 		$group = CalendarGroupManager::GetCalendarGroup($id);
 		if(!$group) {
 			$group = new CalendarGroup();
@@ -24,7 +24,6 @@ class CalendarGroup {
 			$group->calendar_selection->selection_type = TLBM_CALENDAR_SELECTION_TYPE_ONLY;
 			$group->calendar_selection->selected_calendar_ids = array( $id );
 		}
-
 		return $group;
 	}
 }

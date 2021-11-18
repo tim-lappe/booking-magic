@@ -39,17 +39,7 @@ class DoBookingRequest extends RequestBase {
                 if(sizeof($not_filled_dps) == 0) {
                     $booking = $booking_processing->GetProcessedBooking();
                     $mainvals = new MainValues($booking);
-                    $title = "";
-
-                    if($mainvals->HasName()) {
-						$title = $mainvals->GetFullName();
-                    }
-                    if($mainvals->HasCalendar()) {
-                    	$title .= " " . $mainvals->GetCalendarTimeFormat();
-                    }
-
-                    $title = trim($title);
-                    $booking->title = $title;
+                    $booking->title = $mainvals->GetBookingTitle();
                     BookingManager::SetBooking($booking);
 
                     if($booking->booking_values['contact_email']) {
@@ -57,7 +47,6 @@ class DoBookingRequest extends RequestBase {
                     	foreach ($booking->booking_values as $value) {
                     		$vars[$value->key] = $value->value;
 	                    }
-
 	                    MailSender::SendTemplate($booking->booking_values['contact_email']->value, "email_booking_confirmation", $vars);
                     }
 
