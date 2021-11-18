@@ -4,6 +4,8 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 
+use TLBM\Admin\Pages\SinglePages\Dashboard\Dashboard;
+
 class BookingMagicRoot extends PageBase {
 
 	public function __construct( ) {
@@ -17,6 +19,10 @@ class BookingMagicRoot extends PageBase {
 		<div class="wrap">
 			<h1 class="wp-heading-inline"><?php _e("Dashboard", TLBM_TEXT_DOMAIN) ?></h1>
 			<hr class="wp-header-end">
+            <?php
+            $dashboard = new Dashboard();
+            $dashboard->Print();
+            ?>
 		</div>
 		<?php
 	}

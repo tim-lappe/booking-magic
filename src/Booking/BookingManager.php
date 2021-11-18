@@ -39,10 +39,10 @@ class BookingManager {
 	 * @return Booking[]
 	 */
     public static function GetAllBookings($get_posts_options = array(), $orderby = "priority", $order = "desc"): array {
-    	$wp_posts = get_posts(array(
+    	$wp_posts = get_posts(wp_parse_args($get_posts_options, array(
     		"post_type" => TLBM_PT_BOOKING,
 		    "numberposts" => -1
-	    ) + $get_posts_options);
+	    )));
 
     	$bookings = array();
     	foreach ($wp_posts as $post) {

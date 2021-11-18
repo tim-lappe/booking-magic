@@ -77,7 +77,7 @@ class BookingCapacities {
 		$cal = null;
 		foreach ($calendars as $calendar) {
 			$seats = self::GetFreeDaySeats($calendar, $datetime);
-			if($min > $seats) {
+			if($min > $seats && $seats > 0) {
 				$min = $seats;
 				$cal = $calendar;
 			}

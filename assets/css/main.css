@@ -411,6 +411,25 @@
   line-height: 1.3;
 }
 
+.tlbm-dashboard {
+  display: flex;
+  width: 100%;
+  margin-top: 2rem;
+}
+.tlbm-dashboard .tlbm-dashboard-tile {
+  background-color: white;
+  box-shadow: 0 0 5px 0 #cdcdcd;
+  padding: 20px;
+  flex-grow: 1;
+  flex-wrap: wrap;
+}
+.tlbm-dashboard .tlbm-dashboard-tile .tlbm-dashboard-tile-heading {
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: inline-block;
+  margin-bottom: 2rem;
+}
+
 .tlbm-form-editor .tlbm-form-container {
   padding: 0 10px 10px 10px;
   background-color: #ffffff;

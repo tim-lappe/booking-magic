@@ -13,12 +13,15 @@ use TLBM\Utilities\Colors;
 use TLBM\Utilities\DateTimeTools;
 
 class BookingListTable extends TableBase {
+
+    public bool $slim = false;
+
 	public function __construct() {
 		parent::__construct(__("Bookings", TLBM_TEXT_DOMAIN), __("Booking", TLBM_TEXT_DOMAIN));
 	}
 
 	protected function ProcessBuldActions() {
-		if(isset($_REQUEST['wp_post_ids'])) {
+		if(isset($_REQUEST['wp_post_ids']) && !$this->slim) {
 			$ids = $_REQUEST['wp_post_ids'];
 			$action = $this->current_action();
 			foreach ( $ids as $id ) {
@@ -40,7 +43,14 @@ class BookingListTable extends TableBase {
 	}
 
 	protected function GetTotalItemsCount(): int {
-        return BookingManager::GetAllBookingsCount();
+	    if(!$this->slim) {
+		    return BookingManager::GetAllBookingsCount();
+	    }
+
+	    return BookingManager::GetAllBookingsCount(array(
+            "posts_per_page" => 5,
+            "paged" => false
+        ));
 	}
 
 	protected function GetItems( $orderby, $order ): array {
@@ -53,6 +63,14 @@ class BookingListTable extends TableBase {
 		if(isset($_REQUEST['paged'])) {
 		    $pt_args['paged'] = $_REQUEST['paged'];
 		}
+
+		if($this->slim) {
+		    $pt_args['numberposts'] = 5;
+			$pt_args['posts_per_page'] = 5;
+			$pt_args['paged'] = false;
+			$orderby = "datetime";
+			$order = "DESC";
+        }
 
 		$filteredbookings = array();
 		$bookings = BookingManager::GetAllBookings($pt_args, $orderby, $order);
@@ -79,41 +97,62 @@ class BookingListTable extends TableBase {
 	}
 
 	protected function GetViews(): array {
-		return array(
-			"all" => __("All", TLBM_TEXT_DOMAIN),
-			"new" => __("New", TLBM_TEXT_DOMAIN),
-			"trashed" => __("Trash", TLBM_TEXT_DOMAIN)
-		);
+	    if(!$this->slim) {
+		    return array(
+			    "all"     => __( "All", TLBM_TEXT_DOMAIN ),
+			    "new"     => __( "New", TLBM_TEXT_DOMAIN ),
+			    "trashed" => __( "Trash", TLBM_TEXT_DOMAIN )
+		    );
+	    }
+
+	    return array();
 	}
 
 	protected function GetColumns(): array {
+		if(!$this->slim) {
+			return array(
+				"cb"       => "<input type='checkbox' />",
+				"id"       => __( 'ID', TLBM_TEXT_DOMAIN ),
+				"calendar" => __( 'Calendar', TLBM_TEXT_DOMAIN ),
+				"state"    => __( 'State', TLBM_TEXT_DOMAIN ),
+				"datetime" => __( 'Date', TLBM_TEXT_DOMAIN )
+			);
+		}
+
 		return array(
-			"cb"    => "<input type='checkbox' />",
-			"id" => __('ID', TLBM_TEXT_DOMAIN),
-			"calendar" => __('Calendar', TLBM_TEXT_DOMAIN),
-			"state" => __('State', TLBM_TEXT_DOMAIN),
-			"datetime" => __('Date', TLBM_TEXT_DOMAIN)
-		);
+			"id"       => __( 'ID', TLBM_TEXT_DOMAIN ),
+			"calendar" => __( 'Calendar', TLBM_TEXT_DOMAIN ),
+			"state"    => __( 'State', TLBM_TEXT_DOMAIN ),
+			"datetime" => __( 'Date', TLBM_TEXT_DOMAIN )
+        );
 	}
 
 	protected function GetSortableColumns(): array {
-		return array(
-			'id' => array('id', true),
-			'datetime' => array('datetime', true)
-		);
+		if(!$this->slim) {
+			return array(
+				'id'       => array( 'id', true ),
+				'datetime' => array( 'datetime', true )
+			);
+		}
+
+		return array();
 	}
 
 	protected function GetBulkActions(): array {
-		if(isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
-			return array(
-				'delete_permanently' => __( 'Delete permanently', TLBM_TEXT_DOMAIN ),
-				'restore' => __( 'Restore', TLBM_TEXT_DOMAIN )
-			);
-		} else {
-			return array(
-				'delete' => __( 'Move to trash', TLBM_TEXT_DOMAIN )
-			);
+		if(!$this->slim) {
+			if ( isset( $_REQUEST['filter'] ) && $_REQUEST['filter'] == "trashed" ) {
+				return array(
+					'delete_permanently' => __( 'Delete permanently', TLBM_TEXT_DOMAIN ),
+					'restore'            => __( 'Restore', TLBM_TEXT_DOMAIN )
+				);
+			} else {
+				return array(
+					'delete' => __( 'Move to trash', TLBM_TEXT_DOMAIN )
+				);
+			}
 		}
+
+		return array();
 	}
 
 	/**
@@ -126,7 +165,7 @@ class BookingListTable extends TableBase {
 	}
 
 	function extra_tablenav( $which ) {
-		if ( $which == "top" ){
+		if ( $which == "top" && !$this->slim ){
 			$calendars = CalendarManager::GetAllCalendars();
 			?>
 			<div class="alignleft actions bulkactions">
@@ -142,6 +181,11 @@ class BookingListTable extends TableBase {
 		}
 	}
 
+    function display_tablenav($which) {
+	    if(!$this->slim){
+            parent::display_tablenav($which);
+	    }
+    }
 
 	/**
 	 * @param Booking|object $item
