@@ -7,7 +7,6 @@
 }
 
 .tlbm-calendar-container {
-  max-width: 1000px;
   margin: auto auto 20px auto;
   transition-property: opacity;
   transition-delay: 0.5s;
@@ -412,7 +411,6 @@
 }
 
 .tlbm-dashboard {
-  display: flex;
   width: 100%;
   margin-top: 2rem;
 }
@@ -422,12 +420,50 @@
   padding: 20px;
   flex-grow: 1;
   flex-wrap: wrap;
+  position: relative;
+}
+.tlbm-dashboard .tlbm-dashboard-tile .tlbm-text-big-light {
+  position: absolute;
+  display: block;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  width: 90%;
+  text-align: center;
+  line-height: 3rem;
 }
 .tlbm-dashboard .tlbm-dashboard-tile .tlbm-dashboard-tile-heading {
   font-size: 1.2rem;
   font-weight: bold;
   display: inline-block;
   margin-bottom: 2rem;
+}
+.tlbm-dashboard .tlbm-dashboard-tile .tlbm-dashboard-tile-best-selling-list li {
+  margin-bottom: 1.5rem;
+}
+.tlbm-dashboard .tlbm-dashboard-tile .tlbm-dashboard-tile-best-selling-list a {
+  font-size: 1.4rem;
+  margin-bottom: 0.3rem;
+  text-decoration: none;
+}
+.tlbm-dashboard .tlbm-dashboard-tile-row {
+  display: flex;
+  justify-content: center;
+}
+.tlbm-dashboard .tlbm-dashboard-tile-row .tlbm-dashboard-tile {
+  flex-grow: 1;
+  flex-basis: 0;
+  margin-top: 20px;
+  margin-right: 20px;
+}
+.tlbm-dashboard .tlbm-dashboard-tile-row .tlbm-dashboard-tile:first-child {
+  flex-grow: 2;
+}
+
+.tlbm-text-big-light {
+  font-size: 2rem;
+  font-weight: bolder;
+  color: rgba(0, 0, 0, 0.3);
 }
 
 .tlbm-form-editor .tlbm-form-container {
