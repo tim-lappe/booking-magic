@@ -390,7 +390,6 @@
 }
 
 .tlbm-dashboard {
-  display: flex;
   width: 100%;
   margin-top: 2rem;
 
@@ -400,6 +399,18 @@
     padding: 20px;
     flex-grow: 1;
     flex-wrap: wrap;
+    position: relative;
+
+    .tlbm-text-big-light {
+      position: absolute;
+      display: block;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      width: 90%;
+      text-align: center;
+      line-height: 3rem;
+    }
 
     .tlbm-dashboard-tile-heading {
       font-size: 1.2rem;
@@ -407,5 +418,39 @@
       display: inline-block;
       margin-bottom: 2rem;
     }
+
+    .tlbm-dashboard-tile-best-selling-list {
+
+      li {
+        margin-bottom: 1.5rem;
+      }
+      a {
+        font-size: 1.4rem;
+        margin-bottom: 0.3rem;
+        text-decoration: none;
+      }
+    }
   }
+
+  .tlbm-dashboard-tile-row {
+    display: flex;
+    justify-content: center;
+
+    .tlbm-dashboard-tile {
+      flex-grow: 1;
+      flex-basis: 0;
+      margin-top: 20px;
+      margin-right: 20px;
+
+      &:first-child {
+        flex-grow: 2;
+      }
+    }
+  }
+}
+
+.tlbm-text-big-light {
+  font-size: 2rem;
+  font-weight: bolder;
+  color: rgba(0, 0, 0, 0.3);
 }

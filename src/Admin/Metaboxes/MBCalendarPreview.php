@@ -24,7 +24,7 @@ class MBCalendarPreview extends MetaBoxBase {
 		$group->calendar_selection->selection_type = TLBM_CALENDAR_SELECTION_TYPE_ONLY;
 		$group->calendar_selection->selected_calendar_ids = array( $post->ID );
 
-		echo CalendarOutput::GetContainerShell($group);
+		echo CalendarOutput::GetContainerShell($post->ID);
 	}
 
 	/**

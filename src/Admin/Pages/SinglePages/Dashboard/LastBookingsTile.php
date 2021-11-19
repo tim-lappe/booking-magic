@@ -10,7 +10,6 @@ use TLBM\Admin\Tables\BookingListTable;class LastBookingsTile extends DashboardT
 		parent::__construct( __("Last Bookings", TLBM_TEXT_DOMAIN) );
 	}
 
-
 	public function PrintBody(): void {
 		$bookings = new BookingListTable();
 		$bookings->slim = true;
