@@ -19,6 +19,7 @@ define("TLBM_DIR", __DIR__ );
 define("TLBM_PLUGIN_FILE", __FILE__ );
 define("TLBM_INCLUDES_DIR", TLBM_DIR . "/includes/");
 define("TLBM_MAIL_TEMPLATES", TLBM_DIR . "/templats/email/");
+define("TLBM_TABLE_DEFINITIONS_FILE", TLBM_DIR . "/tables-def.sql");
 
 define("TLBM_PT_CALENDAR", "tlbm_calendar");
 define("TLBM_PT_CALENDAR_GROUPS", "tlbm_calendar_groups");

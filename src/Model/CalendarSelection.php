@@ -19,6 +19,4 @@ class CalendarSelection {
     public array $selected_calendar_ids = array();
 
     public string $selection_type = "all";
-
-
 }
