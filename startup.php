@@ -6,7 +6,9 @@ use TLBM\AdminPages;
 use TLBM\Ajax;
 use TLBM\EnqueueAssets;
 use TLBM\Metaboxes;
+use TLBM\ORM;
 use TLBM\Output\Calendar\CalendarOutput;
+use TLBM\PluginActivation;
 use TLBM\RegisterPostTypes;
 use TLBM\RegisterShortcodes;
 use TLBM\Request;
@@ -15,6 +17,10 @@ use TLBM\Settings;
 if( ! defined( 'ABSPATH' ) ) {
     return;
 }
+
+TLBookingMagic::MakeInstance( PluginActivation::class);
+
+$GLOBALS['TLBM_ORM'] = TLBookingMagic::MakeInstance( ORM::class);
 
 /**
  * Make Instances of Important Classes
@@ -26,6 +32,7 @@ TLBookingMagic::MakeInstance(Metaboxes::class);
 TLBookingMagic::MakeInstance(Ajax::class);
 
 $GLOBALS['TLBM_REQUEST'] = TLBookingMagic::MakeInstance(Request::class);
+
 
 TLBookingMagic::MakeInstance(Settings::class);
 TLBookingMagic::MakeInstance(AdminPages::class);

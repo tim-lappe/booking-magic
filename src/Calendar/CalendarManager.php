@@ -26,7 +26,6 @@ class CalendarManager {
 				$bc = new Calendar();
 				$bc->wp_post_id = $post_id;
 				$bc->title = $calendar_post->post_title;
-				$bc->calendar_setup = self::GetCalendarSetup($post_id);
 
 				return $bc;
 			}
@@ -74,37 +73,5 @@ class CalendarManager {
 		), $get_posts_options));
 
 		return sizeof($posts);
-	}
-
-	/**
-	 * Returns the Calendar Setup from the given Post-Id
-	 *
-	 * @param int $id The Post-Id of the Calendar
-	 *
-	 * @return CalendarSetup|false
-	 */
-	public static function GetCalendarSetup($id) {
-		$calendar_setup = get_post_meta($id, TLBM_CALENDAR_META_CALENDAR_SETUP, true);
-		if( $calendar_setup instanceof CalendarSetup) {
-			return $calendar_setup;
-		}
-
-		return new CalendarSetup();
-	}
-
-	/**
-	 * Saves the Calendar Setup to the Calendar Post
-	 *
-	 * @param $id
-	 * @param CalendarSetup $calendar_setup
-	 *
-	 * @return bool
-	 */
-	public static function SaveCalendarSetup($id, $calendar_setup): bool {
-		if($calendar_setup instanceof CalendarSetup) {
-			update_post_meta($id, TLBM_CALENDAR_META_CALENDAR_SETUP, $calendar_setup);
-			return true;
-		}
-		return false;
 	}
 }
