@@ -10,7 +10,7 @@ if( ! defined( 'ABSPATH' ) ) {
 
 class Select extends SettingsType {
 
-	public $key_values;
+	public array $key_values = array();
 
 	public function __construct($name, $title, $key_values, $settings_printing = false, $default_value = "") {
 		$this->key_values = $key_values;

@@ -14,6 +14,6 @@ class BookingStateManager {
 	 * @return WP_Term[]
 	 */
 	public static function GetAllStates($get_tax_options = array()): array {
-
+        return array();
 	}
 }

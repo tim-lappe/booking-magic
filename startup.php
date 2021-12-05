@@ -18,6 +18,10 @@ if( ! defined( 'ABSPATH' ) ) {
     return;
 }
 
+if(WP_DEBUG) {
+    ini_set ('error_reporting', E_ALL);
+}
+
 TLBookingMagic::MakeInstance( PluginActivation::class);
 
 $GLOBALS['TLBM_ORM'] = TLBookingMagic::MakeInstance( ORM::class);

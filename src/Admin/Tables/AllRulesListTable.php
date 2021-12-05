@@ -11,7 +11,7 @@ use TLBM\Rules\RulesManager;
 class AllRulesListTable extends TableBase {
 
 	public function __construct() {
-		parent::__construct(__("Rules", TLBM_TEXT_DOMAIN), __("Rule", TLBM_TEXT_DOMAIN));
+		parent::__construct(__("Rules", TLBM_TEXT_DOMAIN), __("Rule", TLBM_TEXT_DOMAIN), 10, __("You haven't created any rules yet", TLBM_TEXT_DOMAIN));
 	}
 
 	protected function ProcessBuldActions() {
@@ -62,7 +62,7 @@ class AllRulesListTable extends TableBase {
 				if($key > 0) {
 					echo ", ";
 				}
-				echo "<a href='" . $link . "'>" . $cal->title . "</a>";
+				echo "<a href='" . $link . "'>" . $cal->GetTitle() . "</a>";
 			}
 		} else if($selection->selection_type == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
 			echo __("All but ", TLBM_TEXT_DOMAIN);
@@ -72,7 +72,7 @@ class AllRulesListTable extends TableBase {
 				if($key > 0) {
 					echo ", ";
 				}
-				echo "<a href='" . $link . "'><s>" . $cal->title . "</s></a>";
+				echo "<a href='" . $link . "'><s>" . $cal->GetTitle() . "</s></a>";
 			}
 		}
 	}

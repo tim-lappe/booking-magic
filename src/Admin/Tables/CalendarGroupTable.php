@@ -6,14 +6,13 @@ namespace TLBM\Admin\Tables;
 
 use TLBM\Calendar\CalendarGroupManager;
 use TLBM\Calendar\CalendarManager;
-use TLBM\Model\Calendar;
 use TLBM\Model\CalendarGroup;
 use TLBM\Utilities\DateTimeTools;
 
 class CalendarGroupTable extends TableBase {
 
 	public function __construct() {
-		parent::__construct(__("Groups", TLBM_TEXT_DOMAIN), __("Group", TLBM_TEXT_DOMAIN));
+		parent::__construct(__("Groups", TLBM_TEXT_DOMAIN), __("Group", TLBM_TEXT_DOMAIN), 10,  __("You haven't created any groups yet", TLBM_TEXT_DOMAIN));
 	}
 
 
@@ -114,7 +113,7 @@ class CalendarGroupTable extends TableBase {
 				if($key > 0) {
 					echo ", ";
 				}
-				echo "<a href='" . $link . "'>" . $cal->title . "</a>";
+				echo "<a href='" . $link . "'>" . $cal->GetTitle() . "</a>";
 			}
 		} else if($selection->selection_type == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
 			echo __("All but ", TLBM_TEXT_DOMAIN);
@@ -124,7 +123,7 @@ class CalendarGroupTable extends TableBase {
 				if($key > 0) {
 					echo ", ";
 				}
-				echo "<a href='" . $link . "'><s>" . $cal->title . "</s></a>";
+				echo "<a href='" . $link . "'><s>" . $cal->GetTitle() . "</s></a>";
 			}
 		}
 	}

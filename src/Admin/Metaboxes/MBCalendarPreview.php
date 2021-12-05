@@ -19,11 +19,6 @@ class MBCalendarPreview extends MetaBoxBase {
 	}
 
 	function PrintMetaBox(\WP_Post $post) {
-		$group = new CalendarGroup();
-		$group->calendar_selection = new CalendarSelection();
-		$group->calendar_selection->selection_type = TLBM_CALENDAR_SELECTION_TYPE_ONLY;
-		$group->calendar_selection->selected_calendar_ids = array( $post->ID );
-
 		echo CalendarOutput::GetContainerShell($post->ID);
 	}
 

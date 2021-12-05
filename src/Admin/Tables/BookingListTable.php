@@ -17,7 +17,7 @@ class BookingListTable extends TableBase {
     public bool $slim = false;
 
 	public function __construct() {
-		parent::__construct(__("Bookings", TLBM_TEXT_DOMAIN), __("Booking", TLBM_TEXT_DOMAIN));
+		parent::__construct(__("Bookings", TLBM_TEXT_DOMAIN), __("Booking", TLBM_TEXT_DOMAIN), 10, __("You don't have any bookings yet", TLBM_TEXT_DOMAIN));
 	}
 
 	protected function ProcessBuldActions() {
@@ -172,7 +172,7 @@ class BookingListTable extends TableBase {
 				<select name="calendar-filter">
 					<option value=""><?php _e("All Calendars", TLBM_TEXT_DOMAIN); ?></option>
 					<?php foreach ($calendars as $calendar): ?>
-						<option <?php echo selected($_REQUEST['calendar-filter'], $calendar->wp_post_id) ?> value="<?php echo $calendar->wp_post_id ?>"><?php echo $calendar->title ?></option>
+						<option <?php echo selected($_REQUEST['calendar-filter'], $calendar->GetId()) ?> value="<?php echo $calendar->GetId() ?>"><?php echo $calendar->GetTitle() ?></option>
 					<?php endforeach; ?>
 				</select>
 				<button class="button">Filter</button>
@@ -217,7 +217,7 @@ class BookingListTable extends TableBase {
             }
 
 			if($calendar) {
-				echo $prefix . "<a href='" . $link . "'>" . $calendar->title . "</a>&nbsp;&nbsp;&nbsp;" . DateTimeTools::FormatWithTime( $calendar_slot->timestamp ) . "<br>";
+				echo $prefix . "<a href='" . $link . "'>" . $calendar->GetTitle() . "</a>&nbsp;&nbsp;&nbsp;" . DateTimeTools::FormatWithTime( $calendar_slot->timestamp ) . "<br>";
 			} else {
 				echo $prefix . "<strong>" . __("Calendar deleted", TLBM_TEXT_DOMAIN) . "</strong>&nbsp;&nbsp;&nbsp;" . DateTimeTools::FormatWithTime( $calendar_slot->timestamp ) . "<br>";
 			}

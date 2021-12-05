@@ -5,10 +5,8 @@ namespace TLBM\Rules;
 
 
 use DateTime;
-use TLBM\Admin\WpForm\DateTimeField;
-use TLBM\Model\Calendar;
+use TLBM\Entity\Calendar;
 use TLBM\Model\RuleAction;
-use TLBM\Utilities\PeriodsTools;
 
 class RuleActionsManager {
 
@@ -19,7 +17,7 @@ class RuleActionsManager {
 	 * @return RuleAction[]
 	 */
 	public static function GetActionsForDateTime(Calendar $calendar, DateTime $date_time): array {
-		$rules = RulesManager::GetAllRulesForCalendarForDateTime($calendar->wp_post_id, $date_time);
+		$rules = RulesManager::GetAllRulesForCalendarForDateTime($calendar->GetId(), $date_time);
 		$actions = array();
 		$workingactions = array();
 

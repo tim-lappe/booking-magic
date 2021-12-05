@@ -38,16 +38,15 @@ class CalendarPickerField extends FormFieldBase {
                             $cals = CalendarManager::GetAllCalendars();
                             if(sizeof($cals) > 0) {
                                 foreach($cals as $calendar) {
-                                    $calendar = get_post($calendar->wp_post_id);
                                     ?>
                                     <div class="tlbm-calendar-select-item">
                                     <label>
-                                        <input name="<?php echo $this->name . "_selection[]"; ?>" value="<?php echo $calendar->ID ?>" <?php echo in_array($calendar->ID, $this->value->selected_calendar_ids) ? "checked='checked'" : "" ?> type="checkbox">
+                                        <input name="<?php echo $this->name . "_selection[]"; ?>" value="<?php echo $calendar->GetId() ?>" <?php echo in_array($calendar->GetId(), $this->value->selected_calendar_ids) ? "checked='checked'" : "" ?> type="checkbox">
                                         <?php
-                                        if(!empty($calendar->post_title)) {
-                                            echo $calendar->post_title;
+                                        if(!empty($calendar->GetTitle())) {
+                                            echo $calendar->GetTitle();
                                         } else {
-                                            echo "ID: " .  $calendar->ID . " <span style='color: rgba(0, 0, 0, 0.5)'>(" . __("No Name", TLBM_TEXT_DOMAIN) . ")</span>";
+                                            echo "ID: " .  $calendar->GetId() . " <span style='color: rgba(0, 0, 0, 0.5)'>(" . __("No Name", TLBM_TEXT_DOMAIN) . ")</span>";
                                         }
                                         ?>
                                     </label>

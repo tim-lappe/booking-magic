@@ -5,9 +5,8 @@ namespace TLBM\Rules;
 
 
 use DateTime;
-use TLBM\Admin\WpForm\DateTimeField;
 use TLBM\Calendar\CalendarSelectionHandler;
-use TLBM\Model\Calendar;
+use TLBM\Entity\Calendar;
 use TLBM\Model\CalendarGroup;
 
 class Capacities {

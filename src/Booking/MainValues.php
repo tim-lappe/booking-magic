@@ -3,13 +3,11 @@
 
 namespace TLBM\Booking;
 
-
-use phpDocumentor\Reflection\Types\This;
 use TLBM\Admin\FormEditor\FormElementsCollection;
 use TLBM\Calendar\CalendarManager;
 use TLBM\Model\Booking;
 use TLBM\Model\BookingValue;
-use TLBM\Model\Calendar;
+use TLBM\Entity\Calendar;
 use TLBM\Utilities\DateTimeTools;
 
 class MainValues {
@@ -143,7 +141,7 @@ class MainValues {
 
 	public function GetCalendarName($index = 0): string {
 		if(isset($this->calendars[$index]) && $this->calendars[$index] instanceof Calendar) {
-			return $this->calendars[$index]->title;
+			return $this->calendars[$index]->GetTitle();
 		}
 
 		return "";

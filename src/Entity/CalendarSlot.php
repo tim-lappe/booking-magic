@@ -57,6 +57,10 @@ class CalendarSlot {
 		return $this->booking;
 	}
 
+    public function SetBooking(Booking $booking) {
+        $this->booking = $booking;
+    }
+
 	/**
 	 * @return int
 	 */

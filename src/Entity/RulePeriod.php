@@ -5,6 +5,7 @@ namespace TLBM\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as OrmMapping;
+use TLBM\Entity\Form;
 
 /**
  * Class Calendar
@@ -12,7 +13,7 @@ use Doctrine\ORM\Mapping as OrmMapping;
  * @OrmMapping\Entity
  * @OrmMapping\Table(name="rule_periods")
  */
-class RulePeriod {
+class RulePeriod extends Form {
 
 	use IndexedTable;
 

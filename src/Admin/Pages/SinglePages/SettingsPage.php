@@ -14,11 +14,10 @@ class SettingsPage extends PageBase {
 		$this->parent_slug = "booking-magic";
 	}
 
-	public function ShowPageContent() {
+	public function DisplayPageBody() {
 		$tab = isset($_GET['tab']) ? $_GET['tab'] : "general";
 		?>
 		<div class="wrap">
-			<h1><?php _e("Settings", TLBM_TEXT_DOMAIN); ?></h1>
             <nav class="nav-tab-wrapper">
 	            <?php foreach (SettingsManager::$groups as $key => $group): ?>
                     <a href="?page=<?php echo $this->menu_slug ?>&tab=<?php echo $key ?>" class="nav-tab <?php if($tab == $key):?>nav-tab-active<?php endif; ?>"><?php echo $group ?></a>

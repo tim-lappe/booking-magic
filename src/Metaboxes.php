@@ -8,11 +8,9 @@ if( ! defined( 'ABSPATH' ) ) {
 }
 
 use TLBM\Admin\Metaboxes\MBBookingActions;
-use TLBM\Admin\Metaboxes\MBBookingDebug;
 use TLBM\Admin\Metaboxes\MBBookingInformations;
 use TLBM\Admin\Metaboxes\MBCalendarPreview;
 use TLBM\Admin\Metaboxes\MBCalendarRules;
-use TLBM\Admin\Metaboxes\MBCalendarSetup;
 use TLBM\Admin\Metaboxes\MBCapacityRuleCalendars;
 use TLBM\Admin\Metaboxes\MBCapacityRulePeriods;
 use TLBM\Admin\Metaboxes\MBCapacityRulePriority;

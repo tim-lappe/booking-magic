@@ -4,15 +4,17 @@
 namespace TLBM\Admin\Tables;
 
 
+
 use TLBM\Booking\BookingManager;
 use TLBM\Calendar\CalendarManager;
-use TLBM\Model\Calendar;
+use TLBM\Entity\Calendar;
 use TLBM\Utilities\DateTimeTools;
+
 
 class CalendarListTable extends TableBase {
 
 	public function __construct() {
-		parent::__construct(__("Calendars", TLBM_TEXT_DOMAIN), __("Calendar", TLBM_TEXT_DOMAIN));
+		parent::__construct(__("Calendars", TLBM_TEXT_DOMAIN), __("Calendar", TLBM_TEXT_DOMAIN), 10,  __("You haven't created any calendars yet", TLBM_TEXT_DOMAIN));
 	}
 
 	protected function ProcessBuldActions() {
@@ -43,8 +45,7 @@ class CalendarListTable extends TableBase {
 			$pt_args = array("post_status" => "trash");
 		}
 
-		$calendars = CalendarManager::GetAllCalendars($pt_args, $orderby, $order);
-		return $calendars;
+        return CalendarManager::GetAllCalendars($pt_args, $orderby, $order);
 	}
 
 	protected function GetViews(): array {
@@ -82,27 +83,32 @@ class CalendarListTable extends TableBase {
 		}
 	}
 
+    /**
+     * @param Calendar $item
+     * @return int
+     */
 	protected function GetItemId( $item ): int {
-		return $item->wp_post_id;
+		return $item->GetId();
 	}
 
 	/**
 	 * @param Calendar $item
 	 */
-	public function column_title($item) {
-		$link = get_edit_post_link($item->wp_post_id);
-		if ( ! empty( $item->title ) ) {
-			echo "<strong><a href='" . $link . "'>" . $item->title . "</a></strong>";
+	public function column_title(Calendar $item) {
+		$link = admin_url("admin.php?page=booking-calendar-edit&calendar_id=" . $item->GetId());
+
+		if ( ! empty( $item->GetTitle() ) ) {
+			echo "<strong><a href='" . $link . "'>" . $item->GetTitle() . "</a></strong>";
 		} else {
-			echo "<strong><a href='" . $link . "'>" . $item->wp_post_id . "</a></strong>";
+			echo "<strong><a href='" . $link . "'>" . $item->GetId() . "</a></strong>";
 		}
 	}
 
 	/**
 	 * @param Calendar $item
 	 */
-	public function column_datetime($item) {
-		$p = get_post($item->wp_post_id);
+	public function column_datetime(Calendar $item) {
+		$p = get_post($item->GetId());
 		echo DateTimeTools::FormatWithTime(strtotime($p->post_date));
 	}
 

@@ -4,7 +4,6 @@
 namespace TLBM\Output\Calendar\Printers;
 
 
-use TLBM\Model\Calendar;
 use TLBM\Model\CalendarGroup;
 use TLBM\Output\Calendar\Modules\ICalendarPrintModule;
 

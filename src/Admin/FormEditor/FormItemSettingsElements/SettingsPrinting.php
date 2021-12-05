@@ -11,8 +11,8 @@ if( ! defined( 'ABSPATH' ) ) {
 class SettingsPrinting {
 
 	public $output_var = "";
-	public $style_editings = array();
-	public $replacings = array();
+	public array $style_editings = array();
+	public array $replacings = array();
 
 	public function __construct($output_var = "", $style_editings = array(), $replacings = array()) {
 		$this->output_var = $output_var;

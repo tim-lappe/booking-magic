@@ -7,7 +7,6 @@ namespace TLBM\Admin\WpForm;
 use TLBM\Admin\WpForm\RuleActionFields\DayMessageAction;
 use TLBM\Admin\WpForm\RuleActionFields\DaySlotAction;
 use TLBM\Admin\WpForm\RuleActionFields\RuleActionFieldBase;
-use TLBM\Admin\WpForm\RuleActionFields\SetCapacityAction;
 use TLBM\Admin\WpForm\RuleActionFields\TimeSlotAction;
 use TLBM\Model\RuleActionCollection;
 

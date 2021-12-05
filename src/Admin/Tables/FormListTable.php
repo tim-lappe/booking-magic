@@ -10,7 +10,7 @@ use TLBM\Model\Form;
 class FormListTable extends TableBase {
 
 	public function __construct() {
-		parent::__construct(__("Forms", TLBM_TEXT_DOMAIN), __("Form", TLBM_TEXT_DOMAIN));
+		parent::__construct(__("Forms", TLBM_TEXT_DOMAIN), __("Form", TLBM_TEXT_DOMAIN), 10, __("You haven't created any forms yet", TLBM_TEXT_DOMAIN));
 	}
 
 	protected function ProcessBuldActions() {
