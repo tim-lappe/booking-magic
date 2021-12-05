@@ -26,7 +26,7 @@ class BestSellingCalendarsTile extends DashboardTile {
 			foreach ( $bestselling as $id => $num ) {
 				$cal = CalendarManager::GetCalendar( $id );
 				echo "<li>";
-				echo "<a href='" . get_edit_post_link( $id ) . "'>" . $cal->title . "</a><br>";
+				echo "<a href='" . get_edit_post_link( $id ) . "'>" . $cal->GetTitle() . "</a><br>";
 				echo $num . __( " Booking", TLBM_TEXT_DOMAIN );
 				echo "</li>";
 				$c++;

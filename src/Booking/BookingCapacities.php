@@ -8,7 +8,7 @@ use DateTime;
 use TLBM\Calendar\CalendarGroupManager;
 use TLBM\Calendar\CalendarManager;
 use TLBM\Calendar\CalendarSelectionHandler;
-use TLBM\Model\Calendar;
+use TLBM\Entity\Calendar;
 use TLBM\Model\CalendarGroup;
 use TLBM\Model\CalendarSelection;
 use TLBM\Model\CalendarSlot;
@@ -27,7 +27,7 @@ class BookingCapacities {
 		$seats = 0;
 		foreach ($bookings as $booking) {
 			foreach($booking->calendar_slots as $slot) {
-				if($slot->booked_calendar_id == $calendar->wp_post_id) {
+				if($slot->booked_calendar_id == $calendar->GetId()) {
 					if( $datetime->format("d-m-Y") == date("d-m-Y", $slot->timestamp)) {
 						$seats++;
 					}
@@ -74,7 +74,7 @@ class BookingCapacities {
 	public static function GetCalendarWithLeastCapacityFromSelection(CalendarSelection $selection, DateTime $datetime): ?Calendar {
 		$calendars = CalendarSelectionHandler::GetSelectedCalendarList($selection);
 		$min = PHP_INT_MAX;
-		$cal = null;
+        $cal = null;
 		foreach ($calendars as $calendar) {
 			$seats = self::GetFreeDaySeats($calendar, $datetime);
 			if($min > $seats && $seats > 0) {

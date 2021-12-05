@@ -5,19 +5,23 @@ namespace TLBM\Database;
 
 
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Events;
+use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
-use TLBM\ORM;
+use Exception;
 
 class OrmManager {
 
 	private static ?EntityManager $entity_manager;
 	private static ?EventManager $event_manager;
+    private static ?DebugStack $debugStack;
 
 	public static function Init() {
-		$configuration = Setup::createAnnotationMetadataConfiguration( [ TLBM_DIR . "/src/Entity" ], true, null, null, false );
+		$configuration = Setup::createAnnotationMetadataConfiguration( [ TLBM_DIR . "/src/Entity" ], false, null, null, false);
 		$connection = array(
 			"driver" => "mysqli",
 			"user" => DB_USER,
@@ -27,13 +31,23 @@ class OrmManager {
 			"charset" => DB_CHARSET
 		);
 
+
+
+
 		try {
 			self::InitEvents();
+
+            self::$debugStack = new DebugStack();
 			self::$entity_manager = EntityManager::create( $connection, $configuration, self::$event_manager );
-		} catch ( \Exception $e ) {
+            self::$entity_manager->getConnection()->getConfiguration()->setSQLLogger(self::$debugStack);
+		} catch ( Exception $e ) {
 			var_dump($e);
 		}
 	}
+
+    public static function GetDebugStack(): ?DebugStack {
+        return self::$debugStack;
+    }
 
 	public static function GetEventManager(): ?EventManager {
 		return self::$event_manager;
@@ -51,7 +65,7 @@ class OrmManager {
 			$mgr    = self::GetEntityManager();
 			$schema = new SchemaTool( $mgr );
 			$schema->createSchema( $mgr->getMetadataFactory()->getAllMetadata() );
-		} catch (\Doctrine\ORM\Exception\ORMException $error) {
+		} catch (ORMException $error) {
 
 		}
 	}

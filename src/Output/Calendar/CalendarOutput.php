@@ -4,8 +4,6 @@
 namespace TLBM\Output\Calendar;
 
 
-use TLBM\Model\Calendar;
-use TLBM\Calendar\CalendarManager;
 use TLBM\Model\CalendarGroup;
 use TLBM\Output\Calendar\Printers\CalendarDateSelectPrinter;
 use TLBM\Output\Calendar\Printers\CalendarNoPrinter;

@@ -6,7 +6,6 @@ namespace TLBM\Output\Calendar\Printers;
 
 use DateInterval;
 use DateTime;
-use TLBM\Model\Calendar;
 use TLBM\Model\CalendarGroup;
 use TLBM\Output\Calendar\Modules\ModuleBodyDateSelect;
 use TLBM\Output\Calendar\Modules\ModuleHeadMonthSelect;

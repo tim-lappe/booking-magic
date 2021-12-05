@@ -8,6 +8,11 @@ use Doctrine\Common\Collections\Collection;
 
 use Doctrine\ORM\Mapping as OrmMapping;
 
+define("TLBM_CALENDAR_SELECTION_TYPE_ALL", "all");
+define("TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT", "all_but");
+define("TLBM_CALENDAR_SELECTION_TYPE_ONLY", "only");
+
+
 /**
  * Class Calendar
  * @package TLBM\Entity

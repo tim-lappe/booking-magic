@@ -8,7 +8,6 @@ use TLBM\Booking\BookingProcessing;
 use TLBM\Booking\MainValues;
 use TLBM\Email\MailSender;
 use TLBM\Form\FormManager;
-use TLBM\Model\Booking;
 use TLBM\Output\FrontendMessenger;
 
 if( ! defined( 'ABSPATH' ) ) {
@@ -18,8 +17,8 @@ if( ! defined( 'ABSPATH' ) ) {
 
 class DoBookingRequest extends RequestBase {
 
-	public $booking_successed = false;
-	public $error = false;
+	public bool $booking_successed = false;
+	public bool $error = false;
 
     public function __construct() {
         parent::__construct();

@@ -12,8 +12,6 @@ use TLBM\Admin\FormEditor\FormItemSettingsElements\Select;
 use TLBM\Admin\FormEditor\FormItemSettingsElements\SettingsPrinting;
 use TLBM\Calendar\CalendarGroupManager;
 use TLBM\Calendar\CalendarManager;
-use TLBM\Model\CalendarGroup;
-use TLBM\Model\CalendarSelection;
 use TLBM\Output\Calendar\CalendarOutput;
 
 class CalendarElem extends FormInputElem {
@@ -25,25 +23,18 @@ class CalendarElem extends FormInputElem {
 		$this->menu_category = __("Calendar", TLBM_TEXT_DOMAIN);
 		$this->description = __("Allows the user to choose from a calendar or a group of calendars", TLBM_TEXT_DOMAIN);
 
+
 		$calendars = CalendarManager::GetAllCalendars();
+
 		$calendar_kv = array();
 		foreach ($calendars as $calendar) {
-			$calendar = get_post( $calendar->wp_post_id );
-			if ( ! empty( $calendar->post_title ) ) {
-				$calendar_kv[ $calendar->ID ] = $calendar->post_title;
-			} else {
-				$calendar_kv[ $calendar->ID ] = __( "No Name", TLBM_TEXT_DOMAIN ) . "ID: " . $calendar->ID . ")";
-			}
+            $calendar_kv[ $calendar->GetId() ] = $calendar->GetTitle();
 		}
 
 		$groups_kv = array();
 		$calendar_groups = CalendarGroupManager::GetAllGroups();
 		foreach ($calendar_groups as $group) {
-			if ( ! empty( $group->title ) ) {
-				$groups_kv[ $group->wp_post_id ] = $group->title;
-			} else {
-				$groups_kv[ $group->wp_post_id ] = __( "No Name", TLBM_TEXT_DOMAIN ) . "ID: " . $group->wp_post_id . ")";
-			}
+            $groups_kv[ $group->GetId() ] = $group->GetTitle();
 		}
 
 		$calendar_select = array(

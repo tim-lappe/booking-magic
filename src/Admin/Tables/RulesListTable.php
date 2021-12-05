@@ -89,7 +89,7 @@ class RulesListTable extends \WP_List_Table {
                 if($key > 0) {
                     echo ", ";
                 }
-                echo $cal->title;
+                echo $cal->GetTitle();
             }
         } else if($selection->selection_type == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
             echo __("All but ", TLBM_TEXT_DOMAIN);
@@ -98,7 +98,7 @@ class RulesListTable extends \WP_List_Table {
                 if($key > 0) {
                     echo ", ";
                 }
-                echo "<s>" . $cal->title . "</s>";
+                echo "<s>" . $cal->GetTitle() . "</s>";
             }
         }
     }

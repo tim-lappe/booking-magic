@@ -1,6 +1,5 @@
 <?php
 
-
 namespace TLBM;
 
 if( ! defined( 'ABSPATH' ) ) {
@@ -12,14 +11,11 @@ use TLBM\Request\DoBookingRequest;
 use TLBM\Request\RequestBase;
 use TLBM\Request\ShowBookingOverview;
 
+
 class Request {
 
-	/**
-	 * @var RequestBase
-	 */
-	public $current_action = null;
-
-	public $registered_endpoints = array();
+	public ?RequestBase $current_action = null;
+	public array $registered_endpoints = array();
 
     public function __construct() {
         add_action("init", array($this, "Init"));

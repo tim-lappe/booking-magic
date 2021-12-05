@@ -2,9 +2,12 @@
 
 namespace TLBM\Calendar;
 
-use TLBM\Model\Calendar;
-use TLBM\Model\CalendarSetup;
-use WP_Post;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Exception;
+use TLBM\Database\OrmManager;
+use TLBM\Entity\Calendar;
 
 if( ! defined( 'ABSPATH' ) ) {
 	return;
@@ -12,66 +15,84 @@ if( ! defined( 'ABSPATH' ) ) {
 
 class CalendarManager {
 
+
+    /**
+     * @param Calendar $calendar
+     * @throws Exception
+     */
+    public static function SaveCalendar( Calendar $calendar ) {
+        $mgr = OrmManager::GetEntityManager();
+        $mgr->persist($calendar);
+        $mgr->flush();
+    }
+
 	/**
 	 * Returns the BookingCalender from the given Post-Id
 	 *
-	 * @param mixed $post_id The Post-Id of the Calendar
+	 * @param mixed $id The Post-Id of the Calendar
 	 *
-	 * @return Calendar|false
+	 * @return Calendar|null
 	 */
-	public static function GetCalendar( $post_id ) {
-		$calendar_post = get_post($post_id);
-		if($calendar_post instanceof WP_Post) {
-			if($calendar_post->post_type == TLBM_PT_CALENDAR) {
-				$bc = new Calendar();
-				$bc->wp_post_id = $post_id;
-				$bc->title = $calendar_post->post_title;
-
-				return $bc;
-			}
-		}
-		return false;
+	public static function GetCalendar( $id ): ?Calendar {
+        try {
+            $mgr = OrmManager::GetEntityManager();
+            $calendar = $mgr->find("\TLBM\Entity\Calendar", $id);
+            if ($calendar instanceof Calendar) {
+                return $calendar;
+            }
+        } catch (Exception $e) {
+            var_dump($e);
+        }
+        return null;
 	}
 
-	/**
-	 * Return a List of all active Calendars
-	 *
-	 * @param array $options
-	 * @param string $orderby
-	 * @param string $order
-	 *
-	 * @return Calendar[]
-	 */
-	public static function GetAllCalendars($get_posts_options = array(), $orderby = "title", $order = "desc"): array {
-        $posts = get_posts(array_merge(array(
-            "post_type" => TLBM_PT_CALENDAR,
-	        "numberposts" => -1
-        ), $get_posts_options));
-
-        $calendars = array();
-        foreach ($posts as $post) {
-            $calendars[] = self::GetCalendar($post->ID);
+    /**
+     * Return a List of all active Calendars
+     *
+     * @param array $options
+     * @param string $orderby
+     * @param string $order
+     * @param int $offset
+     * @param int $limit
+     * @return Calendar[]
+     */
+	public static function GetAllCalendars(array $options = array(), string $orderby = "title", string $order = "desc", int $offset = 0, int $limit = 0): array {
+        $mgr = OrmManager::GetEntityManager();
+        $qb = $mgr->createQueryBuilder();
+        $qb ->select("c")
+            ->from("\TLBM\Entity\Calendar", "c")
+            ->orderBy("c." . $orderby, $order)
+            ->setFirstResult($offset);
+        if($limit > 0) {
+            $qb->setMaxResults($limit);
         }
 
-		usort($calendars, function ($a, $b) use ($orderby, $order) {
-			if(strtolower($order) == "asc") {
-				return $a->{$orderby} > $b->{$orderby};
-			}
-			if(strtolower($order) == "desc") {
-				return $a->{$orderby} < $b->{$orderby};
-			}
-			return $a->{$orderby} < $b->{$orderby};
-		});
+        $query = $qb->getQuery();
+        $result = $query->getResult();
 
-        return $calendars;
-	}
+        if(is_array($result)) {
+            return $result;
+        }
 
-	public static function GetAllCalendarsCount($get_posts_options = array()): int {
-		$posts = get_posts(array_merge(array(
-			"post_type" => TLBM_PT_CALENDAR,
-			"numberposts" => -1
-		), $get_posts_options));
+        return array();
+    }
 
-		return sizeof($posts);
-	}
+    /**
+     * @param array $options
+     * @return int
+     */
+	public static function GetAllCalendarsCount(array $options = array()): int {
+
+        $mgr = OrmManager::GetEntityManager();
+        $qb = $mgr->createQueryBuilder();
+        $qb ->select($qb->expr()->count("c"))
+            ->from("\TLBM\Entity\Calendar", "c");
+
+        $query = $qb->getQuery();
+        try {
+            return $query->getSingleScalarResult();
+        } catch (NoResultException | NonUniqueResultException $e) {
+            return 0;
+        }
+    }
 }

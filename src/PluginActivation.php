@@ -19,7 +19,7 @@ class PluginActivation {
 	}
 
 	public function OnDeactivation() {
-		if(!defined("TLBM_DELETE_DATA_ON_DEACTIVATION")) {
+		if(defined("TLBM_DELETE_DATA_ON_DEACTIVATION")) {
 			$mgr    = OrmManager::GetEntityManager();
 			$schema = new SchemaTool( $mgr );
 			$schema->dropSchema( $mgr->getMetadataFactory()->getAllMetadata() );

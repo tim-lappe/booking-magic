@@ -24,5 +24,7 @@ class CalendarSetupText {
 				return "<strong>Slotted Datetime</strong><br>
 						The user can choose from pre-defined Timeslots of the choosen date";
 		}
+
+        return "";
 	}
 }

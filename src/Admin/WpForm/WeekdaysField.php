@@ -9,7 +9,6 @@ if( ! defined( 'ABSPATH' ) ) {
 
 use DateTime;
 use TLBM\Admin\Settings\SingleSettings\Text\WeekdayLabels;
-use TLBM\Model\CalendarSetup;
 
 class WeekdaysField extends FormFieldBase {
 

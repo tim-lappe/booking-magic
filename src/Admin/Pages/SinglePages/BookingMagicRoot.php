@@ -14,11 +14,13 @@ class BookingMagicRoot extends PageBase {
 		$this->menu_secondary_title = "Dashboard";
 	}
 
-	public function ShowPageContent() {
+    public function GetHeadTitle(): string {
+        return __("Dashboard", TLBM_TEXT_DOMAIN);
+    }
+
+    public function DisplayPageBody() {
 		?>
 		<div class="wrap">
-			<h1 class="wp-heading-inline"><?php _e("Dashboard", TLBM_TEXT_DOMAIN) ?></h1>
-			<hr class="wp-header-end">
             <?php
             $dashboard = new Dashboard();
             $dashboard->Print();

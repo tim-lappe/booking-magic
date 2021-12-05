@@ -3,15 +3,12 @@
 
 namespace TLBM\Admin\Pages\SinglePages\Dashboard;
 
-
-use phpDocumentor\Reflection\Types\This;
-
 class Dashboard {
 
 	/**
 	 * @var LastBookingsTile[]
 	 */
-	private array $tiles = array();
+	private array $tiles;
 
 	public function __construct() {
 		$this->tiles = array(

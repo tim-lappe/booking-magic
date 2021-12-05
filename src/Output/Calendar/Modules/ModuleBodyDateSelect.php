@@ -4,17 +4,12 @@
 namespace TLBM\Output\Calendar\Modules;
 
 
-use Cassandra\Date;
 use DateInterval;
 use DatePeriod;
 use DateTime;
 use TLBM\Admin\Settings\SingleSettings\Text\WeekdayLabels;
 use TLBM\Booking\BookingCapacities;
-use TLBM\Calendar\CalendarGroupManager;
-use TLBM\Calendar\CalendarManager;
-use TLBM\Model\Calendar;
 use TLBM\Model\CalendarGroup;
-use TLBM\Model\CalendarSetup;
 use TLBM\Rules\Capacities;
 
 class ModuleBodyDateSelect implements ICalendarPrintModule {
@@ -101,7 +96,7 @@ class ModuleBodyDateSelect implements ICalendarPrintModule {
         $classes = array();
 
         if(!$date) {
-            $html .=  "<td class='tlbm-cell tlbm-cell-empty ".$classes."'></td>";
+            $html .=  "<td class='tlbm-cell tlbm-cell-empty'></td>";
         } else {
             $today = new DateTime();
             if($date->format("d.m.Y") == $today->format("d.m.Y")) {

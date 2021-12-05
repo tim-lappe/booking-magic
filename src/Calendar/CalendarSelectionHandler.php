@@ -3,7 +3,7 @@
 
 namespace TLBM\Calendar;
 
-use TLBM\Model\Calendar;
+use TLBM\Entity\Calendar;
 use TLBM\Model\CalendarSelection;
 
 if (!defined('ABSPATH')) {
@@ -48,7 +48,7 @@ class CalendarSelectionHandler {
     		$allcals = CalendarManager::GetAllCalendars();
     		$list = array();
 		    foreach ( $allcals as $cal ) {
-				if(!in_array($cal->wp_post_id, $calendar_selection->selected_calendar_ids)) {
+				if(!in_array($cal->GetId(), $calendar_selection->selected_calendar_ids)) {
 					$list[] = $cal;
 				}
     		}

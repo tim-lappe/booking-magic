@@ -29,11 +29,27 @@ class Calendar {
 	 */
 	protected int $timestamp_created;
 
+    /**
+     * @return int
+     */
+    public function GetTimestampCreated(): int {
+        return $this->timestamp_created;
+    }
+
+    /**
+     * @param int $timestamp_created
+     */
+    public function SetTimestampCreated(int $timestamp_created): void {
+        $this->timestamp_created = $timestamp_created;
+    }
+
+
+
 	/**
-	 * @var ArrayCollection|CalendarSelection[]
+	 * @var Collection|CalendarSelection[]
 	 * @OrmMapping\ManyToMany(targetEntity=CalendarSelection::class, mappedBy="calendar")
 	 */
-	protected ArrayCollection $calendar_selections;
+	protected Collection $calendar_selections;
 
 	/**
 	 * @return string

@@ -46,7 +46,7 @@ abstract class SettingsType {
 	 * @param string $default_value
 	 * @param bool $readonly
 	 */
-	public function __construct($name, $title, $settings_printing = false, $default_value = "", $readonly = false) {
+	public function __construct($name, $title, $settings_printing = false, string $default_value = "", bool $readonly = false) {
 		$this->name = $name;
 		$this->title = $title;
 		$this->settings_printing = $settings_printing;

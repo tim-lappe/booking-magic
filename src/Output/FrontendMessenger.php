@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
 
 class FrontendMessenger {
 
-    private static $frontend_msgs = array();
+    private static array $frontend_msgs = array();
 
     public static function AddFrontendMsg($html) {
         self::$frontend_msgs[] = $html;

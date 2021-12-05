@@ -4,7 +4,6 @@
 namespace TLBM\Request;
 
 
-use TLBM\Booking\BookingManager;
 use TLBM\Booking\BookingProcessing;
 use TLBM\Form\FormManager;
 use TLBM\Output\FrontendMessenger;

@@ -4,8 +4,11 @@
 namespace TLBM\Calendar;
 
 
-use TLBM\Model\Calendar;
-use TLBM\Model\CalendarGroup;
+use Doctrine\ORM\AbstractQuery;
+use Exception;
+use TLBM\Database\OrmManager;
+use TLBM\Entity\Calendar;
+use TLBM\Entity\CalendarGroup;
 use TLBM\Model\CalendarSelection;
 use WP_Post;
 
@@ -17,71 +20,61 @@ class CalendarGroupManager {
 	 *
 	 * @return Calendar[]
 	 */
-	public static function GetCalendarListFromGroup($group): array {
-		return CalendarSelectionHandler::GetSelectedCalendarList($group->calendar_selection);
+	public static function GetCalendarListFromGroup(CalendarGroup $group): array {
+		return CalendarSelectionHandler::GetSelectedCalendarList($group->GetCalendarSelection());
 	}
 
-	/**
-	 * Returns the Calendar Group from the given Post-Id
-	 *
-	 * @param mixed $post_id The Post-Id of the Calendar
-	 *
-	 * @return ?CalendarGroup
-	 */
-	public static function GetCalendarGroup( $post_id ): ?CalendarGroup {
-		$group_post = get_post($post_id);
-		if($group_post instanceof WP_Post) {
-			if($group_post->post_type == TLBM_PT_CALENDAR_GROUPS) {
-				$group = new CalendarGroup();
-				$group->wp_post_id = $post_id;
-				$group->booking_distribution = get_post_meta($post_id, "booking_distribution", true);
-				if(!$group->booking_distribution) {
-					$group->booking_distribution = TLBM_BOOKING_DISTRIBUTION_EVENLY;
-				}
-				$group->calendar_selection = get_post_meta($post_id, "calendar_selection", true);
-				if(!$group->calendar_selection) {
-					$group->calendar_selection = new CalendarSelection();
-				}
-				$group->title = $group_post->post_title;
-				return $group;
-			}
-		}
-
-		return null;
+    /**
+     * Returns the Calendar Group from the given Post-Id
+     *
+     * @param $id
+     * @return ?CalendarGroup
+     */
+	public static function GetCalendarGroup( $id ): ?CalendarGroup {
+        try {
+            $mgr = OrmManager::GetEntityManager();
+            $calendar = $mgr->find("\TLBM\Entity\CalendarGroup", $id);
+            if ($calendar instanceof Calendar) {
+                return $calendar;
+            }
+        } catch (Exception $e) {
+            var_dump($e);
+        }
+        return null;
 	}
 
 
-	/**
-	 * Return a List of all active Groups
-	 *
-	 * @param array $get_posts_options
-	 * @param string $orderby
-	 * @param string $order
-	 *
-	 * @return Calendar[]
-	 */
-	public static function GetAllGroups($get_posts_options = array(), $orderby = "title", $order = "desc"): array {
-		$posts = get_posts(array_merge(array(
-			"post_type" => TLBM_PT_CALENDAR_GROUPS,
-			"numberposts" => -1
-		), $get_posts_options));
+    /**
+     * Return a List of all active Groups
+     *
+     * @param array $options
+     * @param string $orderby
+     * @param string $order
+     * @param int $offset
+     * @param int $limit
+     * @return CalendarGroup[]
+     */
+	public static function GetAllGroups(array $options = array(), string $orderby = "title", string $order = "desc", int $offset = 0, int $limit = 0): array {
+        $mgr = OrmManager::GetEntityManager();
+        $qb = $mgr->createQueryBuilder();
+        $qb ->select("c")
+            ->from("\TLBM\Entity\CalendarGroup", "c")
+            ->orderBy("c." . $orderby, $order)
+            ->setFirstResult($offset);
+        if($limit > 0) {
+            $qb->setMaxResults($limit);
+        }
 
-		$groups = array();
-		foreach ($posts as $post) {
-			$groups[] = self::GetCalendarGroup($post->ID);
-		}
+        $query = $qb->getQuery();
+        $result = $query->getResult();
 
-		usort($groups, function ($a, $b) use ($orderby, $order) {
-			if(strtolower($order) == "asc") {
-				return $a->{$orderby} > $b->{$orderby};
-			}
-			if(strtolower($order) == "desc") {
-				return $a->{$orderby} < $b->{$orderby};
-			}
-			return $a->{$orderby} < $b->{$orderby};
-		});
+        $query->free();
 
-		return $groups;
+        if(is_array($result)) {
+            return $result;
+        }
+
+        return array();
 	}
 
 	public static function GetAllGroupsCount($get_posts_options = array()): int {
