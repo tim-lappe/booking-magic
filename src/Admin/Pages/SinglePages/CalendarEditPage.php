@@ -35,35 +35,35 @@ class CalendarEditPage extends FormPageBase {
             ?>
             <input type="hidden" name="calendar_id" value="<?php echo $calendar->GetId() ?>">
             <?php
+        } else {
+            $calendar = new Calendar();
         }
         ?>
         <div class="tlbm-admin-page-tile">
-            <input placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
+            <input value="<?php echo $calendar->GetTitle() ?>" placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
         </div>
 
         <?php
     }
 
     public function OnSave($vars): array {
+        $calendar = new Calendar();
         if(isset($_POST['calendar_id'])) {
-            echo "Gibbets schon";
-        } else {
-            $calendar = new Calendar();
-            $calendar->SetTitle($_POST['title']);
-            $calendar->SetTimestampCreated(time());
-
-            if(strlen($calendar->GetTitle()) < 3) {
-                return array(
-                    "error" => __("Error: the title of the calendar is too short.")
-                );
-            }
-
-            try {
-                CalendarManager::SaveCalendar($calendar);
-            } catch (Exception $e) {
-
-            }
+            $calendar = CalendarManager::GetCalendar($_POST['calendar_id']);
         }
+
+        $calendar->SetTitle($_POST['title']);
+        $calendar->SetTimestampCreated(time());
+
+        if(strlen($calendar->GetTitle()) < 3) {
+            return array(
+                "error" => __("Error: the title of the calendar is too short.")
+            );
+        }
+
+        try {
+            CalendarManager::SaveCalendar($calendar);
+        } catch (Exception $e) { }
 
         return array();
     }

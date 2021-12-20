@@ -8,11 +8,13 @@ use TLBM\Admin\WpForm\RuleActionFields\DayMessageAction;
 use TLBM\Admin\WpForm\RuleActionFields\DaySlotAction;
 use TLBM\Admin\WpForm\RuleActionFields\RuleActionFieldBase;
 use TLBM\Admin\WpForm\RuleActionFields\TimeSlotAction;
+use TLBM\Entity\RuleAction;
 use TLBM\Model\RuleActionCollection;
 
 if (!defined('ABSPATH')) {
     return;
 }
+
 
 class RuleActionsField extends FormFieldBase {
 
@@ -21,30 +23,37 @@ class RuleActionsField extends FormFieldBase {
     }
 
     function OutputHtml() {
-        $fevalues = array();
-        if($this->value instanceof RuleActionCollection) {
-            $fevalues = json_encode($this->value->actions_list);
-        }
 
+        /**
+         * @var RuleAction[] $actions
+         */
+        $actions = $this->value;
+        if(!is_array($actions)) {
+            $actions = array();
+        }
         ?>
         <tr>
             <th scope="row"><label for="<?php echo $this->name ?>"><?php echo $this->title ?></label></th>
             <td>
-                <div class="tlbm-actions tlbm-rule-actions-field">
-                    <div class="tlbm-actions-list">
-
-                    </div>
-                    <select class="tlbm-action-select-type">
-                        <?php foreach (self::GetRuleActionFields() as $ruleActionField): ?>
-                            <option value="<?php echo $ruleActionField->key ?>"><?php echo $ruleActionField->title ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <button class="button tlbm-add-action"><?php echo __("Add", TLBM_TEXT_DOMAIN) ?></button>
-                    <input type="hidden" class="tlbm-action-select-data" name="<?php echo $this->name ?>" value="<?php echo str_replace("\"", "&quot;", $fevalues) ?>">
-                </div>
+                <div data-json="<?php echo urlencode(json_encode($actions)) ?>" class="tlbm-actions tlbm-rule-actions-field"></div>
             </td>
         </tr>
         <?php
+    }
+
+    /**
+     * @param $name
+     * @return RuleActionFieldBase|null
+     */
+    private static function GetRuleActionFieldByName($name): ?RuleActionFieldBase {
+        $fields = self::GetRuleActionFields();
+        foreach ($fields as $field) {
+            if($field->key = $name) {
+                return $field;
+            }
+        }
+
+        return null;
     }
 
     /**

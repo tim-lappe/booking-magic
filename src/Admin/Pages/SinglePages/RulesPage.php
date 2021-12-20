@@ -17,7 +17,7 @@ class RulesPage extends PageBase {
 
     public function DisplayDefaultHeadBar() {
         ?>
-        <a href="<?php echo admin_url('post-new.php?post_type=' . TLBM_PT_BOOKING); ?>" class="button button-primary tlbm-admin-button-bar"><?php _e("Add New Rule", TLBM_TEXT_DOMAIN) ?></a>
+        <a href="<?php echo admin_url('admin.php?page=booking-calendar-rule-edit'); ?>" class="button button-primary tlbm-admin-button-bar"><?php _e("Add New Rule", TLBM_TEXT_DOMAIN) ?></a>
         <?php
     }
 

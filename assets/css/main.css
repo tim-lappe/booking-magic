@@ -289,6 +289,7 @@
   justify-content: space-between;
   align-items: flex-start;
   position: relative;
+  min-height: 50px;
 }
 .tlbm-rule-actions-field .tlbm-action-rule-item:first-child .tlbm-up-down-buttons button.tlbm-ud-button-up {
   display: none;
@@ -403,7 +404,7 @@
 
 .tlbm-admin-page-head {
   background-color: white;
-  box-shadow: 0 5px 10px 0 #dedede;
+  box-shadow: 0 2px 7px 0 lightgray;
   padding: 0.75rem 20px;
   margin-left: -20px;
   display: flex;
@@ -520,10 +521,16 @@
 }
 .tlbm-admin-page .tlbm-admin-page-tile {
   background-color: white;
-  box-shadow: 0 3px 5px 0 #dedede;
-  margin: 2rem 0;
+  box-shadow: 0 2px 3px 0 #dedede;
+  margin: 1.2rem 0;
   padding: 1.2rem 1.2rem;
-  border-radius: 7px;
+  border-radius: 4px;
+}
+.tlbm-admin-page .tlbm-admin-page-tile > h2 {
+  margin-top: 0;
+}
+.tlbm-admin-page .tlbm-admin-page-tile .subsubsub {
+  margin: 0;
 }
 .tlbm-admin-page .tlbm-admin-page-tile-row {
   display: flex;
@@ -552,16 +559,16 @@
   box-shadow: none;
 }
 .tlbm-admin-page .wp-list-table th {
-  padding: 0 1rem;
+  padding: 0 0.7rem;
 }
 .tlbm-admin-page .wp-list-table th a {
-  padding: 1rem 0;
+  padding: 0.7rem 0;
 }
 .tlbm-admin-page .wp-list-table th.check-column {
   padding: 1.2rem 0 0 3px;
 }
 .tlbm-admin-page .wp-list-table td {
-  padding: 1rem;
+  padding: 1rem 0.7rem;
 }
 .tlbm-admin-page .wp-list-table thead tr > * {
   border-bottom: 1px solid #dcdcdc;

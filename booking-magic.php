@@ -32,7 +32,8 @@ const TLBM_CALENDAR_META_CALENDAR_SETUP = "calendar-setup";
 const TLBM_CALENDAR_META_CALENDAR_RULES = "calendar-rules";
 
 const TLBM_MAIN_CSS_SLUG = "tlbm-main";
-const TLBM_MAIN_JS_SLUG = "tlbm-main";
+const TLBM_FRONTEND_JS_SLUG = "tlbm-script-frontend";
+const TLBM_ADMIN_JS_SLUG = "tlbm-script-admin";
 
 const TLBM_TEXT_DOMAIN = "tl-booking-calendar";
 
