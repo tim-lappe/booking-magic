@@ -230,6 +230,7 @@
     justify-content: space-between;
     align-items: flex-start;
     position: relative;
+    min-height: 50px;
 
     &:first-child {
       .tlbm-up-down-buttons {
@@ -382,7 +383,7 @@
 
 .tlbm-admin-page-head {
   background-color: white;
-  box-shadow: 0 5px 10px 0 #dedede;
+  box-shadow: 0 2px 7px 0 lightgray;
   padding: 0.75rem 20px;
   margin-left: -20px;
   display: flex;
@@ -508,9 +509,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-
-
-
 }
 
 .tlbm-admin-page {
@@ -519,10 +517,18 @@
 
   .tlbm-admin-page-tile {
     background-color: white;
-    box-shadow: 0 3px 5px 0 #dedede;
-    margin: 2rem 0;
+    box-shadow: 0 2px 3px 0 #dedede;
+    margin: 1.2rem 0;
     padding: 1.2rem 1.2rem;
-    border-radius: 7px;
+    border-radius: 4px;
+
+    > h2 {
+      margin-top: 0;
+    }
+
+    .subsubsub {
+      margin: 0;
+    }
   }
 
   .tlbm-admin-page-tile-row {
@@ -557,10 +563,10 @@
     box-shadow: none;
 
     th {
-      padding: 0 1rem;
+      padding: 0 0.7rem;
 
       a {
-        padding: 1rem 0;
+        padding: 0.7rem 0;
       }
 
       &.check-column {
@@ -569,7 +575,7 @@
     }
 
     td {
-      padding: 1rem;
+      padding: 1rem 0.7rem;
     }
 
     thead tr > * {

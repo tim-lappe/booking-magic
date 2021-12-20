@@ -4,7 +4,9 @@
 namespace TLBM\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as OrmMapping;
+use phpDocumentor\Reflection\Types\This;
 
 
 /**
@@ -76,6 +78,20 @@ class Rule {
 
 		return $action;
 	}
+
+    /**
+     * @return Collection
+     */
+    public function GetActions(): Collection {
+        return $this->actions;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function GetPeriods(): Collection {
+        return $this->periods;
+    }
 
 	/**
 	 * @param RulePeriod $period

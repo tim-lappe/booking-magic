@@ -4,13 +4,14 @@
 namespace TLBM\Rules;
 
 
+use DateTime;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Exception;
 use TLBM\Calendar\CalendarSelectionHandler;
-use TLBM\Model\CalendarSelection;
-use TLBM\Model\PeriodCollection;
-use TLBM\Model\Rule;
-use TLBM\Model\RuleActionCollection;
+use TLBM\Database\OrmManager;
+use TLBM\Entity\Rule;
 use TLBM\Utilities\PeriodsTools;
-use WP_Post;
 
 if (!defined('ABSPATH')) {
     return;
@@ -21,114 +22,95 @@ class RulesManager {
     /**
      * Get a Rule
      *
-     * @param $post_id
-     *
+     * @param $id
      * @return false|Rule
      */
-    public static function GetRule($post_id) {
-        $rule = get_post($post_id);
-        if($rule instanceof WP_Post) {
-            if($rule->post_type == TLBM_PT_RULES) {
-                $r = new Rule();
-                $r->wp_post_id = $post_id;
-                $r->title = $rule->post_title;
-
-                $calendar_selection = get_post_meta($post_id, "calendar_selection", true);
-                if($calendar_selection instanceof CalendarSelection) {
-                    $r->calendar_selection = $calendar_selection;
-                } else {
-                    $r->calendar_selection = new CalendarSelection();
-                }
-
-                $rule_actions = get_post_meta($post_id, "actions", true);
-                if($rule_actions && $rule_actions instanceof RuleActionCollection) {
-                	$r->action = $rule_actions;
-                } else {
-                	$r->action = new RuleActionCollection();
-                }
-
-                $periods = get_post_meta($post_id, "periods", true);
-                if($periods instanceof PeriodCollection) {
-                	$r->periods = $periods;
-                } else {
-                	$r->periods = new PeriodCollection();
-                }
-
-                $priority = get_post_meta($post_id, "priority", true);
-                if(!$priority) {
-                    $priority = 10;
-                }
-
-                $r->priority = $priority;
-
-                return $r;
+    public static function GetRule($id): ?Rule {
+        try {
+            $mgr = OrmManager::GetEntityManager();
+            $rule = $mgr->find("\TLBM\Entity\Rule", $id);
+            if ($rule instanceof Rule) {
+                return $rule;
             }
+        } catch (Exception $e) {
+            var_dump($e);
         }
-        return false;
+        return null;
+    }
+
+    /**
+     * @param Rule $rule
+     * @throws Exception
+     */
+    public static function SaveRule( Rule $rule ) {
+        $mgr = OrmManager::GetEntityManager();
+        $mgr->persist($rule);
+        $mgr->flush();
     }
 
     /**
      * Get all Rules
      *
-     * @param array  $get_posts_options
+     * @param array $options
      * @param string $orderby
      * @param string $order
-     *
+     * @param int $offset
+     * @param int $limit
      * @return Rule[]
      */
-    public static function GetAllRules($get_posts_options = array(), $orderby = "priority", $order = "desc"): array {
-        $posts = get_posts(array(
-            "post_type" => TLBM_PT_RULES,
-	        "numberposts" => -1
-        ) + $get_posts_options);
-
-        $rules = array();
-        foreach ($posts as $post) {
-            $rules[] = self::GetRule($post->ID);
+    public static function GetAllRules(array $options = array(), string $orderby = "title", string $order = "desc", int $offset = 0, int $limit = 0): array {
+        $mgr = OrmManager::GetEntityManager();
+        $qb = $mgr->createQueryBuilder();
+        $qb ->select("r")
+            ->from("\TLBM\Entity\Rule", "r")
+            ->orderBy("r." . $orderby, $order)
+            ->setFirstResult($offset);
+        if($limit > 0) {
+            $qb->setMaxResults($limit);
         }
 
-        usort($rules, function ($a, $b) use ($orderby, $order) {
-            if(strtolower($order) == "asc") {
-                return $a->{$orderby} > $b->{$orderby};
-            }
-            if(strtolower($order) == "desc") {
-                return $a->{$orderby} < $b->{$orderby};
-            }
-        });
+        $query = $qb->getQuery();
+        $result = $query->getResult();
 
+        if(is_array($result)) {
+            return $result;
+        }
 
-        return $rules;
+        return array();
     }
 
-	/**
-	 * @param array $get_posts_options
-	 *
-	 * @return int
-	 */
-    public static function GetAllRulesCount($get_posts_options = array()): int {
-	    $posts = get_posts(array(
-		                       "post_type" => TLBM_PT_RULES,
-		                       "numberposts" => -1
-	                       ) + $get_posts_options);
-	    return sizeof($posts);
+    /**
+     * @param array $options
+     * @return int
+     */
+    public static function GetAllRulesCount(array $options = array()): int {
+        $mgr = OrmManager::GetEntityManager();
+        $qb = $mgr->createQueryBuilder();
+        $qb ->select($qb->expr()->count("r"))
+            ->from("\TLBM\Entity\Rule", "r");
+
+        $query = $qb->getQuery();
+        try {
+            return $query->getSingleScalarResult();
+        } catch (NoResultException | NonUniqueResultException $e) {
+            return 0;
+        }
     }
 
     /**
      * Get all Rules that are affecting to the specific calendar_id
      *
-     * @param        $calendar_id
-     * @param array  $get_posts_options
+     * @param int $calendar_id
+     * @param array $options
      * @param string $orderby
      * @param string $order
-     *
      * @return Rule[]
      */
-    public static function GetAllRulesForCalendar($calendar_id, $get_posts_options = array(), $orderby = "priority", $order = "asc"): array {
-        $rules = self::GetAllRules($get_posts_options, $orderby, $order);
-
+    public static function GetAllRulesForCalendar(int $calendar_id, array $options = array(), string $orderby = "priority", string $order = "asc"): array {
+        $rules = self::GetAllRules($options, $orderby, $order);
         $calendar_rules = array();
         foreach($rules as $rule) {
-            if(CalendarSelectionHandler::ContainsCalendar($rule->calendar_selection, $calendar_id)) {
+            if(CalendarSelectionHandler::ContainsCalendar($rule->GetCalendarSelection(), $calendar_id)) {
                 $calendar_rules[] = $rule;
             }
         }
@@ -138,18 +120,18 @@ class RulesManager {
 
 	/**
 	 * @param $calendar_id
-	 * @param \DateTime $dateTime
-	 * @param array $get_posts_options
+	 * @param DateTime $dateTime
+	 * @param array $options
 	 * @param string $orderby
 	 * @param string $order
 	 *
 	 * @return Rule[]
 	 */
-    public static function GetAllRulesForCalendarForDateTime( $calendar_id, \DateTime $dateTime, $get_posts_options = array(), $orderby = "priority", $order = "asc" ): array {
-		$rules = self::GetAllRulesForCalendar($calendar_id, $get_posts_options, $orderby, $order);
+    public static function GetAllRulesForCalendarForDateTime($calendar_id, DateTime $dateTime, array $options = array(), string $orderby = "priority", string $order = "asc" ): array {
+		$rules = self::GetAllRulesForCalendar($calendar_id, $options, $orderby, $order);
 		$dtRules = array();
 		foreach ($rules as $rule) {
-			if(PeriodsTools::IsDateTimeInPeriodCollection($rule->periods, $dateTime)) {
+			if(PeriodsTools::IsDateTimeInPeriodCollection($rule->GetPeriods()->toArray(), $dateTime)) {
 				$dtRules[] = $rule;
 			}
 		}
@@ -159,9 +141,9 @@ class RulesManager {
 
 	/**
 	 * @param Rule $rule
-	 * @param \DateTime $date_time
+	 * @param DateTime $date_time
 	 */
-    public static function DoesRuleWorksOnDateTime( Rule $rule, \DateTime $date_time ) {
+    public static function DoesRuleWorksOnDateTime( Rule $rule, DateTime $date_time ) {
 
     }
 }

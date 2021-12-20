@@ -82,7 +82,6 @@ class CalendarManager {
      * @return int
      */
 	public static function GetAllCalendarsCount(array $options = array()): int {
-
         $mgr = OrmManager::GetEntityManager();
         $qb = $mgr->createQueryBuilder();
         $qb ->select($qb->expr()->count("c"))

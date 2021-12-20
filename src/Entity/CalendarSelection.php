@@ -45,12 +45,40 @@ class CalendarSelection {
 	 */
 	protected string $selection_mode = TLBM_CALENDAR_SELECTION_TYPE_ALL;
 
+    /**
+     * @return string
+     */
+    public function GetSelectionMode(): string {
+        return $this->selection_mode;
+    }
+
+    /**
+     * @param string $selection_mode
+     */
+    public function SetSelectionMode(string $selection_mode): void {
+        $this->selection_mode = $selection_mode;
+    }
+
+
+
 	/**
 	 * @return Collection|Calendar[]
 	 */
 	public function GetCalendars(): Collection {
 		return $this->calendars;
 	}
+
+    /**
+     * @return array
+     */
+    public function GetCalendarIds(): array {
+        $calendars = $this->GetCalendars();
+        $ids = array();
+        foreach ($calendars as $calendar) {
+            $ids[] = $calendar->GetId();
+        }
+        return $ids;
+    }
 
 	/**
 	 * @param Calendar $calendar

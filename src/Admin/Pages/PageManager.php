@@ -10,6 +10,7 @@ use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
 use TLBM\Admin\Pages\SinglePages\CalendarPage;
 use TLBM\Admin\Pages\SinglePages\FormPage;
 use TLBM\Admin\Pages\SinglePages\PageBase;
+use TLBM\Admin\Pages\SinglePages\RuleEditPage;
 use TLBM\Admin\Pages\SinglePages\RulesPage;
 use TLBM\Admin\Pages\SinglePages\SettingsPage;
 
@@ -27,6 +28,7 @@ class PageManager {
 			new CalendarPage(),
             new CalendarEditPage(),
 			new RulesPage(),
+            new RuleEditPage(),
 			new FormPage(),
 			new SettingsPage()
 		);
