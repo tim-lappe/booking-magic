@@ -5,6 +5,7 @@ namespace TLBM;
 use DateTime;
 use TLBM\Admin\FormEditor\Formeditor;
 use TLBM\Admin\WpForm\RuleActionsField;
+use TLBM\Localization\ScriptLocalization;
 
 if( ! defined( 'ABSPATH' ) ) {
 	return;
@@ -32,8 +33,9 @@ class EnqueueAssets {
 			)
 		);
 
+        wp_localize_script( TLBM_FRONTEND_JS_SLUG, 'tlbm_localization', ScriptLocalization::GetLabels());
+
 		Formeditor::InsertFormelementsIntoScript(TLBM_FRONTEND_JS_SLUG);
-		RuleActionsField::InsertRuleActionFields(TLBM_FRONTEND_JS_SLUG);
 
 		$this->localize_constants();
 	}

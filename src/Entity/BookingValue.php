@@ -19,7 +19,7 @@ class BookingValue {
 
 	/**
 	 * @var Booking
-	 * @OrmMapping\OneToOne(targetEntity=Booking::class, inversedBy="booking_value")
+	 * @OrmMapping\OneToOne(targetEntity=Booking::class)
 	 */
 	protected Booking $booking;
 

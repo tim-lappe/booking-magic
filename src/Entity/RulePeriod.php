@@ -4,6 +4,7 @@
 namespace TLBM\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as OrmMapping;
 use TLBM\Entity\Form;
 
@@ -13,21 +14,21 @@ use TLBM\Entity\Form;
  * @OrmMapping\Entity
  * @OrmMapping\Table(name="rule_periods")
  */
-class RulePeriod extends Form {
+class RulePeriod {
 
 	use IndexedTable;
 
 	/**
 	 * @var Rule
-	 * @OrmMapping\OneToOne (targetEntity=Rule::class, inversedBy="rule_period")
+	 * @OrmMapping\ManyToOne (targetEntity=Rule::class)
 	 */
 	protected Rule $rule;
 
 	/**
 	 * @var ArrayCollection
-	 * @OrmMapping\OneToMany (targetEntity=TimeSlot::class, mappedBy="rule_period", orphanRemoval=true)
+	 * @OrmMapping\OneToMany (targetEntity=TimeSlot::class, mappedBy="rule_period", orphanRemoval=true, cascade={"all"})
 	 */
-	protected ArrayCollection $time_slots;
+	protected Collection $time_slots;
 
 	/**
 	 * @var int

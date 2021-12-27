@@ -23,4 +23,7 @@ trait IndexedTable {
 		return $this->id;
 	}
 
+    public function SetId(int $id) {
+        $this->id = $id;
+    }
 }

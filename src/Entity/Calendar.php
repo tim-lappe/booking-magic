@@ -21,13 +21,13 @@ class Calendar {
 	 * @var string
 	 * @OrmMapping\Column(type="string", nullable=false, unique=true)
 	 */
-	protected string $title;
+	protected string $title = "";
 
 	/**
 	 * @var int
 	 * @OrmMapping\Column(type="bigint", nullable=false)
 	 */
-	protected int $timestamp_created;
+	protected int $timestamp_created = 0;
 
     /**
      * @return int
@@ -47,7 +47,7 @@ class Calendar {
 
 	/**
 	 * @var Collection|CalendarSelection[]
-	 * @OrmMapping\ManyToMany(targetEntity=CalendarSelection::class, mappedBy="calendar")
+	 * @OrmMapping\ManyToMany(targetEntity=CalendarSelection::class)
 	 */
 	protected Collection $calendar_selections;
 

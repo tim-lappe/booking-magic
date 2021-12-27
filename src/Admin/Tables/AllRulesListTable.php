@@ -4,8 +4,10 @@
 namespace TLBM\Admin\Tables;
 
 
+use TLBM\Admin\Pages\PageManager;
+use TLBM\Admin\Pages\SinglePages\RuleEditPage;
 use TLBM\Calendar\CalendarManager;
-use TLBM\Model\Rule;
+use TLBM\Entity\Rule;
 use TLBM\Rules\RulesManager;
 
 class AllRulesListTable extends TableBase {
@@ -38,25 +40,19 @@ class AllRulesListTable extends TableBase {
 	}
 
 	protected function GetItems( $orderby, $order ): array {
-		$pt_args = array();
-		if(isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
-			$pt_args = array("post_status" => "trash");
-		}
-
 		$filteredbookings = array();
-		$rules = RulesManager::GetAllRules($pt_args, $orderby, $order);
-		return $rules;
+        return RulesManager::GetAllRules(array(), $orderby, $order);
 	}
 
 	/**
-	 * @param Rule|object $item
+	 * @param Rule $item
 	 */
-	public function column_calendars($item) {
-		$selection = $item->calendar_selection;
-		if($selection->selection_type == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
+	public function column_calendars(Rule $item) {
+		$selection = $item->GetCalendarSelection();
+		if($selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
 			echo __("All", TLBM_TEXT_DOMAIN);
-		} else if($selection->selection_type == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
-			foreach($selection->selected_calendar_ids as $key => $id) {
+		} else if($selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
+			foreach($selection->GetCalendarIds() as $key => $id) {
 				$cal = CalendarManager::GetCalendar($id);
 				$link = get_edit_post_link( $id );
 				if($key > 0) {
@@ -64,9 +60,9 @@ class AllRulesListTable extends TableBase {
 				}
 				echo "<a href='" . $link . "'>" . $cal->GetTitle() . "</a>";
 			}
-		} else if($selection->selection_type == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
+		} else if($selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
 			echo __("All but ", TLBM_TEXT_DOMAIN);
-			foreach($selection->selected_calendar_ids as $key => $id) {
+			foreach($selection->GetCalendarIds() as $key => $id) {
 				$cal = CalendarManager::GetCalendar($id);
 				$link = get_edit_post_link( $id );
 				if($key > 0) {
@@ -78,14 +74,14 @@ class AllRulesListTable extends TableBase {
 	}
 
 	/**
-	 * @param Rule|object $item
+	 * @param Rule $item
 	 */
 	public function column_title(Rule $item) {
-		$link = get_edit_post_link($item->wp_post_id);
-		if(!empty($item->title)) {
-			echo "<strong><a href='" . $link . "'>" . $item->title . "</a></strong>";
+		$link = RuleEditPage::GetEditLink($item->GetId());
+		if(!empty($item->GetTitle())) {
+			echo "<strong><a href='" . $link . "'>" . $item->GetTitle() . "</a></strong>";
 		} else {
-			echo "<strong><a href='" . $link . "'>" . $item->wp_post_id . "</a></strong>";
+			echo "<strong><a href='" . $link . "'>" . $item->GetId() . "</a></strong>";
 		}
 	}
 
@@ -131,7 +127,7 @@ class AllRulesListTable extends TableBase {
 	 * @return int
 	 */
 	protected function GetItemId( $item ): int {
-		return $item->wp_post_id;
+		return $item->GetId();
 	}
 
 	/**

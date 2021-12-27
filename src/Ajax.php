@@ -8,7 +8,6 @@ if( ! defined( 'ABSPATH' ) ) {
 }
 
 use TLBM\Ajax\AjaxLoadCalendar;
-use TLBookingMagic;
 
 class Ajax {
 
@@ -20,6 +19,6 @@ class Ajax {
 	    error_reporting(E_ERROR);
 	    ini_set("display_errors", 1);
 
-	    TLBookingMagic::MakeInstance(AjaxLoadCalendar::class);
+	    new AjaxLoadCalendar();
     }
 }
