@@ -34,6 +34,16 @@ class PageManager {
 		);
 	}
 
+    public static function GetPageInstance($class_name): ?PageBase {
+        foreach (self::$pages as $page) {
+            if($page instanceof $class_name) {
+                return $page;
+            }
+        }
+
+        return null;
+    }
+
 	public static function RegisterPages() {
 		self::LoadPages();
 

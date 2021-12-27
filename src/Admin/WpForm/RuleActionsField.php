@@ -3,13 +3,7 @@
 
 namespace TLBM\Admin\WpForm;
 
-
-use TLBM\Admin\WpForm\RuleActionFields\DayMessageAction;
-use TLBM\Admin\WpForm\RuleActionFields\DaySlotAction;
-use TLBM\Admin\WpForm\RuleActionFields\RuleActionFieldBase;
-use TLBM\Admin\WpForm\RuleActionFields\TimeSlotAction;
 use TLBM\Entity\RuleAction;
-use TLBM\Model\RuleActionCollection;
 
 if (!defined('ABSPATH')) {
     return;
@@ -35,39 +29,44 @@ class RuleActionsField extends FormFieldBase {
         <tr>
             <th scope="row"><label for="<?php echo $this->name ?>"><?php echo $this->title ?></label></th>
             <td>
-                <div data-json="<?php echo urlencode(json_encode($actions)) ?>" class="tlbm-actions tlbm-rule-actions-field"></div>
+                <div data-json="<?php echo urlencode(json_encode($actions)) ?>" data-name="<?php echo $this->name ?>" class="tlbm-actions tlbm-rule-actions-field"></div>
             </td>
         </tr>
         <?php
     }
 
     /**
-     * @param $name
-     * @return RuleActionFieldBase|null
+     * @param $vars
+     * @return RuleAction[]
      */
-    private static function GetRuleActionFieldByName($name): ?RuleActionFieldBase {
-        $fields = self::GetRuleActionFields();
-        foreach ($fields as $field) {
-            if($field->key = $name) {
-                return $field;
+    public function ReadFromVars($vars): array {
+        if(isset($vars[$this->name])) {
+            $decoded_var = urldecode($vars[$this->name]);
+            $json = json_decode($decoded_var);
+            $actions = array();
+
+            if(is_array($json)) {
+                foreach ($json as $key => $action_obj) {
+                    $ruleAction = new RuleAction();
+                    $ruleAction->SetPriority(sizeof($json) - $key);
+                    $ruleAction->SetActions(json_encode($action_obj->actions));
+                    $ruleAction->SetActionType($action_obj->action_type);
+                    $ruleAction->SetWeekdays($action_obj->weekdays);
+
+                    if($action_obj->time_hour !== null && $action_obj->time_min !== null) {
+                        $ruleAction->SetTimeHour($action_obj->time_hour);
+                        $ruleAction->SetTimeMin($action_obj->time_min);
+                    }
+
+                    if ($action_obj->id > 0 && is_numeric($action_obj->id)) {
+                        $ruleAction->SetId($action_obj->id);
+                    }
+
+                    $actions[] = $ruleAction;
+                }
             }
+            return $actions;
         }
-
-        return null;
-    }
-
-    /**
-     * @return RuleActionFieldBase[]
-     */
-    private static function GetRuleActionFields(): array {
-        return array(
-            new DaySlotAction(),
-            new TimeSlotAction(),
-            new DayMessageAction()
-        );
-    }
-
-    public static function InsertRuleActionFields($handle) {
-        wp_localize_script($handle, "tlbm_rule_action_fields", self::GetRuleActionFields());
+        return array();
     }
 }

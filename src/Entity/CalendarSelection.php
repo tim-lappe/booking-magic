@@ -24,7 +24,7 @@ class CalendarSelection {
 	use IndexedTable;
 
 	/**
-	 * @OrmMapping\ManyToMany(targetEntity=Calendar::class, inversedBy="calendar_selection")
+	 * @OrmMapping\ManyToMany(targetEntity=Calendar::class)
 	 * @OrmMapping\JoinTable(
 	 *     name="calendar_selection_calendar_mapping",
 	 *     joinColumns={
@@ -34,9 +34,9 @@ class CalendarSelection {
 	 *          @OrmMapping\JoinColumn(name="calendar_id", referencedColumnName="id")
 	 *     }
 	 * )
-	 * @var ArrayCollection|Calendar[]
+	 * @var Collection|Calendar[]
 	 */
-	protected ArrayCollection $calendars;
+	protected Collection $calendars;
 
 
 	/**

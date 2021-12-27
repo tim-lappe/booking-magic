@@ -4,9 +4,9 @@
 use TLBM\Admin\FormEditor\FormElementsCollection;
 use TLBM\AdminPages;
 use TLBM\Ajax;
+use TLBM\Database\OrmManager;
 use TLBM\EnqueueAssets;
 use TLBM\Metaboxes;
-use TLBM\ORM;
 use TLBM\Output\Calendar\CalendarOutput;
 use TLBM\PluginActivation;
 use TLBM\RegisterPostTypes;
@@ -19,33 +19,41 @@ if( ! defined( 'ABSPATH' ) ) {
 }
 
 if(WP_DEBUG) {
+    error_reporting(E_ALL);
     ini_set ('error_reporting', E_ALL);
+    ini_set ('display_errors', true);
+    ini_set ('display_startup_errors', true);
+    ini_set ("error_log", "/tmp/phplog.txt");
 }
 
-TLBookingMagic::MakeInstance( PluginActivation::class);
+OrmManager::Init();
+new PluginActivation();
 
-$GLOBALS['TLBM_ORM'] = TLBookingMagic::MakeInstance( ORM::class);
 
 /**
  * Make Instances of Important Classes
  */
-TLBookingMagic::MakeInstance(RegisterPostTypes::class);
-TLBookingMagic::MakeInstance(RegisterShortcodes::class);
-TLBookingMagic::MakeInstance(EnqueueAssets::class);
-TLBookingMagic::MakeInstance(Metaboxes::class);
-TLBookingMagic::MakeInstance(Ajax::class);
+if(in_array(TLBM_PLUGIN_RELATIVE_DIR_FILE, apply_filters('active_plugins', get_option('active_plugins')))){
+    //plugin is activated
 
-$GLOBALS['TLBM_REQUEST'] = TLBookingMagic::MakeInstance(Request::class);
+    new RegisterPostTypes();
+    new RegisterShortcodes();
+    new EnqueueAssets();
+    new Metaboxes();
+    new Ajax();
 
+    $GLOBALS['TLBM_REQUEST'] = new Request();
 
-TLBookingMagic::MakeInstance(Settings::class);
-TLBookingMagic::MakeInstance(AdminPages::class);
-/**
- * Register all FormElements for the Formeditor
- */
-FormElementsCollection::RegisterFormElements();
+    new Settings();
+    new AdminPages();
 
-/**
- * Register all Calendar Output Printers
- */
-CalendarOutput::RegisterCalendarPrinters();
+    /**
+     * Register all FormElements for the Formeditor
+     */
+    FormElementsCollection::RegisterFormElements();
+
+    /**
+     * Register all Calendar Output Printers
+     */
+    CalendarOutput::RegisterCalendarPrinters();
+}

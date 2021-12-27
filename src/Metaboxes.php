@@ -31,24 +31,24 @@ class Metaboxes {
     }
 
     public function EnqueueMetaboxes() {
-    	TLBookingMagic::MakeInstance(MBSave::class);
+    	new MBSave();
 
-        TLBookingMagic::MakeInstance(MBCalendarPreview::class);
-        TLBookingMagic::MakeInstance(MBCalendarRules::class);
+        new MBCalendarPreview();
+        new MBCalendarRules();
 
-        TLBookingMagic::MakeInstance(MBCapacityRuleCalendars::class);
-        TLBookingMagic::MakeInstance(MBRuleActions::class);
-        TLBookingMagic::MakeInstance(MBCapacityRulePeriods::class);
-        TLBookingMagic::MakeInstance(MBCapacityRulePriority::class);
+        new MBCapacityRuleCalendars();
+        new MBRuleActions();
+        new MBCapacityRulePeriods();
+        new MBCapacityRulePriority();
 
-        TLBookingMagic::MakeInstance(MBFormEditor::class);
-        TLBookingMagic::MakeInstance(MBFormSideInfo::class);
+        new MBFormEditor();
+        new MBFormSideInfo();
 
-        TLBookingMagic::MakeInstance(MBBookingInformations::class);
-	    TLBookingMagic::MakeInstance(MBBookingActions::class);
+        new MBBookingInformations();
+	    new MBBookingActions();
 
-	    TLBookingMagic::MakeInstance(MBGroupCalendars::class);
-	    TLBookingMagic::MakeInstance(MBGroupBookingOrder::class);
+	    new MBGroupCalendars();
+	    new MBGroupBookingOrder();
     }
 
     public function RemoveDefaultPublishBox() {

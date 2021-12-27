@@ -24,19 +24,19 @@ class CalendarSlot {
 
 	/**
 	 * @var Booking
-	 * @OrmMapping\OneToOne (targetEntity=Booking::class, inversedBy="calendar_slot")
+	 * @OrmMapping\OneToOne (targetEntity=Booking::class)
 	 */
 	public Booking $booking;
 
 	/**
 	 * @var Calendar
-	 * @OrmMapping\ManyToOne (targetEntity=Calendar::class, inversedBy="calendar_slot")
+	 * @OrmMapping\ManyToOne (targetEntity=Calendar::class)
 	 */
 	public Calendar $calendar;
 
 	/**
 	 * @var Form
-	 * @OrmMapping\ManyToOne (targetEntity=Form::class, inversedBy="calendar_slot")
+	 * @OrmMapping\ManyToOne (targetEntity=Form::class)
 	 */
 	public Form $form;
 

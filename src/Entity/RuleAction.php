@@ -3,7 +3,6 @@
 
 namespace TLBM\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as OrmMapping;
 
 /**
@@ -18,7 +17,7 @@ class RuleAction {
 
 	/**
 	 * @var Rule
-	 * @OrmMapping\OneToOne (targetEntity=Rule::class, inversedBy="rule_action")
+	 * @OrmMapping\ManyToOne (targetEntity=Rule::class)
 	 */
 	protected Rule $rule;
 
@@ -32,30 +31,39 @@ class RuleAction {
 	 * @var string
 	 * @OrmMapping\Column (type="string")
 	 */
-	protected string $weekdays;
+	protected string $weekdays = "";
 
 	/**
 	 * @var int
 	 * @OrmMapping\Column (type="integer")
 	 */
-	protected int $time_hour;
+	protected int $time_hour = 0;
 
 	/**
 	 * @var int
 	 * @OrmMapping\Column (type="integer")
 	 */
-	protected int $time_min;
+	protected int $time_min = 0;
 
 	/**
 	 * @var int
 	 * @OrmMapping\Column (type="integer")
 	 */
-	protected int $priority;
+	protected int $priority = 0;
 
-	/**
-	 * @var ArrayCollection
-	 */
-	protected ArrayCollection $values;
+    /**
+     * @var string
+     * @OrmMapping\Column (type="json", nullable=false)
+     */
+	protected string $actions;
+
+    public function SetActions(string $actions) {
+        $this->actions = $actions;
+    }
+
+    public function GetActions(): string {
+        return $this->actions;
+    }
 
 	/**
 	 * @return Rule
@@ -139,9 +147,5 @@ class RuleAction {
 	 */
 	public function SetPriority( int $priority ): void {
 		$this->priority = $priority;
-	}
-
-	public function __construct() {
-		$this->values = new ArrayCollection();
 	}
 }

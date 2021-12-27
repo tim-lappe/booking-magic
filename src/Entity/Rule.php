@@ -29,11 +29,11 @@ class Rule {
 	 * @var int
 	 * @OrmMapping\Column(type="bigint", nullable=false)
 	 */
-	protected int $timestamp_created;
+	protected int $timestamp_created = 0;
 
 	/**
 	 * @var CalendarSelection
-	 * @OrmMapping\OneToOne(targetEntity=CalendarSelection::class, inversedBy="rule", orphanRemoval=true)
+	 * @OrmMapping\OneToOne(targetEntity=CalendarSelection::class, orphanRemoval=true, cascade={"all"})
 	 */
 	public CalendarSelection $calendar_selection;
 
@@ -45,15 +45,15 @@ class Rule {
 
 	/**
 	 * @var ArrayCollection
-	 * @OrmMapping\OneToMany(targetEntity=RuleAction::class, mappedBy="rule", orphanRemoval=true)
+	 * @OrmMapping\OneToMany(targetEntity=RuleAction::class, mappedBy="rule", orphanRemoval=true, cascade={"all"})
 	 */
-	public ArrayCollection $actions;
+	public Collection $actions;
 
 	/**
 	 * @var ArrayCollection
-	 * @OrmMapping\OneToMany(targetEntity=RulePeriod::class, mappedBy="rule", orphanRemoval=true)
+	 * @OrmMapping\OneToMany(targetEntity=RulePeriod::class, mappedBy="rule", orphanRemoval=true, cascade={"all"})
 	 */
-	public ArrayCollection $periods;
+	public Collection $periods;
 
 
 	/**
@@ -78,6 +78,14 @@ class Rule {
 
 		return $action;
 	}
+
+    public function ClearActions() {
+        foreach ($this->actions as $action) {
+            $action->SetRule(null);
+        }
+
+        $this->actions->clear();
+    }
 
     /**
      * @return Collection
@@ -167,5 +175,7 @@ class Rule {
 	public function __construct() {
 		$this->actions = new ArrayCollection();
 		$this->periods = new ArrayCollection();
+        $this->timestamp_created = time();
+        $this->calendar_selection = new CalendarSelection();
 	}
 }

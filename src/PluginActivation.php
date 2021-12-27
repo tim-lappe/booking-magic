@@ -7,6 +7,7 @@ namespace TLBM;
 use Doctrine\ORM\Tools\SchemaTool;
 use TLBM\Database\OrmManager;
 
+
 class PluginActivation {
 
 	public function __construct() {
