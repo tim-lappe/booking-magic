@@ -19,7 +19,7 @@ define("TLBM_CALENDAR_SELECTION_TYPE_ONLY", "only");
  * @OrmMapping\Entity
  * @OrmMapping\Table(name="calendar_selections")
  */
-class CalendarSelection {
+class CalendarSelection implements \JsonSerializable {
 
 	use IndexedTable;
 
@@ -54,11 +54,15 @@ class CalendarSelection {
 
     /**
      * @param string $selection_mode
+     * @return bool
      */
-    public function SetSelectionMode(string $selection_mode): void {
-        $this->selection_mode = $selection_mode;
+    public function SetSelectionMode(string $selection_mode): bool {
+        if(self::IsValidSelectionMode($selection_mode)) {
+            $this->selection_mode = $selection_mode;
+            return true;
+        }
+        return false;
     }
-
 
 
 	/**
@@ -111,4 +115,25 @@ class CalendarSelection {
 	public function __construct() {
 		$this->calendars = new ArrayCollection();
 	}
+
+    public function jsonSerialize(): array {
+        $calendars = $this->GetCalendars()->toArray();
+        $cal_ids = array();
+        foreach ($this->calendars as $cal) {
+            $cal_ids[] = $cal->GetId();
+        }
+
+        return array(
+            "selection_mode" => $this->GetSelectionMode(),
+            "calendar_ids" => $cal_ids
+        );
+    }
+
+    public static function IsValidSelectionMode($selection_mode): bool {
+        return in_array($selection_mode, array(
+            TLBM_CALENDAR_SELECTION_TYPE_ALL,
+            TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT,
+            TLBM_CALENDAR_SELECTION_TYPE_ONLY
+        ));
+    }
 }

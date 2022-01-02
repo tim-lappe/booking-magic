@@ -6,6 +6,7 @@ namespace TLBM\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as OrmMapping;
+use JetBrains\PhpStorm\Internal\TentativeType;
 
 /**
  * Class Calendar
@@ -21,13 +22,13 @@ class Booking {
 	 * @var ArrayCollection
 	 * @OrmMapping\OneToMany(targetEntity=BookingValue::class, mappedBy="booking", orphanRemoval=true)
 	 */
-	protected ArrayCollection $booking_values;
+	protected Collection $booking_values;
 
 	/**
 	 * @var ArrayCollection
 	 * @OrmMapping\OneToMany(targetEntity=CalendarSlot::class, mappedBy="booking", orphanRemoval=true)
 	 */
-	protected ArrayCollection $calendar_slots;
+	protected Collection $calendar_slots;
 
 	/**
 	 * @var int

@@ -40,6 +40,7 @@
   overflow: auto;
   scroll-behavior: smooth;
   max-height: 400px;
+  padding-left: 2px;
 
   .tlbm-calendar-select-item {
     display: inline-block;
@@ -127,6 +128,26 @@
   border-color: red !important;
 }
 
+.tlbm-date-select {
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+  flex-direction: row;
+
+  .dashicons {
+    margin-left: 15px;
+    margin-right: 5px;
+  }
+
+  .button-remove-time {
+    margin-left: 15px;
+  }
+
+  .button-add-time {
+    margin-left: 15px;
+  }
+}
+
 .tlbm-date-daterange-label {
   margin: 0 !important;
 }
@@ -152,6 +173,7 @@
       display: block;
     }
   }
+
   .tlbm-horizontal {
     display: flex;
     align-items: flex-start;
@@ -164,11 +186,18 @@
     }
   }
 
-  .tlbm-main-panel {
-    margin-bottom: 10px;
-    background: white;
+  .tlbm-period-main-panel {
     border-radius: 5px;
-    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    > * {
+      &:not(:first-child) {
+        margin-top: 10px;
+      }
+    }
   }
 
   .tlbm-timeslots {

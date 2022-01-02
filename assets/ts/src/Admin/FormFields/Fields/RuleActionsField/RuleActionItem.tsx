@@ -27,6 +27,12 @@ export class RuleActionsItem extends React.Component<RuleActionsItemProps, RuleA
             item: props.dataItem
         };
 
+        if(props.dataItem.action_type == "message") {
+            this.state.item.actions = {
+                "message": props.dataItem?.actions?.message ?? ""
+            }
+        }
+
         this.onRemove = this.onRemove.bind(this);
         this.onMoveUp = this.onMoveUp.bind(this);
         this.onMoveDown = this.onMoveDown.bind(this);
@@ -106,21 +112,26 @@ export class RuleActionsItem extends React.Component<RuleActionsItemProps, RuleA
         let weekday_select = (
             <div>
                 <small>{Localization.__("Weekdays")}</small><br />
-                <WeekdaySelect onChange={this.onChangeWeekday} />
+                <WeekdaySelect initState={{
+                    weekday: this.state.item.weekdays
+                }} onChange={this.onChangeWeekday} />
             </div>
         );
 
         let time_select = (
             <div style={{marginLeft: "20px"}}>
                 <small>{Localization.__("Timeslot")}</small><br />
-                <TimeSelect minutesSteps={5} onChange={this.onChangeTime} />
+                <TimeSelect initState={{
+                    minute: this.state.item.time_min,
+                    hour: this.state.item.time_hour
+                }} minutesSteps={5} onChange={this.onChangeTime} />
             </div>
         )
 
         let capacity_select = (
             <div style={{marginLeft: "20px"}}>
                 <small>{Localization.__("Capacity")}</small><br />
-                <CapacitySelect onChange={this.onChangeCapacity} />
+                <CapacitySelect initState={this.state.item.actions} onChange={this.onChangeCapacity} />
             </div>
         )
 
@@ -149,7 +160,7 @@ export class RuleActionsItem extends React.Component<RuleActionsItemProps, RuleA
                     {weekday_select}
                     <div style={{marginLeft: "20px", flexGrow: 1}}>
                         <small>{Localization.__("Message")}</small><br />
-                        <textarea style={{minWidth: "75%"}} onChange={this.onChangeMessage} value={this.state.item?.actions?.message} />
+                        <textarea style={{minWidth: "75%"}} onChange={this.onChangeMessage} value={this.state.item.actions.message} />
                     </div>
                 </div>
             )

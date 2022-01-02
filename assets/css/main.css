@@ -124,6 +124,7 @@
   overflow: auto;
   scroll-behavior: smooth;
   max-height: 400px;
+  padding-left: 2px;
 }
 .tlbm-calendar-select-panel .tlbm-calendar-select-item {
   display: inline-block;
@@ -201,6 +202,23 @@
   border-color: red !important;
 }
 
+.tlbm-date-select {
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+  flex-direction: row;
+}
+.tlbm-date-select .dashicons {
+  margin-left: 15px;
+  margin-right: 5px;
+}
+.tlbm-date-select .button-remove-time {
+  margin-left: 15px;
+}
+.tlbm-date-select .button-add-time {
+  margin-left: 15px;
+}
+
 .tlbm-date-daterange-label {
   margin: 0 !important;
 }
@@ -229,11 +247,15 @@
   flex-grow: 1;
   flex-basis: 0;
 }
-.tlbm-period-item .tlbm-main-panel {
-  margin-bottom: 10px;
-  background: white;
+.tlbm-period-item .tlbm-period-main-panel {
   border-radius: 5px;
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.tlbm-period-item .tlbm-period-main-panel > *:not(:first-child) {
+  margin-top: 10px;
 }
 .tlbm-period-item .tlbm-timeslots {
   margin-left: 10px;

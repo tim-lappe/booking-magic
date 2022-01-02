@@ -4,6 +4,8 @@
 namespace TLBM\Entity;
 
 use Doctrine\ORM\Mapping as OrmMapping;
+use JsonSerializable;
+use stdClass;
 
 /**
  * Class RuleAction
@@ -11,15 +13,15 @@ use Doctrine\ORM\Mapping as OrmMapping;
  * @OrmMapping\Entity
  * @OrmMapping\Table(name="rule_actions")
  */
-class RuleAction {
+class RuleAction implements JsonSerializable {
 
 	use IndexedTable;
 
 	/**
-	 * @var Rule
+	 * @var ?Rule
 	 * @OrmMapping\ManyToOne (targetEntity=Rule::class)
 	 */
-	protected Rule $rule;
+	protected ?Rule $rule;
 
 	/**
 	 * @var string
@@ -52,16 +54,15 @@ class RuleAction {
 	protected int $priority = 0;
 
     /**
-     * @var string
      * @OrmMapping\Column (type="json", nullable=false)
      */
-	protected string $actions;
+	protected $actions = null;
 
-    public function SetActions(string $actions) {
+    public function SetActions($actions) {
         $this->actions = $actions;
     }
 
-    public function GetActions(): string {
+    public function GetActions() {
         return $this->actions;
     }
 
@@ -73,9 +74,9 @@ class RuleAction {
 	}
 
 	/**
-	 * @param Rule $rule
+	 * @param ?Rule $rule
 	 */
-	public function SetRule( Rule $rule ): void {
+	public function SetRule( ?Rule $rule ): void {
 		$this->rule = $rule;
 	}
 
@@ -148,4 +149,16 @@ class RuleAction {
 	public function SetPriority( int $priority ): void {
 		$this->priority = $priority;
 	}
+
+    public function jsonSerialize(): array {
+        return array(
+            "id" => $this->GetId(),
+            "action_type" => $this->action_type,
+            "weekdays" => $this->weekdays,
+            "time_hour" => $this->time_hour,
+            "time_min" => $this->time_min,
+            "priority" => $this->priority,
+            "actions" => $this->actions
+        );
+    }
 }
