@@ -5,6 +5,7 @@ interface CapacitySelectProps {
     onChange?: (newCapacity: CapacitySelectCapacity) => void;
     modeName?: string;
     amountName?: string;
+    initState: CapacitySelectCapacity;
 }
 
 export interface CapacitySelectCapacity {
@@ -20,10 +21,10 @@ export class CapacitySelect extends React.Component<CapacitySelectProps, Capacit
     constructor(props: any) {
         super(props);
 
-        this.state = {
+        this.state = props.initState ?? {
             mode: "set",
             amount: 0
-        }
+        };
 
         this.onChangeMode = this.onChangeMode.bind(this);
         this.onChangeAmount = this.onChangeAmount.bind(this);

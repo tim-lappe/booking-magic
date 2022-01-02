@@ -8,6 +8,7 @@ interface TimeSelectProps {
     onChange?: (newtime: TimeSlotTime) => void;
     hours?: [];
     minutes?: [];
+    initState: TimeSlotTime;
 }
 
 export interface TimeSlotTime {
@@ -23,10 +24,10 @@ export class TimeSelect extends React.Component<TimeSelectProps, TimeSlotTime> {
     constructor(props: any) {
         super(props);
 
-        this.state = {
-            minute: 0,
-            hour: 0
-        }
+        this.state = props.initState ?? {
+            hour: 0,
+            minute: 0
+        };
 
         this.onChangeHour = this.onChangeHour.bind(this);
         this.onChangeMinute = this.onChangeMinute.bind(this);
@@ -74,14 +75,14 @@ export class TimeSelect extends React.Component<TimeSelectProps, TimeSlotTime> {
 
         return (
             <div style={{"display": "flex"}}>
-                <select ref={this.selectHourDom} onLoad={this.onChangeHour} onChange={this.onChangeHour} name={this.props.nameHour ?? "hour"}>
+                <select ref={this.selectHourDom} value={this.state.hour} onLoad={this.onChangeHour} onChange={this.onChangeHour} name={this.props.nameHour ?? "hour"}>
                     {hoursArr.map((i) => (
                             <option value={i} key={i}>{i}</option>
                         )
                     )}
                 </select>
                 <span>&nbsp;:&nbsp;</span>
-                <select ref={this.selectMinuteDom} onLoad={this.onChangeMinute} onChange={this.onChangeMinute} name={this.props.nameMinute ?? "minute"}>
+                <select ref={this.selectMinuteDom} value={this.state.minute} onLoad={this.onChangeMinute} onChange={this.onChangeMinute} name={this.props.nameMinute ?? "minute"}>
                     {minutesArr.map((i) => (
                             <option value={i} key={i}>{i}</option>
                         )

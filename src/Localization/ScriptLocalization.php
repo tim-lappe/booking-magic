@@ -16,15 +16,8 @@ class ScriptLocalization {
 
     public static function GetLabelCollections(): array {
         return array(
-            "weekdays" => array(
-                "monday" => __("Monday", TLBM_TEXT_DOMAIN),
-                "tuesday" => __("Tuesday", TLBM_TEXT_DOMAIN),
-                "wednesday" => __("Wednesday", TLBM_TEXT_DOMAIN),
-                "thursday" => __("Thursday", TLBM_TEXT_DOMAIN),
-                "friday" => __("Friday", TLBM_TEXT_DOMAIN),
-                "saturday" => __("Saturday", TLBM_TEXT_DOMAIN),
-                "sunday" => __("Sunday", TLBM_TEXT_DOMAIN),
-            )
+            "weekdays" => Labels::GetWeekdayLabels(),
+            "months" => Labels::GetMonthLabels()
         );
     }
 

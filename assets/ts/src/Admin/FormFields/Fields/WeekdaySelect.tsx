@@ -4,6 +4,7 @@ import {Localization} from "../../../Localization";
 interface WeekdaySelectProps {
     onChange?: (newWeekday: WeekdaySelectWeekday) => void;
     name?: string;
+    initState: WeekdaySelectWeekday;
 }
 
 export interface WeekdaySelectWeekday {
@@ -17,9 +18,9 @@ export class WeekdaySelect extends React.Component<WeekdaySelectProps, WeekdaySe
     constructor(props: any) {
         super(props);
 
-        this.state = {
-            weekday: ""
-        }
+        this.state = props.initState ?? {
+            weekday: "every_day"
+        };
 
         this.onChange = this.onChange.bind(this);
     }
@@ -45,7 +46,7 @@ export class WeekdaySelect extends React.Component<WeekdaySelectProps, WeekdaySe
 
 
     render() {
-        return (<select ref={this.selectDom} onLoad={this.onChange} onChange={this.onChange} name={this.props.name ?? "weekday"}>
+        return (<select ref={this.selectDom} value={this.state.weekday} onLoad={this.onChange} onChange={this.onChange} name={this.props.name ?? "weekday"}>
             <optgroup label={Localization.__('Multiple Weekdays')}>
                 <option value="every_day">{Localization.__("Every Day")}</option>
                 <option value="mo_to_fr">{Localization.__("Monday to Friday")}</option>

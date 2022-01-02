@@ -2,6 +2,7 @@ import * as React from "react";
 import {RuleActionsItem} from "./RuleActionItem";
 import {Localization} from "../../../../Localization";
 import {RuleAction} from "../../../Entity/RuleAction";
+import {Utils} from "../../../../Utils";
 
 interface RuleActionsFieldsState {
     items: RuleAction[];
@@ -20,7 +21,7 @@ export class RuleActionsFields extends React.Component<any, RuleActionsFieldsSta
         this.onChange = this.onChange.bind(this);
         this.onSelectTypeChanged = this.onSelectTypeChanged.bind(this);
 
-        let jsondata = decodeURIComponent(props.dataset.json);
+        let jsondata = Utils.decodeUriComponent(props.dataset.json);
         jsondata = JSON.parse(jsondata);
 
         this.state = {
@@ -89,10 +90,6 @@ export class RuleActionsFields extends React.Component<any, RuleActionsFieldsSta
         this.setState({
             items: [...items]
         });
-    }
-
-    componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<RuleActionsFieldsState>, snapshot?: any) {
-        console.log("Items", this.state.items);
     }
 
     render() {

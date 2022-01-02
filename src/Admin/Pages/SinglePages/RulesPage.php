@@ -5,7 +5,6 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 
 use TLBM\Admin\Tables\AllRulesListTable;
-use TLBM\Admin\Tables\RulesListTable;
 
 class RulesPage extends PageBase {
 

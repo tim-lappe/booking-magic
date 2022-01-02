@@ -25,6 +25,7 @@ class RuleActionsField extends FormFieldBase {
         if(!is_array($actions)) {
             $actions = array();
         }
+
         ?>
         <tr>
             <th scope="row"><label for="<?php echo $this->name ?>"><?php echo $this->title ?></label></th>
@@ -36,12 +37,13 @@ class RuleActionsField extends FormFieldBase {
     }
 
     /**
+     * @param $name
      * @param $vars
      * @return RuleAction[]
      */
-    public function ReadFromVars($vars): array {
-        if(isset($vars[$this->name])) {
-            $decoded_var = urldecode($vars[$this->name]);
+    public static function ReadFromVars($name, $vars): array {
+        if(isset($vars[$name])) {
+            $decoded_var = urldecode($vars[$name]);
             $json = json_decode($decoded_var);
             $actions = array();
 
@@ -49,7 +51,7 @@ class RuleActionsField extends FormFieldBase {
                 foreach ($json as $key => $action_obj) {
                     $ruleAction = new RuleAction();
                     $ruleAction->SetPriority(sizeof($json) - $key);
-                    $ruleAction->SetActions(json_encode($action_obj->actions));
+                    $ruleAction->SetActions($action_obj->actions);
                     $ruleAction->SetActionType($action_obj->action_type);
                     $ruleAction->SetWeekdays($action_obj->weekdays);
 

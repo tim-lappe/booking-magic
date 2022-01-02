@@ -1,0 +1,35 @@
+<?php
+
+namespace TLBM\Localization;
+
+class Labels {
+
+    public static function GetMonthLabels(): array {
+        return array(
+            1 => __("January", TLBM_TEXT_DOMAIN),
+            2 => __("February", TLBM_TEXT_DOMAIN),
+            3 => __("March", TLBM_TEXT_DOMAIN),
+            4 => __("April", TLBM_TEXT_DOMAIN),
+            5 => __("May", TLBM_TEXT_DOMAIN),
+            6 => __("June", TLBM_TEXT_DOMAIN),
+            7 => __("July", TLBM_TEXT_DOMAIN),
+            8 => __("August", TLBM_TEXT_DOMAIN),
+            9 => __("September", TLBM_TEXT_DOMAIN),
+            10 => __("October", TLBM_TEXT_DOMAIN),
+            11 => __("November", TLBM_TEXT_DOMAIN),
+            12 => __("December", TLBM_TEXT_DOMAIN),
+        );
+    }
+
+    public static function GetWeekdayLabels(): array {
+        return array(
+            "monday" => __("Monday", TLBM_TEXT_DOMAIN),
+            "tuesday" => __("Tuesday", TLBM_TEXT_DOMAIN),
+            "wednesday" => __("Wednesday", TLBM_TEXT_DOMAIN),
+            "thursday" => __("Thursday", TLBM_TEXT_DOMAIN),
+            "friday" => __("Friday", TLBM_TEXT_DOMAIN),
+            "saturday" => __("Saturday", TLBM_TEXT_DOMAIN),
+            "sunday" => __("Sunday", TLBM_TEXT_DOMAIN),
+        );
+    }
+}
