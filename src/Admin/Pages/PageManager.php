@@ -8,6 +8,7 @@ use TLBM\Admin\Pages\SinglePages\BookingMagicRoot;
 use TLBM\Admin\Pages\SinglePages\BookingsPage;
 use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
 use TLBM\Admin\Pages\SinglePages\CalendarPage;
+use TLBM\Admin\Pages\SinglePages\FormEditPage;
 use TLBM\Admin\Pages\SinglePages\FormPage;
 use TLBM\Admin\Pages\SinglePages\PageBase;
 use TLBM\Admin\Pages\SinglePages\RuleEditPage;
@@ -30,6 +31,7 @@ class PageManager {
 			new RulesPage(),
             new RuleEditPage(),
 			new FormPage(),
+            new FormEditPage(),
 			new SettingsPage()
 		);
 	}

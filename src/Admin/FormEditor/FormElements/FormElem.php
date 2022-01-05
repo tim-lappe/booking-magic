@@ -15,22 +15,17 @@ abstract class FormElem {
 	/**
 	 * @var string
 	 */
-	public $title;
+	public string $title;
 
 	/**
 	 * @var string
 	 */
-	public $unique_name;
+	public string $unique_name;
 
 	/**
 	 * @var SettingsType[]
 	 */
-	public $settings = array();
-
-	/**
-	 * @var string
-	 */
-	public $editor_output;
+	public array $settings = array();
 
 	/**
 	 * @var string
@@ -40,12 +35,12 @@ abstract class FormElem {
 	/**
 	 * @var array
 	 */
-	public $settings_output;
+	public array $settings_output;
 
 	/**
 	 * @var string
 	 */
-	public $description;
+	public string $description;
 
     /**
      * @var bool

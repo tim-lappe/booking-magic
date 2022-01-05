@@ -3,8 +3,12 @@
 
 namespace TLBM\Form;
 
-use TLBM\Model\Form;
-use WP_Post;
+
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Exception;
+use TLBM\Database\OrmManager;
+use TLBM\Entity\Form;
 
 if( ! defined( 'ABSPATH' ) ) {
     return;
@@ -12,62 +16,80 @@ if( ! defined( 'ABSPATH' ) ) {
 
 class FormManager {
 
-	/**
-	 * @param $id
-	 *
-	 * @return false|Form
+    /**
+     * @param $id
+     *
+     * @return false|Form
      */
 	public static function GetForm($id) {
-		$form_post = get_post($id);
-		if($form_post instanceof WP_Post) {
-			$form = new Form();
-			$form->wp_post_id = $form_post->ID;
-			$form->frontend_html = get_post_meta($form_post->ID, "frontend-html", true);
-			$form->form_data =  get_post_meta($form_post->ID, "form-data", true);
-			$form->title = $form_post->post_title;
-			return $form;
-		}
+        try {
+            $mgr = OrmManager::GetEntityManager();
+            $form = $mgr->find("\TLBM\Entity\Form", $id);
+            if ($form instanceof Form) {
+                return $form;
+            }
+        } catch (Exception $e) {
+            var_dump($e);
+        }
 
-		return false;
+        return null;
 	}
 
-	/**
-	 * @param array $get_posts_options
-	 * @param string $orderby
-	 * @param string $order
-	 *
-	 * @return Form[]
-	 */
-	public static function GetAllForms($get_posts_options = array(), $orderby = "priority", $order = "desc"): array {
-		$wp_posts = get_posts(array(
-          "post_type" => TLBM_PT_FORMULAR,
-          "numberposts" => -1
-        ) + $get_posts_options);
+    /**
+     * @param Form $rule
+     * @throws Exception
+     */
+    public static function SaveForm( Form $rule ) {
+        $mgr = OrmManager::GetEntityManager();
+        $mgr->persist($rule);
+        $mgr->flush();
+    }
 
-		$forms = array();
-		foreach ($wp_posts as $post) {
-			$forms[] = self::GetForm($post->ID);
-		}
+    /**
+     * @param array $options
+     * @param string $orderby
+     * @param string $order
+     * @param int $offset
+     * @param int $limit
+     * @return Form[]
+     */
+	public static function GetAllForms(array $options = array(), string $orderby = "title", string $order = "desc", int $offset = 0, int $limit = 0): array {
+        $mgr = OrmManager::GetEntityManager();
+        $qb = $mgr->createQueryBuilder();
+        $qb ->select("f")
+            ->from("\TLBM\Entity\Form", "f")
+            ->orderBy("f." . $orderby, $order)
+            ->setFirstResult($offset);
+        if($limit > 0) {
+            $qb->setMaxResults($limit);
+        }
 
-		usort($forms, function ($a, $b) use ($orderby, $order) {
-			if(strtolower($order) == "asc") {
-				return $a->{$orderby} > $b->{$orderby};
-			}
-			if(strtolower($order) == "desc") {
-				return $a->{$orderby} < $b->{$orderby};
-			}
-			return $a->{$orderby} < $b->{$orderby};
-		});
+        $query = $qb->getQuery();
+        $result = $query->getResult();
 
-		return $forms;
+        if(is_array($result)) {
+            return $result;
+        }
+
+        return array();
 	}
 
-	public static function GetAllFormsCount($get_posts_options = array()): int {
-		$wp_posts = get_posts(array(
-			                      "post_type" => TLBM_PT_FORMULAR,
-			                      "numberposts" => -1
-		                      ) + $get_posts_options);
+    /**
+     * @param array $options
+     * @return int
+     * @throws Exception
+     */
+	public static function GetAllFormsCount(array $options = array()): int {
+        $mgr = OrmManager::GetEntityManager();
+        $qb = $mgr->createQueryBuilder();
+        $qb ->select($qb->expr()->count("f"))
+            ->from("\TLBM\Entity\Form", "f");
 
-		return sizeof($wp_posts);
+        $query = $qb->getQuery();
+        try {
+            return $query->getSingleScalarResult();
+        } catch (NoResultException | NonUniqueResultException $e) {
+            return 0;
+        }
 	}
 }

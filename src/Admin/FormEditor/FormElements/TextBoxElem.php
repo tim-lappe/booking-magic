@@ -26,4 +26,3 @@ final class TextBoxElem extends FormInputElem {
 		return InputGenerator::GetFormControl("text", $data_obj->title, $data_obj->name, $data_obj->required == "yes");
 	}
 }
-

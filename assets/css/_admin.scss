@@ -6,6 +6,13 @@
   border-radius: 10px;
 }
 
+.tlbm-button-white {
+  background: white !important;
+  &:hover {
+    background: #f8faff !important;
+  }
+}
+
 .tlbm-timespan-part {
   display: inline-block;
   margin: 0 20px 0 0 ;

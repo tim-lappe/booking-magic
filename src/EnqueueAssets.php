@@ -35,8 +35,6 @@ class EnqueueAssets {
 
         wp_localize_script( TLBM_FRONTEND_JS_SLUG, 'tlbm_localization', ScriptLocalization::GetLabels());
 
-		Formeditor::InsertFormelementsIntoScript(TLBM_FRONTEND_JS_SLUG);
-
 		$this->localize_constants();
 	}
 

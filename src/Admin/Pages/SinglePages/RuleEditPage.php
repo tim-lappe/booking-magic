@@ -12,20 +12,21 @@ use TLBM\Admin\WpForm\RuleActionsField;
 use TLBM\Entity\CalendarSelection;
 use TLBM\Entity\Rule;
 use TLBM\Rules\RulesManager;
-use function MongoDB\BSON\fromJSON;
 
 class RuleEditPage extends FormPageBase {
 
     public static function GetEditLink(int $id = -1): string {
         $page = PageManager::GetPageInstance(RuleEditPage::class);
         if($id >= 0) {
-            return admin_url() . "?page=" . urlencode($page->menu_slug) . "&rule_id=".urlencode($id);
+            return admin_url() . "admin.php?page=" . urlencode($page->menu_slug) . "&rule_id=".urlencode($id);
         }
-        return admin_url() . "?page=" . urlencode($page->menu_slug);
+        return admin_url() . "admin.php?page=" . urlencode($page->menu_slug);
     }
 
     public function __construct() {
-        parent::__construct("rule-edit", "booking-calendar-rule-edit", false);
+        parent::__construct("rule-edit", "booking-magic-rule-edit", false);
+
+        $this->parent_slug = "booking-magic-rules";
     }
 
     public function GetHeadTitle(): string {
