@@ -6,7 +6,6 @@ namespace TLBM\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as OrmMapping;
-use phpDocumentor\Reflection\Types\This;
 
 
 /**
@@ -15,7 +14,7 @@ use phpDocumentor\Reflection\Types\This;
  * @OrmMapping\Entity
  * @OrmMapping\Table(name="rules")
  */
-class Rule {
+class Rule implements \JsonSerializable {
 
 	use IndexedTable;
 
@@ -44,13 +43,13 @@ class Rule {
 	public int $priority = 0;
 
 	/**
-	 * @var ArrayCollection
+	 * @var Collection
 	 * @OrmMapping\OneToMany(targetEntity=RuleAction::class, mappedBy="rule", orphanRemoval=true, cascade={"all"})
 	 */
 	public Collection $actions;
 
 	/**
-	 * @var ArrayCollection
+	 * @var Collection
 	 * @OrmMapping\OneToMany(targetEntity=RulePeriod::class, mappedBy="rule", orphanRemoval=true, cascade={"all"})
 	 */
 	public Collection $periods;
@@ -109,7 +108,7 @@ class Rule {
 	public function AddPeriod(RulePeriod $period): RulePeriod {
 		if(!$this->periods->contains($period)) {
 			$this->periods[] = $period;
-			$period->SetRule(null);
+			$period->SetRule($this);
 		}
 
 		return $period;
@@ -128,6 +127,14 @@ class Rule {
 
 		return $period;
 	}
+
+    public function ClearPeriods() {
+        foreach ($this->periods as $period) {
+            $period->SetRule(null);
+        }
+
+        $this->periods->clear();
+    }
 
 	/**
 	 * @return string
@@ -178,4 +185,16 @@ class Rule {
         $this->timestamp_created = time();
         $this->calendar_selection = new CalendarSelection();
 	}
+
+    public function jsonSerialize(): array {
+        return array(
+            "id" => $this->id,
+            "title" => $this->title,
+            "timestamp_created" => $this->timestamp_created,
+            "calendar_selection" => $this->calendar_selection,
+            "priority" => $this->priority,
+            "actions" => $this->actions->toArray(),
+            "periods" => $this->periods->toArray()
+        );
+    }
 }

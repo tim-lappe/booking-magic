@@ -2,7 +2,6 @@ import * as React from "react";
 import {Localization} from "../../../Localization";
 import {Utils} from "../../../Utils";
 import {Period} from "../../Entity/Period";
-import {DateSelect} from "./DateSelect";
 import {PeriodSelectItem} from "./PeriodSelectItem";
 
 interface PeriodSelectState {
@@ -16,9 +15,12 @@ export class PeriodSelect extends React.Component<any, PeriodSelectState>{
 
         this.onAdd = this.onAdd.bind(this);
         this.onChangeItem = this.onChangeItem.bind(this);
+        this.onRemoveItem = this.onRemoveItem.bind(this);
 
         let jsondata = Utils.decodeUriComponent(props.dataset.json);
         jsondata = JSON.parse(jsondata);
+
+        console.log(jsondata);
 
         this.state = {
             items: []
@@ -43,8 +45,20 @@ export class PeriodSelect extends React.Component<any, PeriodSelectState>{
         event.preventDefault();
     }
 
-    onChangeItem(item: Period) {
-        console.log(item);
+    onChangeItem(index: number, item: Period) {
+        this.setState((prevState: PeriodSelectState) => {
+            prevState.items[index] = item;
+            return prevState;
+        });
+    }
+
+    onRemoveItem(index: number) {
+        let items = this.state.items;
+        items.splice(index, 1);
+
+        this.setState({
+            items: [...items]
+        });
     }
 
     render() {
@@ -52,9 +66,9 @@ export class PeriodSelect extends React.Component<any, PeriodSelectState>{
             <div className="tlbm-period-select-container">
                 <input type={"hidden"} name={this.props.dataset.name} value={encodeURIComponent(JSON.stringify(this.state.items))} />
                 <div className="tlbm-periods-rules-list">
-                    {this.state.items.map((item) => {
+                    {this.state.items.map((item, index) => {
                         return (
-                            <PeriodSelectItem onChange={this.onChangeItem} item={item} key={item.id} />
+                            <PeriodSelectItem onRemove={() => this.onRemoveItem(index)} onChange={item1 => this.onChangeItem(index, item1)} item={item} key={item.id} />
                         )
                     })}
                 </div>

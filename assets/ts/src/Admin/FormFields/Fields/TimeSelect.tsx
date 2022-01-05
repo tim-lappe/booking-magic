@@ -5,18 +5,18 @@ interface TimeSelectProps {
     minutesSteps?: number;
     nameHour?: string;
     nameMinute?: string;
-    onChange?: (newtime: TimeSlotTime) => void;
+    onChange?: (newtime: TimeSelectTime) => void;
     hours?: [];
     minutes?: [];
-    initState: TimeSlotTime;
+    initState: TimeSelectTime;
 }
 
-export interface TimeSlotTime {
+export interface TimeSelectTime {
     hour?: number;
     minute?: number;
 }
 
-export class TimeSelect extends React.Component<TimeSelectProps, TimeSlotTime> {
+export class TimeSelect extends React.Component<TimeSelectProps, TimeSelectTime> {
 
     public selectHourDom = React.createRef<HTMLSelectElement>();
     public selectMinuteDom = React.createRef<HTMLSelectElement>();
@@ -34,7 +34,7 @@ export class TimeSelect extends React.Component<TimeSelectProps, TimeSlotTime> {
     }
 
     componentDidMount() {
-        this.setState((prevState: TimeSlotTime) => {
+        this.setState((prevState: TimeSelectTime) => {
             prevState.hour = parseInt(this.selectHourDom.current.value);
             prevState.minute = parseInt(this.selectMinuteDom.current.value);
             this.props.onChange(prevState);
@@ -43,7 +43,7 @@ export class TimeSelect extends React.Component<TimeSelectProps, TimeSlotTime> {
     }
 
     onChangeHour(event: any) {
-        this.setState((prevState: TimeSlotTime) => {
+        this.setState((prevState: TimeSelectTime) => {
             prevState.hour = parseInt(event.target.value);
             this.props.onChange(prevState);
 
@@ -52,7 +52,7 @@ export class TimeSelect extends React.Component<TimeSelectProps, TimeSlotTime> {
     }
 
     onChangeMinute(event: any) {
-        this.setState((prevState: TimeSlotTime) => {
+        this.setState((prevState: TimeSelectTime) => {
             prevState.minute = parseInt(event.target.value);
             this.props.onChange(prevState);
 

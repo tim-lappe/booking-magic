@@ -9,6 +9,7 @@ use TLBM\Admin\WpForm\CalendarPickerField;
 use TLBM\Admin\WpForm\FormBuilder;
 use TLBM\Admin\WpForm\PeriodEditorField;
 use TLBM\Admin\WpForm\RuleActionsField;
+use TLBM\Entity\CalendarSelection;
 use TLBM\Entity\Rule;
 use TLBM\Rules\RulesManager;
 use function MongoDB\BSON\fromJSON;
@@ -41,18 +42,20 @@ class RuleEditPage extends FormPageBase {
 
     public function ShowFormPageContent() {
         $rule = $this->GetEditingRule();
-        $actions_val = array();
-        $actions_val = $rule->GetActions()->toArray();
+        $actions_val = $rule ? $rule->GetActions()->toArray() : array();
+        $periods = $rule ? $rule->GetPeriods()->toArray() : array();
+        $title = $rule ? $rule->GetTitle() : "";
+        $selection = $rule ? $rule->GetCalendarSelection() : new CalendarSelection();
 
         ?>
             <div class="tlbm-admin-page-tile">
-                <input value="<?php echo $rule->GetTitle() ?>" placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
+                <input value="<?php echo $title ?>" placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
             </div>
             <div class="tlbm-admin-page-tile">
                 <?php
                 $form_builder = new FormBuilder();
                 $form_builder->PrintFormHead();
-                $form_builder->PrintFormField(new CalendarPickerField("calendars",  __("Calendars", TLBM_TEXT_DOMAIN), $rule->GetCalendarSelection()));
+                $form_builder->PrintFormField(new CalendarPickerField("calendars",  __("Calendars", TLBM_TEXT_DOMAIN), $selection));
                 $form_builder->PrintFormFooter();
                 ?>
             </div>
@@ -66,7 +69,7 @@ class RuleEditPage extends FormPageBase {
             <div class="tlbm-admin-page-tile">
                 <?php
                 $form_builder->PrintFormHead();
-                $form_builder->PrintFormField(new PeriodEditorField("rule_periods", __("Periods", TLBM_TEXT_DOMAIN), null));
+                $form_builder->PrintFormField(new PeriodEditorField("rule_periods", __("Periods", TLBM_TEXT_DOMAIN), $periods));
                 $form_builder->PrintFormFooter();
                 ?>
             </div>
@@ -90,10 +93,16 @@ class RuleEditPage extends FormPageBase {
 
         $actions = RuleActionsField::ReadFromVars("rule_actions", $vars);
         $calendar_selection = CalendarPickerField::ReadFromVars("calendars", $vars);
+        $periods = PeriodEditorField::ReadFromVars("rule_periods", $vars);
 
         $rule->ClearActions();
         foreach ($actions as $action) {
             $rule->AddAction($action);
+        }
+
+        $rule->ClearPeriods();
+        foreach ($periods as $period) {
+            $rule->AddPeriod($period);
         }
 
         $rule->SetCalendarSelection($calendar_selection);

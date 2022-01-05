@@ -153,10 +153,18 @@
 }
 
 .tlbm-period-item {
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
 
-  .tlbm-period-delete {
-    float: right;
-    margin-left: 20px;
+
+  .tlbm-period-delete, .tlbm-timeslot-delete {
+    color: red !important;
+    height: 30px;
+    width: 30px;
+    padding: 4px !important;
+    border-color: red !important;
+    margin-left: 10px;
   }
 
   label {
@@ -186,22 +194,36 @@
     }
   }
 
-  .tlbm-period-main-panel {
+  .tlbm-period-panel {
     border-radius: 5px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
+    flex-grow: 0;
+    flex-basis: 0;
 
     > * {
       &:not(:first-child) {
         margin-top: 10px;
       }
     }
+
+    &.tlbm-period-timeslots-panel {
+      flex-direction: row;
+      flex-grow: 1;
+      margin-left: 50px;
+    }
+  }
+
+  .tlbm-timeslots-container {
+    flex-grow: 0;
+    min-width: 200px;
   }
 
   .tlbm-timeslots {
-    margin-left: 10px;
+    border-radius: 3px;
+
     .tlbm-timeslot-item {
       display: flex;
       margin-bottom: 10px;

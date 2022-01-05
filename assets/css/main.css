@@ -223,9 +223,18 @@
   margin: 0 !important;
 }
 
-.tlbm-period-item .tlbm-period-delete {
-  float: right;
-  margin-left: 20px;
+.tlbm-period-item {
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+}
+.tlbm-period-item .tlbm-period-delete, .tlbm-period-item .tlbm-timeslot-delete {
+  color: red !important;
+  height: 30px;
+  width: 30px;
+  padding: 4px !important;
+  border-color: red !important;
+  margin-left: 10px;
 }
 .tlbm-period-item label {
   display: inline-block;
@@ -247,18 +256,29 @@
   flex-grow: 1;
   flex-basis: 0;
 }
-.tlbm-period-item .tlbm-period-main-panel {
+.tlbm-period-item .tlbm-period-panel {
   border-radius: 5px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
+  flex-grow: 0;
+  flex-basis: 0;
 }
-.tlbm-period-item .tlbm-period-main-panel > *:not(:first-child) {
+.tlbm-period-item .tlbm-period-panel > *:not(:first-child) {
   margin-top: 10px;
 }
+.tlbm-period-item .tlbm-period-panel.tlbm-period-timeslots-panel {
+  flex-direction: row;
+  flex-grow: 1;
+  margin-left: 50px;
+}
+.tlbm-period-item .tlbm-timeslots-container {
+  flex-grow: 0;
+  min-width: 200px;
+}
 .tlbm-period-item .tlbm-timeslots {
-  margin-left: 10px;
+  border-radius: 3px;
 }
 .tlbm-period-item .tlbm-timeslots .tlbm-timeslot-item {
   display: flex;
