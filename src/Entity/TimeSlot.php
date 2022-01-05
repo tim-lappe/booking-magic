@@ -11,15 +11,15 @@ use Doctrine\ORM\Mapping as OrmMapping;
  * @OrmMapping\Entity
  * @OrmMapping\Table(name="rule_period_time_slots")
  */
-class TimeSlot {
+class TimeSlot implements \JsonSerializable {
 
 	use IndexedTable;
 
     /**
-     * @var RulePeriod
-     * @OrmMapping\ManyToOne (targetEntity=Rule::class)
+     * @var ?RulePeriod
+     * @OrmMapping\ManyToOne (targetEntity=RulePeriod::class)
      */
-    protected RulePeriod $rule_period;
+    protected ?RulePeriod $rule_period;
 
 	/**
 	 * @var int
@@ -46,16 +46,16 @@ class TimeSlot {
 	protected int $to_min;
 
     /**
-     * @return RulePeriod
+     * @return ?RulePeriod
      */
-    public function GetRulePeriod(): RulePeriod {
+    public function GetRulePeriod(): ?RulePeriod {
         return $this->rule_period;
     }
 
     /**
-     * @param RulePeriod $rule_period
+     * @param ?RulePeriod $rule_period
      */
-    public function SetRulePeriod(RulePeriod $rule_period): void {
+    public function SetRulePeriod(?RulePeriod $rule_period): void {
         $this->rule_period = $rule_period;
     }
 
@@ -116,4 +116,13 @@ class TimeSlot {
     }
 
 
+    public function jsonSerialize(): array {
+        return array(
+            "id" => $this->id,
+            "from_min" => $this->from_min,
+            "from_hour" => $this->from_hour,
+            "to_min" => $this->to_min,
+            "to_hour" => $this->to_hour
+        );
+    }
 }

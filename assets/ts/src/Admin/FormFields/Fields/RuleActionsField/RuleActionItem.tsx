@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Localization} from "../../../../Localization";
-import {TimeSelect, TimeSlotTime} from "../TimeSelect";
+import {TimeSelect, TimeSelectTime} from "../TimeSelect";
 import {WeekdaySelect, WeekdaySelectWeekday} from "../WeekdaySelect";
 import {CapacitySelect, CapacitySelectCapacity} from "../CapacitySelect";
 import {RuleAction} from "../../../Entity/RuleAction";
@@ -63,7 +63,7 @@ export class RuleActionsItem extends React.Component<RuleActionsItemProps, RuleA
         this.props.onChange(item);
     }
 
-    onChangeTime(newTime: TimeSlotTime) {
+    onChangeTime(newTime: TimeSelectTime) {
         this.setState((prevState: RuleActionsItemState) => {
             prevState.item.time_hour = newTime.hour;
             prevState.item.time_min = newTime.minute;

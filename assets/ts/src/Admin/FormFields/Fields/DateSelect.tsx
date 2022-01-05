@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Localization} from "../../../Localization";
 import {Utils} from "../../../Utils";
-import {TimeSelect, TimeSlotTime} from "./TimeSelect";
+import {TimeSelect, TimeSelectTime} from "./TimeSelect";
 
 export interface DateSelectState {
     tstamp?: number;
@@ -18,6 +18,7 @@ interface DateSelectProps {
     allowTimeSet?: boolean;
     forceTimeSet?: boolean;
     defaultTstamp?: number;
+    timeset?: boolean;
     onChange: (dateSelectState: DateSelectState) => void;
 }
 
@@ -35,7 +36,7 @@ export class DateSelect extends React.Component<DateSelectProps, DateSelectState
 
         this.state = {
             tstamp: this.props.defaultTstamp ?? Utils.getUnixTimestamp(),
-            timeset: false
+            timeset: this.props.timeset ?? false
         }
     }
 
@@ -103,7 +104,7 @@ export class DateSelect extends React.Component<DateSelectProps, DateSelectState
         event.preventDefault();
     }
 
-    onChangeTime(time: TimeSlotTime) {
+    onChangeTime(time: TimeSelectTime) {
         this.setState((prevState: DateSelectState) => {
             let date = new Date();
             date.setTime(prevState.tstamp * 1000);
@@ -114,7 +115,6 @@ export class DateSelect extends React.Component<DateSelectProps, DateSelectState
 
             return prevState;
         });
-
     }
 
 

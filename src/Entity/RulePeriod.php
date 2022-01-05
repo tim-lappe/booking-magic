@@ -6,7 +6,8 @@ namespace TLBM\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as OrmMapping;
-use TLBM\Entity\Form;
+use JsonSerializable;
+use phpDocumentor\Reflection\Types\Boolean;
 
 /**
  * Class Calendar
@@ -14,174 +15,153 @@ use TLBM\Entity\Form;
  * @OrmMapping\Entity
  * @OrmMapping\Table(name="rule_periods")
  */
-class RulePeriod {
+class RulePeriod implements JsonSerializable {
 
 	use IndexedTable;
 
 	/**
-	 * @var Rule
+	 * @var ?Rule
 	 * @OrmMapping\ManyToOne (targetEntity=Rule::class)
 	 */
-	protected Rule $rule;
+	protected ?Rule $rule;
 
 	/**
 	 * @var ArrayCollection
 	 * @OrmMapping\OneToMany (targetEntity=TimeSlot::class, mappedBy="rule_period", orphanRemoval=true, cascade={"all"})
 	 */
-	protected Collection $time_slots;
+	protected Collection $daily_time_ranges;
 
 	/**
 	 * @var int
 	 * @OrmMapping\Column (type="integer", nullable=false)
 	 */
-	protected int $from_day;
+	protected int $from_tstamp;
 
-	/**
-	 * @var int
-	 * @OrmMapping\Column (type="integer", nullable=false)
-	 */
-	protected int $from_month;
-
-	/**
-	 * @var int
-	 * @OrmMapping\Column (type="integer")
-	 */
-	protected int $from_year;
+    /**
+     * @var bool
+     * @OrmMapping\Column (type="boolean", nullable=false)
+     */
+    protected bool $from_timeset = false;
 
 	/**
 	 * @var int
 	 * @OrmMapping\Column (type="integer")
 	 */
-	protected int $to_day;
-
-	/**
-	 * @var int
-	 * @OrmMapping\Column (type="integer")
-	 */
-	protected int $to_month;
-
-	/**
-	 * @var int
-	 * @OrmMapping\Column (type="integer")
-	 */
-	protected int $to_year;
+	protected int $to_tstamp;
 
 
+    /**
+     * @return bool
+     */
+    public function IsFromTimeset(): bool {
+        return $this->from_timeset;
+    }
+
+    /**
+     * @param bool $from_timeset
+     */
+    public function SetFromTimeset(bool $from_timeset): void {
+        $this->from_timeset = $from_timeset;
+    }
+
+    /**
+     * @return bool
+     */
+    public function IsToTimeset(): bool {
+        return $this->to_timeset;
+    }
+
+    /**
+     * @param bool $to_timeset
+     */
+    public function SetToTimeset(bool $to_timeset): void {
+        $this->to_timeset = $to_timeset;
+    }
+
+    /**
+     * @var bool
+     * @OrmMapping\Column (type="boolean", nullable=false)
+     */
+    protected bool $to_timeset = false;
+
+    /**
+     * @param TimeSlot $slot
+     * @return TimeSlot
+     */
 	public function AddTimeSlot(TimeSlot $slot): TimeSlot {
-		if(!$this->time_slots->contains($slot)) {
-			$this->time_slots[] = $slot;
+		if(!$this->daily_time_ranges->contains($slot)) {
+			$this->daily_time_ranges[] = $slot;
+            $slot->SetRulePeriod($this);
 		}
 
 		return $slot;
 	}
 
+    /**
+     * @param TimeSlot $slot
+     * @return TimeSlot
+     */
 	public function RemoveTimeSlot(TimeSlot $slot): TimeSlot {
-		if($this->time_slots->contains($slot)) {
-			$this->time_slots->removeElement($slot);
+		if($this->daily_time_ranges->contains($slot)) {
+			$this->daily_time_ranges->removeElement($slot);
+            $slot->SetRulePeriod(null);
 		}
 		return $slot;
 	}
 
-	/**
-	 * @return Rule
-	 */
-	public function GetRule(): Rule {
-		return $this->rule;
-	}
+    /**
+     * @param int $from_tstamp
+     * @return void
+     */
+    public function SetFromTstamp(int $from_tstamp) {
+        $this->from_tstamp = $from_tstamp;
+    }
 
-	/**
-	 * @param Rule $rule
-	 */
-	public function SetRule( Rule $rule ): void {
-		$this->rule = $rule;
-	}
+    /**
+     * @return int
+     */
+    public function GetFromTstamp(): int {
+        return $this->from_tstamp;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function GetFromDay(): int {
-		return $this->from_day;
-	}
+    /**
+     * @param int $to_tstamp
+     * @return void
+     */
+    public function SetToTstamp(int $to_tstamp) {
+        $this->to_tstamp = $to_tstamp;
+    }
 
-	/**
-	 * @param int $from_day
-	 */
-	public function SetFromDay( int $from_day ): void {
-		$this->from_day = $from_day;
-	}
+    /**
+     * @return int
+     */
+    public function GetToTstamp(): int {
+        return $this->to_tstamp;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function GetFromMonth(): int {
-		return $this->from_month;
-	}
+    public function SetRule($rule) {
+        $this->rule = $rule;
+    }
 
-	/**
-	 * @param int $from_month
-	 */
-	public function SetFromMonth( int $from_month ): void {
-		$this->from_month = $from_month;
-	}
+    public function GetRule(): Rule {
+        return $this->rule;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function GetFromYear(): int {
-		return $this->from_year;
-	}
-
-	/**
-	 * @param int $from_year
-	 */
-	public function SetFromYear( int $from_year ): void {
-		$this->from_year = $from_year;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function GetToDay(): int {
-		return $this->to_day;
-	}
-
-	/**
-	 * @param int $to_day
-	 */
-	public function SetToDay( int $to_day ): void {
-		$this->to_day = $to_day;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function GetToMonth(): int {
-		return $this->to_month;
-	}
-
-	/**
-	 * @param int $to_month
-	 */
-	public function SetToMonth( int $to_month ): void {
-		$this->to_month = $to_month;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function GetToYear(): int {
-		return $this->to_year;
-	}
-
-	/**
-	 * @param int $to_year
-	 */
-	public function SetToYear( int $to_year ): void {
-		$this->to_year = $to_year;
-	}
-
-
+    /**
+     *
+     */
 	public function __construct() {
-		$this->time_slots = new ArrayCollection();
+		$this->daily_time_ranges = new ArrayCollection();
 	}
+
+    public function jsonSerialize(): array {
+        return array (
+            "from_tstamp" => $this->from_tstamp,
+            "from_timeset" => $this->from_timeset,
+            "to_tstamp" => $this->to_tstamp,
+            "to_timeset" => $this->to_timeset,
+            "id" => $this->id,
+            "daily_time_ranges" => $this->daily_time_ranges->toArray()
+        );
+    }
 }
