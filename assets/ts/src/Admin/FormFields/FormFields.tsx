@@ -3,6 +3,7 @@ import ReactDOM = require("react-dom");
 import {CalendarSelect} from "./Fields/CalendarSelect";
 import {RuleActionsFields} from "./Fields/RuleActionsField/RuleActionsFields";
 import {PeriodSelect} from "./Fields/PeriodSelect";
+import {FormEditor} from "./Fields/FormEditor/FormEditor";
 
 
 export default class FormFields {
@@ -18,6 +19,10 @@ export default class FormFields {
 
         document.querySelectorAll(".tlbm-calendar-picker").forEach(( htmlelement: HTMLElement) => {
             ReactDOM.render(<CalendarSelect dataset={htmlelement.dataset} />, htmlelement);
+        });
+
+        document.querySelectorAll(".tlbm-form-editor-field").forEach(( htmlelement: HTMLElement) => {
+            ReactDOM.render(<FormEditor dataset={htmlelement.dataset} />, htmlelement);
         });
     }
 }

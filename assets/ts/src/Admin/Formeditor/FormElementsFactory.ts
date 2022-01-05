@@ -19,11 +19,12 @@ export default class FormElementsFactory {
     public static setMissingDefaultValuesToData(data_obj: any) {
         let formelem = FormElementsCollection.getByUniqueName(data_obj.unique_name);
 
+        /**
         for(const [key, setting] of Object.entries(formelem.settings)) {
             if(data_obj[setting.name] == null) {
                 data_obj[setting.name] = setting.default_value;
             }
-        }
+        }**/
 
         return data_obj;
     }
