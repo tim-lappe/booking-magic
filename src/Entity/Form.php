@@ -4,6 +4,8 @@
 namespace TLBM\Entity;
 
 use Doctrine\ORM\Mapping as OrmMapping;
+use JsonSerializable;
+use stdClass;
 
 /**
  * Class Calendar
@@ -12,7 +14,7 @@ use Doctrine\ORM\Mapping as OrmMapping;
  * @OrmMapping\Table(name="forms")
  */
 
-class Form {
+class Form implements JsonSerializable {
 
 	use IndexedTable;
 
@@ -32,13 +34,12 @@ class Form {
 	 * @var string
 	 * @OrmMapping\Column (type="text", nullable=false)
 	 */
-	protected string $frontend_html;
+	protected string $frontend_html = "";
 
 	/**
-	 * @var string
 	 * @OrmMapping\Column (type="json", nullable=false)
 	 */
-	protected string $form_data;
+	protected $form_data;
 
 	/**
 	 * @return string
@@ -68,17 +69,26 @@ class Form {
 		$this->frontend_html = $frontend_html;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetFormData(): string {
+	public function GetFormData() {
 		return $this->form_data;
 	}
 
 	/**
-	 * @param string $form_data
+	 * @param $form_data
 	 */
-	public function SetFormData( string $form_data ): void {
+	public function SetFormData( $form_data ): void {
 		$this->form_data = $form_data;
 	}
+
+    public function jsonSerialize(): array {
+        return array(
+            "title" => $this->GetTitle(),
+            "form_data" => $this->GetFormData(),
+            "frontend_html" => $this->GetFrontendHtml()
+        );
+    }
+
+    public function __construct() {
+        $this->timestamp_created = time();
+    }
 }

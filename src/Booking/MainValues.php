@@ -3,7 +3,7 @@
 
 namespace TLBM\Booking;
 
-use TLBM\Admin\FormEditor\FormElementsCollection;
+use TLBM\Admin\FormEditor\ElementsCollection;
 use TLBM\Calendar\CalendarManager;
 use TLBM\Model\Booking;
 use TLBM\Model\BookingValue;
@@ -93,7 +93,7 @@ class MainValues {
 	 * @return BookingValue[]
 	 */
 	public function GetCustomValues(): array {
-		$elements = FormElementsCollection::GetRegisteredFormElements();
+		$elements = ElementsCollection::GetRegisteredFormElements();
 		$fixednames = array();
 		$custom = array();
 		foreach ($elements as $elem) {

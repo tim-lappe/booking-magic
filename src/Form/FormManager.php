@@ -36,12 +36,12 @@ class FormManager {
 	}
 
     /**
-     * @param Form $rule
+     * @param Form $form
      * @throws Exception
      */
-    public static function SaveForm( Form $rule ) {
+    public static function SaveForm( Form $form ) {
         $mgr = OrmManager::GetEntityManager();
-        $mgr->persist($rule);
+        $mgr->persist($form);
         $mgr->flush();
     }
 

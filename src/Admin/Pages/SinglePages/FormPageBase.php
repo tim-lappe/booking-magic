@@ -54,7 +54,7 @@ abstract class FormPageBase extends PageBase {
             foreach ($this->notices as $key => $msg) {
                 ?>
                 <div class="notice notice-<?php echo $key ?> is-dismissible">
-                    <p><?php _e( 'Done!', TLBM_TEXT_DOMAIN ); ?></p>
+                    <p><?php _e( $msg, TLBM_TEXT_DOMAIN ); ?></p>
                 </div>
                 <?php
             }

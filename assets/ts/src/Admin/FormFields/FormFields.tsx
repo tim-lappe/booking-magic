@@ -1,9 +1,9 @@
 import * as React from "react";
 import ReactDOM = require("react-dom");
-import {CalendarSelect} from "./Fields/CalendarSelect";
-import {RuleActionsFields} from "./Fields/RuleActionsField/RuleActionsFields";
-import {PeriodSelect} from "./Fields/PeriodSelect";
-import {FormEditor} from "./Fields/FormEditor/FormEditor";
+import {CalendarSelect} from "./CalendarSelect";
+import {RuleActionsFields} from "./RuleActionsField/RuleActionsFields";
+import {PeriodSelect} from "./PeriodSelect";
+import {Editor} from "./FormEditor/Editor";
 
 
 export default class FormFields {
@@ -22,7 +22,7 @@ export default class FormFields {
         });
 
         document.querySelectorAll(".tlbm-form-editor-field").forEach(( htmlelement: HTMLElement) => {
-            ReactDOM.render(<FormEditor dataset={htmlelement.dataset} />, htmlelement);
+            ReactDOM.render(<Editor dataset={htmlelement.dataset} />, htmlelement);
         });
     }
 }

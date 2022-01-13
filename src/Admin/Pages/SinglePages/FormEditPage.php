@@ -8,7 +8,9 @@ use TLBM\Admin\WpForm\CalendarPickerField;
 use TLBM\Admin\WpForm\FormBuilder;
 use TLBM\Admin\WpForm\FormEditorField;
 use TLBM\Entity\Form;
+use TLBM\Entity\Rule;
 use TLBM\Form\FormManager;
+use TLBM\Rules\RulesManager;
 
 class FormEditPage extends FormPageBase {
 
@@ -61,7 +63,29 @@ class FormEditPage extends FormPageBase {
         <?php
     }
 
+    /**
+     * @throws \Exception
+     */
     public function OnSave($vars): array {
+        $form = null;
+        if(isset($_REQUEST['form_id'])) {
+            $form = FormManager::GetForm($_REQUEST['form_id']);
+        }
+
+        if($form == null) {
+            $form = new Form();
+        }
+
+        $form->SetTitle($vars['title']);
+        try {
+            $form->SetFormData(json_decode(urldecode($vars['form'])));
+        } catch (\Throwable $exception) {
+            return array(
+                "error" => __("Unknown Error " . $exception->getMessage(), TLBM_TEXT_DOMAIN)
+            );
+        }
+
+        FormManager::SaveForm($form);
         return array();
     }
 }

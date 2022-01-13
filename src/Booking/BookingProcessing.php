@@ -5,8 +5,8 @@ namespace TLBM\Booking;
 
 
 use phpDocumentor\Reflection\Types\This;
-use TLBM\Admin\FormEditor\FormElements\CalendarElem;
-use TLBM\Admin\FormEditor\FormElementsCollection;
+use TLBM\Admin\FormEditor\Elements\CalendarElem;
+use TLBM\Admin\FormEditor\ElementsCollection;
 use TLBM\Model\Booking;
 use TLBM\Model\BookingValue;
 use TLBM\Model\CalendarSlot;
@@ -124,7 +124,7 @@ class BookingProcessing {
         foreach($it as $key => $value) {
             if(is_array($value)) {
                 if(isset($value['unique_name']) && !empty($value['unique_name'])) {
-                    $elem = FormElementsCollection::GetElemByUniqueName($value['unique_name']);
+                    $elem = ElementsCollection::GetElemByUniqueName($value['unique_name']);
                     if($elem != null) {
                         if($elem->has_user_input) {
                             $dp = new FormElementsDataPack();

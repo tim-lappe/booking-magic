@@ -9,6 +9,24 @@
       padding: 20px 0;
     }
   }
+
+  .tlbm-editor-root-container {
+    padding: 10px 5px;
+  }
+
+  .tlbm-button-add-element:not(:first-child) {
+    margin-top: 10px;
+  }
+
+  .tlbm-is-dragging-over-container {
+    border: 4px solid #135e96 !important;
+  }
+
+  .tlbm-draggable-container {
+    transition-property: border;
+    transition-duration: 0.1s;
+  }
+
   .tlbm-draggable {
     min-height: 50px;
 
@@ -17,34 +35,131 @@
       color: black;
       font-weight: bold;
       padding: 20px;
-      border: 1px solid #d6d6d6;
+      border: 1px solid #e1e1e1;
+      transition-property: border;
+      transition-duration: 0.2s;
+      border-radius: 3px;
+
+      &:hover {
+        border: 1px solid #797979;
+      }
+    }
+
+    .tlbm-form-calendar-box {
+      height: 100px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-direction: column;
+      font-size: 1.2rem;
+
+      .tlbm-form-settings-print-title {
+
+      }
+
+      .tlbm-form-calendar-box-calendar-name {
+        display: flex;
+        justify-content: center;
+        align-items: end;
+
+        span.dashicons {
+          margin-right: 5px;
+        }
+      }
+    }
+
+    .tlbm-form-item-spacing-box {
+      background-color: transparent;
+      color: black;
+      font-weight: bold;
+      padding: 20px;
+      border: 1px solid transparent;
+      transition-property: border;
+      transition-duration: 0.2s;
+
+      &:hover {
+        border: 1px solid #797979;
+      }
     }
 
     .tlbm-form-item-columns {
       display: flex;
+      border-radius: 3px;
+
+      &:hover > .tlbm-form-column {
+        border: 1px solid rgb(147, 167, 194);
+      }
 
       .tlbm-form-column {
-        padding: 10px 10px;
-        background-color: transparent;
-        border: 1px solid #d6d6d6;
+        background-color: #fdfeff;
+        border-radius: 3px;
         flex-grow: 1;
         min-height: 100px;
         flex-basis: 0;
+        padding: 10px;
         margin: 0 10px 0 0;
+        transition-property: padding, border;
+        transition-duration: 0.2s;
+        border: 1px solid rgba(205, 223, 248, 1);
 
         &:last-child {
           margin: 0;
+        }
+
+        .tlbm-form-container-empty {
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          padding: 10px;
+
+          &:not(:first-child) {
+            margin: 10px 0;
+          }
         }
       }
     }
   }
 
+  .tlbm-editor-is-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 1.2rem;
+    margin: 10px 5px;
+    border: 1px solid #dedede;
+    padding: 30px;
+    border-radius: 3px;
+  }
+
   .tlbm-form-item-container {
     position: relative;
-    margin: 0 0 10px 0;
     transition-property: box-shadow;
     transition-duration: 0.15s;
     overflow: hidden;
+
+    &:not(:first-child) {
+      margin: 10px 0;
+    }
+
+    .tlbm-drop-line-top, .tlbm-drop-line-bottom {
+      background-color: #135e96;
+      height: 4px;
+      width: 100%;
+      transition-property: all;
+      transition-duration: 0.1s;
+    }
+
+    .tlbm-drop-line-top {
+      margin: 0 0 5px 0;
+    }
+
+    .tlbm-drop-line-bottom {
+      margin: 5px 0 0 0;
+    }
+
+    .tlbm-drop-line-disabled {
+      height: 0;
+      margin: 0;
+    }
 
     .tlbm-form-item-hr {
       margin: 30px 0;
@@ -120,7 +235,7 @@
     box-shadow: 0 0 30px 0 gray;
     width: 60%;
     min-width: 500px;
-    max-height: 80%;
+    height: 80%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -222,6 +337,10 @@
         margin-left: 7px;
         width: 70px;
       }
+
+      .tlbm-button-danger {
+        margin-right: 10px;
+      }
     }
 
     .tlbm-form-settings-container  {
@@ -230,6 +349,17 @@
       .tlbm-form-settings-items-collection {
         display: flex;
         flex-wrap: wrap;
+        align-items: flex-end;
+
+        .tlbm-item-settings-error {
+          padding: 7px;
+          border: 1px solid red;
+          border-radius: 3px;
+          margin: 5px 0 5px 0;
+          font-weight: bold;
+          color: red;
+          background-color: #fdf4f4;
+        }
 
         .form-item-settings-control {
           min-width: 150px;

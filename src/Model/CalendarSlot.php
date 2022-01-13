@@ -4,7 +4,7 @@
 namespace TLBM\Model;
 
 
-use TLBM\Admin\FormEditor\FormElements\FormElem;
+use TLBM\Admin\FormEditor\Elements\FormElem;
 
 class CalendarSlot {
 

@@ -6,8 +6,4 @@ export class RuleAction {
     time_min?: number;
     priority?: number;
     actions?: any;
-
-    constructor() {
-
-    }
 }
