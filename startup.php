@@ -1,7 +1,7 @@
 <?php
 
 
-use TLBM\Admin\FormEditor\FormElementsCollection;
+use TLBM\Admin\FormEditor\ElementsCollection;
 use TLBM\AdminPages;
 use TLBM\Ajax;
 use TLBM\Database\OrmManager;
@@ -50,7 +50,7 @@ if(in_array(TLBM_PLUGIN_RELATIVE_DIR_FILE, apply_filters('active_plugins', get_o
     /**
      * Register all FormElements for the Formeditor
      */
-    FormElementsCollection::RegisterFormElements();
+    ElementsCollection::RegisterFormElements();
 
     /**
      * Register all Calendar Output Printers

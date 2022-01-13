@@ -4,8 +4,9 @@
 namespace TLBM\Admin\Tables;
 
 
+use TLBM\Admin\Pages\SinglePages\FormEditPage;
 use TLBM\Form\FormManager;
-use TLBM\Model\Form;
+use TLBM\Entity\Form;
 
 class FormListTable extends TableBase {
 
@@ -41,8 +42,7 @@ class FormListTable extends TableBase {
 			$pt_args = array("post_status" => "trash");
 		}
 
-		$forms = FormManager::GetAllForms($pt_args, $orderby, $order);
-		return $forms;
+		return FormManager::GetAllForms($pt_args, $orderby, $order);
 	}
 
 	protected function GetViews(): array {
@@ -84,25 +84,25 @@ class FormListTable extends TableBase {
 	 * @return int
 	 */
 	protected function GetItemId( $item ): int {
-		return $item->wp_post_id;
+		return $item->GetId();
 	}
 
 	/**
-	 * @param Form|object $item
+	 * @param Form $item
 	 */
 	public function column_title($item) {
-		$post = get_post($item->wp_post_id);
-		$link = get_edit_post_link($item->wp_post_id);
-		if(!empty($post->post_title)) {
-			echo "<strong><a href='" . $link . "'>" . $post->post_title . "</a></strong>";
+		$link = FormEditPage::GetEditLink($item->GetId());
+		if(!empty($item->GetTitle())) {
+			echo "<strong><a href='" . $link . "'>" . $item->GetTitle() . "</a></strong>";
 		} else {
-			echo "<strong><a href='" . $link . "'>" . $item->wp_post_id . "</a></strong>";
+			echo "<strong><a href='" . $link . "'>" . $item->GetId() . "</a></strong>";
 		}
 	}
 
-	/**
-	 * @return int
-	 */
+    /**
+     * @return int
+     * @throws \Exception
+     */
 
 	protected function GetTotalItemsCount(): int {
 		return FormManager::GetAllFormsCount();

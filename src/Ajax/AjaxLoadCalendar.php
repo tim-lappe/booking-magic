@@ -8,7 +8,6 @@ if( ! defined( 'ABSPATH' ) ) {
 }
 
 use DateTime;
-use TLBM\Calendar\CalendarManager;
 use TLBM\Model\CalendarGroup;
 use TLBM\Model\CalendarSelection;
 use TLBM\Output\Calendar\CalendarOutput;

@@ -7,11 +7,8 @@ if( ! defined( 'ABSPATH' ) ) {
     return;
 }
 
-
-use InvalidArgumentException;
-use TLBM\Admin\FormEditor\Formeditor;
-use TLBM\Admin\FormEditor\FormElements\FormElem;
-use TLBM\Admin\FormEditor\FormElementsCollection;
+use TLBM\Admin\FormEditor\Elements\FormElem;
+use TLBM\Admin\FormEditor\ElementsCollection;
 
 class FormFrontendGenerator {
 
@@ -39,7 +36,7 @@ class FormFrontendGenerator {
 	private function RecursiveHtmlGenerator($form_elements): string {
 		$html = "";
 		foreach($form_elements as $formelem) {
-			$registeredelem = FormElementsCollection::GetElemByUniqueName($formelem->unique_name);
+			$registeredelem = ElementsCollection::GetElemByUniqueName($formelem->unique_name);
 			if($registeredelem instanceof FormElem) {
 				if(!isset($formelem->children)) {
 					$html .= $registeredelem->GetFrontendOutput( $formelem );

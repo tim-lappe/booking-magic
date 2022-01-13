@@ -40,6 +40,12 @@ abstract class PageBase {
         if(empty($display_default_head_title)) {
             $this->display_default_head_title = $menu_title;
         }
+
+        global $plugin_page;
+        if($plugin_page == $menu_slug) {
+            remove_all_actions('admin_notices');
+            remove_all_actions('all_admin_notices');
+        }
 	}
 
     protected function GetHeadTitle(): string {
@@ -67,6 +73,8 @@ abstract class PageBase {
         if($this->display_default_head) {
             $this->DisplayDefaultHead();
         }
+
+        echo "<h1></h1>";
 
         $this->DisplayPageBody();
     }
