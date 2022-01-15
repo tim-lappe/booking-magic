@@ -46,7 +46,7 @@ class CalendarOutput {
 		    "view" => $view
 	    );
 
-	    $data = (json_encode($data));
-	    return sprintf('<div class="tlbm-calendar-container" data=\'%s\' view=\'%s\'></div>', $data, $view);
+	    $data = urlencode(json_encode($data));
+	    return sprintf('<div class="tlbm-calendar-container" data-json=\'%s\' data-view=\'%s\'></div>', $data, $view);
     }
 }

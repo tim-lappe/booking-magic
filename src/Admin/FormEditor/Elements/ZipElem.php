@@ -28,7 +28,7 @@ class ZipElem extends FormInputElem {
 	/**
 	 * @inheritDoc
 	 */
-	public function GetFrontendOutput($data_obj, callable $insert_child = null ): string {
-		return InputGenerator::GetFormControl("text", $data_obj->title, $data_obj->name, $data_obj->required == "yes");
+	public function GetFrontendOutput($form_node, callable $insert_child = null ): string {
+		return InputGenerator::GetFormControl("text", $form_node->formData->title, $form_node->formData->name, $form_node->formData->required == "yes");
 	}
 }

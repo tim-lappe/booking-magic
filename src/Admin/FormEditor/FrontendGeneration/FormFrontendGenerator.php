@@ -12,10 +12,10 @@ use TLBM\Admin\FormEditor\ElementsCollection;
 
 class FormFrontendGenerator {
 
-	public $form_data;
+	public object $form_node_tree;
 
-	public function __construct($form_data) {
-		$this->form_data = $form_data;
+	public function __construct($form_node_tree) {
+		$this->form_node_tree = $form_node_tree;
 	}
 
 	/**
@@ -24,8 +24,8 @@ class FormFrontendGenerator {
 	public function GenerateHtml(): string {
 		$html = "<div class='tlbm-frontend-form'>";
 
-		if(is_array($this->form_data)) {
-			$html .= $this->RecursiveHtmlGenerator($this->form_data);
+		if(is_array($this->form_node_tree->children)) {
+			$html .= $this->RecursiveHtmlGenerator($this->form_node_tree);
 		}
 
 		$html .= "</div>";
@@ -33,25 +33,28 @@ class FormFrontendGenerator {
 		return $html;
 	}
 
-	private function RecursiveHtmlGenerator($form_elements): string {
+	private function RecursiveHtmlGenerator(object $form_node): string {
 		$html = "";
-		foreach($form_elements as $formelem) {
-			$registeredelem = ElementsCollection::GetElemByUniqueName($formelem->unique_name);
-			if($registeredelem instanceof FormElem) {
-				if(!isset($formelem->children)) {
-					$html .= $registeredelem->GetFrontendOutput( $formelem );
-				} else if(is_array($formelem->children) && sizeof($formelem->children) > 0) {
-					$html .= $registeredelem->GetFrontendOutput( $formelem , function ($childnum) use ($formelem) {
-						$subhtml = "";
-						$children = $formelem->children[$childnum];
-						if(isset($children) && is_array($children)) {
-							$subhtml .= $this->RecursiveHtmlGenerator( $children );
-						}
-						return $subhtml;
-					});
-				}
-			}
-		}
+
+        $children = $form_node->children;
+        $formData = $form_node->formData;
+
+        if($formData && $formData->unique_name) {
+            $registeredelem = ElementsCollection::GetElemByUniqueName($formData->unique_name);
+            if ($registeredelem) {
+                if (count($children) == 0) {
+                    $html .= $registeredelem->GetFrontendOutput($form_node);
+                } else {
+                    $html .= $registeredelem->GetFrontendOutput($form_node, function ($child_node) {
+                        return $this->RecursiveHtmlGenerator($child_node);
+                    });
+                }
+            }
+        } else {
+            foreach ($children as $form_child_node) {
+                $html .= $this->RecursiveHtmlGenerator($form_child_node);
+            }
+        }
 		return $html;
 	}
 }

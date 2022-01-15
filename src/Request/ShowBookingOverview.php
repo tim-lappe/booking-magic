@@ -13,9 +13,7 @@ class ShowBookingOverview extends RequestBase {
 
 	public function __construct() {
 		parent::__construct();
-
 		$this->action = "showbookingoverview";
-
 	}
 
 	public function OnAction( $vars ) {

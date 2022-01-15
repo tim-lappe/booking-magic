@@ -462,7 +462,7 @@
 
 .tlbm-admin-page-head {
   background-color: white;
-  box-shadow: 0 2px 7px 0 lightgray;
+  box-shadow: 0 0px 10px 0 lightgray;
   padding: 0.75rem 20px;
   margin-left: -20px;
   display: flex;
@@ -998,13 +998,10 @@
 
 .tlbm-fe-columns {
   display: flex;
+  gap: 1rem;
 }
 .tlbm-fe-columns .tlbm-fe-column {
-  flex-basis: min-content;
-  margin-right: 20px;
-}
-.tlbm-fe-columns .tlbm-fe-column:last-child {
-  margin-right: 0;
+  flex-basis: 0;
 }
 
 .tlbm-fe-form-control {

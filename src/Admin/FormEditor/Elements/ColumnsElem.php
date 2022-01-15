@@ -22,8 +22,9 @@ class ColumnsElem extends FormElem {
         $this->only_in_root = $columns > 3;
 		$this->description = sprintf(__("Adds a section in which form fields can be displayed in a %s-column layout", TLBM_TEXT_DOMAIN), $columns);
 
+        $settings = array();
         for($i = 1; $i <= $columns; $i++) {
-            $this->settings[] = new Select(
+            $settings[] = new Select(
                 "split_" . $i,
                 sprintf(__("Size Column %s", TLBM_TEXT_DOMAIN), $i),
                 array( "1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5", "6" => "6", "7" => "7", "8" => "8", "9" => "9", "10" => "10", "11" => "11", "12" => "12"),
@@ -33,27 +34,31 @@ class ColumnsElem extends FormElem {
                 __("Column Sizes")
             );
         }
+
+        $this->AddSettings(...$settings);
 	}
 
     /**
-     * @param      $data_obj
+     * @param object $form_node
      * @param callable|null $insert_child
      *
      * @return mixed
      */
-	public function GetFrontendOutput($data_obj, callable $insert_child = null): string {
+	public function GetFrontendOutput(object $form_node, callable $insert_child = null): string {
 		$html = "<div class='tlbm-fe-columns'>";
 
-		for($i = 0; $i < $this->columns; $i++) {
-			$fgrow = $data_obj->{"split_" . ($i + 1)};
-			$html .= "<div class='tlbm-fe-column' style='flex-grow: ".$fgrow."'>";
+        foreach($form_node->children as $column_num => $column_node) {
+            $fgrow = $form_node->formData->{"split_" . ($column_num + 1)};
+            $html .= "<div class='tlbm-fe-column' style='flex-grow: " . $fgrow . "'>";
 
-			if($insert_child != null) {
-                $html .= $insert_child($i);
+            foreach($column_node->children as $child_form_node) {
+                if ($insert_child != null) {
+                    $html .= $insert_child($child_form_node);
+                }
             }
 
-			$html .= "</div>";
-		}
+            $html .= "</div>";
+        }
 
 		$html .= "</div>";
 

@@ -107,12 +107,12 @@ abstract class FormElem {
 	}
 
 	/**
-	 * @param $data_obj
+	 * @param object $form_node
 	 * @param callable|null $insert_child
 	 *
 	 * @return mixed
 	 */
-	public abstract function GetFrontendOutput($data_obj, ?callable $insert_child = null);
+	public abstract function GetFrontendOutput(object $form_node, ?callable $insert_child = null);
 
     /**
      * @param $form_data

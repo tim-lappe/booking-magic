@@ -21,13 +21,13 @@ final class SpacingElem extends FormElem {
     }
 
     /**
-     * @param      $data_obj
+     * @param      $form_node
      * @param callable|null $insert_child
      *
      * @return mixed
      */
-	public function GetFrontendOutput($data_obj, callable $insert_child = null): string {
-		return "<div class=''></div>";
+	public function GetFrontendOutput($form_node, callable $insert_child = null): string {
+		return "<div style='height: " . $form_node->formData->spacing . "px'></div>";
 	}
 }
 
