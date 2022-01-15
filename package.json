@@ -4,7 +4,7 @@
   "license": "MIT",
   "version": "1.0.0",
   "scripts": {
-    "build": "babel src -d lib",
+    "build": "webpack build",
     "dev:start": "npm run env:start; npm run watch",
     "env:start": "docker-compose up -d wordpress wordpress_phpmyadmin",
     "env:stop": "docker-compose down",

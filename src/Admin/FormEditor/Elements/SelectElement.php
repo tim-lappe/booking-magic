@@ -39,13 +39,13 @@ class SelectElement extends FormInputElem {
     /**
      * @inheritDoc
      */
-    public function GetFrontendOutput($data_obj, ?callable $insert_child = null) {
-        $items = explode("\n", $data_obj->items);
+    public function GetFrontendOutput($form_node, ?callable $insert_child = null) {
+        $items = explode("\n", $form_node->formData->items);
         $key_values = array();
         foreach ($items as $values) {
             $key_values[$values] = $values;
         }
 
-        return InputGenerator::GetSelectControle("text", $data_obj->title, $key_values, $data_obj->required == "yes");
+        return InputGenerator::GetSelectControle($form_node->formData->title, $form_node->formData->name, $key_values, $form_node->formData->required == "yes");
     }
 }

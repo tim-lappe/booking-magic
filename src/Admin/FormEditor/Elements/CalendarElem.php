@@ -78,14 +78,14 @@ class CalendarElem extends FormInputElem {
 	}
 
 	/**
-     * @param      $data_obj
+     * @param      $form_node
      * @param callable|null $insert_child
      *
      * @return mixed
      */
-	public function GetFrontendOutput($data_obj, callable $insert_child = null): string {
-		if($data_obj->selected_calendar) {
-			return CalendarOutput::GetContainerShell($data_obj->selected_calendar, "dateselect_monthview", $data_obj->weekdays_form, $data_obj->name );
+	public function GetFrontendOutput($form_node, callable $insert_child = null): string {
+		if($form_node->selected_calendar) {
+			return CalendarOutput::GetContainerShell($form_node->formData->selected_calendar, "dateselect_monthview", $form_node->formData->weekdays_form, $form_node->formData->name );
 		} else {
 			return "<div class='tlbm-no-calendar-alert'>" . __("No calendar or calendargroup selected", TLBM_TEXT_DOMAIN) . "</div>";
 		}

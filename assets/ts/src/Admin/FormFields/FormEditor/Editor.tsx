@@ -54,10 +54,7 @@ export class Editor extends React.Component<FormEditorProps, FormEditorState> {
             this.formElementsManager = new ElementsManager(formfields);
         } else {
             this.formElementsManager = new ElementsManager([]);
-            console.log("No Formfields loaded");
         }
-
-        console.log("FormElements", this.formElementsManager.formElements);
 
         let assignedData = Utils.deepObjectAssign<FormEditorNode>(data, FormEditorNode);
         this.state = {

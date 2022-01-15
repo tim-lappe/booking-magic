@@ -20,12 +20,12 @@ final class HrElem extends FormElem {
 	}
 
     /**
-     * @param      $data_obj
+     * @param      $form_node
      * @param callable|null $insert_child
      *
      * @return mixed
      */
-	public function GetFrontendOutput($data_obj, callable $insert_child = null): string {
+	public function GetFrontendOutput($form_node, callable $insert_child = null): string {
 		return "<hr>";
 	}
 }

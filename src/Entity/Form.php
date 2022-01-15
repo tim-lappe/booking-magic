@@ -5,7 +5,6 @@ namespace TLBM\Entity;
 
 use Doctrine\ORM\Mapping as OrmMapping;
 use JsonSerializable;
-use stdClass;
 
 /**
  * Class Calendar

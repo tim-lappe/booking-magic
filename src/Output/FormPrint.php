@@ -7,20 +7,19 @@ if( ! defined( 'ABSPATH' ) ) {
     return;
 }
 
-use TLBM\Model\Form;
+use TLBM\Entity\Form;
 use TLBM\Form\FormManager;
 
 class FormPrint {
 
 	public static function PrintForm( $id ): string {
 		$form = FormManager::GetForm($id);
-
 		$html = FrontendMessenger::GetMessangesPrint();
 
 		if($form instanceof Form) {
 			$html .= "<form action='".$_SERVER['REQUEST_URI']."' method='post'>";
-			$html .= $form->frontend_html;
-			$html .= "<input type='hidden' name='form' value='" . $form->wp_post_id . "'>";
+			$html .= $form->GetFrontendHtml();
+			$html .= "<input type='hidden' name='form' value='" . $form->GetId() . "'>";
 
 			if(get_option("single_page_booking") == "on") {
 				$html .= "<input type='hidden' name='action' value='dobooking'>";

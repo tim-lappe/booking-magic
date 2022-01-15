@@ -2,7 +2,9 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
+use Throwable;
 use TLBM\Admin\FormEditor\Formeditor;
+use TLBM\Admin\FormEditor\FrontendGeneration\FormFrontendGenerator;
 use TLBM\Admin\Pages\PageManager;
 use TLBM\Admin\WpForm\CalendarPickerField;
 use TLBM\Admin\WpForm\FormBuilder;
@@ -78,8 +80,14 @@ class FormEditPage extends FormPageBase {
 
         $form->SetTitle($vars['title']);
         try {
-            $form->SetFormData(json_decode(urldecode($vars['form'])));
-        } catch (\Throwable $exception) {
+            $form_node_tree = json_decode(urldecode($vars['form']));
+            $form->SetFormData($form_node_tree);
+
+            $generator = new FormFrontendGenerator($form_node_tree);
+            $html = $generator->GenerateHtml();
+            $form->SetFrontendHtml($html);
+
+        } catch (Throwable $exception) {
             return array(
                 "error" => __("Unknown Error " . $exception->getMessage(), TLBM_TEXT_DOMAIN)
             );
