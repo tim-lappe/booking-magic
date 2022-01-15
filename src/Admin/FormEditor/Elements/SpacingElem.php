@@ -15,10 +15,10 @@ final class SpacingElem extends FormElem {
 	public function __construct() {
 		parent::__construct( "spacing", __("Spacing", TLBM_TEXT_DOMAIN) );
         $this->description = __("Useful to leave space within the form", TLBM_TEXT_DOMAIN);
-
-		$this->settings[] = new Input("spacing", __("Spacing (in px)", TLBM_TEXT_DOMAIN), "number",100);
 		$this->menu_category = __("Layout", TLBM_TEXT_DOMAIN);
-	}
+
+        $this->AddSettings(new Input("spacing", __("Spacing (in px)", TLBM_TEXT_DOMAIN), "number",100));
+    }
 
     /**
      * @param      $data_obj

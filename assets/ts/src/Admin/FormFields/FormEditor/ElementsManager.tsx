@@ -37,7 +37,7 @@ export class ElementsManager {
         return formData;
     }
 
-    public getFormElementsList(): { [props: string]: FormElement[]} {
+    public getFormElementsList(): { [props: string]: FormElement[] } {
         let categories = this.getCategories();
         let elements = {};
         for (let cat of categories) {

@@ -12,6 +12,10 @@
 
   .tlbm-editor-root-container {
     padding: 10px 5px;
+
+    &.tlbm-empty-container {
+      padding: 0;
+    }
   }
 
   .tlbm-button-add-element:not(:first-child) {
@@ -317,6 +321,7 @@
     overflow: hidden;
 
     .tlbm-form-settings-top-bar {
+      position: relative;
       display: flex;
       box-shadow: 0 2px 3px 0 #dedede;
       z-index: 10;
@@ -335,7 +340,7 @@
 
       button {
         margin-left: 7px;
-        width: 70px;
+        min-width: 70px;
       }
 
       .tlbm-button-danger {
@@ -345,11 +350,27 @@
 
     .tlbm-form-settings-container  {
       padding: 20px;
+      max-height: 75vh;
+      overflow-y: scroll;
+
+      h3 {
+        margin: 2rem 0 1rem 0;
+        font-weight: normal;
+        padding: 10px 15px;
+        border-radius: 3px;
+        background-color: #eaf0f3;
+
+        &:first-child {
+          margin: 0.5rem 0 1rem 0;
+        }
+      }
 
       .tlbm-form-settings-items-collection {
         display: flex;
         flex-wrap: wrap;
         align-items: flex-end;
+        gap: 1rem;
+        margin-bottom: 1rem;
 
         .tlbm-item-settings-error {
           padding: 7px;
@@ -363,13 +384,16 @@
 
         .form-item-settings-control {
           min-width: 150px;
-          margin: 0 20px 20px 0;
           flex-grow: 1;
           flex-basis: 0;
 
-          select, input {
+          select, input, textarea {
             margin: 5px 0 0 0;
             width: 100%;
+          }
+
+          textarea {
+            height: 120px;
           }
 
           &.form-item-expand {
@@ -379,6 +403,10 @@
 
           &.form-item-stretch {
 
+          }
+
+          &:last-child {
+            margin-right: 0;
           }
         }
       }

@@ -12,8 +12,8 @@ class Select extends ElementSetting {
 
 	public array $key_values = array();
 
-	public function __construct($name, $title, $key_values, $default_value = "") {
-        parent::__construct($name, $title, $default_value);
+	public function __construct($name, $title, array $key_values, string $default_value = "", bool $readonly = false, bool $must_unique = false, string $category_title = "General") {
+        parent::__construct($name, $title, $default_value, $readonly, $must_unique, array(), $category_title);
 
         $this->key_values = $key_values;
         $this->type = "select";

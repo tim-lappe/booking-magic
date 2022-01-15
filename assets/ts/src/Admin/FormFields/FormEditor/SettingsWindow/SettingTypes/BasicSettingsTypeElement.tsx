@@ -23,28 +23,29 @@ export class BasicSettingsTypeElement extends React.Component<BasicSettingsTypeE
     }
 
     onChange(event: any) {
-        let newVal = event.target.value;
+        let target = event.target as HTMLInputElement;
+        let newVal = target.value;
 
-        if(this.props.onChange != null) {
-            this.props.onChange(newVal, this.state.value);
+        if(target.validity.valid) {
+            if (this.props.onChange != null) {
+                this.props.onChange(newVal, this.state.value);
+            }
+
+            this.setState((prevState: BasicSettingsTypeElementState) => {
+                prevState.value = newVal;
+                return prevState;
+            });
         }
-
-        this.setState((prevState: BasicSettingsTypeElementState) => {
-            prevState.value = newVal;
-            return prevState;
-        });
 
         event.preventDefault();
     }
 
     render() {
         return (
-            <React.Fragment>
-                <label>
-                    {this.props.elementSetting.title}<br />
-                    <input disabled={this.props.elementSetting.readonly} onChange={this.onChange} type={"text"} value={this.state.value ?? this.props.elementSetting.default_value} />
-                </label>
-            </React.Fragment>
+            <label>
+                {this.props.elementSetting.title}<br />
+                <input maxLength={this.props.elementSetting.input_maxlength ?? 100} minLength={this.props.elementSetting.input_minlength ?? 0} pattern={this.props.elementSetting.input_regex ?? ".*"} type={this.props.elementSetting.input_type ?? "text"} disabled={this.props.elementSetting.readonly} onChange={this.onChange} value={this.state.value ?? this.props.elementSetting.default_value} />
+            </label>
         );
     }
 }

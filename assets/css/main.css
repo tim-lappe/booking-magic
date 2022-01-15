@@ -647,6 +647,9 @@
 .tlbm-form-editor .tlbm-editor-root-container {
   padding: 10px 5px;
 }
+.tlbm-form-editor .tlbm-editor-root-container.tlbm-empty-container {
+  padding: 0;
+}
 .tlbm-form-editor .tlbm-button-add-element:not(:first-child) {
   margin-top: 10px;
 }
@@ -902,6 +905,7 @@
   overflow: hidden;
 }
 .tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-top-bar {
+  position: relative;
   display: flex;
   box-shadow: 0 2px 3px 0 #dedede;
   z-index: 10;
@@ -919,18 +923,32 @@
 }
 .tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-top-bar button {
   margin-left: 7px;
-  width: 70px;
+  min-width: 70px;
 }
 .tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-top-bar .tlbm-button-danger {
   margin-right: 10px;
 }
 .tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-container {
   padding: 20px;
+  max-height: 75vh;
+  overflow-y: scroll;
+}
+.tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-container h3 {
+  margin: 2rem 0 1rem 0;
+  font-weight: normal;
+  padding: 10px 15px;
+  border-radius: 3px;
+  background-color: #eaf0f3;
+}
+.tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-container h3:first-child {
+  margin: 0.5rem 0 1rem 0;
 }
 .tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-container .tlbm-form-settings-items-collection {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 .tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-container .tlbm-form-settings-items-collection .tlbm-item-settings-error {
   padding: 7px;
@@ -943,18 +961,24 @@
 }
 .tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-container .tlbm-form-settings-items-collection .form-item-settings-control {
   min-width: 150px;
-  margin: 0 20px 20px 0;
   flex-grow: 1;
   flex-basis: 0;
 }
-.tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-container .tlbm-form-settings-items-collection .form-item-settings-control select, .tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-container .tlbm-form-settings-items-collection .form-item-settings-control input {
+.tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-container .tlbm-form-settings-items-collection .form-item-settings-control select, .tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-container .tlbm-form-settings-items-collection .form-item-settings-control input, .tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-container .tlbm-form-settings-items-collection .form-item-settings-control textarea {
   margin: 5px 0 0 0;
   width: 100%;
+}
+.tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-container .tlbm-form-settings-items-collection .form-item-settings-control textarea {
+  height: 120px;
 }
 .tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-container .tlbm-form-settings-items-collection .form-item-settings-control.form-item-expand {
   flex-basis: 100%;
   flex-grow: 1;
 }
+.tlbm-form-editor-element-settings-window .tlbm-element-settings-window-inner .tlbm-form-settings-container .tlbm-form-settings-items-collection .form-item-settings-control:last-child {
+  margin-right: 0;
+}
+
 .tlbm-draggable-container {
   -webkit-touch-callout: none;
   -webkit-user-select: none;

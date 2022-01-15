@@ -53,14 +53,21 @@ export class SettingsWindowItem extends React.Component<SettingsWindowItemProps,
 
     checkErrors() {
         this.setState((prevState: SettingsWindowItemState) => {
+            let value = this.state.formData[this.props.elementSetting.name];
+
             if(this.props.elementSetting.must_unique) {
                 let rootNode = this.props.window?.props.formEditor?.state.rootNode;
-                let duplicate = rootNode.findNodesWithData(this.props.elementSetting.name, this.state.formData[this.props.elementSetting.name], this.props.formNode);
+                let duplicate = rootNode.findNodesWithData(this.props.elementSetting.name, value, this.props.formNode);
                 if(duplicate.length > 0) {
                     prevState.errorMessage = Localization.__("This field has to be unique");
                 } else {
                     prevState.errorMessage = "";
                 }
+            }
+
+            let forbidden = this.props.elementSetting.forbidden_values;
+            if(forbidden.indexOf(value) != -1) {
+                prevState.errorMessage = Localization.__("This value is not allowed");
             }
 
             if(this.props.onErrorUpdate) {
@@ -73,8 +80,9 @@ export class SettingsWindowItem extends React.Component<SettingsWindowItemProps,
 
     render() {
         let val = this.state.formData[this.props.elementSetting.name] ?? this.props.elementSetting.default_value;
+        let expand = this.props.elementSetting.expand ? "form-item-expand" : "";
         return (
-            <div className={"form-item-settings-control"}>
+            <div className={"form-item-settings-control " + expand}>
                 {this.state.errorMessage.length > 0 ? (
                     <div className={"tlbm-item-settings-error"}>
                         {this.state.errorMessage}

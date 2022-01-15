@@ -6,7 +6,7 @@ import {Localization} from "../../../../Localization";
 import {SettingsTypeManager} from "./SettingsTypeManager";
 import {FormEditorNode} from "../../../Entity/FormEditor/FormEditorNode";
 import {Editor} from "../Editor";
-import {createRef} from "react";
+import {createRef, Fragment} from "react";
 
 interface ElementSettingsWindowProps {
     onCancel?: () => void;
@@ -123,26 +123,52 @@ export class ElementSettingsWindow extends React.Component<ElementSettingsWindow
     }
 
     render() {
-        return (
-            <div onClick={this.onBackgroundClicked} style={{display: this.state.formDataCopy != null && this.state.formElement != null  ? "flex" : "none"}} className={"tlbm-form-editor-element-settings-window tlbm-window-outer"}>
-                <div className={"tlbm-element-settings-window-inner tlbm-window-inner"}>
-                    <div className={"tlbm-form-settings-top-bar"}>
-                        <h3>{this.state.formElement?.title}</h3>
-                        <button onClick={this.onRemoveClicked} className={"button tlbm-button-danger"}>{Localization.__("Remove")}</button>
-                        <button onClick={this.onCancelClicked} className={"button tlbm-button-white"}>{Localization.__("Cancel")}</button>
-                        <button disabled={this.hasErrors()} onClick={this.onApplyClicked} className={"button button-primary"}>{Localization.__("Apply")}</button>
-                    </div>
-                    <div className={"tlbm-form-settings-container"}>
-                        <div className={"tlbm-form-settings-items-collection"}>
-                            {this.state.formElement?.settings.map((elementSetting, index) => {
+        if(this.state.formElement != null) {
+            let settings = FormElement.getSettingsWithCategory(this.state.formElement);
+            let categories = FormElement.getSettingsCategories(this.state.formElement);
+
+            return (
+                <div onClick={this.onBackgroundClicked}
+                     style={{display: this.state.formDataCopy != null && this.state.formElement != null ? "flex" : "none"}}
+                     className={"tlbm-form-editor-element-settings-window tlbm-window-outer"}>
+                    <div className={"tlbm-element-settings-window-inner tlbm-window-inner"}>
+                        <div className={"tlbm-form-settings-top-bar"}>
+                            <h3>{this.state.formElement?.title}</h3>
+                            <button onClick={this.onRemoveClicked}
+                                    className={"button tlbm-button-danger"}>{Localization.__("Remove")}</button>
+                            <button onClick={this.onCancelClicked}
+                                    className={"button tlbm-button-white"}>{Localization.__("Cancel")}</button>
+                            <button disabled={this.hasErrors()} onClick={this.onApplyClicked}
+                                    className={"button button-primary"}>{Localization.__("Apply")}</button>
+                        </div>
+                        <div className={"tlbm-form-settings-container"}>
+                            {categories.map((category) => {
                                 return (
-                                    <SettingsWindowItem formNode={this.state.formNode} window={this} key={elementSetting.name + this.state.rand} onErrorUpdate={(formData: FormElementData, errorString: string) => this.onErrorChanged(index, formData, errorString)} onChange={(formData: FormElementData) => this.onSettingChanged(index, formData)} elementSetting={elementSetting} formData={this.state.formDataCopy} />
-                                );
+                                    <React.Fragment key={category}>
+                                        <h3>{category}</h3>
+                                        <div className={"tlbm-form-settings-items-collection"}>
+                                            {settings[category].map((elementSetting, index) => {
+                                                return (
+                                                    <SettingsWindowItem formNode={this.state.formNode} window={this}
+                                                                        key={elementSetting.name + this.state.rand}
+                                                                        onErrorUpdate={(formData: FormElementData, errorString: string) => this.onErrorChanged(index, formData, errorString)}
+                                                                        onChange={(formData: FormElementData) => this.onSettingChanged(index, formData)}
+                                                                        elementSetting={elementSetting}
+                                                                        formData={this.state.formDataCopy}/>
+                                                );
+                                            })}
+                                        </div>
+                                    </React.Fragment>
+                                )
                             })}
                         </div>
                     </div>
                 </div>
-            </div>
-        );
+            );
+        }
+
+        return (
+            <div />
+        )
     }
 }
