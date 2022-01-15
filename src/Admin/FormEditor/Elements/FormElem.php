@@ -8,7 +8,10 @@ if( ! defined( 'ABSPATH' ) ) {
 }
 
 
+use phpDocumentor\Reflection\Types\This;
 use TLBM\Admin\FormEditor\ItemSettingsElements\ElementSetting;
+use TLBM\Admin\FormEditor\ItemSettingsElements\Input;
+use TLBM\Admin\FormEditor\ItemSettingsElements\Textarea;
 
 abstract class FormElem {
 
@@ -37,7 +40,6 @@ abstract class FormElem {
 	 */
 	public $menu_category = "General";
 
-
 	/**
 	 * @var string
 	 */
@@ -59,7 +61,35 @@ abstract class FormElem {
 		$this->menu_category = __("General", TLBM_TEXT_DOMAIN);
 		$this->description = "";
         $this->type = $name;
+
+        $setting_css_class = new Input(
+            "css_class",
+            __("Custom CSS Classes (seperate with whitespace)"),
+            "text",
+            "",
+            false,
+            false,
+            array(),
+            __("Advanced", TLBM_TEXT_DOMAIN)
+        );
+
+        $setting_styles = new Input(
+            "css_styles",
+            __("Custom CSS Style"),
+            "text",
+            "",
+            false,
+            false,
+            array(),
+            __("Advanced", TLBM_TEXT_DOMAIN)
+        );
+
+        $this->AddSettings($setting_css_class, $setting_styles);
 	}
+
+    public function AddSettings(ElementSetting ...$settings) {
+        $this->settings = array_merge($settings, $this->settings);
+    }
 
 	/**
 	 * @param $name

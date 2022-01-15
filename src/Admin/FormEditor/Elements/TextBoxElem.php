@@ -20,9 +20,9 @@ final class TextBoxElem extends FormInputElem {
      * @param      $data_obj
      * @param callable|null $insert_child
      *
-     * @return mixed
+     * @return string
      */
-	public function GetFrontendOutput($data_obj, callable $insert_child = null) {
+	public function GetFrontendOutput($data_obj, callable $insert_child = null): string {
 		return InputGenerator::GetFormControl("text", $data_obj->title, $data_obj->name, $data_obj->required == "yes");
 	}
 }

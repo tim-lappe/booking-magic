@@ -4,7 +4,6 @@ import {FormElement} from "../../../Entity/FormEditor/FormElement";
 import {ElementsManager} from "../ElementsManager";
 import {SelectableFormElementWindowItem} from "./SelectableFormElementWindowItem";
 import {FormEditorNode} from "../../../Entity/FormEditor/FormEditorNode";
-import FormEditor from "../../../Formeditor/FormEditor";
 import {Editor} from "../Editor";
 
 interface SelectFormElementWindowProps {

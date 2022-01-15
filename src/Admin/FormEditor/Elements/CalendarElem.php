@@ -40,12 +40,28 @@ class CalendarElem extends FormInputElem {
 
 		$default_calendar = sizeof($calendar_kv) > 0 ? array_keys($calendar_kv)[0] : "";
 
-		$this->settings[] = new Select("selected_calendar", __("Calendar", TLBM_TEXT_DOMAIN), $calendar_select, $default_calendar);
-		$this->settings[] = new Select("weekdays_form", __("Weekday Labels", TLBM_TEXT_DOMAIN),
+		$setting_selected_calendar = new Select(
+            "selected_calendar",
+            __("Calendar", TLBM_TEXT_DOMAIN),
+            $calendar_select,
+            $default_calendar,
+            false,
+            false,
+            __("Calendar Settings", TLBM_TEXT_DOMAIN)
+        );
+		$setting_weekdays_form = new Select(
+            "weekdays_form",
+            __("Weekday Labels", TLBM_TEXT_DOMAIN),
 			array(
 				"long" => __("Long", TLBM_TEXT_DOMAIN),
 				"short" => __("Short", TLBM_TEXT_DOMAIN)
-			), "short" );
+			), "short",
+            false,
+            false,
+            __("Calendar Settings", TLBM_TEXT_DOMAIN)
+        );
+
+        $this->AddSettings($setting_selected_calendar, $setting_weekdays_form);
 
 		$this->has_user_input = true;
 	}

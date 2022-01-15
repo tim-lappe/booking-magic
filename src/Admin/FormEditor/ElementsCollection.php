@@ -16,6 +16,7 @@ use TLBM\Admin\FormEditor\Elements\FirstNameElem;
 use TLBM\Admin\FormEditor\Elements\FormElem;
 use TLBM\Admin\FormEditor\Elements\HrElem;
 use TLBM\Admin\FormEditor\Elements\LastNameElem;
+use TLBM\Admin\FormEditor\Elements\SelectElement;
 use TLBM\Admin\FormEditor\Elements\SpacingElem;
 use TLBM\Admin\FormEditor\Elements\TextBoxElem;
 use TLBM\Admin\FormEditor\Elements\ZipElem;
@@ -48,6 +49,7 @@ class ElementsCollection {
 
 	    self::AddFormElement(new EmailElem());
         self::AddFormElement(new TextBoxElem());
+        self::AddFormElement(new SelectElement());
     }
 
     /**
