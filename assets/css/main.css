@@ -6,11 +6,25 @@
   margin-bottom: 20px;
 }
 
+.tlbm-frontend-form .tlbm-calendar-container {
+  margin-bottom: 20px;
+}
+
 .tlbm-calendar-container {
-  margin: auto auto 20px auto;
   transition-property: opacity;
   transition-delay: 0.5s;
   transition-duration: 0.2s;
+}
+.tlbm-calendar-container .tlbm-month-view-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+.tlbm-calendar-container .tlbm-month-view-header .tlbm-month-view-current-month {
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 .tlbm-calendar-container .tlbm-button-select-another {
   margin-top: 20px;
@@ -20,22 +34,32 @@
   font-size: 2rem;
   margin: 0;
 }
-.tlbm-calendar-container .tlbm-calendar .tlbm-calendar-table {
+.tlbm-calendar-container .tlbm-button-calendar-month-traverse {
+  padding: 0.5rem 0.75rem !important;
+}
+.tlbm-calendar-container .tlbm-calendar-table {
   width: 100%;
-  background-color: #f5f5f5;
-  table-layout: fixed;
+  box-shadow: 0 2px 3px 0 #dedede;
+  display: grid;
 }
-.tlbm-calendar-container .tlbm-calendar .tlbm-calendar-table .tlbm-head-row th {
-  padding: 10px 0 !important;
-  text-align: center !important;
-}
-.tlbm-calendar-container .tlbm-calendar .tlbm-calendar-table .tlbm-cell {
+.tlbm-calendar-container .tlbm-calendar-table .tlbm-head-weekday {
+  align-self: center;
+  justify-self: stretch;
   padding: 10px;
-  height: 50px;
+  background-color: rgba(0, 0, 0, 0.05);
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 1.1rem;
+  word-wrap: normal;
 }
-.tlbm-calendar-container .tlbm-calendar .tlbm-calendar-table .tlbm-cell .tlbm-datenumber-span {
+.tlbm-calendar-container .tlbm-calendar-table .tlbm-cell {
+  padding: 10px;
+  min-height: 4rem;
+}
+.tlbm-calendar-container .tlbm-calendar-table .tlbm-cell .tlbm-datenumber-span {
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.02);
+  background: rgba(0, 0, 0, 0.03);
   display: flex;
   width: 2em;
   height: 2em;
@@ -43,29 +67,40 @@
   align-items: center;
   padding: 0;
 }
-.tlbm-calendar-container .tlbm-calendar .tlbm-calendar-table .tlbm-cell.tlbm-cell-not-empty {
+.tlbm-calendar-container .tlbm-calendar-table .tlbm-cell.tlbm-cell-not-empty {
   background-color: #ffffff;
 }
-.tlbm-calendar-container .tlbm-calendar .tlbm-calendar-table .tlbm-cell.tlbm-cell-today {
-  background-color: #bee5ff;
+.tlbm-calendar-container .tlbm-calendar-table .tlbm-cell:not(.tlbm-cell-not-empty) {
+  background-color: rgba(0, 0, 0, 0.01);
 }
-.tlbm-calendar-container .tlbm-calendar .tlbm-calendar-table .tlbm-cell.tlbm-cell-selectable:hover {
+.tlbm-calendar-container .tlbm-calendar-table .tlbm-cell.tlbm-cell-selectable {
+  transition-property: background-color;
+  transition-duration: 0.1s;
+  background-color: transparent;
+}
+.tlbm-calendar-container .tlbm-calendar-table .tlbm-cell.tlbm-cell-selectable:hover {
   cursor: pointer;
+  border-radius: 4px;
   background-color: rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 10;
 }
-.tlbm-calendar-container .tlbm-calendar .tlbm-calendar-table .tlbm-cell.tlbm-cell-not-bookable {
+.tlbm-calendar-container .tlbm-calendar-table .tlbm-cell.tlbm-cell-today {
+  background-color: #e5f2ff;
+}
+.tlbm-calendar-container .tlbm-calendar-table .tlbm-cell.tlbm-cell-not-bookable {
   opacity: 0.4;
 }
-.tlbm-calendar-container .tlbm-calendar .tlbm-month-head {
+.tlbm-calendar-container .tlbm-month-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
-.tlbm-calendar-container .tlbm-calendar .tlbm-month-head .tlbm-month-title {
+.tlbm-calendar-container .tlbm-month-head .tlbm-month-title {
   font-size: 20px;
 }
-.tlbm-calendar-container .tlbm-calendar .tlbm-month-head .tlbm-next-month, .tlbm-calendar-container .tlbm-calendar .tlbm-month-head .tlbm-prev-month {
+.tlbm-calendar-container .tlbm-month-head .tlbm-next-month, .tlbm-calendar-container .tlbm-month-head .tlbm-prev-month {
   width: 120px;
   padding: 5px;
 }
@@ -1006,6 +1041,9 @@
 
 .tlbm-fe-form-control {
   margin-bottom: 20px;
+}
+.tlbm-fe-form-control label {
+  display: block;
 }
 
 .tlbm-messages {

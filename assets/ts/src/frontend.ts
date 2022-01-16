@@ -1,5 +1,5 @@
-import {CalendarCollector} from "./Calendar/CalendarCollector";
+import {CalendarLoader} from "./Core/Calendar/CalendarLoader";
 
 window.onload = function () {
-    CalendarCollector.initAllCalendars();
+    CalendarLoader.initAllCalendars();
 }

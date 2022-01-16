@@ -12,6 +12,7 @@ use TLBM\Admin\FormEditor\ItemSettingsElements\Select;
 use TLBM\Calendar\CalendarGroupManager;
 use TLBM\Calendar\CalendarManager;
 use TLBM\Output\Calendar\CalendarOutput;
+use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
 
 class CalendarElem extends FormInputElem {
 
@@ -84,8 +85,8 @@ class CalendarElem extends FormInputElem {
      * @return mixed
      */
 	public function GetFrontendOutput($form_node, callable $insert_child = null): string {
-		if($form_node->selected_calendar) {
-			return CalendarOutput::GetContainerShell($form_node->formData->selected_calendar, "dateselect_monthview", $form_node->formData->weekdays_form, $form_node->formData->name );
+		if($form_node->formData->selected_calendar) {
+			return CalendarOutput::GetCalendarContainerShell($form_node->formData->selected_calendar, 0, "month", new MonthViewSetting(),  $form_node->formData->name );
 		} else {
 			return "<div class='tlbm-no-calendar-alert'>" . __("No calendar or calendargroup selected", TLBM_TEXT_DOMAIN) . "</div>";
 		}

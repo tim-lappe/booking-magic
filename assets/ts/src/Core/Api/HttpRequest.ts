@@ -1,6 +1,6 @@
 declare var ajax_information: any;
 
-export class Api {
+export class HttpRequest {
     public static Post(action: string, data: any, cb_success?: (response: any) => void, cb_error?: () => void) {
         const xmlhttp = new XMLHttpRequest();
 
