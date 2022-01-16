@@ -22,8 +22,4 @@ export class SettingsTypeManager {
 
         return <BasicSettingsTypeElement elementSetting={elementSetting} value={value} onChange={onChange} />;
     }
-
-    public getSettingsTypeComponentsWithCategory() {
-
-    }
 }

@@ -9,6 +9,7 @@ use TLBM\Calendar\CalendarManager;
 use TLBM\Entity\Calendar;
 use TLBM\Model\CalendarGroup;
 use TLBM\Output\Calendar\CalendarOutput;
+use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
 
 class CalendarEditPage extends FormPageBase {
 
@@ -39,8 +40,13 @@ class CalendarEditPage extends FormPageBase {
             $calendar = new Calendar();
         }
         ?>
+
         <div class="tlbm-admin-page-tile">
             <input value="<?php echo $calendar->GetTitle() ?>" placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
+        </div>
+
+        <div class="tlbm-admin-page-tile">
+            <?php echo CalendarOutput::GetCalendarContainerShell($calendar->GetId(), time(), "month"); ?>
         </div>
 
         <?php

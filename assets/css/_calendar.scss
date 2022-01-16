@@ -1,6 +1,6 @@
 $calendar-table-background: #f5f5f5;
 $calendar-table-cell-background: #ffffff;
-$calendar-table-cell-today-background: #bee5ff;
+$calendar-table-cell-today-background: #e3fcff;
 
 .tlbm-no-calendar-alert {
   border: 1px solid red;
@@ -10,11 +10,29 @@ $calendar-table-cell-today-background: #bee5ff;
   margin-bottom: 20px;
 }
 
+.tlbm-frontend-form {
+  .tlbm-calendar-container {
+    margin-bottom: 20px;
+  }
+}
+
 .tlbm-calendar-container {
-  margin: auto auto 20px auto;
   transition-property: opacity;
   transition-delay: 0.5s;
   transition-duration: 0.2s;
+
+  .tlbm-month-view-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 1rem;
+    align-items: center;
+
+    .tlbm-month-view-current-month {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+  }
 
   .tlbm-button-select-another {
     margin-top: 20px;
@@ -26,68 +44,87 @@ $calendar-table-cell-today-background: #bee5ff;
     margin: 0;
   }
 
-  .tlbm-calendar {
-    .tlbm-calendar-table {
-      width: 100%;
-      background-color: $calendar-table-background;
-      table-layout: fixed;
+  .tlbm-button-calendar-month-traverse {
+    padding: 0.5rem 0.75rem !important;
+  }
 
-      .tlbm-head-row th {
-        padding: 10px 0 !important;
-        text-align: center !important;
-        //font-size: 1rem;
-      }
+  .tlbm-calendar-table {
+    width: 100%;
+    box-shadow: 0 2px 3px 0 #dedede;
+    display: grid;
 
-      .tlbm-cell {
-        padding: 10px;
-        height: 50px;
-
-        .tlbm-datenumber-span {
-          border-radius: 50%;
-          background: rgba(0, 0, 0, 0.02);
-          display: flex;
-          width: 2em;
-          height: 2em;
-          justify-content: center;
-          align-items: center;
-          padding: 0;
-        }
-
-        &.tlbm-cell-not-empty {
-          background-color: $calendar-table-cell-background;
-        }
-
-        &.tlbm-cell-today {
-          background-color: $calendar-table-cell-today-background;
-        }
-
-        &.tlbm-cell-selectable {
-          &:hover {
-            cursor: pointer;
-            background-color: rgba(0, 0, 0, 0.05);
-          }
-        }
-
-        &.tlbm-cell-not-bookable {
-          opacity: 0.4;
-        }
-      }
+    .tlbm-head-weekday {
+      align-self: center;
+      justify-self: stretch;
+      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.05);
+      text-align: center;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      font-size: 1.1rem;
+      word-wrap: normal;
     }
 
-    .tlbm-month-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
+    .tlbm-cell {
+      padding: 10px;
+      min-height: 4rem;
 
-      .tlbm-month-title {
-        font-size: 20px;
+      .tlbm-datenumber-span {
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.03);
+        display: flex;
+        width: 2em;
+        height: 2em;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
       }
 
-      .tlbm-next-month, .tlbm-prev-month {
-        width: 120px;
-        padding: 5px;
+      &.tlbm-cell-not-empty {
+        background-color: $calendar-table-cell-background;
       }
+
+      &:not(.tlbm-cell-not-empty) {
+        background-color: rgba(0, 0, 0, 0.01);
+      }
+
+      &.tlbm-cell-selectable {
+        transition-property: background-color;
+        transition-duration: 0.1s;
+        background-color: transparent;
+
+        &:hover {
+          cursor: pointer;
+          border-radius: 4px;
+          background-color: rgba(0, 0, 0, 0.05);
+          position: relative;
+          z-index: 10;
+        }
+      }
+
+      &.tlbm-cell-today {
+        background-color: #e5f2ff;
+      }
+
+      &.tlbm-cell-not-bookable {
+        opacity: 0.4;
+      }
+    }
+  }
+
+  .tlbm-month-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .tlbm-month-title {
+      font-size: 20px;
+    }
+
+    .tlbm-next-month, .tlbm-prev-month {
+      width: 120px;
+      padding: 5px;
     }
   }
 }
