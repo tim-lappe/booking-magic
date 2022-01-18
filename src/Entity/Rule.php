@@ -34,25 +34,25 @@ class Rule implements \JsonSerializable {
 	 * @var CalendarSelection
 	 * @OrmMapping\OneToOne(targetEntity=CalendarSelection::class, orphanRemoval=true, cascade={"all"})
 	 */
-	public CalendarSelection $calendar_selection;
+    protected CalendarSelection $calendar_selection;
 
 	/**
 	 * @var int
 	 * @OrmMapping\Column(type="integer", nullable=false)
 	 */
-	public int $priority = 0;
+    protected int $priority = 0;
 
 	/**
 	 * @var Collection
 	 * @OrmMapping\OneToMany(targetEntity=RuleAction::class, mappedBy="rule", orphanRemoval=true, cascade={"all"})
 	 */
-	public Collection $actions;
+    protected Collection $actions;
 
 	/**
 	 * @var Collection
 	 * @OrmMapping\OneToMany(targetEntity=RulePeriod::class, mappedBy="rule", orphanRemoval=true, cascade={"all"})
 	 */
-	public Collection $periods;
+    protected Collection $periods;
 
 
 	/**

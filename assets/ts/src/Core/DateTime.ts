@@ -2,13 +2,24 @@ export class DateTime {
 
     public date: Date;
 
-
     constructor(tstamp: number) {
         this.date = new Date();
 
         if(tstamp > 0) {
             this.setTime(tstamp);
         }
+    }
+
+    public setHourMin(hours: number, minutes: number) {
+        this.date.setHours(hours, minutes);
+    }
+
+    public getHour(): number {
+        return this.date.getHours();
+    }
+
+    public getMinute(): number {
+        return this.date.getMinutes();
     }
 
     public addMonth(months: number) {
@@ -71,7 +82,7 @@ export class DateTime {
     }
 
     public getTime(): number {
-        return this.date.getTime() / 1000;
+        return Math.floor(this.date.getTime() / 1000);
     }
 
     public getMonth(): number {
@@ -94,10 +105,8 @@ export class DateTime {
         if(start.getTime() < end.getTime()) {
             let dates = [];
             let dateTraverse = new DateTime(start.getTime());
-            let endCpy = new DateTime(end.getTime());
-            endCpy.setTime(endCpy.getTime() + ((60 * 60 * 24) - 1));
 
-            while(dateTraverse.getTime() < endCpy.getTime()) {
+            while(dateTraverse.getYear() <= end.getYear() && dateTraverse.getMonth() <= end.getMonth() && dateTraverse.getMonthDay() <= end.getMonthDay()) {
                 dates.push(new DateTime(dateTraverse.getTime()));
                 dateTraverse.addDays(1);
             }
@@ -106,5 +115,41 @@ export class DateTime {
         }
 
         return [];
+    }
+
+    public static isSameMinute(...dateTimes: DateTime[]) {
+        if(dateTimes.length >= 2) {
+            let prev: DateTime = dateTimes[0];
+            dateTimes.splice(0, 1);
+            for (let dateTime of dateTimes) {
+                if (prev.getMonthDay() != dateTime.getMonthDay() ||
+                    prev.getMonth() != dateTime.getMonth() ||
+                    prev.getYear() != dateTime.getYear() ||
+                    prev.getHour() != dateTime.getHour() ||
+                    prev.getMinute() != dateTime.getMinute()) {
+
+                    return false;
+                }
+                prev = dateTime;
+            }
+        }
+        return true;
+    }
+
+    public static isSameDay(...dateTimes: DateTime[]) {
+        if(dateTimes.length >= 2) {
+            let prev: DateTime = dateTimes[0];
+            dateTimes.splice(0, 1);
+            for (let dateTime of dateTimes) {
+                if (prev.getMonthDay() != dateTime.getMonthDay() ||
+                    prev.getMonth() != dateTime.getMonth() ||
+                    prev.getYear() != dateTime.getYear()) {
+
+                    return false;
+                }
+                prev = dateTime;
+            }
+        }
+        return true;
     }
 }

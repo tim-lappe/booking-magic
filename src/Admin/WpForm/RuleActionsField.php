@@ -50,8 +50,8 @@ class RuleActionsField extends FormFieldBase {
             if(is_array($json)) {
                 foreach ($json as $key => $action_obj) {
                     $ruleAction = new RuleAction();
-                    $ruleAction->SetPriority(sizeof($json) - $key);
-                    $ruleAction->SetActions($action_obj->actions);
+                    $ruleAction->SetPriority($key);
+                    $ruleAction->SetActions((array)$action_obj->actions);
                     $ruleAction->SetActionType($action_obj->action_type);
                     $ruleAction->SetWeekdays($action_obj->weekdays);
 

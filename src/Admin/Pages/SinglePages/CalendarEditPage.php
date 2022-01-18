@@ -2,14 +2,15 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Doctrine\ORM\OptimisticLockException;
+use DateInterval;
+use DateTime;
 use Exception;
 use TLBM\Calendar\CalendarManager;
 use TLBM\Entity\Calendar;
-use TLBM\Model\CalendarGroup;
 use TLBM\Output\Calendar\CalendarOutput;
 use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
+use TLBM\Rules\ActionsReader;
+use TLBM\Rules\RulesQuery;
 
 class CalendarEditPage extends FormPageBase {
 
@@ -46,7 +47,26 @@ class CalendarEditPage extends FormPageBase {
         </div>
 
         <div class="tlbm-admin-page-tile">
-            <?php echo CalendarOutput::GetCalendarContainerShell($calendar->GetId(), time(), "month"); ?>
+
+                <?php
+                $query = new RulesQuery();
+                $to = new DateTime();
+                $to->add(new DateInterval("P20D"));
+                $query->setDateTimeRange(new DateTime(), $to);
+
+                $query->setTypeCalendar($calendar->GetId());
+                $query->setActionTypes(array("date_slot", "message"));
+
+                $action_reader = new ActionsReader($query);
+                $actions = $action_reader->getRuleActionsMerged();
+
+                echo "<pre>Results: " . count($actions) . "\n";
+                echo json_encode($actions, JSON_PRETTY_PRINT);
+                echo "</pre>";
+                ?>
+        </div>
+        <div class="tlbm-admin-page-tile">
+            <?php echo CalendarOutput::GetCalendarContainerShell($calendar->GetId(), time(), "month", new MonthViewSetting(), "calendar", true); ?>
         </div>
 
         <?php

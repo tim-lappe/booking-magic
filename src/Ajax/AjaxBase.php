@@ -30,8 +30,9 @@ abstract class AjaxBase {
 	abstract function ApiRequest($data);
 
 	function AjaxCallback() {
-        $data = json_decode(file_get_contents('php://input'), true);
-        $this->ApiRequest($data);
+        $data = json_decode(file_get_contents('php://input'));
+        $result = $this->ApiRequest($data);
+        die(json_encode($result));
     }
 
 	/**
@@ -40,7 +41,7 @@ abstract class AjaxBase {
 	 * @param $action
 	 */
 	protected function AddAjaxAction($action) {
-		add_action("wp_ajax_" . $action, array($this, "AjaxCallback"));
-		add_action("wp_ajax_nopriv_" . $action, array($this, "AjaxCallback"));
+		add_action("wp_ajax_tlbm_" . $action, array($this, "AjaxCallback"));
+		add_action("wp_ajax_nopriv_tlbm_" . $action, array($this, "AjaxCallback"));
 	}
 }

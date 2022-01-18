@@ -25,12 +25,13 @@ $calendar-table-cell-today-background: #e3fcff;
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin-bottom: 1rem;
+    margin-bottom: 1em;
     align-items: center;
 
     .tlbm-month-view-current-month {
-      font-size: 1.2rem;
+      font-size: 1.2em;
       font-weight: bold;
+      text-align: center;
     }
   }
 
@@ -40,18 +41,20 @@ $calendar-table-cell-today-background: #e3fcff;
   }
 
   .tlbm-calendar-show-selected-date {
-    font-size: 2rem;
+    font-size: 2em;
     margin: 0;
   }
 
   .tlbm-button-calendar-month-traverse {
-    padding: 0.5rem 0.75rem !important;
+    padding: 0.5em 0.75em !important;
   }
 
   .tlbm-calendar-table {
     width: 100%;
     box-shadow: 0 2px 3px 0 #dedede;
     display: grid;
+    border-radius: 5px 5px 10px 10px;
+    overflow: hidden;
 
     .tlbm-head-weekday {
       align-self: center;
@@ -61,13 +64,14 @@ $calendar-table-cell-today-background: #e3fcff;
       text-align: center;
       text-overflow: ellipsis;
       overflow: hidden;
-      font-size: 1.1rem;
+      font-size: 1.1em;
       word-wrap: normal;
     }
 
     .tlbm-cell {
-      padding: 10px;
-      min-height: 4rem;
+      padding: 5px;
+      min-height: 4em;
+      border: 3px solid transparent;
 
       .tlbm-datenumber-span {
         border-radius: 50%;
@@ -78,6 +82,7 @@ $calendar-table-cell-today-background: #e3fcff;
         justify-content: center;
         align-items: center;
         padding: 0;
+        font-size: 1em;
       }
 
       &.tlbm-cell-not-empty {
@@ -85,7 +90,7 @@ $calendar-table-cell-today-background: #e3fcff;
       }
 
       &:not(.tlbm-cell-not-empty) {
-        background-color: rgba(0, 0, 0, 0.01);
+        background-color: rgba(0, 0, 0, 0.03);
       }
 
       &.tlbm-cell-selectable {
@@ -95,15 +100,30 @@ $calendar-table-cell-today-background: #e3fcff;
 
         &:hover {
           cursor: pointer;
-          border-radius: 4px;
-          background-color: rgba(0, 0, 0, 0.05);
+          border-radius: 3px;
+          background-color: rgba(0, 0, 0, 0.01);
           position: relative;
           z-index: 10;
         }
-      }
 
-      &.tlbm-cell-today {
-        background-color: #e5f2ff;
+        &.tlbm-cell-selected {
+          border-radius: 10px;
+          border: 3px solid #72cb72;
+          position: relative;
+          background-color: #e3ffe3;
+
+          .dashicons {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            color: #45c745;
+          }
+
+          .tlbm-datenumber-span {
+            background-color: #45c745;
+            color: white;
+          }
+        }
       }
 
       &.tlbm-cell-not-bookable {
@@ -125,6 +145,15 @@ $calendar-table-cell-today-background: #e3fcff;
     .tlbm-next-month, .tlbm-prev-month {
       width: 120px;
       padding: 5px;
+    }
+  }
+
+
+  .tlbm-calendar-month-view {
+    &.tlbm-calendar-small {
+      .tlbm-datenumber-span {
+        font-size: 0.7em;
+      }
     }
   }
 }

@@ -85,6 +85,10 @@ class AllRulesListTable extends TableBase {
 		}
 	}
 
+    public function column_priority(Rule $item): int {
+        return $item->GetPriority();
+    }
+
 	protected function GetViews(): array {
 		return array(
 			"all" => __("All", TLBM_TEXT_DOMAIN),

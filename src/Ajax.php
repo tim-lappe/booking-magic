@@ -3,13 +3,15 @@
 
 namespace TLBM;
 
+use TLBM\Ajax\GetBookingOptions;
+use TLBM\Ajax\PingPong;
+
 if( ! defined( 'ABSPATH' ) ) {
     return;
 }
 
-use TLBM\Ajax\AjaxLoadCalendar;
-
 class Ajax {
+
 
     public function __construct() {
         $this->EnqueueAjaxEndpoints();
@@ -19,6 +21,7 @@ class Ajax {
 	    error_reporting(E_ERROR);
 	    ini_set("display_errors", 1);
 
-	    new AjaxLoadCalendar();
+        new PingPong();
+        new GetBookingOptions();
     }
 }

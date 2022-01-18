@@ -1,10 +1,10 @@
 import * as React from "react";
-import {CalendarBaseState, CalendarComponentBase} from "./CalendarComponentBase";
+import {CalendarComponentBase} from "./CalendarComponentBase";
 import {Localization} from "../../../Localization";
 import {CalendarViewSetting} from "../../Entity/CalendarViewSetting";
 
 
-interface CalendarNoViewState extends CalendarBaseState{
+interface CalendarNoViewState {
 
 }
 

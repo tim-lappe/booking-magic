@@ -24,11 +24,11 @@ class FormPrint {
 			if(get_option("single_page_booking") == "on") {
 				$html .= "<input type='hidden' name='action' value='dobooking'>";
 				$html .= wp_nonce_field("dobooking_action", "_wpnonce", true, false);
-				$html .= "<button>" . __( "Book now", TLBM_TEXT_DOMAIN ) . "</button>";
+				$html .= "<button class='tlbm-form-submit-button'>" . __( "Book now", TLBM_TEXT_DOMAIN ) . "</button>";
 			} else {
 				$html .= "<input type='hidden' name='action' value='showbookingoverview'>";
 				$html .= wp_nonce_field("showbookingoverview_action", "_wpnonce", true, false);
-				$html .= "<button>" . __( "Continue", TLBM_TEXT_DOMAIN ) . "</button>";
+				$html .= "<button class='tlbm-form-submit-button'>" . __( "Continue", TLBM_TEXT_DOMAIN ) . "</button>";
 			}
 
 			$html .= "</form>";

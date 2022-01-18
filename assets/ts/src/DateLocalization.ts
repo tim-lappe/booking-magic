@@ -3,7 +3,7 @@ import {Localization} from "./Localization";
 export class DateLocalization {
     public static GetMonthLabelByNum(num: number) {
         let months = Localization.__Arr("months");
-        return months[num];
+        return months[((num + 11) % 12) + 1];
     }
 
     public static GetWeekdayLabel(slug: string) {

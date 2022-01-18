@@ -1,6 +1,7 @@
 import * as React from "react";
 import {Utils} from "../../Utils";
 import {CalendarManager} from "./CalendarManager";
+import {CalendarOptions} from "../Entity/CalendarOptions";
 
 
 interface CalendarContainerProps {
@@ -10,7 +11,7 @@ interface CalendarContainerProps {
 interface CalendarContainerState {
     view: string;
     viewSettings: any;
-    options: any;
+    options: CalendarOptions;
     formName: string;
     formValue: any;
 }
@@ -32,14 +33,12 @@ export class CalendarContainer extends React.Component<CalendarContainerProps, C
             viewSettings = JSON.parse(Utils.decodeUriComponent(viewSettings));
         }
 
-        console.log("Container shell data", options, " viewSettings", viewSettings);
-
         this.state = {
             view: this.props.dataset.view ?? "no-view",
             viewSettings: viewSettings ?? {},
-            options: options ?? {},
+            options: options ?? new CalendarOptions(),
             formValue: {},
-            formName: this.props.dataset.name ?? "calendar"
+            formName: this.props.dataset.name ?? "calendar",
         }
     }
 
