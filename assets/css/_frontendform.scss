@@ -1,6 +1,7 @@
 .tlbm-fe-columns {
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
+  flex-wrap: wrap;
 
   .tlbm-fe-column {
     flex-basis: 0;
@@ -13,4 +14,8 @@
   label {
     display: block;
   }
+}
+
+button.tlbm-form-submit-button {
+  float: right;
 }

@@ -19,28 +19,31 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 1rem;
+  margin-bottom: 1em;
   align-items: center;
 }
 .tlbm-calendar-container .tlbm-month-view-header .tlbm-month-view-current-month {
-  font-size: 1.2rem;
+  font-size: 1.2em;
   font-weight: bold;
+  text-align: center;
 }
 .tlbm-calendar-container .tlbm-button-select-another {
   margin-top: 20px;
   padding: 5px 10px;
 }
 .tlbm-calendar-container .tlbm-calendar-show-selected-date {
-  font-size: 2rem;
+  font-size: 2em;
   margin: 0;
 }
 .tlbm-calendar-container .tlbm-button-calendar-month-traverse {
-  padding: 0.5rem 0.75rem !important;
+  padding: 0.5em 0.75em !important;
 }
 .tlbm-calendar-container .tlbm-calendar-table {
   width: 100%;
   box-shadow: 0 2px 3px 0 #dedede;
   display: grid;
+  border-radius: 5px 5px 10px 10px;
+  overflow: hidden;
 }
 .tlbm-calendar-container .tlbm-calendar-table .tlbm-head-weekday {
   align-self: center;
@@ -50,12 +53,13 @@
   text-align: center;
   text-overflow: ellipsis;
   overflow: hidden;
-  font-size: 1.1rem;
+  font-size: 1.1em;
   word-wrap: normal;
 }
 .tlbm-calendar-container .tlbm-calendar-table .tlbm-cell {
-  padding: 10px;
-  min-height: 4rem;
+  padding: 5px;
+  min-height: 4em;
+  border: 3px solid transparent;
 }
 .tlbm-calendar-container .tlbm-calendar-table .tlbm-cell .tlbm-datenumber-span {
   border-radius: 50%;
@@ -66,12 +70,13 @@
   justify-content: center;
   align-items: center;
   padding: 0;
+  font-size: 1em;
 }
 .tlbm-calendar-container .tlbm-calendar-table .tlbm-cell.tlbm-cell-not-empty {
   background-color: #ffffff;
 }
 .tlbm-calendar-container .tlbm-calendar-table .tlbm-cell:not(.tlbm-cell-not-empty) {
-  background-color: rgba(0, 0, 0, 0.01);
+  background-color: rgba(0, 0, 0, 0.03);
 }
 .tlbm-calendar-container .tlbm-calendar-table .tlbm-cell.tlbm-cell-selectable {
   transition-property: background-color;
@@ -80,13 +85,26 @@
 }
 .tlbm-calendar-container .tlbm-calendar-table .tlbm-cell.tlbm-cell-selectable:hover {
   cursor: pointer;
-  border-radius: 4px;
-  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.01);
   position: relative;
   z-index: 10;
 }
-.tlbm-calendar-container .tlbm-calendar-table .tlbm-cell.tlbm-cell-today {
-  background-color: #e5f2ff;
+.tlbm-calendar-container .tlbm-calendar-table .tlbm-cell.tlbm-cell-selectable.tlbm-cell-selected {
+  border-radius: 10px;
+  border: 3px solid #72cb72;
+  position: relative;
+  background-color: #e3ffe3;
+}
+.tlbm-calendar-container .tlbm-calendar-table .tlbm-cell.tlbm-cell-selectable.tlbm-cell-selected .dashicons {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  color: #45c745;
+}
+.tlbm-calendar-container .tlbm-calendar-table .tlbm-cell.tlbm-cell-selectable.tlbm-cell-selected .tlbm-datenumber-span {
+  background-color: #45c745;
+  color: white;
 }
 .tlbm-calendar-container .tlbm-calendar-table .tlbm-cell.tlbm-cell-not-bookable {
   opacity: 0.4;
@@ -103,6 +121,9 @@
 .tlbm-calendar-container .tlbm-month-head .tlbm-next-month, .tlbm-calendar-container .tlbm-month-head .tlbm-prev-month {
   width: 120px;
   padding: 5px;
+}
+.tlbm-calendar-container .tlbm-calendar-month-view.tlbm-calendar-small .tlbm-datenumber-span {
+  font-size: 0.7em;
 }
 
 .tlbm-calendar-date-selected {
@@ -1033,7 +1054,8 @@
 
 .tlbm-fe-columns {
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
+  flex-wrap: wrap;
 }
 .tlbm-fe-columns .tlbm-fe-column {
   flex-basis: 0;
@@ -1044,6 +1066,10 @@
 }
 .tlbm-fe-form-control label {
   display: block;
+}
+
+button.tlbm-form-submit-button {
+  float: right;
 }
 
 .tlbm-messages {

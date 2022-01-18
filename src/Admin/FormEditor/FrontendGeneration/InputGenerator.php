@@ -10,9 +10,9 @@ if( ! defined( 'ABSPATH' ) ) {
 
 class InputGenerator {
 
-	public static function GetFormControl($type, $title, $name, $required): string {
+	public static function GetFormControl($type, $title, $name, $required, $custom_css = ""): string {
 		$required = $required ? "required" : "";
-		$html = "<div class='tlbm-fe-form-control'>";
+		$html = "<div class='tlbm-fe-form-control " . $custom_css . "'>";
 		$html .= "<label>";
 		$html .= "<span class='tlbm-input-title'>".$title."</span>";
 		$html .= "<input class='tlbm-input-field' type='".$type."' name='".$name."' ".$required.">";
@@ -21,9 +21,9 @@ class InputGenerator {
 		return $html;
 	}
 
-    public static function GetSelectControle($title, $name, $key_value, $required): string {
+    public static function GetSelectControle($title, $name, $key_value, $required, $custom_css = ""): string {
         $required = $required ? "required" : "";
-        $html = "<div class='tlbm-fe-form-control'>";
+        $html = "<div class='tlbm-fe-form-control " . $custom_css . "'>";
         $html .= "<label>";
         $html .= "<span class='tlbm-input-title'>".$title."</span>";
         $html .= "<select class='tlbm-input-field' name='".$name."' ".$required.">";

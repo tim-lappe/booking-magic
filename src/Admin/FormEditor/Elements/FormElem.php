@@ -63,7 +63,7 @@ abstract class FormElem {
         $this->type = $name;
 
         $setting_css_class = new Input(
-            "css_class",
+            "css_classes",
             __("Custom CSS Classes (seperate with whitespace)"),
             "text",
             "",
@@ -73,18 +73,7 @@ abstract class FormElem {
             __("Advanced", TLBM_TEXT_DOMAIN)
         );
 
-        $setting_styles = new Input(
-            "css_styles",
-            __("Custom CSS Style"),
-            "text",
-            "",
-            false,
-            false,
-            array(),
-            __("Advanced", TLBM_TEXT_DOMAIN)
-        );
-
-        $this->AddSettings($setting_css_class, $setting_styles);
+        $this->AddSettings($setting_css_class);
 	}
 
     public function AddSettings(ElementSetting ...$settings) {

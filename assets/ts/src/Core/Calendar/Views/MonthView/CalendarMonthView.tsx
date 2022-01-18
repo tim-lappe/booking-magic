@@ -1,22 +1,36 @@
 import * as React from "react";
 import {CalendarBaseState, CalendarComponentBase} from "../CalendarComponentBase";
 import {CalendarMonthViewSetting} from "../../../Entity/CalendarMonthViewSetting";
-import {Localization} from "../../../../Localization";
 import {DateLocalization} from "../../../../DateLocalization";
 import {DateTime} from "../../../DateTime";
+import {MonthViewDateCell} from "./MonthViewDateCell";
 
 
 interface CalendarMonthViewState {
-
+    selectedDate?: DateTime;
+    smallVersion: boolean;
+    contentReady: boolean;
 }
 
 export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSetting, CalendarMonthViewState> {
+
+    private calendarDiv = React.createRef<HTMLDivElement>();
 
     constructor(props) {
         super(props);
 
         this.onClickNextMonth = this.onClickNextMonth.bind(this);
         this.onClickPrevMonth = this.onClickPrevMonth.bind(this);
+        this.onClickOnDateTile = this.onClickOnDateTile.bind(this);
+
+        this.state = {
+            focusedDate: this.state.focusedDate,
+            viewState: {
+                selectedDate: null,
+                smallVersion: false,
+                contentReady: false
+            }
+        }
     }
 
     getDayTiles(): any[] {
@@ -41,10 +55,7 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
 
     onClickNextMonth(event: any) {
         this.setState((prevState: CalendarBaseState<CalendarMonthViewState>) => {
-            console.log(prevState.focusedDate);
-
             prevState.focusedDate.addMonth(1);
-            console.log(prevState.focusedDate);
             return prevState;
         });
 
@@ -60,10 +71,35 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
         event.preventDefault();
     }
 
-    render() {
+    onClickOnDateTile(date: DateTime) {
+        this.setState((prevState: CalendarBaseState<CalendarMonthViewState>) => {
+            prevState.viewState.selectedDate = date;
+            return prevState;
+        });
+    }
 
+    componentDidMount() {
+        let bounding = this.calendarDiv.current.getBoundingClientRect();
+        let emSize = getComputedStyle(this.calendarDiv.current).fontSize;
+        let emSizenum = parseInt( emSize.replace("px", ""));
+        if(bounding.width < (emSizenum * 2) * 7 * 2.5) {
+            this.setState((prevState ) => {
+                prevState.viewState.smallVersion = true;
+                return prevState;
+            });
+        }
+
+        this.setState((prevState) => {
+            prevState.viewState.contentReady = true;
+            return prevState;
+        })
+
+        super.componentDidMount();
+    }
+
+    render() {
         let dayTiles = this.getDayTiles();
-        let weekdayTiles = this.props.viewSettings.weekday_labels;
+        let weekdayTiles = [...this.props.viewSettings.weekday_labels];
 
         let columnSize = (1 / weekdayTiles.length) * 100;
         let cssGridColumns = "";
@@ -71,35 +107,69 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
             cssGridColumns += columnSize + "% ";
         }
 
-        return (
-            <div className={"tlbm-calendar-month-view"}>
-                <div className={"tlbm-month-view-header"}>
-                    <button onClick={this.onClickPrevMonth} className={"button button-primary tlbm-button-calendar-month-traverse"}>{Localization.__("Prev Month")}</button>
-                    <span className={"tlbm-month-view-current-month"}>{DateLocalization.GetMonthLabelByNum(this.state.focusedDate.getMonth())} {this.state.focusedDate.getYear()}</span>
-                    <button onClick={this.onClickNextMonth} className={"button button-primary tlbm-button-calendar-month-traverse"}>{Localization.__("Next Month")}</button>
-                </div>
-                <div className='tlbm-calendar-table'  style={{gridTemplateColumns: cssGridColumns}}>
-                    {weekdayTiles.map((label, index) => {
-                        return (
-                            <div className={"tlbm-head-weekday tlbm-head-weekday-" + index} key={label}>{label}</div>
-                        );
-                    })}
-                    {dayTiles.map((tile: any, index) => {
-                        if(tile instanceof DateTime) {
-                            return (
-                                <div className={"tlbm-cell tlbm-cell-selectable tlbm-cell-not-empty " + (tile.isDayNow() ? "tlbm-cell-today" : "")} key={index}>
-                                    <span className={"tlbm-datenumber-span"}>{tile.getMonthDay()}</span>
-                                </div>
-                            )
-                        } else {
-                            return (
-                                <div className={"tlbm-cell"} key={index}>
+        let labelThisMonth = DateLocalization.GetMonthLabelByNum(this.state.focusedDate.getMonth());
+        let dateNextMonth = new DateTime(this.state.focusedDate.getTime());
+        dateNextMonth.addMonth(1);
+        let labelNextMonth =  DateLocalization.GetMonthLabelByNum(dateNextMonth.getMonth()) + " " + dateNextMonth.getYear();
 
-                                </div>
-                            )
-                        }
-                    })}
-                </div>
+        let datePrevMonth = new DateTime(this.state.focusedDate.getTime());
+        datePrevMonth.addMonth(-1);
+        let labelPrevMonth =  DateLocalization.GetMonthLabelByNum(datePrevMonth.getMonth()) + " " + datePrevMonth.getYear();
+
+        if(this.state.viewState.smallVersion) {
+            labelNextMonth = ">";
+            labelPrevMonth = "<";
+
+            for(let i = 0; i < weekdayTiles.length; i++) {
+                weekdayTiles[i] = weekdayTiles[i].substr(0, 1);
+            }
+        }
+
+        let today = DateTime.create();
+        today.setHourMin(0, 0);
+
+        return (
+            <div ref={this.calendarDiv} className={"tlbm-calendar-month-view " + (this.state.viewState.smallVersion ? "tlbm-calendar-small" : "")}>
+                {this.state.viewState.contentReady ? (
+                    <React.Fragment>
+                        <div className={"tlbm-month-view-header"}>
+                            <button onClick={this.onClickPrevMonth} className={"button button-primary tlbm-button-calendar-month-traverse"}>{labelPrevMonth}</button>
+                            <span className={"tlbm-month-view-current-month"}>{labelThisMonth} {this.state.focusedDate.getYear()}</span>
+                            <button onClick={this.onClickNextMonth} className={"button button-primary tlbm-button-calendar-month-traverse"}>{labelNextMonth}</button>
+                        </div>
+                        <div className='tlbm-calendar-table'  style={{gridTemplateColumns: cssGridColumns}}>
+                            {weekdayTiles.map((label, index) => {
+                                return (
+                                    <div className={"tlbm-head-weekday tlbm-head-weekday-" + index} key={index}>{label}</div>
+                                );
+                            })}
+                            {dayTiles.map((date: any, index) => {
+                                if(date instanceof DateTime) {
+                                    let todaySlots = this.state.bookingOptions?.getFreeSlotsForDay(date);
+                                    let mergedActions = this.state.lastData?.merged_actions ?? {};
+
+                                    let todayAction: any = {};
+                                    for(let [key, value] of Object.entries(mergedActions)) {
+                                        if(DateTime.isSameDay(date, new DateTime(parseInt(key)))) {
+                                            todayAction = value;
+                                        }
+                                    }
+
+                                    let capacity = todayAction.full_date && todayAction.full_date?.capacity > 0 ? todayAction.full_date.capacity : "";
+                                    return (
+                                        <MonthViewDateCell disabled={todaySlots == null || date.getTime() <= today.getTime() || capacity.length == 0} empty={false} onClick={this.onClickOnDateTile} selected={this.state.viewState.selectedDate?.getTime() == date.getTime()} dateTime={date} key={index}>
+                                            <span style={{float: "right"}}>{capacity}</span>
+                                        </MonthViewDateCell>
+                                    )
+                                } else {
+                                    return (
+                                        <MonthViewDateCell empty={true} onClick={this.onClickOnDateTile} key={index} />
+                                    )
+                                }
+                            })}
+                        </div>
+                    </React.Fragment>
+                ): null}
             </div>
         );
     }

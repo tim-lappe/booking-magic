@@ -51,8 +51,8 @@ class RulesListTable extends \WP_List_Table {
 
 
     public function prepare_items() {
-        $orderby = isset($_REQUEST['orderby']) ? $_REQUEST['orderby'] : "priority";
-        $order = isset($_REQUEST['order']) ? $_REQUEST['order'] : "desc";
+        $orderby = $_REQUEST['orderby'] ?? "priority";
+        $order = $_REQUEST['order'] ?? "desc";
 
         $this->_column_headers = array($this->get_columns(), array(), $this->get_sortable_columns());
 

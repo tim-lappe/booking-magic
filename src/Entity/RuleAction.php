@@ -56,13 +56,17 @@ class RuleAction implements JsonSerializable {
     /**
      * @OrmMapping\Column (type="json", nullable=false)
      */
-	protected $actions = null;
+	protected ?array $actions = null;
 
-    public function SetActions($actions) {
+    public function __construct() {
+        $this->actions = array();
+    }
+
+    public function SetActions(?array $actions) {
         $this->actions = $actions;
     }
 
-    public function GetActions() {
+    public function GetActions(): ?array {
         return $this->actions;
     }
 

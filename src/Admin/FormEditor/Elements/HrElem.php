@@ -26,7 +26,7 @@ final class HrElem extends FormElem {
      * @return mixed
      */
 	public function GetFrontendOutput($form_node, callable $insert_child = null): string {
-		return "<hr>";
+		return "<hr class='tlbm-fe-hr " . $form_node->formData->css_classes . "'>";
 	}
 }
 
