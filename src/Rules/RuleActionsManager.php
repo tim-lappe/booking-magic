@@ -6,9 +6,37 @@ namespace TLBM\Rules;
 
 use DateTime;
 use TLBM\Entity\Calendar;
-use TLBM\Model\RuleAction;
+use TLBM\Entity\RuleAction;
+use TLBM\Rules\RuleActions\DateTimeSlotActionHandlerRule;
+use TLBM\Rules\RuleActions\DateTimeTimeSlotActionHandlerRule;
+use TLBM\Rules\RuleActions\RuleActionHandlerBase;
 
 class RuleActionsManager {
+
+    public static array $rule_actions = array(
+        "date_slot" => DateTimeSlotActionHandlerRule::class,
+        "time_slot" => DateTimeTimeSlotActionHandlerRule::class
+    );
+
+    public static function registerActionHandler(string $term, $class) {
+        self::$rule_actions[$term] = $class;
+    }
+
+
+    /**
+     *
+     * @param RuleAction $action
+     *
+     * @return ?RuleActionHandlerBase
+     */
+    public static function getActionHandler(RuleAction $action ): ?RuleActionHandlerBase {
+        if(isset(self::$rule_actions[$action->GetActionType()])) {
+            return new self::$rule_actions[$action->GetActionType()]($action);
+        }
+
+        return null;
+    }
+
 
 	/**
 	 * @param Calendar $calendar
@@ -16,7 +44,7 @@ class RuleActionsManager {
 	 *
 	 * @return RuleAction[]
 	 */
-	public static function GetActionsForDateTime(Calendar $calendar, DateTime $date_time): array {
+	public static function getActionsForDateTime(Calendar $calendar, DateTime $date_time): array {
 		$rules = RulesManager::GetAllRulesForCalendarForDateTime($calendar->GetId(), $date_time);
 		$actions = array();
 		$workingactions = array();

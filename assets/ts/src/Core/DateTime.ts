@@ -4,7 +4,6 @@ export class DateTime {
 
     constructor(tstamp: number) {
         this.date = new Date();
-
         if(tstamp > 0) {
             this.setTime(tstamp);
         }

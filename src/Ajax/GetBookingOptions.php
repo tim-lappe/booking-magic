@@ -4,7 +4,7 @@ namespace TLBM\Ajax;
 
 use TLBM\Booking\BookableSlot;
 use TLBM\Entity\RuleAction;
-use TLBM\Rules\ActionsReader;
+use TLBM\Rules\ActionsMerging;
 use TLBM\Rules\RulesQuery;
 
 class GetBookingOptions extends AjaxBase {
@@ -50,7 +50,7 @@ class GetBookingOptions extends AjaxBase {
 
 
         $result = array();
-        $actions_reader = new ActionsReader($query);
+        $actions_reader = new ActionsMerging($query);
         $result = $actions_reader->getRuleActionsMerged();
 
         return array(

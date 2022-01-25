@@ -9,7 +9,7 @@ use TLBM\Calendar\CalendarManager;
 use TLBM\Entity\Calendar;
 use TLBM\Output\Calendar\CalendarOutput;
 use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
-use TLBM\Rules\ActionsReader;
+use TLBM\Rules\ActionsMerging;
 use TLBM\Rules\RulesQuery;
 
 class CalendarEditPage extends FormPageBase {
@@ -57,7 +57,7 @@ class CalendarEditPage extends FormPageBase {
                 $query->setTypeCalendar($calendar->GetId());
                 $query->setActionTypes(array("date_slot", "message"));
 
-                $action_reader = new ActionsReader($query);
+                $action_reader = new ActionsMerging($query);
                 $actions = $action_reader->getRuleActionsMerged();
 
                 echo "<pre>Results: " . count($actions) . "\n";

@@ -18,7 +18,7 @@ class Capacities {
 	 * @return int
 	 */
 	public static function GetDayCapacity(Calendar $calendar, DateTime $date_time): int {
-		$actions = RuleActionsManager::GetActionsForDateTime($calendar, $date_time);
+		$actions = RuleActionsManager::getActionsForDateTime($calendar, $date_time);
 		$capacity = 0;
 		foreach($actions as $action) {
 			$handler = RuleActionHandler::GetActionHandler($action);
