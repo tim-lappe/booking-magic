@@ -46,6 +46,6 @@ class SelectElement extends FormInputElem {
             $key_values[$values] = $values;
         }
 
-        return InputGenerator::GetSelectControle($form_node->formData->title, $form_node->formData->name, $key_values, $form_node->formData->required == "yes", $form_node->formData->css_classes);
+        return InputGenerator::GetSelectControle($form_node->formData->title, $form_node->formData->name, $key_values, $form_node->formData->required == "yes", ($form_node->formData->css_classes ?? ""));
     }
 }

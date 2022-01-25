@@ -3,8 +3,7 @@
 namespace TLBM\Ajax;
 
 use TLBM\Booking\BookableSlot;
-use TLBM\Entity\RuleAction;
-use TLBM\Rules\ActionsMerging;
+use TLBM\Rules\RuleActions\ActionsMerging;
 use TLBM\Rules\RulesQuery;
 
 class GetBookingOptions extends AjaxBase {

@@ -7,18 +7,18 @@ namespace TLBM\Rules;
 use DateTime;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\RuleAction;
-use TLBM\Rules\RuleActions\DateTimeSlotActionHandlerRule;
-use TLBM\Rules\RuleActions\DateTimeTimeSlotActionHandlerRule;
-use TLBM\Rules\RuleActions\RuleActionHandlerBase;
+use TLBM\Rules\RuleActions\DateTimeSlotActionMerge;
+use TLBM\Rules\RuleActions\DateTimeTimeSlotActionMerge;
+use TLBM\Rules\RuleActions\RuleActionMergingBase;
 
 class RuleActionsManager {
 
     public static array $rule_actions = array(
-        "date_slot" => DateTimeSlotActionHandlerRule::class,
-        "time_slot" => DateTimeTimeSlotActionHandlerRule::class
+        "date_slot" => DateTimeSlotActionMerge::class,
+        "time_slot" => DateTimeTimeSlotActionMerge::class
     );
 
-    public static function registerActionHandler(string $term, $class) {
+    public static function registerActionMerger(string $term, $class) {
         self::$rule_actions[$term] = $class;
     }
 
@@ -27,9 +27,9 @@ class RuleActionsManager {
      *
      * @param RuleAction $action
      *
-     * @return ?RuleActionHandlerBase
+     * @return ?RuleActionMergingBase
      */
-    public static function getActionHandler(RuleAction $action ): ?RuleActionHandlerBase {
+    public static function getActionMerger(RuleAction $action ): ?RuleActionMergingBase {
         if(isset(self::$rule_actions[$action->GetActionType()])) {
             return new self::$rule_actions[$action->GetActionType()]($action);
         }

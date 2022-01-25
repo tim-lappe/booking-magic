@@ -27,7 +27,7 @@ final class EmailElem extends FormInputElem {
      * @return mixed
      */
 	public function GetFrontendOutput($form_node, callable $insert_child = null) {
-		return InputGenerator::GetFormControl("email", $form_node->formData->title, $form_node->formData->name, $form_node->formData->required == "yes", $form_node->formData->css_classes);
+		return InputGenerator::GetFormControl("email", $form_node->formData->title, $form_node->formData->name, $form_node->formData->required == "yes", ($form_node->formData->css_classes ?? ""));
 	}
 }
 

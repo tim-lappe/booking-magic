@@ -6,7 +6,7 @@ namespace TLBM\Rules\RuleActions;
 use TLBM\Entity\RuleAction;
 use TLBM\Rules\RuleActions\MergeEntities\MergeEntityBase;
 
-abstract class RuleActionHandlerBase {
+abstract class RuleActionMergingBase {
 
 	/**
 	 * @var RuleAction

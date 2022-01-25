@@ -45,7 +45,7 @@ class ColumnsElem extends FormElem {
      * @return mixed
      */
 	public function GetFrontendOutput(object $form_node, callable $insert_child = null): string {
-		$html = "<div class='tlbm-fe-columns " . $form_node->formData->css_classes. "'>";
+		$html = "<div class='tlbm-fe-columns " . ($form_node->formData->css_classes ?? "") . "'>";
 
         foreach($form_node->children as $column_num => $column_node) {
             $fgrow = $form_node->formData->{"split_" . ($column_num + 1)};

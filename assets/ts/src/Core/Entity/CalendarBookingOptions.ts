@@ -1,7 +1,11 @@
-import {DateTime} from "../DateTime";
+import {DateTime} from "../Adapter/DateTime";
+import {MergedRuleActionsSet} from "./RuleActions/MergedRuleActionsSet";
 
 export class CalendarBookingOptions {
+    [props: string]: any;
+
     public bookable_slots: BookingOptionSlot[];
+    private merged_actions: any[];
 
     constructor(from_data: any = null) {
         if(from_data) {
@@ -12,6 +16,19 @@ export class CalendarBookingOptions {
                 this.bookable_slots.push(new BookingOptionSlot(slot));
             }
         }
+    }
+
+    public getMergedActionsForDay(dateTime: DateTime): MergedRuleActionsSet {
+        let action_set = new MergedRuleActionsSet();
+        action_set.dateTime = dateTime;
+
+        for(let [key, action] of Object.entries(this.merged_actions)) {
+            if(DateTime.isSameDay(new DateTime(parseInt(key)), dateTime)) {
+                action_set.add(action);
+            }
+        }
+
+        return action_set;
     }
 
     public getFreeSlotsForMinute(dateTime: DateTime): BookingOptionSlot[] {

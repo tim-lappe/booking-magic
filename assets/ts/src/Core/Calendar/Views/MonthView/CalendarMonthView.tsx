@@ -2,8 +2,10 @@ import * as React from "react";
 import {CalendarBaseState, CalendarComponentBase} from "../CalendarComponentBase";
 import {CalendarMonthViewSetting} from "../../../Entity/CalendarMonthViewSetting";
 import {DateLocalization} from "../../../../DateLocalization";
-import {DateTime} from "../../../DateTime";
+import {DateTime} from "../../../Adapter/DateTime";
 import {MonthViewDateCell} from "./MonthViewDateCell";
+import {FullDateMergeEntity} from "../../../Entity/RuleActions/FullDateMergeEntity";
+import {BookingOptionsRequest} from "../../../Api/BookingOptionsRequest";
 
 
 interface CalendarMonthViewState {
@@ -33,6 +35,10 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
         }
     }
 
+    protected prepareUpdateBookingOptions(calendarReuqest: BookingOptionsRequest): BookingOptionsRequest {
+        return calendarReuqest;
+    }
+
     getDayTiles(): any[] {
         let firstDateThisMonth = this.state.focusedDate.getFirstDayThisMonth();
         let lastDateThisMonth = this.state.focusedDate.getLastDayThisMonth();
@@ -57,6 +63,8 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
         this.setState((prevState: CalendarBaseState<CalendarMonthViewState>) => {
             prevState.focusedDate.addMonth(1);
             return prevState;
+        }, () => {
+            this.updateBookingOptions();
         });
 
         event.preventDefault();
@@ -66,6 +74,8 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
         this.setState((prevState) => {
             prevState.focusedDate.addMonth(-1);
             return prevState;
+        }, () => {
+            this.updateBookingOptions();
         });
 
         event.preventDefault();
@@ -75,6 +85,8 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
         this.setState((prevState: CalendarBaseState<CalendarMonthViewState>) => {
             prevState.viewState.selectedDate = date;
             return prevState;
+        }, () => {
+            this.updateBookingOptions();
         });
     }
 
@@ -144,21 +156,18 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
                                 );
                             })}
                             {dayTiles.map((date: any, index) => {
-                                if(date instanceof DateTime) {
+                                if(date instanceof DateTime && this.state.bookingOptions != null) {
                                     let todaySlots = this.state.bookingOptions?.getFreeSlotsForDay(date);
-                                    let mergedActions = this.state.lastData?.merged_actions ?? {};
-
-                                    let todayAction: any = {};
-                                    for(let [key, value] of Object.entries(mergedActions)) {
-                                        if(DateTime.isSameDay(date, new DateTime(parseInt(key)))) {
-                                            todayAction = value;
-                                        }
-                                    }
-
-                                    let capacity = todayAction.full_date && todayAction.full_date?.capacity > 0 ? todayAction.full_date.capacity : "";
+                                    let fullDateEntity = this.state.bookingOptions?.getMergedActionsForDay(date).getAction(FullDateMergeEntity, "full_date_capacity");
                                     return (
-                                        <MonthViewDateCell disabled={todaySlots == null || date.getTime() <= today.getTime() || capacity.length == 0} empty={false} onClick={this.onClickOnDateTile} selected={this.state.viewState.selectedDate?.getTime() == date.getTime()} dateTime={date} key={index}>
-                                            <span style={{float: "right"}}>{capacity}</span>
+                                        <MonthViewDateCell
+                                            disabled={todaySlots == null || date.getTime() <= today.getTime() || fullDateEntity == null || fullDateEntity?.capacity == 0}
+                                            empty={false} onClick={this.onClickOnDateTile}
+                                            selected={this.state.viewState.selectedDate?.getTime() == date.getTime()}
+                                            dateTime={date} key={index}>
+
+                                            <span style={{float: "right", visibility: (fullDateEntity?.capacity ? "visible" : "hidden")}}>{fullDateEntity?.capacity ?? 0}</span>
+
                                         </MonthViewDateCell>
                                     )
                                 } else {
