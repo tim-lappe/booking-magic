@@ -5,7 +5,7 @@ namespace TLBM\Rules;
 use TLBM\Entity\Rule;
 use TLBM\Entity\RuleAction;
 
-class ActionsReader {
+class ActionsMerging {
 
     private RulesQuery $rules_query;
 
@@ -29,7 +29,6 @@ class ActionsReader {
              */
             foreach ($rules as $rule) {
                 $actions = array_merge($actions, $rule->GetActions()->toArray());
-
             }
 
             if($forEach) {
@@ -45,37 +44,19 @@ class ActionsReader {
     public function getRuleActionsMerged(): array {
         $all_sums = array();
         $this->getRuleActions(function(int $tstamp, array $actions) use (&$all_sums) {
-            $action_sum = array(
-                "full_date" => array(
-                    "capacity" => 0
-                ),
-                "time_parts" => array()
-            );
+            $action_sum = array();
 
             /**
              * @var RuleAction $rule_action
              */
             foreach ($actions as $rule_action) {
-                $action_data = (object)$rule_action->GetActions();
-                $action_type = $rule_action->GetActionType();
-
-                if ($action_type == "date_slot") {
-                    if (isset($action_data->mode) && isset($action_data->amount)) {
-                        if($action_data->mode == "set") {
-                            $action_sum['full_date']['capacity'] = intval($action_data->amount);
-
-                        } else if($action_data->mode == "add") {
-                            $action_sum['full_date']['capacity'] += intval($action_data->amount);
-
-                        } else if($action_data->mode == "subtract") {
-                            $action_sum['full_date']['capacity'] -= intval($action_data->amount);
-
-                        }
+                $handler = RuleActionsManager::getActionHandler($rule_action);
+                if($handler) {
+                    $merge_term = $handler->getEmptyMergeInstance()->getMergeTerm();
+                    if(!isset($action_sum[$merge_term])) {
+                        $action_sum[$merge_term] = $handler->getEmptyMergeInstance();
                     }
-                } else if($action_type == "message") {
-                    if (isset($action_data->message)) {
-                        $action_sum['full_date']['message'] = $action_data->message;
-                    }
+                    $action_sum[$merge_term] = $handler->merge($action_sum[$merge_term]);
                 }
             }
 

@@ -108,7 +108,6 @@ class RulesQuery {
 
             $all_but->add($qb->expr()->notIn("calendarSelection", $subq_all_but_ids->getDQL()));
 
-
             $calendar_selection_where->add($only);
             $calendar_selection_where->add($all_but);
 
