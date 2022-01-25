@@ -37,7 +37,7 @@ class FormFrontendGenerator {
 		$html = "";
 
         $children = $form_node->children;
-        $formData = $form_node->formData;
+        $formData = $form_node->formData ?? null;
 
         if($formData && $formData->unique_name) {
             $registeredelem = ElementsCollection::GetElemByUniqueName($formData->unique_name);

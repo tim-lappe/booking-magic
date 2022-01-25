@@ -7,7 +7,7 @@ namespace TLBM\Rules\RuleActions;
 use TLBM\Rules\RuleActions\MergeEntities\FullDateCapacites;
 use TLBM\Rules\RuleActions\MergeEntities\MergeEntityBase;
 
-class DateTimeSlotActionHandlerRule extends RuleActionHandlerBase {
+class DateTimeSlotActionMerge extends RuleActionMergingBase {
 
     /**
      * @param MergeEntityBase $merge_obj

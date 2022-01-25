@@ -2,15 +2,11 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
-use DateInterval;
-use DateTime;
 use Exception;
 use TLBM\Calendar\CalendarManager;
 use TLBM\Entity\Calendar;
 use TLBM\Output\Calendar\CalendarOutput;
 use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
-use TLBM\Rules\ActionsMerging;
-use TLBM\Rules\RulesQuery;
 
 class CalendarEditPage extends FormPageBase {
 
@@ -46,25 +42,6 @@ class CalendarEditPage extends FormPageBase {
             <input value="<?php echo $calendar->GetTitle() ?>" placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
         </div>
 
-        <div class="tlbm-admin-page-tile">
-
-                <?php
-                $query = new RulesQuery();
-                $to = new DateTime();
-                $to->add(new DateInterval("P20D"));
-                $query->setDateTimeRange(new DateTime(), $to);
-
-                $query->setTypeCalendar($calendar->GetId());
-                $query->setActionTypes(array("date_slot", "message"));
-
-                $action_reader = new ActionsMerging($query);
-                $actions = $action_reader->getRuleActionsMerged();
-
-                echo "<pre>Results: " . count($actions) . "\n";
-                echo json_encode($actions, JSON_PRETTY_PRINT);
-                echo "</pre>";
-                ?>
-        </div>
         <div class="tlbm-admin-page-tile">
             <?php echo CalendarOutput::GetCalendarContainerShell($calendar->GetId(), time(), "month", new MonthViewSetting(), "calendar", true); ?>
         </div>

@@ -27,7 +27,7 @@ final class SpacingElem extends FormElem {
      * @return mixed
      */
 	public function GetFrontendOutput($form_node, callable $insert_child = null): string {
-		return "<div style='height: " . $form_node->formData->spacing . "px' class='tlbm-fe-spacing " . $form_node->formData->css_classes . "'></div>";
+		return "<div style='height: " . $form_node->formData->spacing . "px' class='tlbm-fe-spacing " . ($form_node->formData->css_classes ?? "") . "'></div>";
 	}
 }
 

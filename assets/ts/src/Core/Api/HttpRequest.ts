@@ -29,7 +29,6 @@ export class HttpRequest {
             }).catch(() => reject());
         });
 
-
         xmlhttp.open("POST", ajax_information.url + "?action=tlbm_" + action, true);
         xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xmlhttp.send(JSON.stringify(data));

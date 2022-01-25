@@ -1,9 +1,11 @@
 <?php
 
-namespace TLBM\Rules;
+namespace TLBM\Rules\RuleActions;
 
 use TLBM\Entity\Rule;
 use TLBM\Entity\RuleAction;
+use TLBM\Rules\RuleActionsManager;
+use TLBM\Rules\RulesQuery;
 
 class ActionsMerging {
 
@@ -50,7 +52,7 @@ class ActionsMerging {
              * @var RuleAction $rule_action
              */
             foreach ($actions as $rule_action) {
-                $handler = RuleActionsManager::getActionHandler($rule_action);
+                $handler = RuleActionsManager::getActionMerger($rule_action);
                 if($handler) {
                     $merge_term = $handler->getEmptyMergeInstance()->getMergeTerm();
                     if(!isset($action_sum[$merge_term])) {

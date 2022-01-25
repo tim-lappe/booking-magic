@@ -1,5 +1,5 @@
 import * as React from "react";
-import {DateTime} from "../../../DateTime";
+import {DateTime} from "../../../Adapter/DateTime";
 
 interface MonthViewCellProps {
     empty?: boolean;
