@@ -4,31 +4,46 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 
+use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Settings\SettingsManager;
 
-class SettingsPage extends PageBase {
+class SettingsPage extends PageBase
+{
 
-	public function __construct() {
-		parent::__construct( "Settings", "booking-magic-settings" );
+    public function __construct(AdminPageManagerInterface $adminPageManager)
+    {
+        parent::__construct($adminPageManager, "Settings", "booking-magic-settings");
 
-		$this->parent_slug = "booking-magic";
-	}
+        $this->parent_slug = "booking-magic";
+    }
 
-	public function DisplayPageBody() {
-		$tab = isset($_GET['tab']) ? $_GET['tab'] : "general";
-		?>
-		<div class="wrap">
+    public function displayPageBody()
+    {
+        $tab = isset($_GET['tab']) ? $_GET['tab'] : "general";
+        ?>
+        <div class="wrap">
             <nav class="nav-tab-wrapper">
-	            <?php foreach (SettingsManager::$groups as $key => $group): ?>
-                    <a href="?page=<?php echo $this->menu_slug ?>&tab=<?php echo $key ?>" class="nav-tab <?php if($tab == $key):?>nav-tab-active<?php endif; ?>"><?php echo $group ?></a>
-	            <?php endforeach; ?>
+                <?php
+                foreach (SettingsManager::$groups as $key => $group): ?>
+                    <a href="?page=<?php
+                    echo $this->menu_slug ?>&tab=<?php
+                    echo $key ?>" class="nav-tab <?php
+                    if ($tab == $key): ?>nav-tab-active<?php
+                    endif; ?>"><?php
+                        echo $group ?></a>
+                <?php
+                endforeach; ?>
             </nav>
-			<form method="post" action="<?php echo admin_url() . "options.php" ?>">
-                <?php do_settings_sections("tlbm_settings_" . $tab); ?>
-                <?php settings_fields( "tlbm_" . $tab ); ?>
-                <?php submit_button(); ?>
-			</form>
-		</div>
-		<?php
-	}
+            <form method="post" action="<?php
+            echo admin_url() . "options.php" ?>">
+                <?php
+                do_settings_sections("tlbm_settings_" . $tab); ?>
+                <?php
+                settings_fields("tlbm_" . $tab); ?>
+                <?php
+                submit_button(); ?>
+            </form>
+        </div>
+        <?php
+    }
 }

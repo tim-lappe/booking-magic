@@ -3,47 +3,67 @@
 namespace TLBM;
 
 use DateTime;
-use TLBM\Admin\FormEditor\Formeditor;
-use TLBM\Admin\WpForm\RuleActionsField;
-use TLBM\Localization\ScriptLocalization;
+use Exception;
+use TLBM\Localization\Contracts\ScriptLocalizationInterface;
 
-if( ! defined( 'ABSPATH' ) ) {
-	return;
+if ( ! defined('ABSPATH')) {
+    return;
 }
 
-class EnqueueAssets {
+class EnqueueAssets
+{
 
-	public function __construct() {
-		add_action("wp_enqueue_scripts", array($this, "global_enqueue_scripts"));
-		add_action("admin_enqueue_scripts", array($this, "global_enqueue_scripts"));
-        add_action("admin_enqueue_scripts", array($this, "admin_enqueue_scripts"));
+    /**
+     * @var ScriptLocalizationInterface
+     */
+    private ScriptLocalizationInterface $scriptLocalization;
+
+    public function __construct(ScriptLocalizationInterface $scriptLocalization)
+    {
+        $this->scriptLocalization = $scriptLocalization;
+
+        add_action("wp_enqueue_scripts", array($this, "globalEnqueueScripts"));
+        add_action("admin_enqueue_scripts", array($this, "globalEnqueueScripts"));
+        add_action("admin_enqueue_scripts", array($this, "adminEnqueueScripts"));
     }
 
-    public function admin_enqueue_scripts() {
+    /**
+     * @return void
+     */
+    public function adminEnqueueScripts()
+    {
         wp_enqueue_script(TLBM_ADMIN_JS_SLUG, plugins_url("assets/js/dist/admin.js", TLBM_PLUGIN_FILE));
     }
 
-	public function global_enqueue_scripts() {
-		wp_enqueue_style(TLBM_MAIN_CSS_SLUG, plugins_url("assets/css/main.css", TLBM_PLUGIN_FILE));
-		wp_enqueue_script(TLBM_FRONTEND_JS_SLUG, plugins_url("assets/js/dist/frontend.js", TLBM_PLUGIN_FILE));
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function globalEnqueueScripts()
+    {
+        wp_enqueue_style(TLBM_MAIN_CSS_SLUG, plugins_url("assets/css/main.css", TLBM_PLUGIN_FILE));
+        wp_enqueue_script(TLBM_FRONTEND_JS_SLUG, plugins_url("assets/js/dist/frontend.js", TLBM_PLUGIN_FILE));
 
-		wp_localize_script( TLBM_FRONTEND_JS_SLUG, 'ajax_information',
-			array(
-				'url' => admin_url( 'admin-ajax.php' ),
-			)
-		);
+        wp_localize_script(TLBM_FRONTEND_JS_SLUG, 'ajax_information',
+            array(
+                'url' => admin_url('admin-ajax.php'),
+            )
+        );
 
-        wp_localize_script( TLBM_FRONTEND_JS_SLUG, 'tlbm_localization', ScriptLocalization::GetLabels());
+        wp_localize_script(TLBM_FRONTEND_JS_SLUG, 'tlbm_localization', $this->scriptLocalization->getLabels());
+        $this->localizeConstats();
+    }
 
-		$this->localize_constants();
-	}
-
-	public function localize_constants() {
-
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function localizeConstats()
+    {
         $dt = new DateTime("now", wp_timezone());
         wp_localize_script(TLBM_FRONTEND_JS_SLUG, "tlbm_constants",
             array(
-                "months" => array(
+                "months"   => array(
                     __('January', TLBM_TEXT_DOMAIN),
                     __('February', TLBM_TEXT_DOMAIN),
                     __('March', TLBM_TEXT_DOMAIN),
@@ -66,18 +86,18 @@ class EnqueueAssets {
                     __('Saturday', TLBM_TEXT_DOMAIN),
                     __('Sunday', TLBM_TEXT_DOMAIN)
                 ),
-                "today" => array(
-                    "day" => intval($dt->format("j")),
+                "today"    => array(
+                    "day"   => intval($dt->format("j")),
                     "month" => intval($dt->format("n")),
-                    "year" => intval($dt->format("Y"))
+                    "year"  => intval($dt->format("Y"))
                 ),
-                "labels" => array(
-                    "to" => __("To", TLBM_TEXT_DOMAIN),
-                    "from" => __("From", TLBM_TEXT_DOMAIN),
-                    "everyYear" => __("Yearly", TLBM_TEXT_DOMAIN),
+                "labels"   => array(
+                    "to"                => __("To", TLBM_TEXT_DOMAIN),
+                    "from"              => __("From", TLBM_TEXT_DOMAIN),
+                    "everyYear"         => __("Yearly", TLBM_TEXT_DOMAIN),
                     "onlyUseInTimeSpan" => __("Limit", TLBM_TEXT_DOMAIN),
-                    "addTimeSlot" => __("Add Timespan", TLBM_TEXT_DOMAIN),
-                    "delete" => __("Delete", TLBM_TEXT_DOMAIN)
+                    "addTimeSlot"       => __("Add Timespan", TLBM_TEXT_DOMAIN),
+                    "delete"            => __("Delete", TLBM_TEXT_DOMAIN)
                 )
             )
         );

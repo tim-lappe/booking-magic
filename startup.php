@@ -1,59 +1,53 @@
 <?php
 
-
-use TLBM\Admin\FormEditor\ElementsCollection;
-use TLBM\AdminPages;
+use DI\ContainerBuilder;
+use TLBM\Admin\FormEditor\Contracts\FormElementsCollectionInterface;
 use TLBM\Ajax;
-use TLBM\Database\OrmManager;
 use TLBM\EnqueueAssets;
-use TLBM\Metaboxes;
-use TLBM\Output\Calendar\CalendarOutput;
 use TLBM\PluginActivation;
-use TLBM\RegisterPostTypes;
 use TLBM\RegisterShortcodes;
 use TLBM\Request;
-use TLBM\Settings;
+use TLBM\WpRegisterAdminPages;
 
 if( ! defined( 'ABSPATH' ) ) {
     return;
 }
 
-if(WP_DEBUG) {
-    error_reporting(E_ALL);
-    ini_set ('error_reporting', E_ALL);
-    ini_set ('display_errors', true);
-    ini_set ('display_startup_errors', true);
-    ini_set ("error_log", "/tmp/phplog.txt");
-}
+(function() {
 
-OrmManager::Init();
-new PluginActivation();
+	if ( WP_DEBUG ) {
+		error_reporting( E_ALL );
+		ini_set( 'error_reporting', E_ALL );
+		ini_set( 'display_errors', true );
+		ini_set( 'display_startup_errors', true );
+		ini_set( "error_log", "/tmp/phplog.txt" );
+	}
 
+	try {
+		$tlbmContainerBuilder = new ContainerBuilder();
+		$tlbmContainerBuilder->addDefinitions( __DIR__ . "/dependency.php" );
 
-/**
- * Make Instances of Important Classes
- */
-if(in_array(TLBM_PLUGIN_RELATIVE_DIR_FILE, apply_filters('active_plugins', get_option('active_plugins')))){
-    //plugin is activated
+        if(! WP_DEBUG ) {
+            $tlbmContainerBuilder->enableCompilation(sys_get_temp_dir());
+        }
 
-    new RegisterPostTypes();
-    new RegisterShortcodes();
-    new EnqueueAssets();
-    new Metaboxes();
-    new Ajax();
+		$tlbmContainer  = $tlbmContainerBuilder->build();
+		$tlbmContainer->get(PluginActivation::class);
 
-    $GLOBALS['TLBM_REQUEST'] = new Request();
+        $tlbmContainer->get(RegisterShortcodes::class);
+        $tlbmContainer->get(EnqueueAssets::class);
+        $tlbmContainer->get(Ajax::class);
 
-    new Settings();
-    new AdminPages();
+        $tlbmContainer->get(Request::class);
+        $tlbmContainer->get(WpRegisterAdminPages::class);
 
-    /**
-     * Register all FormElements for the Formeditor
-     */
-    ElementsCollection::RegisterFormElements();
+        /**
+         * Register all FormElements for the Formeditor
+         */
+        $tlbmContainer->get(FormElementsCollectionInterface::class);
 
-    /**
-     * Register all Calendar Output Printers
-     */
-    CalendarOutput::RegisterCalendarPrinters();
-}
+	} catch ( Exception $e ) {
+		var_dump($e);
+	}
+
+})();

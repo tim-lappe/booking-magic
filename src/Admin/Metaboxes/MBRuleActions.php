@@ -5,62 +5,68 @@ namespace TLBM\Admin\Metaboxes;
 
 
 use TLBM\Admin\WpForm\FormBuilder;
-use TLBM\Admin\WpForm\PeriodEditorField;
 use TLBM\Admin\WpForm\RuleActionsField;
 use TLBM\Model\RuleAction;
 use TLBM\Model\RuleActionCollection;
 use WP_Post;
 
-if (!defined('ABSPATH')) {
+if ( ! defined('ABSPATH')) {
     return;
 }
 
-class MBRuleActions extends MetaBoxForm {
+class MBRuleActions extends MetaBoxForm
+{
 
     /**
      * @inheritDoc
      */
-    function GetOnPostTypes(): array {
+    public function GetOnPostTypes(): array
+    {
         return array(TLBM_PT_RULES);
     }
 
     /**
      * @inheritDoc
      */
-    function RegisterMetaBox() {
+    public function RegisterMetaBox()
+    {
         $this->AddMetaBox("rules_actions", "Actions");
     }
 
     /**
      * @inheritDoc
      */
-    function PrintMetaBox(WP_Post $post) {
-	    $ruleactioncollection = get_post_meta($post->ID, "actions", true);
+    public function PrintMetaBox(WP_Post $post)
+    {
+        $ruleactioncollection = get_post_meta($post->ID, "actions", true);
 
         $form_builder = new FormBuilder();
-        $form_builder->PrintFormHead();
-        $form_builder->PrintFormField(new RuleActionsField("actions",  __("Actions", TLBM_TEXT_DOMAIN), $ruleactioncollection));
-        $form_builder->PrintFormFooter();
+        $form_builder->displayFormHead();
+        $form_builder->displayFormField(
+            new RuleActionsField("actions", __("Actions", TLBM_TEXT_DOMAIN), $ruleactioncollection)
+        );
+        $form_builder->displayFormFooter();
     }
 
-    function OnSave($post_id) {
-    	if(isset($_REQUEST['actions'])) {
-		    $actions = $_REQUEST['actions'];
-		    $actions = str_replace( "&quot;", "\"", $actions );
-		    $actions = json_decode( $actions, false, 20, JSON_FORCE_OBJECT );
+    public function OnSave($post_id)
+    {
+        if (isset($_REQUEST['actions'])) {
+            $actions = $_REQUEST['actions'];
+            $actions = str_replace("&quot;", "\"", $actions);
+            $actions = json_decode($actions, false, 20, JSON_FORCE_OBJECT);
 
-		    if ( is_array( $actions ) ) {
-			    $ruleactioncollection = new RuleActionCollection();
-			    foreach ( $actions as $action ) {
-				    $ruleaction             = new RuleAction();
-				    $ruleaction->actiontype = $action->actiontype;
-				    $ruleaction->values     = $action->values;
+            if (is_array($actions)) {
+                $ruleactioncollection = new RuleActionCollection();
+                foreach ($actions as $action) {
+                    $ruleaction             = new RuleAction();
+                    $ruleaction->actiontype = $action->actiontype;
+                    $ruleaction->values     = $action->values;
 
-				    $ruleactioncollection->actions_list[] = $ruleaction;
-			    }
+                    $ruleactioncollection->actions_list[] = $ruleaction;
+                }
 
-			    update_post_meta( $post_id, "actions", $ruleactioncollection );
-		    }
-	    }
+                update_post_meta($post_id, "actions", $ruleactioncollection);
+            }
+        }
     }
 }

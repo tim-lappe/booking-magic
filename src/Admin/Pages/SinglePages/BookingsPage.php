@@ -4,37 +4,53 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 
+use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Tables\BookingListTable;
 use TLBM\Booking\BookingManager;
-use WP_Screen;
+use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\Utilities\Contracts\DateTimeToolsInterface;
 
-class BookingsPage extends PageBase {
+class BookingsPage extends PageBase
+{
+    /**
+     * @var CalendarManagerInterface
+     */
+    private CalendarManagerInterface $calendarManager;
 
-	public function __construct() {
-		parent::__construct( "Bookings", "booking-magic-bookings" );
+    /**
+     * @var DateTimeToolsInterface
+     */
+    private DateTimeToolsInterface $dateTimeTools;
 
-		$this->parent_slug = "booking-magic";
-	}
+    public function __construct(AdminPageManagerInterface $adminPageManager, CalendarManagerInterface $calendarManager, DateTimeToolsInterface $dateTimeTools)
+    {
+        parent::__construct($adminPageManager, "Bookings", "booking-magic-bookings");
+        $this->calendarManager = $calendarManager;
+        $this->dateTimeTools = $dateTimeTools;
+        $this->parent_slug = "booking-magic";
+    }
 
-    public function DisplayDefaultHeadBar() {
+    public function displayDefaultHeadBar()
+    {
         ?>
-        <a href="<?php echo admin_url('post-new.php?post_type=' . TLBM_PT_BOOKING); ?>" class="button button-primary tlbm-admin-button-bar"><?php _e("Add New Booking", TLBM_TEXT_DOMAIN) ?></a>
+        <a href="<?php
+        echo admin_url('post-new.php?post_type=' . TLBM_PT_BOOKING); ?>"
+           class="button button-primary tlbm-admin-button-bar"><?php
+            _e("Add New Booking", TLBM_TEXT_DOMAIN) ?></a>
         <?php
     }
 
-    public function DisplayPageBody() {
-	    global $wp_query;
-		?>
+    public function displayPageBody()
+    {
+        global $wp_query;
+        ?>
         <div class="tlbm-admin-page">
             <div class="tlbm-admin-page-tile">
                 <form method="get">
-                    <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
-
+                    <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>"/>
                     <?php
-
                     $bookings = BookingManager::GetAllBookings();
-
-                    $post_list_table = new BookingListTable();
+                    $post_list_table = new BookingListTable($this->calendarManager, $this->dateTimeTools);
                     $post_list_table->views();
                     $post_list_table->prepare_items();
                     $post_list_table->display();
@@ -42,6 +58,6 @@ class BookingsPage extends PageBase {
                 </form>
             </div>
         </div>
-		<?php
-	}
+        <?php
+    }
 }

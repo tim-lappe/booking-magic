@@ -3,126 +3,138 @@
 
 namespace TLBM\Entity;
 
-use Doctrine\ORM\Mapping as OrmMapping;
+use JsonSerializable;
 
 /**
  * Class Calendar
  * @package TLBM\Entity
- * @OrmMapping\Entity
- * @OrmMapping\Table(name="rule_period_time_slots")
+ * @Doctrine\ORM\Mapping\Entity
+ * @Doctrine\ORM\Mapping\Table(name="rule_period_time_slots")
  */
-class TimeSlot implements \JsonSerializable {
+class TimeSlot implements JsonSerializable
+{
 
-	use IndexedTable;
+    use IndexedTable;
 
     /**
      * @var ?RulePeriod
-     * @OrmMapping\ManyToOne (targetEntity=RulePeriod::class)
+     * @Doctrine\ORM\Mapping\ManyToOne (targetEntity=RulePeriod::class)
      */
     protected ?RulePeriod $rule_period;
 
-	/**
-	 * @var int
-	 * @OrmMapping\Column (type="integer", nullable=false)
-	 */
-	protected int $from_hour;
+    /**
+     * @var int
+     * @Doctrine\ORM\Mapping\Column (type="integer", nullable=false)
+     */
+    protected int $from_hour;
 
-	/**
-	 * @var int
-	 * @OrmMapping\Column (type="integer", nullable=false)
-	 */
-	protected int $from_min;
+    /**
+     * @var int
+     * @Doctrine\ORM\Mapping\Column (type="integer", nullable=false)
+     */
+    protected int $from_min;
 
-	/**
-	 * @var int
-	 * @OrmMapping\Column (type="integer", nullable=false)
-	 */
-	protected int $to_hour;
+    /**
+     * @var int
+     * @Doctrine\ORM\Mapping\Column (type="integer", nullable=false)
+     */
+    protected int $to_hour;
 
-	/**
-	 * @var int
-	 * @OrmMapping\Column (type="integer", nullable=false)
-	 */
-	protected int $to_min;
+    /**
+     * @var int
+     * @Doctrine\ORM\Mapping\Column (type="integer", nullable=false)
+     */
+    protected int $to_min;
 
     /**
      * @return ?RulePeriod
      */
-    public function GetRulePeriod(): ?RulePeriod {
+    public function GetRulePeriod(): ?RulePeriod
+    {
         return $this->rule_period;
     }
 
     /**
      * @param ?RulePeriod $rule_period
      */
-    public function SetRulePeriod(?RulePeriod $rule_period): void {
+    public function SetRulePeriod(?RulePeriod $rule_period): void
+    {
         $this->rule_period = $rule_period;
     }
 
     /**
      * @return int
      */
-    public function GetFromHour(): int {
+    public function GetFromHour(): int
+    {
         return $this->from_hour;
     }
 
     /**
      * @param int $from_hour
      */
-    public function SetFromHour(int $from_hour): void {
+    public function SetFromHour(int $from_hour): void
+    {
         $this->from_hour = $from_hour;
     }
 
     /**
      * @return int
      */
-    public function GetFromMin(): int {
+    public function GetFromMin(): int
+    {
         return $this->from_min;
     }
 
     /**
      * @param int $from_min
      */
-    public function SetFromMin(int $from_min): void {
+    public function SetFromMin(int $from_min): void
+    {
         $this->from_min = $from_min;
     }
 
     /**
      * @return int
      */
-    public function GetToHour(): int {
+    public function GetToHour(): int
+    {
         return $this->to_hour;
     }
 
     /**
      * @param int $to_hour
      */
-    public function SetToHour(int $to_hour): void {
+    public function SetToHour(int $to_hour): void
+    {
         $this->to_hour = $to_hour;
     }
 
     /**
      * @return int
      */
-    public function GetToMin(): int {
+    public function GetToMin(): int
+    {
         return $this->to_min;
     }
 
     /**
      * @param int $to_min
      */
-    public function SetToMin(int $to_min): void {
+    public function SetToMin(int $to_min): void
+    {
         $this->to_min = $to_min;
     }
 
 
-    public function jsonSerialize(): array {
+    public function jsonSerialize(): array
+    {
         return array(
-            "id" => $this->id,
-            "from_min" => $this->from_min,
+            "id"        => $this->id,
+            "from_min"  => $this->from_min,
             "from_hour" => $this->from_hour,
-            "to_min" => $this->to_min,
-            "to_hour" => $this->to_hour
+            "to_min"    => $this->to_min,
+            "to_hour"   => $this->to_hour
         );
     }
 }

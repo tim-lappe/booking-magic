@@ -4,44 +4,54 @@
 namespace TLBM\Admin\WpForm;
 
 
+use TLBM\Admin\WpForm\Contracts\FormFieldReadVarsInterface;
 use TLBM\Entity\RulePeriod;
 use TLBM\Entity\TimeSlot;
 
-if (!defined('ABSPATH')) {
+if ( ! defined('ABSPATH')) {
     return;
 }
 
-class PeriodEditorField extends FormFieldBase {
-
-    public function __construct( $name, $title, $value = "" ) {
-        parent::__construct( $name, $title, $value );
-    }
-
-    function OutputHtml() {
+class PeriodEditorField extends FormFieldBase implements FormFieldReadVarsInterface
+{
+    public function displayContent(): void
+    {
         /**
          * @var RulePeriod[] $periods
          */
         $periods = $this->value;
-        if(!is_array($periods)) {
+        if ( ! is_array($periods)) {
             $periods = array();
         }
         ?>
         <tr>
-            <th scope="row"><label for="<?php echo $this->name ?>"><?php echo $this->title ?></label></th>
+            <th scope="row"><label for="<?php
+                echo $this->name ?>"><?php
+                    echo $this->title ?></label></th>
             <td>
-                <div class="tlbm-period-select-field" data-name="<?php echo $this->name ?>" data-json="<?php echo urlencode(json_encode($periods)) ?>"></div>
+                <div class="tlbm-period-select-field" data-name="<?php
+                echo $this->name ?>" data-json="<?php
+                echo urlencode(json_encode($periods)) ?>"></div>
             </td>
         </tr>
         <?php
     }
 
-    public static function ReadFromVars($name, $vars): array {
-        if(isset($vars[$name])) {
-            $decoded_var = urldecode($vars[$name]);
-            $json = json_decode($decoded_var);
-            $periods = array();
 
-            if(is_array($json)) {
+    /**
+     * @param string $name
+     * @param mixed $vars
+     *
+     * @return array
+     */
+    public function readFromVars(string $name, $vars): array
+    {
+        if (isset($vars[$name])) {
+            $decoded_var = urldecode($vars[$name]);
+            $json        = json_decode($decoded_var);
+            $periods     = array();
+
+            if (is_array($json)) {
                 foreach ($json as $key => $period_obj) {
                     $period = new RulePeriod();
                     $period->SetFromTstamp($period_obj->from_tstamp);
@@ -68,6 +78,7 @@ class PeriodEditorField extends FormFieldBase {
 
             return $periods;
         }
+
         return array();
     }
 }

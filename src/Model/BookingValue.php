@@ -4,11 +4,12 @@
 namespace TLBM\Model;
 
 
-if (!defined('ABSPATH')) {
+if ( ! defined('ABSPATH')) {
     return;
 }
 
-class BookingValue {
+class BookingValue
+{
 
     /**
      * @var string

@@ -4,17 +4,24 @@
 namespace TLBM\Admin\Settings\SingleSettings\BookingProcess;
 
 
-class SinglePageBooking extends \TLBM\Admin\Settings\SingleSettings\SettingsBase {
+use TLBM\Admin\Settings\SingleSettings\SettingsBase;
 
-	public function __construct() {
-		parent::__construct( "booking_process", "single_page_booking", __("One Page Booking", TLBM_TEXT_DOMAIN), "off" );
-	}
+class SinglePageBooking extends SettingsBase
+{
 
-	function PrintField() {
-		?>
-		<label>
-			<input type="checkbox" name="<?php echo $this->option_name ?>" <?php checked(get_option($this->option_name) == "on"); ?>>
-		</label>
-		<?php
-	}
+    public function __construct()
+    {
+        parent::__construct("booking_process", "single_page_booking", __("One Page Booking", TLBM_TEXT_DOMAIN), "off");
+    }
+
+    public function PrintField()
+    {
+        ?>
+        <label>
+            <input type="checkbox" name="<?php
+            echo $this->option_name ?>" <?php
+            checked(get_option($this->option_name) == "on"); ?>>
+        </label>
+        <?php
+    }
 }

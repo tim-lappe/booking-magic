@@ -3,94 +3,99 @@
 
 namespace TLBM\Entity;
 
-use Doctrine\ORM\Mapping as OrmMapping;
-use phpDocumentor\Reflection\Types\This;
-
 /**
  * Class Calendar
  * @package TLBM\Entity
- * @OrmMapping\Entity
- * @OrmMapping\Table(name="booking_values")
+ * @Doctrine\ORM\Mapping\Entity
+ * @Doctrine\ORM\Mapping\Table(name="booking_values")
  */
+class BookingValue
+{
 
-class BookingValue {
+    use IndexedTable;
 
-	use IndexedTable;
+    /**
+     * @var Booking
+     * @Doctrine\ORM\Mapping\OneToOne(targetEntity=Booking::class)
+     */
+    protected Booking $booking;
 
-	/**
-	 * @var Booking
-	 * @OrmMapping\OneToOne(targetEntity=Booking::class)
-	 */
-	protected Booking $booking;
+    /**
+     * @var string
+     * @Doctrine\ORM\Mapping\Column (type="string", nullable=false)
+     */
+    protected string $key;
 
-	/**
-	 * @var string
-	 * @OrmMapping\Column (type="string", nullable=false)
-	 */
-	protected string $key;
+    /**
+     * @var string
+     * @Doctrine\ORM\Mapping\Column (type="text", nullable=false)
+     */
+    protected string $value;
 
-	/**
-	 * @var string
-	 * @OrmMapping\Column (type="text", nullable=false)
-	 */
-	protected string $value;
+    /**
+     * @var string
+     * @Doctrine\ORM\Mapping\Column (type="string", nullable=false)
+     */
+    protected string $title;
 
-	/**
-	 * @var string
-	 * @OrmMapping\Column (type="string", nullable=false)
-	 */
-	protected string $title;
+    /**
+     * @return string
+     */
+    public function GetKey(): string
+    {
+        return $this->key;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function GetKey(): string {
-		return $this->key;
-	}
+    /**
+     * @param string $key
+     */
+    public function SetKey(string $key): void
+    {
+        $this->key = $key;
+    }
 
-	/**
-	 * @param string $key
-	 */
-	public function SetKey( string $key ): void {
-		$this->key = $key;
-	}
+    /**
+     * @return string
+     */
+    public function GetValue(): string
+    {
+        return $this->value;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function GetValue(): string {
-		return $this->value;
-	}
+    /**
+     * @param string $value
+     */
+    public function SetValue(string $value): void
+    {
+        $this->value = $value;
+    }
 
-	/**
-	 * @param string $value
-	 */
-	public function SetValue( string $value ): void {
-		$this->value = $value;
-	}
+    /**
+     * @return string
+     */
+    public function GetTitle(): string
+    {
+        return $this->title;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function GetTitle(): string {
-		return $this->title;
-	}
+    /**
+     * @param string $title
+     */
+    public function SetTitle(string $title): void
+    {
+        $this->title = $title;
+    }
 
-	/**
-	 * @param string $title
-	 */
-	public function SetTitle( string $title ): void {
-		$this->title = $title;
-	}
+    /**
+     * @return Booking
+     */
+    public function GetBooking(): Booking
+    {
+        return $this->booking;
+    }
 
-	/**
-	 * @return Booking
-	 */
-	public function GetBooking(): Booking {
-		return $this->booking;
-	}
-
-	public function SetBooking(Booking $booking) {
-		$this->booking = $booking;
-	}
+    public function SetBooking(Booking $booking)
+    {
+        $this->booking = $booking;
+    }
 }

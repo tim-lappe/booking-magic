@@ -7,19 +7,29 @@ namespace TLBM\Rules;
 use DateTime;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\RuleAction;
+use TLBM\Rules\Contracts\RuleActionsManagerInterface;
+use TLBM\Rules\Contracts\RulesManagerInterface;
 use TLBM\Rules\RuleActions\DateTimeSlotActionMerge;
 use TLBM\Rules\RuleActions\DateTimeTimeSlotActionMerge;
 use TLBM\Rules\RuleActions\RuleActionMergingBase;
 
-class RuleActionsManager {
+class RuleActionsManager implements RuleActionsManagerInterface
+{
 
-    public static array $rule_actions = array(
+    public array $ruleActions = array(
         "date_slot" => DateTimeSlotActionMerge::class,
         "time_slot" => DateTimeTimeSlotActionMerge::class
     );
+    private RulesManagerInterface $rulesManager;
 
-    public static function registerActionMerger(string $term, $class) {
-        self::$rule_actions[$term] = $class;
+    public function __construct(RulesManagerInterface $rulesManager)
+    {
+        $this->rulesManager = $rulesManager;
+    }
+
+    public function registerActionMerger(string $term, $class)
+    {
+        $this->ruleActions[$term] = $class;
     }
 
 
@@ -29,36 +39,38 @@ class RuleActionsManager {
      *
      * @return ?RuleActionMergingBase
      */
-    public static function getActionMerger(RuleAction $action ): ?RuleActionMergingBase {
-        if(isset(self::$rule_actions[$action->GetActionType()])) {
-            return new self::$rule_actions[$action->GetActionType()]($action);
+    public function getActionMerger(RuleAction $action): ?RuleActionMergingBase
+    {
+        if (isset($this->ruleActions[$action->GetActionType()])) {
+            return new $this->ruleActions[$action->GetActionType()]($action);
         }
 
         return null;
     }
 
 
-	/**
-	 * @param Calendar $calendar
-	 * @param DateTime $date_time
-	 *
-	 * @return RuleAction[]
-	 */
-	public static function getActionsForDateTime(Calendar $calendar, DateTime $date_time): array {
-		$rules = RulesManager::GetAllRulesForCalendarForDateTime($calendar->GetId(), $date_time);
-		$actions = array();
-		$workingactions = array();
+    /**
+     * @param Calendar $calendar
+     * @param DateTime $date_time
+     *
+     * @return RuleAction[]
+     */
+    public function getActionsForDateTime(Calendar $calendar, DateTime $date_time): array
+    {
+        $rules          = $this->rulesManager->getAllRulesForCalendarForDateTime($calendar->GetId(), $date_time);
+        $actions        = array();
+        $workingactions = array();
 
-		foreach ($rules as $rule) {
-			$actions = array_merge($actions, $rule->action->actions_list);
-		}
+        foreach ($rules as $rule) {
+            $actions = array_merge($actions, $rule->action->actions_list);
+        }
 
-		foreach ($actions as $action) {
-			if(RuleActionHandler::GetActionHandler($action)->WorksAtTime($date_time)) {
-				$workingactions[] = $action;
-			}
-		}
+        foreach ($actions as $action) {
+            if (RuleActionHandler::GetActionHandler($action)->WorksAtTime($date_time)) {
+                $workingactions[] = $action;
+            }
+        }
 
-		return $workingactions;
-	}
+        return $workingactions;
+    }
 }

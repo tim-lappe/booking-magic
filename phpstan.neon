@@ -1,0 +1,9 @@
+parameters:
+  level: 4
+  bootstrapFiles:
+    - constants.php
+  paths:
+    - src
+    - tests
+includes:
+  - vendor/szepeviktor/phpstan-wordpress/extension.neon

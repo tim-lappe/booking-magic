@@ -3,35 +3,51 @@
 
 namespace TLBM;
 
-if( ! defined( 'ABSPATH' ) ) {
+if ( ! defined('ABSPATH')) {
     return;
 }
 
 
-use TLBM\Output\FormPrint;
-use TLBM\Request\RequestBase;
+use TLBM\Output\Contracts\FormPrintInterface;
 
-class RegisterShortcodes {
-	public function __construct() {
-		add_action("init", array($this, "AddShortcodes"));
-	}
+class RegisterShortcodes
+{
 
-	public function AddShortcodes() {
-		add_shortcode(TLBM_SHORTCODETAG_FORM, array($this, "FormShortcode"));
-	}
+    private FormPrintInterface $formPrint;
 
-	public function FormShortcode( $args ): string {
-		$request = $GLOBALS['TLBM_REQUEST'];
-		if(is_array($args) && sizeof($args) > 0) {
-			if(isset($args['id'])) {
-				if ( $request instanceof Request && $request->current_action != null && $request->current_action->html_output ) {
-					return $request->current_action->GetHtmlOutput( $_REQUEST );
-				} else {
-					return FormPrint::PrintForm( $args['id'] );
-				}
-			}
-		}
 
-		return "";
-	}
+    public function __construct(FormPrintInterface $formPrint)
+    {
+        add_action("init", array($this, "addShortcodes"));
+        $this->formPrint = $formPrint;
+    }
+
+    /**
+     * @return void
+     */
+    public function addShortcodes()
+    {
+        add_shortcode(TLBM_SHORTCODETAG_FORM, array($this, "formShortcode"));
+    }
+
+    /**
+     * @param array $args
+     *
+     * @return string
+     */
+    public function formShortcode(array $args): string
+    {
+        $request = $GLOBALS['TLBM_REQUEST'];
+        if (sizeof($args) > 0) {
+            if (isset($args['id'])) {
+                if ($request instanceof Request && $request->currentAction != null && $request->currentAction->html_output) {
+                    return $request->currentAction->getDisplayContent($_REQUEST);
+                } else {
+                    return $this->formPrint->printForm($args['id']);
+                }
+            }
+        }
+
+        return "";
+    }
 }

@@ -2,45 +2,47 @@
 
 namespace TLBM\Ajax;
 
+use DateTime;
 use TLBM\Booking\BookableSlot;
 use TLBM\Rules\RuleActions\ActionsMerging;
 use TLBM\Rules\RulesQuery;
 
-class GetBookingOptions extends AjaxBase {
+class GetBookingOptions extends AjaxBase
+{
 
     /**
      * @inheritDoc
      */
-    function RegisterAjaxAction() {
-        $this->AddAjaxAction("getBookingOptions");
+    public function registerAjaxAction()
+    {
+        $this->addAjaxAction("getBookingOptions");
     }
 
     /**
      * @inheritDoc
      */
-    function ApiRequest($data) {
+    public function apiRequest($data)
+    {
         $query = new RulesQuery();
 
-        if(isset($data->action_type)) {
-            if(is_array($data->action_type)) {
+        if (isset($data->action_type)) {
+            if (is_array($data->action_type)) {
                 $query->setActionTypes($data->action_type);
             } else {
                 $query->setActionTypes(array($data->action_type));
             }
         }
 
-        if(isset($data->from_tstamp) && isset($data->to_tstamp)) {
-            $from = new \DateTime();
+        if (isset($data->from_tstamp) && isset($data->to_tstamp)) {
+            $from = new DateTime();
             $from->setTimestamp($data->from_tstamp);
-            $to = new \DateTime();
+            $to = new DateTime();
             $to->setTimestamp($data->to_tstamp);
             $query->setDateTimeRange($from, $to);
-
-        } else if(isset($data->options) && isset($data->options->focused_tstamp)) {
-            $dt = new \DateTime();
+        } elseif (isset($data->options) && isset($data->options->focused_tstamp)) {
+            $dt = new DateTime();
             $dt->setTimestamp($data->options->focused_tstamp);
             $query->setDateTime($dt);
-
         } else {
             return array(
                 "error" => true
@@ -48,9 +50,9 @@ class GetBookingOptions extends AjaxBase {
         }
 
 
-        $result = array();
+        $result         = array();
         $actions_reader = new ActionsMerging($query);
-        $result = $actions_reader->getRuleActionsMerged();
+        $result         = $actions_reader->getRuleActionsMerged();
 
         return array(
             "merged_actions" => $result,

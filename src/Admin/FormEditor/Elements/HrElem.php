@@ -3,19 +3,24 @@
 
 namespace TLBM\Admin\FormEditor\Elements;
 
-if( ! defined( 'ABSPATH' ) ) {
+if ( ! defined('ABSPATH')) {
     return;
 }
 
 
-final class HrElem extends FormElem {
+final class HrElem extends FormElem
+{
 
-	public function __construct() {
-		parent::__construct( "hr", __("Horizontal Line", TLBM_TEXT_DOMAIN) );
+    public function __construct()
+    {
+        parent::__construct("hr", __("Horizontal Line", TLBM_TEXT_DOMAIN));
 
-		$this->description = __("Inserts a horizontal dividing line to visually separate areas from each other", TLBM_TEXT_DOMAIN);
-		$this->menu_category = __("Layout", TLBM_TEXT_DOMAIN);
-	}
+        $this->description   = __(
+            "Inserts a horizontal dividing line to visually separate areas from each other",
+            TLBM_TEXT_DOMAIN
+        );
+        $this->menu_category = __("Layout", TLBM_TEXT_DOMAIN);
+    }
 
     /**
      * @param      $form_node
@@ -23,8 +28,9 @@ final class HrElem extends FormElem {
      *
      * @return mixed
      */
-	public function GetFrontendOutput($form_node, callable $insert_child = null): string {
-		return "<hr class='tlbm-fe-hr " . ($form_node->formData->css_classes ?? "") . "'>";
-	}
+    public function GetFrontendOutput($form_node, callable $insert_child = null): string
+    {
+        return "<hr class='tlbm-fe-hr " . ($form_node->formData->css_classes ?? "") . "'>";
+    }
 }
 

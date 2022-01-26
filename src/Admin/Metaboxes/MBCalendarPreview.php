@@ -3,29 +3,33 @@
 
 namespace TLBM\Admin\Metaboxes;
 
-if( ! defined( 'ABSPATH' ) ) {
+if ( ! defined('ABSPATH')) {
     return;
 }
 
-use TLBM\Model\CalendarGroup;
 use TLBM\Model\CalendarSelection;
 use TLBM\Output\Calendar\CalendarOutput;
+use WP_Post;
 
 
-class MBCalendarPreview extends MetaBoxBase {
+class MBCalendarPreview extends MetaBoxBase
+{
 
-	function RegisterMetaBox() {
-		$this->AddMetaBox("calendar_preview", "Preview");
-	}
+    public function RegisterMetaBox()
+    {
+        $this->AddMetaBox("calendar_preview", "Preview");
+    }
 
-	function PrintMetaBox(\WP_Post $post) {
-		echo CalendarOutput::GetContainerShell($post->ID);
-	}
+    public function PrintMetaBox(WP_Post $post)
+    {
+        echo CalendarOutput::GetContainerShell($post->ID);
+    }
 
-	/**
-	 * @return mixed
-	 */
-	function GetOnPostTypes(): array {
-		return array (TLBM_PT_CALENDAR);
-	}
+    /**
+     * @return mixed
+     */
+    public function GetOnPostTypes(): array
+    {
+        return array(TLBM_PT_CALENDAR);
+    }
 }

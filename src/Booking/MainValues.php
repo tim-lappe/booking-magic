@@ -3,191 +3,239 @@
 
 namespace TLBM\Booking;
 
-use TLBM\Admin\FormEditor\ElementsCollection;
-use TLBM\Calendar\CalendarManager;
+use TLBM\Admin\FormEditor\Contracts\FormElementsCollectionInterface;
+use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\Entity\Calendar;
 use TLBM\Model\Booking;
 use TLBM\Model\BookingValue;
-use TLBM\Entity\Calendar;
-use TLBM\Utilities\DateTimeTools;
+use TLBM\Utilities\Contracts\DateTimeToolsInterface;
 
-class MainValues {
+class MainValues
+{
 
-	private Booking $booking;
-	private array $booking_values;
+    private Booking $booking;
 
-	/**
-	 * @var Calendar[]
-	 */
-	private array $calendars = array();
+    private array $booking_values;
 
-	public function __construct(Booking $booking) {
-		$this->booking = $booking;
-		$this->booking_values = $booking->booking_values;
+    /**
+     * @var Calendar[]
+     */
+    private array $calendars = array();
 
-		foreach ($this->booking->calendar_slots as $calendar_slot) {
-			$this->calendars[] = CalendarManager::GetCalendar($calendar_slot->booked_calendar_id);
-		}
-	}
+    /**
+     * @var CalendarManagerInterface
+     */
+    private CalendarManagerInterface $calendarManager;
 
-	public function GetValue($name): string {
-		if(isset($this->booking_values[$name])) {
-			return $this->booking_values[$name]->value;
-		}
+    /**
+     * @var FormElementsCollectionInterface
+     */
+    private FormElementsCollectionInterface $elementsCollection;
 
-		return "";
-	}
+    /**
+     * @var DateTimeToolsInterface
+     */
+    private DateTimeToolsInterface $dateTimeTools;
 
+    public function __construct(
+        CalendarManagerInterface $calendarManager,
+        FormElementsCollectionInterface $elementsCollection,
+        DateTimeToolsInterface $dateTimeTools,
+        Booking $booking
+    ) {
+        $this->booking            = $booking;
+        $this->booking_values     = $booking->booking_values;
+        $this->calendarManager    = $calendarManager;
+        $this->elementsCollection = $elementsCollection;
+        $this->dateTimeTools      = $dateTimeTools;
 
-	public function HasAll(...$names): bool {
-		$arr_names = (array)$names;
-		foreach ($arr_names as $name) {
-			if(empty($this->GetValue($name))) {
-				return false;
-			}
-		}
-		return true;
-	}
+        foreach ($this->booking->calendar_slots as $calendar_slot) {
+            $this->calendars[] = $this->calendarManager->getCalendar($calendar_slot->booked_calendar_id);
+        }
+    }
 
-	public function HasOne(...$names): bool {
-		$arr_names = (array)$names;
-		foreach ($arr_names as $name) {
-			if(!empty($this->GetValue($name))) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public function getBookingTitle(): string
+    {
+        $title = "";
+        if ($this->hasName()) {
+            $title = $this->getFullName();
+        }
+        if ($this->hasCalendar()) {
+            $title .= " " . $this->getCalendarTimeFormat();
+        }
 
-	public function GetBookingTitle(): string {
-		$title = "";
-		if($this->HasName()) {
-			$title = $this->GetFullName();
-		}
-		if($this->HasCalendar()) {
-			$title .= " " . $this->GetCalendarTimeFormat();
-		}
-		return trim($title);
-	}
+        return trim($title);
+    }
 
-	public function HasContactEmail(): bool {
-		return $this->HasOne("contact_email");
-	}
+    public function hasName(): bool
+    {
+        return $this->hasOne("first_name", "last_name");
+    }
 
-	public function HasName(): bool {
-		return $this->HasOne("first_name", "last_name");
-	}
+    public function hasOne(...$names): bool
+    {
+        $arr_names = (array)$names;
+        foreach ($arr_names as $name) {
+            if ( ! empty($this->getValue($name))) {
+                return true;
+            }
+        }
 
-	public function HasAddress(): bool {
-		return $this->HasOne("address", "zip", "city");
-	}
+        return false;
+    }
 
-	public function HasCalendar(): bool {
-		return sizeof( $this->booking->calendar_slots ) > 0;
-	}
+    public function getValue($name): string
+    {
+        if (isset($this->booking_values[$name])) {
+            return $this->booking_values[$name]->value;
+        }
 
-	public function HasCustomValues(): bool {
-		return sizeof($this->GetCustomValues()) > 0;
-	}
+        return "";
+    }
 
-	/**
-	 * @return BookingValue[]
-	 */
-	public function GetCustomValues(): array {
-		$elements = ElementsCollection::GetRegisteredFormElements();
-		$fixednames = array();
-		$custom = array();
-		foreach ($elements as $elem) {
-			$st = $elem->GetSettingsType("name");
-			if($st && $st->readonly) {
-				$fixednames[] = $st->default_value;
-			}
-		}
+    public function getFullName(): string
+    {
+        if ($this->hasAll("first_name", "last_name")) {
+            return $this->getFirstName() . " " . $this->getLastName();
+        } else {
+            return $this->getFirstName() . $this->getLastName();
+        }
+    }
 
-		foreach ($this->booking_values as $booking_value) {
-			if(!in_array($booking_value->key, $fixednames)) {
-				$custom[] = $booking_value;
-			}
-		}
+    public function hasAll(...$names): bool
+    {
+        $arr_names = (array)$names;
+        foreach ($arr_names as $name) {
+            if (empty($this->getValue($name))) {
+                return false;
+            }
+        }
 
-		return $custom;
-	}
+        return true;
+    }
 
-	public function GetCalendarCount(): int {
-		return sizeof($this->calendars);
-	}
+    public function getFirstName(): string
+    {
+        return $this->getValue("first_name");
+    }
 
-	public function GetCalendarId($index = 0): int {
-		if(isset($this->booking->calendar_slots[$index])) {
-			return $this->booking->calendar_slots[$index]->booked_calendar_id;
-		} else {
-			return 0;
-		}
-	}
+    public function getLastName(): string
+    {
+        return $this->getValue("last_name");
+    }
 
-	public function GetCalendarTimeFormat($index = 0): string {
-		if(isset($this->booking->calendar_slots[$index])) {
-			return DateTimeTools::FormatWithTime( $this->booking->calendar_slots[ $index ]->timestamp );
-		} else {
-			return "";
-		}
-	}
+    public function hasCalendar(): bool
+    {
+        return sizeof($this->booking->calendar_slots) > 0;
+    }
 
-	public function GetCalendarFormName($index = 0): string {
-		if(isset($this->booking->calendar_slots[$index])) {
-			return $this->booking->calendar_slots[$index]->title;
-		}
-		return "";
-	}
+    public function getCalendarTimeFormat($index = 0): string
+    {
+        if (isset($this->booking->calendar_slots[$index])) {
+            return $this->dateTimeTools->formatWithTime($this->booking->calendar_slots[$index]->timestamp);
+        } else {
+            return "";
+        }
+    }
 
-	public function GetCalendarName($index = 0): string {
-		if(isset($this->calendars[$index]) && $this->calendars[$index] instanceof Calendar) {
-			return $this->calendars[$index]->GetTitle();
-		}
+    public function hasContactEmail(): bool
+    {
+        return $this->hasOne("contact_email");
+    }
 
-		return "";
-	}
+    public function hasAddress(): bool
+    {
+        return $this->hasOne("address", "zip", "city");
+    }
 
-	public function GetAddress($formatted = true): string {
-		$address = "";
+    public function hasCustomValues(): bool
+    {
+        return sizeof($this->getCustomValues()) > 0;
+    }
 
-		if($this->HasOne("address")) {
-			$address = $this->GetValue("address");
-		}
+    /**
+     * @return BookingValue[]
+     */
+    public function getCustomValues(): array
+    {
+        $elements   = $this->elementsCollection->getRegisteredFormElements();
+        $fixednames = array();
+        $custom     = array();
+        foreach ($elements as $elem) {
+            $st = $elem->GetSettingsType("name");
+            if ($st && $st->readonly) {
+                $fixednames[] = $st->default_value;
+            }
+        }
 
-		if($this->HasAll("city", "zip")) {
-			if($formatted) {
-				$address .= "<br>";
-			}
+        foreach ($this->booking_values as $booking_value) {
+            if ( ! in_array($booking_value->key, $fixednames)) {
+                $custom[] = $booking_value;
+            }
+        }
 
-			$address .= $this->GetValue("zip") . " " . $this->GetValue("city");
-		} else if($this->HasOne("city", "zip")) {
-			if($formatted) {
-				$address .= "<br>";
-			}
+        return $custom;
+    }
 
-			$address .= $this->GetValue("zip") . $this->GetValue("city");
-		}
+    public function getCalendarCount(): int
+    {
+        return sizeof($this->calendars);
+    }
 
-		return $address;
-	}
+    public function getCalendarId($index = 0): int
+    {
+        if (isset($this->booking->calendar_slots[$index])) {
+            return $this->booking->calendar_slots[$index]->booked_calendar_id;
+        } else {
+            return 0;
+        }
+    }
 
-	public function GetContactEmail(): string {
-		return $this->GetValue("contact_email");
-	}
+    public function getCalendarFormName($index = 0): string
+    {
+        if (isset($this->booking->calendar_slots[$index])) {
+            return $this->booking->calendar_slots[$index]->title;
+        }
 
-	public function GetFullName(): string {
-		if($this->HasAll("first_name", "last_name")) {
-			return $this->GetFirstName() . " " . $this->GetLastName();
-		} else {
-			return $this->GetFirstName() . $this->GetLastName();
-		}
-	}
+        return "";
+    }
 
-	public function GetFirstName(): string {
-		return $this->GetValue("first_name");
-	}
+    public function getCalendarName($index = 0): string
+    {
+        if (isset($this->calendars[$index]) && $this->calendars[$index] instanceof Calendar) {
+            return $this->calendars[$index]->GetTitle();
+        }
 
-	public function GetLastName(): string {
-		return $this->GetValue("last_name");
-	}
+        return "";
+    }
+
+    public function getAddress($formatted = true): string
+    {
+        $address = "";
+
+        if ($this->hasOne("address")) {
+            $address = $this->getValue("address");
+        }
+
+        if ($this->hasAll("city", "zip")) {
+            if ($formatted) {
+                $address .= "<br>";
+            }
+
+            $address .= $this->getValue("zip") . " " . $this->getValue("city");
+        } elseif ($this->hasOne("city", "zip")) {
+            if ($formatted) {
+                $address .= "<br>";
+            }
+
+            $address .= $this->getValue("zip") . $this->getValue("city");
+        }
+
+        return $address;
+    }
+
+    public function getContactEmail(): string
+    {
+        return $this->getValue("contact_email");
+    }
 }
