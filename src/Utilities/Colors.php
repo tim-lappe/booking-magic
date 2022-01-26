@@ -4,9 +4,17 @@
 namespace TLBM\Utilities;
 
 
-class Colors {
+use TLBM\Utilities\Contracts\ColorsInterface;
 
-	public static function GetRgbFromHex($hex) {
-		return sscanf($hex, "#%02x%02x%02x");
-	}
+class Colors implements ColorsInterface
+{
+
+    public function __construct()
+    {
+    }
+
+    public function getRgbFromHex($hex)
+    {
+        return sscanf($hex, "#%02x%02x%02x");
+    }
 }

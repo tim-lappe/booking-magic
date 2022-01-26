@@ -6,10 +6,12 @@ use TLBM\Admin\FormEditor\FrontendGeneration\InputGenerator;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Input;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Textarea;
 
-class SelectElement extends FormInputElem {
+class SelectElement extends FormInputElem
+{
 
-    public function __construct() {
-        parent::__construct( "select", __("Select", TLBM_TEXT_DOMAIN) );
+    public function __construct()
+    {
+        parent::__construct("select", __("Select", TLBM_TEXT_DOMAIN));
         $this->description = __("let the user select from multiple items", TLBM_TEXT_DOMAIN);
 
         $setting_items = new Textarea(
@@ -19,7 +21,8 @@ class SelectElement extends FormInputElem {
             false,
             false,
             array(),
-            __("Select", TLBM_TEXT_DOMAIN));
+            __("Select", TLBM_TEXT_DOMAIN)
+        );
 
         $setting_default_selected = new Input(
             "default_selected",
@@ -29,7 +32,8 @@ class SelectElement extends FormInputElem {
             false,
             false,
             array(),
-            __("Select", TLBM_TEXT_DOMAIN));
+            __("Select", TLBM_TEXT_DOMAIN)
+        );
 
         $setting_default_selected->expand = true;
 
@@ -39,13 +43,20 @@ class SelectElement extends FormInputElem {
     /**
      * @inheritDoc
      */
-    public function GetFrontendOutput($form_node, ?callable $insert_child = null) {
+    public function GetFrontendOutput($form_node, ?callable $insert_child = null)
+    {
         $items = explode("\n", $form_node->formData->items);
         $key_values = array();
         foreach ($items as $values) {
             $key_values[$values] = $values;
         }
 
-        return InputGenerator::GetSelectControle($form_node->formData->title, $form_node->formData->name, $key_values, $form_node->formData->required == "yes", ($form_node->formData->css_classes ?? ""));
+        return InputGenerator::GetSelectControle(
+            $form_node->formData->title,
+            $form_node->formData->name,
+            $key_values,
+            $form_node->formData->required == "yes",
+            ($form_node->formData->css_classes ?? "")
+        );
     }
 }

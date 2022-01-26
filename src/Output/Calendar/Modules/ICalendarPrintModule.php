@@ -4,7 +4,8 @@
 namespace TLBM\Output\Calendar\Modules;
 
 
-interface ICalendarPrintModule {
+interface ICalendarPrintModule
+{
 
     /**
      * @param $data

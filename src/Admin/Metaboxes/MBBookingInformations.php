@@ -6,70 +6,86 @@ namespace TLBM\Admin\Metaboxes;
 
 use TLBM\Booking\BookingManager;
 use TLBM\Booking\MainValues;
-use TLBM\Utilities\DateTimeTools;
 use WP_Post;
 
-class MBBookingInformations extends MetaBoxBase {
+class MBBookingInformations extends MetaBoxBase
+{
 
-    function GetOnPostTypes(): array {
+    public function GetOnPostTypes(): array
+    {
         return array(TLBM_PT_BOOKING);
     }
 
-    function RegisterMetaBox() {
+    public function RegisterMetaBox()
+    {
         $this->AddMetaBox("booking_informations", "Booking Information");
     }
 
-    function PrintMetaBox(WP_Post $post) {
-        $booking = BookingManager::GetBooking($post->ID);
+    public function PrintMetaBox(WP_Post $post)
+    {
+        $booking    = BookingManager::GetBooking($post->ID);
         $mainvalues = new MainValues($booking);
         ?>
         <div class="tlbm-admin-booking-information">
             <div class="tlbm-admin-booking-information-list">
                 <?php
-                if($mainvalues->HasName()) {
+                if ($mainvalues->hasName()) {
                     echo "<div class='tlbm-admin-booking-information-item'>";
-                    echo "<span class='tlbm-admin-booking-headline'>".__("Name", TLBM_TEXT_DOMAIN)."</span><br>";
-                    echo "<p class='tlbm-admin-booking-values'>" . $mainvalues->GetFullName() . "</p>";
+                    echo "<span class='tlbm-admin-booking-headline'>" . __("Name", TLBM_TEXT_DOMAIN) . "</span><br>";
+                    echo "<p class='tlbm-admin-booking-values'>" . $mainvalues->getFullName() . "</p>";
                     echo "</div>";
                 }
-                if($mainvalues->HasAddress()) {
+                if ($mainvalues->hasAddress()) {
                     echo "<div class='tlbm-admin-booking-information-item'>";
-                    echo "<span class='tlbm-admin-booking-headline'>".__("Address", TLBM_TEXT_DOMAIN)."</span><br>";
-                    echo "<p class='tlbm-admin-booking-values'>" . $mainvalues->GetAddress() . "</p>";
+                    echo "<span class='tlbm-admin-booking-headline'>" . __("Address", TLBM_TEXT_DOMAIN) . "</span><br>";
+                    echo "<p class='tlbm-admin-booking-values'>" . $mainvalues->getAddress() . "</p>";
                     echo "</div>";
                 }
-                if($mainvalues->HasContactEmail()) {
+                if ($mainvalues->hasContactEmail()) {
                     echo "<div class='tlbm-admin-booking-information-item'>";
-                    echo "<span class='tlbm-admin-booking-headline'>".__("E-Mail", TLBM_TEXT_DOMAIN)."</span><br>";
-                    echo "<p class='tlbm-admin-booking-values'>" . $mainvalues->GetContactEmail() . "</p>";
+                    echo "<span class='tlbm-admin-booking-headline'>" . __("E-Mail", TLBM_TEXT_DOMAIN) . "</span><br>";
+                    echo "<p class='tlbm-admin-booking-values'>" . $mainvalues->getContactEmail() . "</p>";
                     echo "</div>";
                 }
-                if($mainvalues->HasCustomValues()) {
-	                echo "<div class='tlbm-admin-booking-information-item'>";
-	                echo "<span class='tlbm-admin-booking-headline'>".__("Additional", TLBM_TEXT_DOMAIN)."</span><br>";
-                    foreach ($mainvalues->GetCustomValues() as $value) {
-	                    echo "<p class='tlbm-admin-booking-values'><strong>" . $value->title . "</strong><br>" . $value->value  . "</p>";
+                if ($mainvalues->hasCustomValues()) {
+                    echo "<div class='tlbm-admin-booking-information-item'>";
+                    echo "<span class='tlbm-admin-booking-headline'>" . __(
+                            "Additional",
+                            TLBM_TEXT_DOMAIN
+                        ) . "</span><br>";
+                    foreach ($mainvalues->getCustomValues() as $value) {
+                        echo "<p class='tlbm-admin-booking-values'><strong>" . $value->title . "</strong><br>" . $value->value . "</p>";
                     }
-	                echo "</div>";
+                    echo "</div>";
                 }
                 ?>
             </div>
         </div>
-        <?php if($mainvalues->HasCalendar()): ?>
+        <?php
+        if ($mainvalues->hasCalendar()): ?>
             <div class="tlbm-admin-booking-information">
                 <div class="tlbm-admin-booking-information-list">
-                    <?php for ($i = 0; $i < $mainvalues->GetCalendarCount(); $i++): ?>
+                    <?php
+                    for ($i = 0; $i < $mainvalues->getCalendarCount(); $i++): ?>
                         <div class="tlbm-admin-booking-information-item">
-                            <?php if($mainvalues->GetCalendarCount() > 1): ?>
-                                <span class='tlbm-admin-booked-calendar-title'><?php echo $mainvalues->GetCalendarFormName($i) ?></span><br>
-                            <?php endif; ?>
-                            <span class='tlbm-admin-booked-calendar-values'><?php echo $mainvalues->GetCalendarTimeFormat($i) ?></span><br>
-                            <span class='tlbm-admin-booking-values'><a href="<?php echo get_edit_post_link($mainvalues->GetCalendarId($i)); ?>"><?php echo $mainvalues->GetCalendarName($i); ?></a></span>
+                            <?php
+                            if ($mainvalues->getCalendarCount() > 1): ?>
+                                <span class='tlbm-admin-booked-calendar-title'><?php
+                                    echo $mainvalues->getCalendarFormName($i) ?></span><br>
+                            <?php
+                            endif; ?>
+                            <span class='tlbm-admin-booked-calendar-values'><?php
+                                echo $mainvalues->getCalendarTimeFormat($i) ?></span><br>
+                            <span class='tlbm-admin-booking-values'><a href="<?php
+                                echo get_edit_post_link($mainvalues->getCalendarId($i)); ?>"><?php
+                                    echo $mainvalues->getCalendarName($i); ?></a></span>
                         </div>
-                    <?php endfor; ?>
+                    <?php
+                    endfor; ?>
                 </div>
             </div>
-        <?php endif; ?>
+        <?php
+        endif; ?>
         <?php
     }
 }

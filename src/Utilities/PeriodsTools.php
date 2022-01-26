@@ -6,29 +6,59 @@ namespace TLBM\Utilities;
 
 use DateTime;
 use TLBM\Entity\RulePeriod;
+use TLBM\Utilities\Contracts\PeriodsToolsInterface;
 
-class PeriodsTools {
+class PeriodsTools implements PeriodsToolsInterface
+{
 
 
-	/**
-	 * @param RulePeriod $period
-	 * @param DateTime $dateTime
-	 *
-	 * @return bool
-	 */
-	public static function IsDateTimeInPeriod(RulePeriod $period, DateTime $dateTime ): bool {
-        $from_day = $period->GetFromDay();
-        $from_month = $period->GetFromMonth();
-        $from_year = $period->GetFromYear();
+    public function __construct()
+    {
+    }
 
-        $to_day = $period->GetToDay();
-        $to_month = $period->GetToMonth();
-        $to_year = $period->GetToYear();
+    /**
+     * @param RulePeriod[] $periods
+     * @param DateTime $dateTime
+     *
+     * @return bool
+     */
+    public function isDateTimeInPeriodCollection(array $periods, DateTime $dateTime): bool
+    {
+        foreach ($periods as $item) {
+            if ($this->isDateTimeInPeriod($item, $dateTime)) {
+                return true;
+            }
+        }
 
-        if(!$from_year) {
+        return sizeof($periods) == 0;
+    }
+
+    /**
+     * @param RulePeriod $period
+     * @param DateTime $dateTime
+     *
+     * @return bool
+     */
+    public function isDateTimeInPeriod(RulePeriod $period, DateTime $dateTime): bool
+    {
+        $fromDateTime = new DateTime();
+        $fromDateTime->setTimestamp($period->GetFromTstamp());
+
+        $toDateTime = new DateTime();
+        $toDateTime->setTimestamp($period->GetToTstamp());
+
+        $from_day   = $fromDateTime->format("d");
+        $from_month = $fromDateTime->format("m");
+        $from_year  = $fromDateTime->format("Y");
+
+        $to_day   = $toDateTime->format("d");
+        $to_month = $toDateTime->format("m");
+        $to_year  = $toDateTime->format("Y");
+
+        if ( ! $from_year) {
             $from_year = $dateTime->format("Y");
         }
-        if(!$to_year) {
+        if ( ! $to_year) {
             $to_year = $dateTime->format("Y");
         }
 
@@ -36,22 +66,8 @@ class PeriodsTools {
         $fromDt->setDate($from_year, $from_month, $from_day - 1);
         $toDt = new DateTime();
         $toDt->setDate($to_year, $to_month, intval($to_day));
-        return $fromDt->getTimestamp() <= $dateTime->getTimestamp() && $toDt->getTimestamp() >= $dateTime->getTimestamp();
-	}
 
-	/**
-	 * @param RulePeriod[] $periods
-	 * @param DateTime $dateTime
-	 *
-	 * @return bool
-	 */
-	public static function IsDateTimeInPeriodCollection( array $periods, DateTime $dateTime ): bool {
-		foreach ($periods as $item) {
-			if(self::IsDateTimeInPeriod($item, $dateTime)) {
-				return true;
-			}
-		}
-
-		return sizeof($periods) == 0;
-	}
+        return $fromDt->getTimestamp() <= $dateTime->getTimestamp() && $toDt->getTimestamp() >= $dateTime->getTimestamp(
+            );
+    }
 }

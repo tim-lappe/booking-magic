@@ -3,22 +3,31 @@
 
 namespace TLBM\Ajax;
 
-if( ! defined( 'ABSPATH' ) ) {
+if ( ! defined('ABSPATH')) {
     return;
 }
 
-abstract class AjaxBase {
+abstract class AjaxBase
+{
 
-	public function __construct() {
-		$this->RegisterAjaxAction();
-	}
+    public function __construct()
+    {
+        $this->registerAjaxAction();
+    }
 
-	/**
-	 * Abstract function that will register the Ajax Action
-	 *
-	 * @return mixed
-	 */
-	abstract function RegisterAjaxAction();
+    /**
+     * Abstract function that will register the Ajax Action
+     *
+     * @return mixed
+     */
+    public abstract function registerAjaxAction();
+
+    public function ajaxCallback()
+    {
+        $data   = json_decode(file_get_contents('php://input'));
+        $result = $this->apiRequest($data);
+        die(json_encode($result));
+    }
 
     /**
      * Ajax Callback
@@ -27,21 +36,16 @@ abstract class AjaxBase {
      *
      * @return mixed
      */
-	abstract function ApiRequest($data);
+    public abstract function apiRequest($data);
 
-	function AjaxCallback() {
-        $data = json_decode(file_get_contents('php://input'));
-        $result = $this->ApiRequest($data);
-        die(json_encode($result));
+    /**
+     * Helper Function to Register an Ajax Action
+     *
+     * @param $action
+     */
+    protected function addAjaxAction($action)
+    {
+        add_action("wp_ajax_tlbm_" . $action, array($this, "ajaxCallback"));
+        add_action("wp_ajax_nopriv_tlbm_" . $action, array($this, "ajaxCallback"));
     }
-
-	/**
-	 * Helper Function to Register an Ajax Action
-	 *
-	 * @param $action
-	 */
-	protected function AddAjaxAction($action) {
-		add_action("wp_ajax_tlbm_" . $action, array($this, "AjaxCallback"));
-		add_action("wp_ajax_nopriv_tlbm_" . $action, array($this, "AjaxCallback"));
-	}
 }

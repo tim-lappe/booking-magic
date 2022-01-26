@@ -6,9 +6,10 @@ namespace TLBM\Model;
 
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\DefaultBookingState;
 
-class Booking {
+class Booking
+{
 
-	/**
+    /**
      * @var int $wp_post_id The WP Post Id
      */
     public int $wp_post_id = 0;
@@ -18,28 +19,29 @@ class Booking {
      */
     public array $booking_values = array();
 
-	/**
-	 * @var CalendarSlot[]
-	 */
+    /**
+     * @var CalendarSlot[]
+     */
     public array $calendar_slots = array();
 
-	/**
-	 * @var string
-	 */
+    /**
+     * @var string
+     */
     public string $title = "";
 
-	/**
-	 * @var int
-	 */
+    /**
+     * @var int
+     */
     public int $priority = 10;
 
-	/**
-	 * @var string
-	 */
+    /**
+     * @var string
+     */
     public string $state = "";
 
 
-	public function __construct() {
-		$this->state = DefaultBookingState::GetDefaultName();
-	}
+    public function __construct()
+    {
+        $this->state = DefaultBookingState::GetDefaultName();
+    }
 }

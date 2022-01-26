@@ -3,31 +3,43 @@
 
 namespace TLBM\Request;
 
-if( ! defined( 'ABSPATH' ) ) {
+if ( ! defined('ABSPATH')) {
     return;
 }
 
 
-abstract class RequestBase {
+abstract class RequestBase
+{
 
-    public $action;
+    /**
+     * @var string
+     */
+    public string $action;
 
-    public $html_output = false;
+    /**
+     * @var bool
+     */
+    public bool $hasContent = false;
 
-    public function __construct() {
-
+    public function __construct()
+    {
     }
 
-    public function Init( $vars ) { }
+    public function Init($vars)
+    {
+    }
 
-    public function OnAction( $vars ) { }
+    public function onAction($vars)
+    {
+    }
 
-	/**
-	 * @param $vars
-	 *
-	 * @return string
-	 */
-    public function GetHtmlOutput( $vars ): string {
-    	return "";
+    /**
+     * @param $vars
+     *
+     * @return string
+     */
+    public function getDisplayContent($vars): string
+    {
+        return "";
     }
 }

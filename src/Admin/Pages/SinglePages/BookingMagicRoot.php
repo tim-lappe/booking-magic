@@ -4,28 +4,35 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 
+use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\Dashboard\Dashboard;
 
-class BookingMagicRoot extends PageBase {
+class BookingMagicRoot extends PageBase
+{
 
-	public function __construct( ) {
-		parent::__construct( __("Booking Magic", TLBM_TEXT_DOMAIN), "booking-magic" );
+    /**
+     * @param AdminPageManagerInterface $adminPageManager
+     */
+    public function __construct(AdminPageManagerInterface $adminPageManager)
+    {
+        parent::__construct($adminPageManager, __("Booking Magic", TLBM_TEXT_DOMAIN), "booking-magic");
+        $this->menu_secondary_title = "Dashboard";
+    }
 
-		$this->menu_secondary_title = "Dashboard";
-	}
-
-    public function GetHeadTitle(): string {
+    public function getHeadTitle(): string
+    {
         return __("Dashboard", TLBM_TEXT_DOMAIN);
     }
 
-    public function DisplayPageBody() {
-		?>
-		<div class="wrap">
+    public function displayPageBody()
+    {
+        ?>
+        <div class="wrap">
             <?php
             $dashboard = new Dashboard();
             $dashboard->Print();
             ?>
-		</div>
-		<?php
-	}
+        </div>
+        <?php
+    }
 }

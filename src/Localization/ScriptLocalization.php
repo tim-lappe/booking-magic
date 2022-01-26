@@ -2,26 +2,35 @@
 
 namespace TLBM\Localization;
 
-class ScriptLocalization {
+use TLBM\Localization\Contracts\LabelsInterface;
+use TLBM\Localization\Contracts\ScriptLocalizationInterface;
 
-    public static function GetLabels(): array {
-        $keys = self::GetLabelKeys();
-        $arr = array();
+class ScriptLocalization implements ScriptLocalizationInterface
+{
+
+    /**
+     * @var LabelsInterface
+     */
+    private LabelsInterface $labels;
+
+    public function __construct(LabelsInterface $labels)
+    {
+        $this->labels = $labels;
+    }
+
+    public function getLabels(): array
+    {
+        $keys = $this->getLabelKeys();
+        $arr  = array();
         foreach ($keys as $key) {
             $arr[$key] = __($key, TLBM_TEXT_DOMAIN);
         }
 
-        return $arr + self::GetLabelCollections();
+        return $arr + $this->getLabelCollections();
     }
 
-    public static function GetLabelCollections(): array {
-        return array(
-            "weekdays" => Labels::GetWeekdayLabels(),
-            "months" => Labels::GetMonthLabels()
-        );
-    }
-
-    public static function GetLabelKeys(): array {
+    public function getLabelKeys(): array
+    {
         return array(
             "Add",
             "Weekdays",
@@ -32,6 +41,14 @@ class ScriptLocalization {
             "Saturday and Sunday",
             "Multiple Weekdays",
             "Single Weekdays"
+        );
+    }
+
+    public function getLabelCollections(): array
+    {
+        return array(
+            "weekdays" => $this->labels->getWeekdayLabels(),
+            "months"   => $this->labels->getMonthLabels()
         );
     }
 }

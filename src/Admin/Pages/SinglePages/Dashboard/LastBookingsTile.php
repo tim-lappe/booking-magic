@@ -4,16 +4,21 @@
 namespace TLBM\Admin\Pages\SinglePages\Dashboard;
 
 
-use TLBM\Admin\Tables\BookingListTable;class LastBookingsTile extends DashboardTile {
+use TLBM\Admin\Tables\BookingListTable;
 
-	public function __construct() {
-		parent::__construct( __("Last Bookings", TLBM_TEXT_DOMAIN) );
-	}
+class LastBookingsTile extends DashboardTile
+{
 
-	public function PrintBody(): void {
-		$bookings = new BookingListTable();
-		$bookings->slim = true;
-		$bookings->prepare_items();
-		$bookings->display();
-	}
+    public function __construct()
+    {
+        parent::__construct(__("Last Bookings", TLBM_TEXT_DOMAIN));
+    }
+
+    public function PrintBody(): void
+    {
+        $bookings       = new BookingListTable();
+        $bookings->slim = true;
+        $bookings->prepare_items();
+        $bookings->display();
+    }
 }

@@ -2,40 +2,53 @@
 
 namespace TLBM\Calendar;
 
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Exception;
-use TLBM\Database\OrmManager;
+use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\Database\Contracts\ORMInterface;
 use TLBM\Entity\Calendar;
 
-if( ! defined( 'ABSPATH' ) ) {
-	return;
+if ( ! defined('ABSPATH')) {
+    return;
 }
 
-class CalendarManager {
+class CalendarManager implements CalendarManagerInterface
+{
 
+    /**
+     * @var ORMInterface
+     */
+    private ORMInterface $repository;
+
+    public function __construct(ORMInterface $repository)
+    {
+        $this->repository = $repository;
+    }
 
     /**
      * @param Calendar $calendar
+     *
      * @throws Exception
      */
-    public static function SaveCalendar( Calendar $calendar ) {
-        $mgr = OrmManager::GetEntityManager();
+    public function saveCalendar(Calendar $calendar)
+    {
+        $mgr = $this->repository->getEntityManager();
         $mgr->persist($calendar);
         $mgr->flush();
     }
 
-	/**
-	 * Returns the BookingCalender from the given Post-Id
-	 *
-	 * @param mixed $id The Post-Id of the Calendar
-	 *
-	 * @return Calendar|null
-	 */
-	public static function GetCalendar( $id ): ?Calendar {
+    /**
+     * Returns the BookingCalender from the given Post-Id
+     *
+     * @param mixed $id The Post-Id of the Calendar
+     *
+     * @return Calendar|null
+     */
+    public function getCalendar($id): ?Calendar
+    {
         try {
-            $mgr = OrmManager::GetEntityManager();
+            $mgr      = $this->repository->getEntityManager();
             $calendar = $mgr->find("\TLBM\Entity\Calendar", $id);
             if ($calendar instanceof Calendar) {
                 return $calendar;
@@ -43,8 +56,9 @@ class CalendarManager {
         } catch (Exception $e) {
             var_dump($e);
         }
+
         return null;
-	}
+    }
 
     /**
      * Return a List of all active Calendars
@@ -54,23 +68,30 @@ class CalendarManager {
      * @param string $order
      * @param int $offset
      * @param int $limit
+     *
      * @return Calendar[]
      */
-	public static function GetAllCalendars(array $options = array(), string $orderby = "title", string $order = "desc", int $offset = 0, int $limit = 0): array {
-        $mgr = OrmManager::GetEntityManager();
-        $qb = $mgr->createQueryBuilder();
-        $qb ->select("c")
-            ->from("\TLBM\Entity\Calendar", "c")
-            ->orderBy("c." . $orderby, $order)
-            ->setFirstResult($offset);
-        if($limit > 0) {
+    public function getAllCalendars(
+        array $options = array(),
+        string $orderby = "title",
+        string $order = "desc",
+        int $offset = 0,
+        int $limit = 0
+    ): array {
+        $mgr = $this->repository->getEntityManager();
+        $qb  = $mgr->createQueryBuilder();
+        $qb->select("c")
+           ->from("\TLBM\Entity\Calendar", "c")
+           ->orderBy("c." . $orderby, $order)
+           ->setFirstResult($offset);
+        if ($limit > 0) {
             $qb->setMaxResults($limit);
         }
 
-        $query = $qb->getQuery();
+        $query  = $qb->getQuery();
         $result = $query->getResult();
 
-        if(is_array($result)) {
+        if (is_array($result)) {
             return $result;
         }
 
@@ -79,18 +100,20 @@ class CalendarManager {
 
     /**
      * @param array $options
+     *
      * @return int
      */
-	public static function GetAllCalendarsCount(array $options = array()): int {
-        $mgr = OrmManager::GetEntityManager();
-        $qb = $mgr->createQueryBuilder();
-        $qb ->select($qb->expr()->count("c"))
-            ->from("\TLBM\Entity\Calendar", "c");
+    public function getAllCalendarsCount(array $options = array()): int
+    {
+        $mgr = $this->repository->getEntityManager();
+        $qb  = $mgr->createQueryBuilder();
+        $qb->select($qb->expr()->count("c"))
+           ->from("\TLBM\Entity\Calendar", "c");
 
         $query = $qb->getQuery();
         try {
             return $query->getSingleScalarResult();
-        } catch (NoResultException | NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException $e) {
             return 0;
         }
     }

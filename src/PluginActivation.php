@@ -3,27 +3,30 @@
 
 namespace TLBM;
 
+use TLBM\Database\Contracts\ORMInterface;
 
-use Doctrine\ORM\Tools\SchemaTool;
-use TLBM\Database\OrmManager;
+class PluginActivation
+{
 
+    private ORMInterface $repository;
 
-class PluginActivation {
+    public function __construct(ORMInterface $repository)
+    {
+        $this->repository = $repository;
 
-	public function __construct() {
-		register_activation_hook( TLBM_PLUGIN_FILE, array($this, "OnActivation"));
-		register_deactivation_hook( TLBM_PLUGIN_FILE, array($this, "OnDeactivation"));
-	}
+        register_activation_hook(TLBM_PLUGIN_FILE, array($this, "OnActivation"));
+        register_deactivation_hook(TLBM_PLUGIN_FILE, array($this, "OnDeactivation"));
+    }
 
-	public function OnActivation() {
-		OrmManager::BuildSchema();
-	}
+    public function OnActivation()
+    {
+        $this->repository->buildSchema();
+    }
 
-	public function OnDeactivation() {
-		if(defined("TLBM_DELETE_DATA_ON_DEACTIVATION")) {
-			$mgr    = OrmManager::GetEntityManager();
-			$schema = new SchemaTool( $mgr );
-			$schema->dropSchema( $mgr->getMetadataFactory()->getAllMetadata() );
-		}
-	}
+    public function OnDeactivation()
+    {
+        if (defined("TLBM_DELETE_DATA_ON_DEACTIVATION")) {
+            $this->repository->dropSchema();
+        }
+    }
 }

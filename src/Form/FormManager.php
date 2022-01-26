@@ -7,23 +7,37 @@ namespace TLBM\Form;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Exception;
-use TLBM\Database\OrmManager;
+use TLBM\Database\Contracts\ORMInterface;
 use TLBM\Entity\Form;
+use TLBM\Form\Contracts\FormManagerInterface;
 
-if( ! defined( 'ABSPATH' ) ) {
+if ( ! defined('ABSPATH')) {
     return;
 }
 
-class FormManager {
+class FormManager implements FormManagerInterface
+{
+
+
+    /**
+     * @var ORMInterface
+     */
+    private ORMInterface $repository;
+
+    public function __construct(ORMInterface $repository)
+    {
+        $this->repository = $repository;
+    }
 
     /**
      * @param $id
      *
-     * @return false|Form
+     * @return Form
      */
-	public static function GetForm($id) {
+    public function getForm($id): ?Form
+    {
         try {
-            $mgr = OrmManager::GetEntityManager();
+            $mgr  = $this->repository->getEntityManager();
             $form = $mgr->find("\TLBM\Entity\Form", $id);
             if ($form instanceof Form) {
                 return $form;
@@ -33,14 +47,16 @@ class FormManager {
         }
 
         return null;
-	}
+    }
 
     /**
      * @param Form $form
+     *
      * @throws Exception
      */
-    public static function SaveForm( Form $form ) {
-        $mgr = OrmManager::GetEntityManager();
+    public function saveForm(Form $form): void
+    {
+        $mgr = $this->repository->getEntityManager();
         $mgr->persist($form);
         $mgr->flush();
     }
@@ -51,45 +67,54 @@ class FormManager {
      * @param string $order
      * @param int $offset
      * @param int $limit
+     *
      * @return Form[]
      */
-	public static function GetAllForms(array $options = array(), string $orderby = "title", string $order = "desc", int $offset = 0, int $limit = 0): array {
-        $mgr = OrmManager::GetEntityManager();
-        $qb = $mgr->createQueryBuilder();
-        $qb ->select("f")
-            ->from("\TLBM\Entity\Form", "f")
-            ->orderBy("f." . $orderby, $order)
-            ->setFirstResult($offset);
-        if($limit > 0) {
+    public function getAllForms(
+        array $options = array(),
+        string $orderby = "title",
+        string $order = "desc",
+        int $offset = 0,
+        int $limit = 0
+    ): array {
+        $mgr = $this->repository->getEntityManager();
+        $qb  = $mgr->createQueryBuilder();
+        $qb->select("f")
+           ->from("\TLBM\Entity\Form", "f")
+           ->orderBy("f." . $orderby, $order)
+           ->setFirstResult($offset);
+        if ($limit > 0) {
             $qb->setMaxResults($limit);
         }
 
-        $query = $qb->getQuery();
+        $query  = $qb->getQuery();
         $result = $query->getResult();
 
-        if(is_array($result)) {
+        if (is_array($result)) {
             return $result;
         }
 
         return array();
-	}
+    }
 
     /**
      * @param array $options
+     *
      * @return int
      * @throws Exception
      */
-	public static function GetAllFormsCount(array $options = array()): int {
-        $mgr = OrmManager::GetEntityManager();
-        $qb = $mgr->createQueryBuilder();
-        $qb ->select($qb->expr()->count("f"))
-            ->from("\TLBM\Entity\Form", "f");
+    public function getAllFormsCount(array $options = array()): int
+    {
+        $mgr = $this->repository->getEntityManager();
+        $qb  = $mgr->createQueryBuilder();
+        $qb->select($qb->expr()->count("f"))
+           ->from("\TLBM\Entity\Form", "f");
 
         $query = $qb->getQuery();
         try {
             return $query->getSingleScalarResult();
-        } catch (NoResultException | NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException $e) {
             return 0;
         }
-	}
+    }
 }

@@ -2,7 +2,8 @@
 
 namespace TLBM\Rules\RuleActions\MergeEntities;
 
-abstract class MergeEntityBase {
+abstract class MergeEntityBase
+{
 
-    public abstract function getMergeTerm(): string;
+    abstract public function getMergeTerm(): string;
 }

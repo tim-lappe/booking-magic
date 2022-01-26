@@ -3,58 +3,76 @@
 
 namespace TLBM\Calendar;
 
+use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\Calendar\Contracts\CalendarSelectionHandlerInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarSelection;
 
-if (!defined('ABSPATH')) {
+if ( ! defined('ABSPATH')) {
     return;
 }
 
-class CalendarSelectionHandler {
+class CalendarSelectionHandler implements CalendarSelectionHandlerInterface
+{
+
+    /**
+     * @var CalendarManagerInterface
+     */
+    private CalendarManagerInterface $calendarManager;
+
+    public function __construct(CalendarManagerInterface $calendarManager)
+    {
+        $this->calendarManager = $calendarManager;
+    }
 
     /**
      * @param CalendarSelection $calendar_selection
-     * @param int               $calendar_id
+     * @param int $calendar_id
      *
      * @return bool
      */
-    public static function ContainsCalendar(CalendarSelection $calendar_selection, int $calendar_id): bool {
-        if($calendar_selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
+    public function containsCalendar(CalendarSelection $calendar_selection, int $calendar_id): bool
+    {
+        if ($calendar_selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
             return true;
-        } else if($calendar_selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
+        } elseif ($calendar_selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
             return in_array($calendar_id, $calendar_selection->GetCalendarIds());
-        } else if($calendar_selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
-            return !in_array($calendar_id, $calendar_selection->GetCalendarIds());
+        } elseif ($calendar_selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
+            return ! in_array($calendar_id, $calendar_selection->GetCalendarIds());
         }
+
         return false;
     }
 
-	/**
-	 * @param CalendarSelection $calendar_selection
-	 *
-	 * @return array|Calendar[]
-	 */
-    public static function GetSelectedCalendarList(CalendarSelection  $calendar_selection): array {
-    	if($calendar_selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
-    		return CalendarManager::GetAllCalendars();
-	    } else if($calendar_selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
-    		$list = array();
-    		foreach ($calendar_selection->GetCalendarIds() as $id) {
-    			$cal = CalendarManager::GetCalendar($id);
-				$list[] = $cal;
-		    }
-    		return $list;
-	    } else if($calendar_selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
-    		$allcals = CalendarManager::GetAllCalendars();
-    		$list = array();
-		    foreach ( $allcals as $cal ) {
-				if(!in_array($cal->GetId(), $calendar_selection->GetCalendarIds())) {
-					$list[] = $cal;
-				}
-    		}
-		    return $list;
-	    }
+    /**
+     * @param CalendarSelection $calendarSelection
+     *
+     * @return array|Calendar[]
+     */
+    public function getSelectedCalendarList(CalendarSelection $calendarSelection): array
+    {
+        if ($calendarSelection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
+            return $this->calendarManager->getAllCalendars();
+        } elseif ($calendarSelection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
+            $list = array();
+            foreach ($calendarSelection->GetCalendarIds() as $id) {
+                $cal    = $this->calendarManager->getCalendar($id);
+                $list[] = $cal;
+            }
 
-    	return array();
+            return $list;
+        } elseif ($calendarSelection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
+            $allcals = $this->calendarManager->getAllCalendars();
+            $list    = array();
+            foreach ($allcals as $cal) {
+                if ( ! in_array($cal->GetId(), $calendarSelection->GetCalendarIds())) {
+                    $list[] = $cal;
+                }
+            }
+
+            return $list;
+        }
+
+        return array();
     }
 }

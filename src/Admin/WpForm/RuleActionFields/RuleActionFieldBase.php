@@ -4,11 +4,12 @@
 namespace TLBM\Admin\WpForm\RuleActionFields;
 
 
-if (!defined('ABSPATH')) {
+if ( ! defined('ABSPATH')) {
     return;
 }
 
-abstract class RuleActionFieldBase {
+abstract class RuleActionFieldBase
+{
 
     /**
      * @var int
@@ -30,9 +31,10 @@ abstract class RuleActionFieldBase {
      */
     public $formHtml;
 
-    public function __construct($key, $title, $tsClass = "") {
-        $this->key = $key;
-        $this->title = $title;
+    public function __construct($key, $title, $tsClass = "")
+    {
+        $this->key     = $key;
+        $this->title   = $title;
         $this->tsClass = $tsClass;
     }
 }

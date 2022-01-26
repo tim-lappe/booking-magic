@@ -3,27 +3,28 @@
 
 namespace TLBM\Entity;
 
-use Doctrine\ORM\Mapping as OrmMapping;
 
+trait IndexedTable
+{
 
-trait IndexedTable {
+    /**
+     * @var int
+     * @Doctrine\ORM\Mapping\Id
+     * @Doctrine\ORM\Mapping\GeneratedValue
+     * @Doctrine\ORM\Mapping\Column(type="integer", nullable=false)
+     */
+    protected int $id = 0;
 
-	/**
-	 * @var int
-	 * @OrmMapping\Id
-	 * @OrmMapping\GeneratedValue
-	 * @OrmMapping\Column(type="integer", nullable=false)
-	 */
-	protected int $id;
+    /**
+     * @return int
+     */
+    public function GetId(): int
+    {
+        return $this->id;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function GetId(): int {
-		return $this->id;
-	}
-
-    public function SetId(int $id) {
+    public function SetId(int $id)
+    {
         $this->id = $id;
     }
 }

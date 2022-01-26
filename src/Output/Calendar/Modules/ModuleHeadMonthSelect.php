@@ -6,12 +6,14 @@ namespace TLBM\Output\Calendar\Modules;
 
 use DateTime;
 
-class ModuleHeadMonthSelect implements ICalendarPrintModule {
+class ModuleHeadMonthSelect implements ICalendarPrintModule
+{
 
-    public function GetOutput($data): string {
+    public function GetOutput($data): string
+    {
         $tstamp = $data['focused_tstamp'];
 
-        if(!$tstamp) {
+        if ( ! $tstamp) {
             $tstamp = time();
         }
 
@@ -23,7 +25,7 @@ class ModuleHeadMonthSelect implements ICalendarPrintModule {
 
         $html = "<div class='tlbm-calendar'>";
         $html .= "<div class='tlbm-month-head'>";
-        $html .= "<button class='tlbm-button tlbm-prev-month'>". __("Previous", TLBM_TEXT_DOMAIN) ."</button>";
+        $html .= "<button class='tlbm-button tlbm-prev-month'>" . __("Previous", TLBM_TEXT_DOMAIN) . "</button>";
         $html .= "<div class='tlbm-month-title'>" . $month_title . "</div>";
         $html .= "<button class='tlbm-button tlbm-next-month'>" . __("Next", TLBM_TEXT_DOMAIN) . "</button>";
         $html .= "</div>";

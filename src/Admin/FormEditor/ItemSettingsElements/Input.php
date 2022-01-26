@@ -3,17 +3,18 @@
 
 namespace TLBM\Admin\FormEditor\ItemSettingsElements;
 
-if( ! defined( 'ABSPATH' ) ) {
+if ( ! defined('ABSPATH')) {
     return;
 }
 
 
-class Input extends ElementSetting {
+class Input extends ElementSetting
+{
 
     /**
      * @var string
      */
-	public string $input_type = "text";
+    public string $input_type = "text";
 
     /**
      * @var string
@@ -40,10 +41,19 @@ class Input extends ElementSetting {
      * @param array $forbidden_values
      * @param string $category_title
      */
-	public function __construct($name, $title, string $input_type = "text", $default_value = "", bool $readonly = false, $must_unique = false, array $forbidden_values = array(), string $category_title = "General") {
-		parent::__construct( $name, $title, $default_value, $readonly, $must_unique, $forbidden_values, $category_title );
-		$this->input_type = $input_type;
-        $this->type = "input";
-	}
+    public function __construct(
+        $name,
+        $title,
+        string $input_type = "text",
+        $default_value = "",
+        bool $readonly = false,
+        $must_unique = false,
+        array $forbidden_values = array(),
+        string $category_title = "General"
+    ) {
+        parent::__construct($name, $title, $default_value, $readonly, $must_unique, $forbidden_values, $category_title);
+        $this->input_type = $input_type;
+        $this->type       = "input";
+    }
 
 }

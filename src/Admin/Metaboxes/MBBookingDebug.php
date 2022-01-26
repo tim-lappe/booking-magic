@@ -7,30 +7,34 @@ namespace TLBM\Admin\Metaboxes;
 use TLBM\Booking\BookingManager;
 use WP_Post;
 
-if (!defined('ABSPATH')) {
+if ( ! defined('ABSPATH')) {
     return;
 }
 
-class MBBookingDebug extends MetaBoxBase {
+class MBBookingDebug extends MetaBoxBase
+{
 
     /**
      * @inheritDoc
      */
-    function GetOnPostTypes(): array {
+    public function GetOnPostTypes(): array
+    {
         return array(TLBM_PT_BOOKING);
     }
 
     /**
      * @inheritDoc
      */
-    function RegisterMetaBox() {
+    public function RegisterMetaBox()
+    {
         $this->AddMetaBox("booking_debug", "Debug");
     }
 
     /**
      * @inheritDoc
      */
-    function PrintMetaBox(WP_Post $post) {
+    public function PrintMetaBox(WP_Post $post)
+    {
         $booking = BookingManager::GetBooking($post->ID);
         echo "<pre>";
         var_dump($booking);

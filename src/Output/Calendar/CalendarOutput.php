@@ -10,25 +10,28 @@ use TLBM\Output\Calendar\Printers\CalendarNoPrinter;
 use TLBM\Output\Calendar\Printers\CalendarPrinterBase;
 use TLBM\Output\Calendar\ViewSettings\SettingsCollection;
 
-class CalendarOutput {
+class CalendarOutput
+{
 
     /**
      * @var CalendarPrinterBase[]
      */
     private static array $calendarPrinters = array();
 
-    public static function RegisterCalendarPrinters() {
+    public static function RegisterCalendarPrinters()
+    {
         self::$calendarPrinters[] = new CalendarDateSelectPrinter();
     }
 
-	/**
-	 * @param CalendarGroup $group
-	 *
-	 * @return CalendarPrinterBase
-	 */
-    public static function GetCalendarPrinterForCalendarGroup(CalendarGroup $group): CalendarPrinterBase {
-        foreach(self::$calendarPrinters as $calendarPrinter) {
-            if($calendarPrinter->CanPrintGroup($group)) {
+    /**
+     * @param CalendarGroup $group
+     *
+     * @return CalendarPrinterBase
+     */
+    public static function GetCalendarPrinterForCalendarGroup(CalendarGroup $group): CalendarPrinterBase
+    {
+        foreach (self::$calendarPrinters as $calendarPrinter) {
+            if ($calendarPrinter->CanPrintGroup($group)) {
                 return $calendarPrinter;
             }
         }
@@ -43,23 +46,38 @@ class CalendarOutput {
      * @param object|null $view_settings
      * @param string $form_name
      * @param bool $readonly
+     *
      * @return string
      */
-    public static function GetCalendarContainerShell(int $calendar_id, int $focused_tstamp, string $view = "no-view", object $view_settings = null, string $form_name = "calendar", bool $readonly = false): string {
+    public static function GetCalendarContainerShell(
+        int $calendar_id,
+        int $focused_tstamp,
+        string $view = "no-view",
+        object $view_settings = null,
+        string $form_name = "calendar",
+        bool $readonly = false
+    ): string {
         $options = array(
-            "data_source_id" => $calendar_id,
+            "data_source_id"   => $calendar_id,
             "data_source_type" => "calendar",
-            "focused_tstamp" => $focused_tstamp,
-            "readonly" => $readonly
+            "focused_tstamp"   => $focused_tstamp,
+            "readonly"         => $readonly
         );
 
-        if($view_settings == null) {
+        if ($view_settings == null) {
             $settings_collection = new SettingsCollection();
-            $view_settings = $settings_collection->CreateDefaultSettingForView($view);
+            $view_settings       = $settings_collection->CreateDefaultSettingForView($view);
         }
 
-        $options = urlencode(json_encode($options));
+        $options       = urlencode(json_encode($options));
         $view_settings = urlencode(json_encode($view_settings));
-        return sprintf('<div class="tlbm-calendar-container" data-json=\'%s\' data-view=\'%s\' data-name=\'%s\' data-view-settings=\'%s\'"></div>', $options, $view, $form_name, $view_settings);
+
+        return sprintf(
+            '<div class="tlbm-calendar-container" data-json=\'%s\' data-view=\'%s\' data-name=\'%s\' data-view-settings=\'%s\'"></div>',
+            $options,
+            $view,
+            $form_name,
+            $view_settings
+        );
     }
 }
