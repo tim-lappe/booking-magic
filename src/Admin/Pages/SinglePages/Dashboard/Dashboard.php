@@ -3,29 +3,49 @@
 
 namespace TLBM\Admin\Pages\SinglePages\Dashboard;
 
-class Dashboard
+use TLBM\Admin\Pages\SinglePages\Dashboard\Contracts\DashboardInterface;
+
+class Dashboard implements DashboardInterface
 {
 
     /**
-     * @var LastBookingsTile[]
+     * @var DashboardTile[][]
      */
-    private array $tiles;
+    private array $tiles = array();
 
     public function __construct()
     {
-        $this->tiles = array(
-            array(
-                new DatesTodayTile()
-            ),
-
-            array(
-                new LastBookingsTile(),
-                new BestSellingCalendarsTile()
-            )
-        );
     }
 
-    public function Print()
+    /**
+     * @param int $row
+     * @param DashboardTile $dashboardTile
+     *
+     * @return bool
+     */
+    public function registerTile(int $row, DashboardTile $dashboardTile): bool
+    {
+        if ( !isset($this->tiles[$row][get_class($dashboardTile)])) {
+            $this->tiles[$row][get_class($dashboardTile)] = $dashboardTile;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllTiles(): array
+    {
+        return $this->tiles;
+    }
+
+    /**
+     * @return void
+     */
+    public function display(): void
     {
         ?>
         <div class="tlbm-dashboard">
@@ -35,7 +55,7 @@ class Dashboard
                     <?php
                     foreach ($tile_arr as $tile): ?>
                         <?php
-                        $tile->Print(); ?>
+                        $tile->display(); ?>
                     <?php
                     endforeach; ?>
                 </div>

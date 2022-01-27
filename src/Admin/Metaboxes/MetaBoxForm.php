@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\Metaboxes;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -40,5 +40,5 @@ abstract class MetaBoxForm extends MetaBoxBase
      * @param $post_id
      *
      */
-    public abstract function OnSave($post_id);
+    abstract public function OnSave($post_id);
 }

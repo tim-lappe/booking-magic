@@ -52,11 +52,11 @@ class Booking
      *
      * @return CalendarSlot
      */
-    public function AddCalendarSlot(CalendarSlot $calendar_slot): CalendarSlot
+    public function addCalendarSlot(CalendarSlot $calendar_slot): CalendarSlot
     {
-        if ( ! $this->calendar_slots->contains($calendar_slot)) {
+        if ( !$this->calendar_slots->contains($calendar_slot)) {
             $this->calendar_slots[] = $calendar_slot;
-            $calendar_slot->SetBooking($this);
+            $calendar_slot->setBooking($this);
         }
 
         return $calendar_slot;
@@ -67,7 +67,7 @@ class Booking
      *
      * @return CalendarSlot
      */
-    public function RemoveCalendarSlot(CalendarSlot $calendar_slot): CalendarSlot
+    public function removeCalendarSlot(CalendarSlot $calendar_slot): CalendarSlot
     {
         if ($this->calendar_slots->contains($calendar_slot)) {
             $this->calendar_slots->removeElement($calendar_slot);
@@ -79,7 +79,7 @@ class Booking
     /**
      * @return ArrayCollection|CalendarSlot[]
      */
-    public function GetCalendarSlots(): ArrayCollection
+    public function getCalendarSlots(): ArrayCollection
     {
         return $this->calendar_slots;
     }
@@ -89,11 +89,11 @@ class Booking
      *
      * @return BookingValue
      */
-    public function AddBookingValue(BookingValue $booking_value): BookingValue
+    public function addBookingValue(BookingValue $booking_value): BookingValue
     {
-        if ( ! $this->booking_values->contains($booking_value)) {
+        if ( !$this->booking_values->contains($booking_value)) {
             $this->booking_values[] = $booking_value;
-            $booking_value->SetBooking($this);
+            $booking_value->setBooking($this);
         }
 
         return $booking_value;
@@ -104,7 +104,7 @@ class Booking
      *
      * @return BookingValue
      */
-    public function RemoveBookingValue(BookingValue $booking_value): BookingValue
+    public function removeBookingValue(BookingValue $booking_value): BookingValue
     {
         if ($this->booking_values->contains($booking_value)) {
             $this->booking_values->removeElement($booking_value);
@@ -116,8 +116,8 @@ class Booking
     /**
      * @return mixed
      */
-    public function GetBookingValues()
+    public function getBookingValues()
     {
-        return $this->GetBookingValues();
+        return $this->getBookingValues();
     }
 }

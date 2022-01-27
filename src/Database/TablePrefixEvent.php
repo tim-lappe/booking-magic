@@ -15,17 +15,16 @@ class TablePrefixEvent implements EventSubscriber
 
     public function __construct($prefix = '')
     {
-        $this->prefix = (string)$prefix;
+        $this->prefix = (string) $prefix;
     }
 
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
         $classMetadata = $eventArgs->getClassMetadata();
-        if ( ! $classMetadata->isInheritanceTypeSingleTable() || $classMetadata->getName(
-            ) === $classMetadata->rootEntityName) {
+        if ( !$classMetadata->isInheritanceTypeSingleTable() || $classMetadata->getName() === $classMetadata->rootEntityName) {
             $classMetadata->setPrimaryTable([
-                'name' => $this->prefix . $classMetadata->getTableName()
-            ]);
+                                                'name' => $this->prefix . $classMetadata->getTableName()
+                                            ]);
         }
 
         foreach ($classMetadata->getAssociationMappings() as $fieldName => $mapping) {

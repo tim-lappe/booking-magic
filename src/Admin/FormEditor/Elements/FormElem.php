@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\FormEditor\Elements;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -62,14 +62,7 @@ abstract class FormElem
         $this->type          = $name;
 
         $setting_css_class = new Input(
-            "css_classes",
-            __("Custom CSS Classes (seperate with whitespace)"),
-            "text",
-            "",
-            false,
-            false,
-            array(),
-            __("Advanced", TLBM_TEXT_DOMAIN)
+            "css_classes", __("Custom CSS Classes (seperate with whitespace)"), "text", "", false, false, array(), __("Advanced", TLBM_TEXT_DOMAIN)
         );
 
         $this->AddSettings($setting_css_class);
@@ -102,7 +95,7 @@ abstract class FormElem
      *
      * @return mixed
      */
-    abstract public function GetFrontendOutput(object $form_node, ?callable $insert_child = null);
+    abstract public function getFrontendOutput(object $form_node, ?callable $insert_child = null);
 
     /**
      * @param $form_data

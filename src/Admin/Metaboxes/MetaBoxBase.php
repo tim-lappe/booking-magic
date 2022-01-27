@@ -5,7 +5,7 @@ namespace TLBM\Admin\Metaboxes;
 
 use WP_Post;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -21,7 +21,7 @@ abstract class MetaBoxBase
      * Abstract function that will be connected to the add_meta_boxes hook
      *
      */
-    public abstract function RegisterMetaBox();
+    abstract public function RegisterMetaBox();
 
     /**
      * The Meta Box Callback
@@ -30,7 +30,7 @@ abstract class MetaBoxBase
      *
      * @return mixed
      */
-    public abstract function PrintMetaBox(WP_Post $post);
+    abstract public function PrintMetaBox(WP_Post $post);
 
     /**
      * Helper Function to register MetaBoxes for child-classes
@@ -42,11 +42,7 @@ abstract class MetaBoxBase
     protected function AddMetaBox($slug, $title, $context = 'normal')
     {
         add_meta_box(
-            TLBM_MB_PREFIX . $slug,
-            __($title, TLBM_TEXT_DOMAIN),
-            array($this, "PrintMetaBox"),
-            $this->GetOnPostTypes(),
-            $context
+            TLBM_MB_PREFIX . $slug, __($title, TLBM_TEXT_DOMAIN), array($this, "PrintMetaBox"), $this->GetOnPostTypes(), $context
         );
     }
 
@@ -55,5 +51,5 @@ abstract class MetaBoxBase
      *
      * @return array
      */
-    public abstract function GetOnPostTypes(): array;
+    abstract public function GetOnPostTypes(): array;
 }

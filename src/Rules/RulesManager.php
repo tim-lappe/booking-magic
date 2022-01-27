@@ -14,7 +14,7 @@ use TLBM\Entity\Rule;
 use TLBM\Rules\Contracts\RulesManagerInterface;
 use TLBM\Utilities\Contracts\PeriodsToolsInterface;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -89,8 +89,7 @@ class RulesManager implements RulesManagerInterface
     {
         $mgr = $this->repository->getEntityManager();
         $qb  = $mgr->createQueryBuilder();
-        $qb->select($qb->expr()->count("r"))
-           ->from("\TLBM\Entity\Rule", "r");
+        $qb->select($qb->expr()->count("r"))->from("\TLBM\Entity\Rule", "r");
 
         $query = $qb->getQuery();
         try {
@@ -119,7 +118,7 @@ class RulesManager implements RulesManagerInterface
         $rules   = $this->getAllRulesForCalendar($calendar_id, $options, $orderby, $order);
         $dtRules = array();
         foreach ($rules as $rule) {
-            if ($this->periodsTools->isDateTimeInPeriodCollection($rule->GetPeriods()->toArray(), $dateTime)) {
+            if ($this->periodsTools->isDateTimeInPeriodCollection($rule->getPeriods()->toArray(), $dateTime)) {
                 $dtRules[] = $rule;
             }
         }
@@ -146,7 +145,7 @@ class RulesManager implements RulesManagerInterface
         $rules          = $this->getAllRules($options, $orderby, $order);
         $calendar_rules = array();
         foreach ($rules as $rule) {
-            if ($this->selectionHandler->containsCalendar($rule->GetCalendarSelection(), $calendar_id)) {
+            if ($this->selectionHandler->containsCalendar($rule->getCalendarSelection(), $calendar_id)) {
                 $calendar_rules[] = $rule;
             }
         }
@@ -174,10 +173,7 @@ class RulesManager implements RulesManagerInterface
     ): array {
         $mgr = $this->repository->getEntityManager();
         $qb  = $mgr->createQueryBuilder();
-        $qb->select("r")
-           ->from("\TLBM\Entity\Rule", "r")
-           ->orderBy("r." . $orderby, $order)
-           ->setFirstResult($offset);
+        $qb->select("r")->from("\TLBM\Entity\Rule", "r")->orderBy("r." . $orderby, $order)->setFirstResult($offset);
         if ($limit > 0) {
             $qb->setMaxResults($limit);
         }

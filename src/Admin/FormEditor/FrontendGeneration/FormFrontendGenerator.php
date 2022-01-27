@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\FormEditor\FrontendGeneration;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -41,7 +41,12 @@ class FormFrontendGenerator
         return $html;
     }
 
-    private function recursiveHtmlGenerator(object $form_node): string
+    /**
+     * @param mixed $form_node
+     *
+     * @return string
+     */
+    private function recursiveHtmlGenerator($form_node): string
     {
         $html = "";
 
@@ -52,9 +57,9 @@ class FormFrontendGenerator
             $registeredelem = $this->elementsCollection->getElemByUniqueName($formData->unique_name);
             if ($registeredelem) {
                 if (count($children) == 0) {
-                    $html .= $registeredelem->GetFrontendOutput($form_node);
+                    $html .= $registeredelem->getFrontendOutput($form_node);
                 } else {
-                    $html .= $registeredelem->GetFrontendOutput($form_node, function ($child_node) {
+                    $html .= $registeredelem->getFrontendOutput($form_node, function ($child_node) {
                         return $this->recursiveHtmlGenerator($child_node);
                     });
                 }

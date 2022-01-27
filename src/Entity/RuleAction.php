@@ -62,12 +62,12 @@ class RuleAction implements JsonSerializable
         $this->actions = array();
     }
 
-    public function GetActions(): ?array
+    public function getActions(): ?array
     {
         return $this->actions;
     }
 
-    public function SetActions(?array $actions)
+    public function setActions(?array $actions)
     {
         $this->actions = $actions;
     }
@@ -75,7 +75,7 @@ class RuleAction implements JsonSerializable
     /**
      * @return Rule
      */
-    public function GetRule(): Rule
+    public function getRule(): Rule
     {
         return $this->rule;
     }
@@ -83,7 +83,7 @@ class RuleAction implements JsonSerializable
     /**
      * @param ?Rule $rule
      */
-    public function SetRule(?Rule $rule): void
+    public function setRule(?Rule $rule): void
     {
         $this->rule = $rule;
     }
@@ -91,7 +91,7 @@ class RuleAction implements JsonSerializable
     /**
      * @return string
      */
-    public function GetActionType(): string
+    public function getActionType(): string
     {
         return $this->action_type;
     }
@@ -99,7 +99,7 @@ class RuleAction implements JsonSerializable
     /**
      * @param string $action_type
      */
-    public function SetActionType(string $action_type): void
+    public function setActionType(string $action_type): void
     {
         $this->action_type = $action_type;
     }
@@ -107,7 +107,7 @@ class RuleAction implements JsonSerializable
     /**
      * @return string
      */
-    public function GetWeekdays(): string
+    public function getWeekdays(): string
     {
         return $this->weekdays;
     }
@@ -115,7 +115,7 @@ class RuleAction implements JsonSerializable
     /**
      * @param string $weekdays
      */
-    public function SetWeekdays(string $weekdays): void
+    public function setWeekdays(string $weekdays): void
     {
         $this->weekdays = $weekdays;
     }
@@ -123,7 +123,7 @@ class RuleAction implements JsonSerializable
     /**
      * @return int
      */
-    public function GetTimeHour(): int
+    public function getTimeHour(): int
     {
         return $this->time_hour;
     }
@@ -131,7 +131,7 @@ class RuleAction implements JsonSerializable
     /**
      * @param int $time_hour
      */
-    public function SetTimeHour(int $time_hour): void
+    public function setTimeHour(int $time_hour): void
     {
         $this->time_hour = $time_hour;
     }
@@ -139,7 +139,7 @@ class RuleAction implements JsonSerializable
     /**
      * @return int
      */
-    public function GetTimeMin(): int
+    public function getTimeMin(): int
     {
         return $this->time_min;
     }
@@ -147,7 +147,7 @@ class RuleAction implements JsonSerializable
     /**
      * @param int $time_min
      */
-    public function SetTimeMin(int $time_min): void
+    public function setTimeMin(int $time_min): void
     {
         $this->time_min = $time_min;
     }
@@ -155,7 +155,7 @@ class RuleAction implements JsonSerializable
     /**
      * @return int
      */
-    public function GetPriority(): int
+    public function getPriority(): int
     {
         return $this->priority;
     }
@@ -163,7 +163,7 @@ class RuleAction implements JsonSerializable
     /**
      * @param int $priority
      */
-    public function SetPriority(int $priority): void
+    public function setPriority(int $priority): void
     {
         $this->priority = $priority;
     }
@@ -171,7 +171,7 @@ class RuleAction implements JsonSerializable
     public function jsonSerialize(): array
     {
         return array(
-            "id"          => $this->GetId(),
+            "id"          => $this->getId(),
             "action_type" => $this->action_type,
             "weekdays"    => $this->weekdays,
             "time_hour"   => $this->time_hour,

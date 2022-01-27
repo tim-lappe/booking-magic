@@ -20,7 +20,7 @@ class CalendarGroup
     public static function FromCalendarOrGroupId(int $id): ?CalendarGroup
     {
         $group = CalendarGroupManager::GetCalendarGroup($id);
-        if ( ! $group) {
+        if ( !$group) {
             $group                                            = new CalendarGroup();
             $group->calendar_selection                        = new CalendarSelection();
             $group->calendar_selection->selection_type        = TLBM_CALENDAR_SELECTION_TYPE_ONLY;

@@ -3,7 +3,7 @@
 
 namespace TLBM\Request;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 

@@ -4,7 +4,6 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 
-use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Tables\FormListTable;
 use TLBM\Form\Contracts\FormManagerInterface;
 
@@ -16,9 +15,9 @@ class FormPage extends PageBase
      */
     private FormManagerInterface $formManager;
 
-    public function __construct(AdminPageManagerInterface $adminPageManager, FormManagerInterface $formManager)
+    public function __construct(FormManagerInterface $formManager)
     {
-        parent::__construct($adminPageManager, __("Form", TLBM_TEXT_DOMAIN), "booking-magic-form");
+        parent::__construct(__("Form", TLBM_TEXT_DOMAIN), "booking-magic-form");
         $this->formManager = $formManager;
         $this->parent_slug = "booking-magic";
     }
@@ -26,9 +25,10 @@ class FormPage extends PageBase
     public function displayDefaultHeadBar()
     {
         $formEditPage = $this->adminPageManager->getPage(FormEditPage::class);
-        if($formEditPage instanceof FormEditPage) {
+        if ($formEditPage instanceof FormEditPage) {
             ?>
-            <a href="<?php echo $formEditPage->getEditLink() ?>" class="button button-primary tlbm-admin-button-bar"><?php
+            <a href="<?php
+            echo $formEditPage->getEditLink() ?>" class="button button-primary tlbm-admin-button-bar"><?php
                 _e("Add New Form", TLBM_TEXT_DOMAIN) ?></a>
             <?php
         }
@@ -44,7 +44,7 @@ class FormPage extends PageBase
                     <input type="hidden" name="page" value="<?php
                     echo $_REQUEST['page'] ?>"/>
                     <?php
-                    $post_list_table = new FormListTable($this->formManager);
+                    $post_list_table = new FormListTable($this->formManager, $this->adminPageManager);
                     $post_list_table->views();
                     $post_list_table->prepare_items();
                     $post_list_table->display();

@@ -32,7 +32,7 @@ abstract class CalendarPrinterBase
      */
     public function AddModule(string $screen, ICalendarPrintModule $module)
     {
-        if ($this->modules != null && isset($this->modules[$screen]) && ! is_array($this->modules[$screen])) {
+        if ($this->modules != null && isset($this->modules[$screen]) && !is_array($this->modules[$screen])) {
             $this->modules[$screen] = array($module);
         } else {
             $this->modules[$screen][] = $module;
@@ -53,7 +53,7 @@ abstract class CalendarPrinterBase
         }
 
         $screen = $data['screen'];
-        if ( ! $screen) {
+        if ( !$screen) {
             $screen = "default";
         }
 
@@ -70,7 +70,7 @@ abstract class CalendarPrinterBase
      */
     public function ProcessData(array &$data)
     {
-        if ( ! isset($data['screen'])) {
+        if ( !isset($data['screen'])) {
             $data['screen'] = "default";
         }
     }

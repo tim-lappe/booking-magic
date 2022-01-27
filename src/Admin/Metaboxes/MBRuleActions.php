@@ -10,7 +10,7 @@ use TLBM\Model\RuleAction;
 use TLBM\Model\RuleActionCollection;
 use WP_Post;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 

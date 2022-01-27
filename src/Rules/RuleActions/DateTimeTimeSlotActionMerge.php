@@ -19,8 +19,8 @@ class DateTimeTimeSlotActionMerge extends RuleActionMergingBase
     public function merge(MergeEntityBase &$merge_obj): MergeEntityBase
     {
         if ($merge_obj instanceof TimeCapacities) {
-            $hour   = $this->rule_action->GetTimeHour();
-            $minute = $this->rule_action->GetTimeMin();
+            $hour   = $this->rule_action->getTimeHour();
+            $minute = $this->rule_action->getTimeMin();
 
             $time_cap        = $merge_obj->getTimeCapacity($hour, $minute);
             $capacity_merger = new CapacityMerger($this->action_data);

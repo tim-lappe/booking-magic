@@ -6,7 +6,7 @@ namespace TLBM\Admin\WpForm\RuleActionFields;
 
 use TLBM\Output\Html\FormContents;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 

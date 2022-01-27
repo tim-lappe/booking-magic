@@ -2,10 +2,10 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
+use DI\DependencyException;
+use DI\FactoryInterface;
+use DI\NotFoundException;
 use Exception;
-use Psr\Container\ContainerInterface;
-use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
-use TLBM\Admin\WpForm\Contracts\FormBuilderInterface;
 use TLBM\Calendar\Contracts\CalendarManagerInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Output\Calendar\CalendarOutput;
@@ -19,12 +19,22 @@ class CalendarEditPage extends FormPageBase
      */
     private CalendarManagerInterface $calendarManager;
 
-    public function __construct(AdminPageManagerInterface $adminPageManager, FormBuilderInterface $formBuilder, CalendarManagerInterface $calendarManager)
+    /**
+     * @var FactoryInterface
+     */
+    private FactoryInterface $factory;
+
+    public function __construct(FactoryInterface $factory, CalendarManagerInterface $calendarManager)
     {
         $this->calendarManager = $calendarManager;
-        parent::__construct($adminPageManager, $formBuilder, "calendar-edit", "booking-calendar-edit", false);
+        $this->factory         = $factory;
+        parent::__construct($factory, "calendar-edit", "booking-calendar-edit", false);
     }
 
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
     public function showFormPageContent()
     {
         $calendar = null;
@@ -32,7 +42,7 @@ class CalendarEditPage extends FormPageBase
             $calendar = $this->calendarManager->getCalendar($_REQUEST['calendar_id']);
             ?>
             <input type="hidden" name="calendar_id" value="<?php
-            echo $calendar->GetId() ?>">
+            echo $calendar->getId() ?>">
             <?php
         } else {
             $calendar = new Calendar();
@@ -41,19 +51,15 @@ class CalendarEditPage extends FormPageBase
 
         <div class="tlbm-admin-page-tile">
             <input value="<?php
-            echo $calendar->GetTitle() ?>" placeholder="<?php
-            _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
+            echo $calendar->getTitle() ?>" placeholder="<?php
+            _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title"
+                   class="tlbm-admin-form-input-title">
         </div>
 
         <div class="tlbm-admin-page-tile">
             <?php
             echo CalendarOutput::GetCalendarContainerShell(
-                $calendar->GetId(),
-                time(),
-                "month",
-                new MonthViewSetting(),
-                "calendar",
-                true
+                $calendar->getId(), time(), "month", $this->factory->make(MonthViewSetting::class), "calendar", true
             ); ?>
         </div>
 
@@ -67,10 +73,10 @@ class CalendarEditPage extends FormPageBase
             $calendar = $this->calendarManager->getCalendar($vars['calendar_id']);
         }
 
-        $calendar->SetTitle($vars['title']);
-        $calendar->SetTimestampCreated(time());
+        $calendar->setTitle($vars['title']);
+        $calendar->setTimestampCreated(time());
 
-        if (strlen($calendar->GetTitle()) < 3) {
+        if (strlen($calendar->getTitle()) < 3) {
             return array(
                 "error" => __("Error: the title of the calendar is too short.")
             );
@@ -87,8 +93,7 @@ class CalendarEditPage extends FormPageBase
     protected function getHeadTitle(): string
     {
         return $this->getEditingCalendar() == null ? __("Add New Calendar", TLBM_TEXT_DOMAIN) : __(
-            "Edit Calendar",
-            TLBM_TEXT_DOMAIN
+            "Edit Calendar", TLBM_TEXT_DOMAIN
         );
     }
 

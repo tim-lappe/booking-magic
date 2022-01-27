@@ -3,23 +3,32 @@
 
 namespace TLBM;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
 
 use TLBM\Output\Contracts\FormPrintInterface;
+use TLBM\Request\Contracts\RequestManagerInterface;
 
 class RegisterShortcodes
 {
 
+    /**
+     * @var FormPrintInterface
+     */
     private FormPrintInterface $formPrint;
 
+    /**
+     * @var RequestManagerInterface
+     */
+    private RequestManagerInterface $requestManager;
 
-    public function __construct(FormPrintInterface $formPrint)
+    public function __construct(FormPrintInterface $formPrint, RequestManagerInterface $requestManager)
     {
         add_action("init", array($this, "addShortcodes"));
         $this->formPrint = $formPrint;
+        $this->requestManager = $requestManager;
     }
 
     /**
@@ -37,11 +46,11 @@ class RegisterShortcodes
      */
     public function formShortcode(array $args): string
     {
-        $request = $GLOBALS['TLBM_REQUEST'];
         if (sizeof($args) > 0) {
             if (isset($args['id'])) {
-                if ($request instanceof Request && $request->currentAction != null && $request->currentAction->html_output) {
-                    return $request->currentAction->getDisplayContent($_REQUEST);
+                $request = $this->requestManager->getCurrentRequest();
+                if ($request && $request->hasContent) {
+                    return $request->getDisplayContent($_REQUEST);
                 } else {
                     return $this->formPrint->printForm($args['id']);
                 }

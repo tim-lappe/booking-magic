@@ -3,27 +3,55 @@
 namespace TLBM\Ajax;
 
 use DateTime;
+use DI\DependencyException;
+use DI\FactoryInterface;
+use DI\NotFoundException;
+use Symfony\Component\Console\CommandLoader\FactoryCommandLoader;
+use TLBM\Ajax\Contracts\AjaxFunctionInterface;
 use TLBM\Booking\BookableSlot;
+use TLBM\Rules\Contracts\RuleActionsManagerInterface;
+use TLBM\Rules\Contracts\RulesManagerInterface;
+use TLBM\Rules\Contracts\RulesQueryInterface;
 use TLBM\Rules\RuleActions\ActionsMerging;
 use TLBM\Rules\RulesQuery;
 
-class GetBookingOptions extends AjaxBase
+class GetBookingOptions implements AjaxFunctionInterface
 {
 
     /**
-     * @inheritDoc
+     * @var FactoryInterface
      */
-    public function registerAjaxAction()
+    private FactoryInterface $factory;
+
+    /**
+     * @var RuleActionsManagerInterface
+     */
+    private RuleActionsManagerInterface $ruleActionsManager;
+
+    public function __construct(FactoryInterface $factory, RuleActionsManagerInterface $ruleActionsManager)
     {
-        $this->addAjaxAction("getBookingOptions");
+        $this->factory            = $factory;
+        $this->ruleActionsManager = $ruleActionsManager;
     }
 
     /**
-     * @inheritDoc
+     * @return string
      */
-    public function apiRequest($data)
+    public function getFunctionName(): string
     {
-        $query = new RulesQuery();
+        return "getBookingOptions";
+    }
+
+    /**
+     * @param mixed $data
+     *
+     * @return array
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
+    public function execute($data): array
+    {
+        $query = $this->factory->make(RulesQueryInterface::class);
 
         if (isset($data->action_type)) {
             if (is_array($data->action_type)) {
@@ -49,9 +77,8 @@ class GetBookingOptions extends AjaxBase
             );
         }
 
-
         $result         = array();
-        $actions_reader = new ActionsMerging($query);
+        $actions_reader = new ActionsMerging($this->ruleActionsManager, $query);
         $result         = $actions_reader->getRuleActionsMerged();
 
         return array(

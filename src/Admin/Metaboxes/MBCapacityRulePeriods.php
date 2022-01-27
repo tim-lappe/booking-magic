@@ -9,7 +9,7 @@ use TLBM\Admin\WpForm\PeriodEditorField;
 use TLBM\Model\PeriodCollection;
 use WP_Post;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -38,7 +38,7 @@ class MBCapacityRulePeriods extends MetaBoxForm
     public function PrintMetaBox(WP_Post $post)
     {
         $collection = get_post_meta($post->ID, "periods", true);
-        if ( ! ($collection instanceof PeriodCollection)) {
+        if ( !($collection instanceof PeriodCollection)) {
             $collection = new PeriodCollection();
         }
 

@@ -15,11 +15,6 @@ interface FormBuilderInterface
     public function readVars(string $name, $vars);
 
     /**
-     * @return void
-     */
-    public function init(): void;
-
-    /**
      * Prints the Head of The Form
      *
      */
@@ -45,9 +40,17 @@ interface FormBuilderInterface
     public function getFormField(string $name): ?FormFieldBase;
 
     /**
+     * @param FormFieldBase $formField
+     *
+     * @return mixed
+     */
+    public function defineFormField(FormFieldBase $formField);
+
+    /**
      * Adds a Form Field Object to the Form
      *
-     * @param FormFieldBase $form_field
+     * @param string $name
+     * @param mixed $value
      */
-    public function displayFormField(FormFieldBase $form_field);
+    public function displayFormField(string $name, $value);
 }

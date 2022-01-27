@@ -9,7 +9,7 @@ use TLBM\Calendar\Contracts\CalendarManagerInterface;
 use TLBM\Database\Contracts\ORMInterface;
 use TLBM\Entity\Calendar;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -80,10 +80,7 @@ class CalendarManager implements CalendarManagerInterface
     ): array {
         $mgr = $this->repository->getEntityManager();
         $qb  = $mgr->createQueryBuilder();
-        $qb->select("c")
-           ->from("\TLBM\Entity\Calendar", "c")
-           ->orderBy("c." . $orderby, $order)
-           ->setFirstResult($offset);
+        $qb->select("c")->from("\TLBM\Entity\Calendar", "c")->orderBy("c." . $orderby, $order)->setFirstResult($offset);
         if ($limit > 0) {
             $qb->setMaxResults($limit);
         }
@@ -107,8 +104,7 @@ class CalendarManager implements CalendarManagerInterface
     {
         $mgr = $this->repository->getEntityManager();
         $qb  = $mgr->createQueryBuilder();
-        $qb->select($qb->expr()->count("c"))
-           ->from("\TLBM\Entity\Calendar", "c");
+        $qb->select($qb->expr()->count("c"))->from("\TLBM\Entity\Calendar", "c");
 
         $query = $qb->getQuery();
         try {

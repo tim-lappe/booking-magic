@@ -10,63 +10,112 @@ use TLBM\Database\Contracts\ORMInterface;
 use TLBM\Entity\CalendarSelection;
 use TLBM\Entity\Rule;
 use TLBM\Localization\Contracts\LabelsInterface;
+use TLBM\Rules\Contracts\RulesQueryInterface;
 
 use const TLBM_CALENDAR_SELECTION_TYPE_ALL;
 use const TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT;
 use const TLBM_CALENDAR_SELECTION_TYPE_ONLY;
 
-class RulesQuery
+class RulesQuery implements RulesQueryInterface
 {
 
-    private ?int $calendar_id = null;
-    private ?DateTime $date_time;
-    private ?DateTime $date_time_from;
-    private ?DateTime $date_time_to;
-    private ?array $action_types = null;
+    /**
+     * @var int|null
+     */
+    private ?int $calendarId = null;
 
+    /**
+     * @var DateTime|null
+     */
+    private ?DateTime $dateTime;
+
+    /**
+     * @var DateTime|null
+     */
+    private ?DateTime $dateTimeFrom;
+
+    /**
+     * @var DateTime|null
+     */
+    private ?DateTime $dateTimeTo;
+
+    /**
+     * @var array|null
+     */
+    private ?array $actionTypes = null;
+
+    /**
+     * @var ORMInterface
+     */
     private ORMInterface $repository;
 
+    /**
+     * @var LabelsInterface
+     */
     private LabelsInterface $labels;
 
-    public function __construct(ORMInterface $repository, LabelsInterface $labels, DateTime $date_time = null)
+    public function __construct(ORMInterface $repository, LabelsInterface $labels)
     {
-        $this->date_time  = $date_time;
         $this->repository = $repository;
         $this->labels     = $labels;
     }
 
-    public function setTypeCalendar(int $calendar_id)
+    /**
+     * @param int $calendarId
+     *
+     * @return void
+     */
+    public function setTypeCalendar(int $calendarId): void
     {
-        $this->calendar_id = $calendar_id;
+        $this->calendarId = $calendarId;
     }
 
-    public function setActionTypes(array $action_type)
+    /**
+     * @param array $actionType
+     *
+     * @return void
+     */
+    public function setActionTypes(array $actionType): void
     {
-        $this->action_types = $action_type;
+        $this->actionTypes = $actionType;
     }
 
-    public function setDateTime(DateTime $date_time)
+    /**
+     * @param DateTime $dateTime
+     *
+     * @return void
+     */
+    public function setDateTime(DateTime $dateTime): void
     {
-        $this->date_time_from = null;
-        $this->date_time_to   = null;
-        $this->date_time      = $date_time;
+        $this->dateTimeFrom = null;
+        $this->dateTimeTo   = null;
+        $this->dateTime     = $dateTime;
     }
 
-    public function setDateTimeRange(DateTime $date_time_from, DateTime $date_time_to)
+    /**
+     * @param DateTime $dateTimeFrom
+     * @param DateTime $dateTimeTo
+     *
+     * @return void
+     */
+    public function setDateTimeRange(DateTime $dateTimeFrom, DateTime $dateTimeTo): void
     {
-        $this->date_time_from = $date_time_from;
-        $this->date_time_to   = $date_time_to;
-        $this->date_time      = null;
+        $this->dateTimeFrom = $dateTimeFrom;
+        $this->dateTimeTo   = $dateTimeTo;
+        $this->dateTime     = null;
     }
 
+    /**
+     * @return array
+     */
     public function getResult(): array
     {
-        if ($this->date_time) {
-            $qb = $this->getQueryforSingle($this->date_time);
-
+        if ($this->dateTime) {
+            $qb = $this->getQueryforSingle($this->dateTime);
             return array($qb->getQuery()->getResult());
-        } elseif ($this->date_time_to && $this->date_time_from) {
-            $period = new DatePeriod($this->date_time_from, new DateInterval('P1D'), $this->date_time_to);
+
+        } elseif ($this->dateTimeTo && $this->dateTimeFrom) {
+            $period = new DatePeriod($this->dateTimeFrom, new DateInterval('P1D'), $this->dateTimeTo);
             $em     = $this->repository->getEntityManager();
 
             $results = array();
@@ -86,22 +135,21 @@ class RulesQuery
         return array();
     }
 
+    /**
+     * @param DateTime|null $date_time
+     *
+     * @return QueryBuilder
+     */
     private function getQueryforSingle(?DateTime $date_time = null): QueryBuilder
     {
         $em = $this->repository->getEntityManager();
         $qb = $em->createQueryBuilder();
-        $qb->select("rule,actions,periods,calendarSelection,calendarSelectionCalendars")
-           ->from(Rule::class, "rule")
-           ->distinct(true)
-           ->leftJoin('rule.calendar_selection', 'calendarSelection')
-           ->leftJoin("calendarSelection.calendars", "calendarSelectionCalendars")
-           ->leftJoin("rule.actions", "actions")
-           ->leftJoin("rule.periods", "periods");
+        $qb->select("rule,actions,periods,calendarSelection,calendarSelectionCalendars")->from(Rule::class, "rule")->distinct(true)->leftJoin('rule.calendar_selection', 'calendarSelection')->leftJoin("calendarSelection.calendars", "calendarSelectionCalendars")->leftJoin("rule.actions", "actions")->leftJoin("rule.periods", "periods");
 
         $where = $qb->expr()->andX();
 
-        if ($this->calendar_id) {
-            $qb->setParameter("calendarId", $this->calendar_id);
+        if ($this->calendarId) {
+            $qb->setParameter("calendarId", $this->calendarId);
 
             $calendar_selection_where = $qb->expr()->orX();
             $calendar_selection_where->add(
@@ -115,12 +163,8 @@ class RulesQuery
             $all_but = $qb->expr()->andX();
             $all_but->add("calendarSelection.selection_mode = '" . TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT . "'");
             $subq_all_but_ids = $em->createQueryBuilder();
-            $subq_all_but_ids->setParameter("calendarId", $this->calendar_id);
-            $subq_all_but_ids
-                ->select("subCalendarSelection")
-                ->from(CalendarSelection::class, "subCalendarSelection")
-                ->leftJoin("subCalendarSelection.calendars", "subCalendarSeletcionCalendars")
-                ->where("subCalendarSeletcionCalendars.id = :calendarId");
+            $subq_all_but_ids->setParameter("calendarId", $this->calendarId);
+            $subq_all_but_ids->select("subCalendarSelection")->from(CalendarSelection::class, "subCalendarSelection")->leftJoin("subCalendarSelection.calendars", "subCalendarSeletcionCalendars")->where("subCalendarSeletcionCalendars.id = :calendarId");
 
             $all_but->add($qb->expr()->notIn("calendarSelection", $subq_all_but_ids->getDQL()));
 
@@ -149,8 +193,8 @@ class RulesQuery
             $where->add($weekdays_where);
         }
 
-        if ($this->action_types) {
-            $qb->setParameter("action_type", $this->action_types);
+        if ($this->actionTypes) {
+            $qb->setParameter("action_type", $this->actionTypes);
             $where->add("actions.action_type IN (:action_type)");
         }
 

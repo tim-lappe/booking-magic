@@ -14,7 +14,7 @@ use TLBM\Model\CalendarSlot;
 use TLBM\Model\Form;
 use TLBM\Model\FormElementsDataPack;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -35,7 +35,7 @@ class BookingProcessing
     public function __construct($input_vars, $form)
     {
         $this->input_vars = $this->EscapeInputVars($input_vars);
-        $this->form = $form;
+        $this->form       = $form;
     }
 
     public function EscapeInputVars($input_vars): array
@@ -59,7 +59,7 @@ class BookingProcessing
         $dps_not_filled = array();
 
         foreach ($elements as $dataPack) {
-            if ( ! $dataPack->Validate() && $dataPack->GetSettingValue("required") == "yes") {
+            if ( !$dataPack->Validate() && $dataPack->GetSettingValue("required") == "yes") {
                 $dps_not_filled[] = $dataPack;
             }
         }
@@ -76,13 +76,12 @@ class BookingProcessing
     public function ParseFormDataToFormElements($form_data, array $input_vars = array()): array
     {
         $it       = new RecursiveIteratorIterator(
-            new RecursiveArrayIterator($form_data, RecursiveArrayIterator::CHILD_ARRAYS_ONLY),
-            RecursiveIteratorIterator::SELF_FIRST
+            new RecursiveArrayIterator($form_data, RecursiveArrayIterator::CHILD_ARRAYS_ONLY), RecursiveIteratorIterator::SELF_FIRST
         );
         $elements = array();
         foreach ($it as $key => $value) {
             if (is_array($value)) {
-                if (isset($value['unique_name']) && ! empty($value['unique_name'])) {
+                if (isset($value['unique_name']) && !empty($value['unique_name'])) {
                     $elem = FormElementsCollection::GetElemByUniqueName($value['unique_name']);
                     if ($elem != null) {
                         if ($elem->has_user_input) {
@@ -116,7 +115,7 @@ class BookingProcessing
             if ($form_datapack->form_element instanceof CalendarElem) {
                 $selected_calendar_or_group_id = $form_datapack->GetSettingValue('selected_calendar');
                 $inputdata                     = $form_datapack->GetInputValue($form_datapack->GetSettingValue("name"));
-                if ( ! empty($inputdata)) {
+                if ( !empty($inputdata)) {
                     $calendar_slot                        = new CalendarSlot();
                     $calendar_slot->calendar_selection_id = intval($selected_calendar_or_group_id);
                     $calendar_slot->timestamp             = intval($inputdata);
@@ -148,7 +147,7 @@ class BookingProcessing
 
         foreach ($this->input_vars as $key => $input_var) {
             foreach ($elements as $dataPack) {
-                if ( ! ($dataPack->form_element instanceof CalendarElem)) {
+                if ( !($dataPack->form_element instanceof CalendarElem)) {
                     if ($dataPack->GetSettingValue("name") == $key) {
                         $bv        = new BookingValue();
                         $bv->key   = $key;

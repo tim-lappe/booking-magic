@@ -73,11 +73,7 @@ class CalendarOutput
         $view_settings = urlencode(json_encode($view_settings));
 
         return sprintf(
-            '<div class="tlbm-calendar-container" data-json=\'%s\' data-view=\'%s\' data-name=\'%s\' data-view-settings=\'%s\'"></div>',
-            $options,
-            $view,
-            $form_name,
-            $view_settings
+            '<div class="tlbm-calendar-container" data-json=\'%s\' data-view=\'%s\' data-name=\'%s\' data-view-settings=\'%s\'"></div>', $options, $view, $form_name, $view_settings
         );
     }
 }

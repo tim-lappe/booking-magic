@@ -27,7 +27,7 @@ abstract class RuleActionMergingBase
     public function __construct(RuleAction $rule_action)
     {
         $this->rule_action = $rule_action;
-        $this->action_data = (object)$rule_action->GetActions();
+        $this->action_data = (object) $rule_action->getActions();
     }
 
     /**

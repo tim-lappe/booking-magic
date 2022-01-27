@@ -7,11 +7,6 @@ use TLBM\Admin\FormEditor\Elements\FormElem;
 interface FormElementsCollectionInterface
 {
     /**
-     * @return void
-     */
-    public function registerFormElements(): void;
-
-    /**
      * @return FormElem[]
      */
     public function getRegisteredFormElements(): array;
@@ -31,5 +26,5 @@ interface FormElementsCollectionInterface
     /**
      * @param FormElem $formelem
      */
-    public function addFormElement(FormElem $formelem): void;
+    public function registerFormElement(FormElem $formelem): void;
 }

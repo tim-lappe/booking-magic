@@ -7,7 +7,7 @@ namespace TLBM\Admin\Metaboxes;
 use TLBM\Admin\Tables\RulesListTable;
 use WP_Post;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 

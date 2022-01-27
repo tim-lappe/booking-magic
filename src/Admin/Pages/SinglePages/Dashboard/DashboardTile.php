@@ -14,17 +14,17 @@ abstract class DashboardTile
         $this->title = $title;
     }
 
-    public function Print()
+    public function display()
     {
         ?>
         <div class="tlbm-dashboard-tile">
             <span class="tlbm-dashboard-tile-heading"><?php
                 echo $this->title ?></span>
             <?php
-            $this->PrintBody(); ?>
+            $this->displayBody(); ?>
         </div>
         <?php
     }
 
-    abstract public function PrintBody(): void;
+    abstract public function displayBody(): void;
 }

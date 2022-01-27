@@ -8,7 +8,6 @@ use DateInterval;
 use DateTime;
 use TLBM\Calendar\CalendarStatistics;
 use TLBM\Calendar\Contracts\CalendarManagerInterface;
-use TLBM\Model\CalendarSelection;
 
 class BestSellingCalendarsTile extends DashboardTile
 {
@@ -25,7 +24,7 @@ class BestSellingCalendarsTile extends DashboardTile
         parent::__construct(__("Top Calendars in last 30 days", TLBM_TEXT_DOMAIN));
     }
 
-    public function PrintBody(): void
+    public function displayBody(): void
     {
         $now = new DateTime();
         $now->sub(new DateInterval("P30D"));
@@ -38,7 +37,7 @@ class BestSellingCalendarsTile extends DashboardTile
             foreach ($bestselling as $id => $num) {
                 $cal = $this->calendarManager->getCalendar($id);
                 echo "<li>";
-                echo "<a href='" . get_edit_post_link($id) . "'>" . $cal->GetTitle() . "</a><br>";
+                echo "<a href='" . get_edit_post_link($id) . "'>" . $cal->getTitle() . "</a><br>";
                 echo $num . __(" Booking", TLBM_TEXT_DOMAIN);
                 echo "</li>";
                 $c++;

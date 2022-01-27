@@ -2,12 +2,11 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
+use DI\FactoryInterface;
 use Exception;
 use Throwable;
 use TLBM\Admin\FormEditor\Contracts\FormElementsCollectionInterface;
 use TLBM\Admin\FormEditor\FrontendGeneration\FormFrontendGenerator;
-use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
-use TLBM\Admin\WpForm\Contracts\FormBuilderInterface;
 use TLBM\Admin\WpForm\FormEditorField;
 use TLBM\Entity\Form;
 use TLBM\Form\Contracts\FormManagerInterface;
@@ -27,22 +26,26 @@ class FormEditPage extends FormPageBase
 
 
     public function __construct(
-        AdminPageManagerInterface $adminPageManager,
-        FormBuilderInterface $formBuilder,
+        FactoryInterface $factory,
         FormManagerInterface $formManager,
         FormElementsCollectionInterface $elementsCollection
     ) {
         parent::__construct(
-            $adminPageManager,
-            $formBuilder,
-            __("Form Edit", TLBM_TEXT_DOMAIN),
-            "booking-magic-form-edit",
-            false
+            $factory, __("Form Edit", TLBM_TEXT_DOMAIN), "booking-magic-form-edit", false
         );
 
         $this->formManager            = $formManager;
         $this->formElementsCollection = $elementsCollection;
         $this->parent_slug            = "booking-magic-form";
+
+        $this->defineFormFields();
+    }
+
+    private function defineFormFields()
+    {
+        $this->formBuilder->defineFormField(
+            new FormEditorField($this->formElementsCollection, "form", __("Form", TLBM_TEXT_DOMAIN))
+        );
     }
 
     public function getEditLink(int $id = -1): string
@@ -58,8 +61,7 @@ class FormEditPage extends FormPageBase
     public function getHeadTitle(): string
     {
         return $this->getEditingForm() == null ? __("Add New Form", TLBM_TEXT_DOMAIN) : __(
-            "Edit Form",
-            TLBM_TEXT_DOMAIN
+            "Edit Form", TLBM_TEXT_DOMAIN
         );
     }
 
@@ -79,21 +81,21 @@ class FormEditPage extends FormPageBase
     public function showFormPageContent()
     {
         $form      = $this->getEditingForm();
-        $title     = $form ? $form->GetTitle() : "";
-        $form_data = $form ? $form->GetFormData() : null;
+        $form_data = $form ? $form->getFormData() : null;
+        $title     = $form ? $form->getTitle() : "";
+        $form_data = $form ? $form->getFormData() : null;
 
         ?>
         <div class="tlbm-admin-page-tile">
             <input value="<?php
             echo $title ?>" placeholder="<?php
-            _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
+            _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title"
+                   class="tlbm-admin-form-input-title">
         </div>
         <div class="tlbm-admin-page-tile">
             <?php
             $this->formBuilder->displayFormHead();
-            $this->formBuilder->displayFormField(
-                new FormEditorField($this->formElementsCollection, "form", __("Form", TLBM_TEXT_DOMAIN), $form_data)
-            );
+            $this->formBuilder->displayFormField("form", $form_data);
             $this->formBuilder->displayFormFooter();
             ?>
         </div>
@@ -114,14 +116,14 @@ class FormEditPage extends FormPageBase
             $form = new Form();
         }
 
-        $form->SetTitle($vars['title']);
+        $form->setTitle($vars['title']);
         try {
             $form_node_tree = json_decode(urldecode($vars['form']));
-            $form->SetFormData($form_node_tree);
+            $form->setFormData($form_node_tree);
 
             $generator = new FormFrontendGenerator($this->formElementsCollection, $form_node_tree);
             $html      = $generator->generateContent();
-            $form->SetFrontendHtml($html);
+            $form->setFrontendHtml($html);
         } catch (Throwable $exception) {
             return array(
                 "error" => __("Unknown Error " . $exception->getMessage(), TLBM_TEXT_DOMAIN)

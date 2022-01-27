@@ -30,15 +30,12 @@ class AllRulesListTable extends TableBase
 
     public function __construct(RulesManagerInterface $rulesManager, CalendarManagerInterface $calendarManager, AdminPageManagerInterface $adminPageManager)
     {
-        $this->rulesManager    = $rulesManager;
-        $this->calendarManager = $calendarManager;
+        $this->rulesManager     = $rulesManager;
+        $this->calendarManager  = $calendarManager;
         $this->adminPageManager = $adminPageManager;
 
         parent::__construct(
-            __("Rules", TLBM_TEXT_DOMAIN),
-            __("Rule", TLBM_TEXT_DOMAIN),
-            10,
-            __("You haven't created any rules yet", TLBM_TEXT_DOMAIN)
+            __("Rules", TLBM_TEXT_DOMAIN), __("Rule", TLBM_TEXT_DOMAIN), 10, __("You haven't created any rules yet", TLBM_TEXT_DOMAIN)
         );
     }
 
@@ -47,27 +44,27 @@ class AllRulesListTable extends TableBase
      */
     public function column_calendars(Rule $item)
     {
-        $selection = $item->GetCalendarSelection();
-        if ($selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
+        $selection = $item->getCalendarSelection();
+        if ($selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
             echo __("All", TLBM_TEXT_DOMAIN);
-        } elseif ($selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
-            foreach ($selection->GetCalendarIds() as $key => $id) {
+        } elseif ($selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
+            foreach ($selection->getCalendarIds() as $key => $id) {
                 $cal  = $this->calendarManager->getCalendar($id);
                 $link = get_edit_post_link($id);
                 if ($key > 0) {
                     echo ", ";
                 }
-                echo "<a href='" . $link . "'>" . $cal->GetTitle() . "</a>";
+                echo "<a href='" . $link . "'>" . $cal->getTitle() . "</a>";
             }
-        } elseif ($selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
+        } elseif ($selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
             echo __("All but ", TLBM_TEXT_DOMAIN);
-            foreach ($selection->GetCalendarIds() as $key => $id) {
+            foreach ($selection->getCalendarIds() as $key => $id) {
                 $cal  = $this->calendarManager->getCalendar($id);
                 $link = get_edit_post_link($id);
                 if ($key > 0) {
                     echo ", ";
                 }
-                echo "<a href='" . $link . "'><s>" . $cal->GetTitle() . "</s></a>";
+                echo "<a href='" . $link . "'><s>" . $cal->getTitle() . "</s></a>";
             }
         }
     }
@@ -78,19 +75,19 @@ class AllRulesListTable extends TableBase
     public function column_title(Rule $item)
     {
         $ruleEditPage = $this->adminPageManager->getPage(RuleEditPage::class);
-        if($ruleEditPage instanceof RuleEditPage) {
-            $link = $ruleEditPage->getEditLink($item->GetId());
-            if ( ! empty($item->GetTitle())) {
-                echo "<strong><a href='" . $link . "'>" . $item->GetTitle() . "</a></strong>";
+        if ($ruleEditPage instanceof RuleEditPage) {
+            $link = $ruleEditPage->getEditLink($item->getId());
+            if ( !empty($item->getTitle())) {
+                echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
             } else {
-                echo "<strong><a href='" . $link . "'>" . $item->GetId() . "</a></strong>";
+                echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
             }
         }
     }
 
     public function column_priority(Rule $item): int
     {
-        return $item->GetPriority();
+        return $item->getPriority();
     }
 
     protected function ProcessBuldActions()
@@ -102,16 +99,16 @@ class AllRulesListTable extends TableBase
             foreach ($ids as $id) {
                 if ($action == "delete") {
                     wp_update_post(array(
-                        "ID"          => $id,
-                        "post_status" => "trash"
-                    ));
+                                       "ID"          => $id,
+                                       "post_status" => "trash"
+                                   ));
                 } elseif ($action == "delete_permanently") {
                     wp_delete_post($id);
                 } elseif ($action == "restore") {
                     wp_update_post(array(
-                        "ID"          => $id,
-                        "post_status" => "publish"
-                    ));
+                                       "ID"          => $id,
+                                       "post_status" => "publish"
+                                   ));
                 }
             }
         }
@@ -171,7 +168,7 @@ class AllRulesListTable extends TableBase
      */
     protected function GetItemId($item): int
     {
-        return $item->GetId();
+        return $item->getId();
     }
 
     /**

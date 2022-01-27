@@ -4,19 +4,26 @@
 namespace TLBM;
 
 
-use TLBM\Admin\Settings\SettingsManager;
+use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 
 class Settings
 {
+    /**
+     * @var SettingsManagerInterface
+     */
+    private SettingsManagerInterface $settingsManager;
 
-    public function __construct()
+    /**
+     * @param SettingsManagerInterface $settingsManager
+     */
+    public function __construct(SettingsManagerInterface $settingsManager)
     {
-        SettingsManager::DefineSettings();
+        $this->settingsManager = $settingsManager;
         add_action("admin_init", array($this, "registerSettings"));
     }
 
     public function registerSettings()
     {
-        SettingsManager::RegisterSettings();
+        $this->settingsManager->loadSettings();
     }
 }

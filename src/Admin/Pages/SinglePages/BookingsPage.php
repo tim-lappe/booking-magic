@@ -4,7 +4,6 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 
-use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Tables\BookingListTable;
 use TLBM\Booking\BookingManager;
 use TLBM\Calendar\Contracts\CalendarManagerInterface;
@@ -22,12 +21,12 @@ class BookingsPage extends PageBase
      */
     private DateTimeToolsInterface $dateTimeTools;
 
-    public function __construct(AdminPageManagerInterface $adminPageManager, CalendarManagerInterface $calendarManager, DateTimeToolsInterface $dateTimeTools)
+    public function __construct(CalendarManagerInterface $calendarManager, DateTimeToolsInterface $dateTimeTools)
     {
-        parent::__construct($adminPageManager, "Bookings", "booking-magic-bookings");
+        parent::__construct("Bookings", "booking-magic-bookings");
         $this->calendarManager = $calendarManager;
-        $this->dateTimeTools = $dateTimeTools;
-        $this->parent_slug = "booking-magic";
+        $this->dateTimeTools   = $dateTimeTools;
+        $this->parent_slug     = "booking-magic";
     }
 
     public function displayDefaultHeadBar()
@@ -47,9 +46,10 @@ class BookingsPage extends PageBase
         <div class="tlbm-admin-page">
             <div class="tlbm-admin-page-tile">
                 <form method="get">
-                    <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>"/>
+                    <input type="hidden" name="page" value="<?php
+                    echo $_REQUEST['page'] ?>"/>
                     <?php
-                    $bookings = BookingManager::GetAllBookings();
+                    $bookings        = BookingManager::GetAllBookings();
                     $post_list_table = new BookingListTable($this->calendarManager, $this->dateTimeTools);
                     $post_list_table->views();
                     $post_list_table->prepare_items();

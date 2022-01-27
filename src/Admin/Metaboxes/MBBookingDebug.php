@@ -7,7 +7,7 @@ namespace TLBM\Admin\Metaboxes;
 use TLBM\Booking\BookingManager;
 use WP_Post;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 

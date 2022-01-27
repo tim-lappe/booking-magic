@@ -11,20 +11,18 @@ abstract class EmailSetting extends SettingsBase
 
     public function __construct($option_name, $title, $default_subject)
     {
-        parent::__construct("emails", $option_name, $title,
-            array(
-                "subject" => $default_subject,
-                "message" => $this->GetDefaultTemplate()
-            )
-        );
+        parent::__construct("emails", $option_name, $title, array(
+                                        "subject" => $default_subject,
+                                        "message" => $this->getDefaultTemplate()
+                                    ));
     }
 
-    public abstract function GetDefaultTemplate(): string;
+    abstract public function getDefaultTemplate(): string;
 
-    public function PrintField()
+    public function display()
     {
         $opt = get_option($this->option_name);
-        if ( ! isset($opt['subject']) || ! isset($opt['message'])) {
+        if ( !isset($opt['subject']) || !isset($opt['message'])) {
             $opt = $this->default_value;
         }
         ?>

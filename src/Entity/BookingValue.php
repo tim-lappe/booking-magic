@@ -41,7 +41,7 @@ class BookingValue
     /**
      * @return string
      */
-    public function GetKey(): string
+    public function getKey(): string
     {
         return $this->key;
     }
@@ -49,7 +49,7 @@ class BookingValue
     /**
      * @param string $key
      */
-    public function SetKey(string $key): void
+    public function setKey(string $key): void
     {
         $this->key = $key;
     }
@@ -57,7 +57,7 @@ class BookingValue
     /**
      * @return string
      */
-    public function GetValue(): string
+    public function getValue(): string
     {
         return $this->value;
     }
@@ -65,7 +65,7 @@ class BookingValue
     /**
      * @param string $value
      */
-    public function SetValue(string $value): void
+    public function setValue(string $value): void
     {
         $this->value = $value;
     }
@@ -73,7 +73,7 @@ class BookingValue
     /**
      * @return string
      */
-    public function GetTitle(): string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -81,7 +81,7 @@ class BookingValue
     /**
      * @param string $title
      */
-    public function SetTitle(string $title): void
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
@@ -89,12 +89,12 @@ class BookingValue
     /**
      * @return Booking
      */
-    public function GetBooking(): Booking
+    public function getBooking(): Booking
     {
         return $this->booking;
     }
 
-    public function SetBooking(Booking $booking)
+    public function setBooking(Booking $booking)
     {
         $this->booking = $booking;
     }

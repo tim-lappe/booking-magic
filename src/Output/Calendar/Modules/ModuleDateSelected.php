@@ -23,8 +23,7 @@ class ModuleDateSelected implements ICalendarPrintModule
                 $data['selected_tstamp']
             ) . "</strong></p>";
         $html .= "<button class='tlbm-button-select-another'>" . __(
-                "Select antoher Date",
-                TLBM_TEXT_DOMAIN
+                "Select antoher Date", TLBM_TEXT_DOMAIN
             ) . "</button>";
         $html .= "<input type='hidden' name='" . $data['form_name'] . "' value='" . $data['selected_tstamp'] . "'>";
         $html .= "</div>";

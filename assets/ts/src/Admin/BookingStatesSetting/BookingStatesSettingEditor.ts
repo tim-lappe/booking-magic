@@ -4,8 +4,8 @@ export class BookingStatesSettingEditor {
     public count: number = 0;
 
     constructor(public elem: HTMLTableRowElement) {
-        this.nametag = elem.getAttribute("nametag");
-        this.count = Number.parseInt(elem.getAttribute("count"));
+        this.nametag = elem.getAttribute("data-nametag");
+        this.count = Number.parseInt(elem.getAttribute("data-count"));
 
         let btn = elem.querySelector("button.tlbm-add-booking-state") as HTMLButtonElement;
         btn.addEventListener("click", (event) => {

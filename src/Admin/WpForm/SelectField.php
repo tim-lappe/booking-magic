@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\WpForm;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -16,15 +16,19 @@ class SelectField extends FormFieldBase
      * @param string $name
      * @param string $title
      * @param array $options
-     * @param mixed $value
      */
-    public function __construct(string $name, string $title, array $options, $value = "")
+    public function __construct(string $name, string $title, array $options)
     {
         $this->options = $options;
-        parent::__construct($name, $title, $value);
+        parent::__construct($name, $title);
     }
 
-    public function displayContent(): void
+    /**
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function displayContent($value): void
     {
         ?>
         <tr>
@@ -37,9 +41,11 @@ class SelectField extends FormFieldBase
                     <?php
                     foreach ($this->options as $key => $option): ?>
                         <option <?php
-                        echo $this->value == $key ? "selected='selected'" : "" ?> value="<?php
-                        echo $key ?>"><?php
-                            echo $option ?></option>
+                        echo $value == $key ? "selected='selected'" : "" ?> value="<?php
+                        echo $key ?>">
+                            <?php
+                            echo $option ?>
+                        </option>
                     <?php
                     endforeach; ?>
                 </select>

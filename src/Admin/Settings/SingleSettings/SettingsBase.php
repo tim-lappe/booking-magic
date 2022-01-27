@@ -4,17 +4,54 @@
 namespace TLBM\Admin\Settings\SingleSettings;
 
 
+use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
+
 abstract class SettingsBase
 {
+    /**
+     * @var string
+     */
+    public string $option_group;
 
-    public $option_group;
-    public $option_name;
+    /**
+     * @var string
+     */
+    public string $option_name;
+
+    /**
+     * @var mixed
+     */
     public $default_value;
-    public $description;
-    public $title;
 
-    public function __construct($option_group, $option_name, $title, $default_value = "", $description = "")
-    {
+    /**
+     * @var string
+     */
+    public string $description;
+
+    /**
+     * @var string
+     */
+    public string $title;
+
+    /**
+     * @var SettingsManagerInterface
+     */
+    protected SettingsManagerInterface $settingsManager;
+
+    /**
+     * @param string $option_group
+     * @param string $option_name
+     * @param string $title
+     * @param mixed $default_value
+     * @param string $description
+     */
+    public function __construct(
+        string $option_group,
+        string $option_name,
+        string $title,
+        $default_value = "",
+        string $description = ""
+    ) {
         $this->option_name   = $option_name;
         $this->option_group  = $option_group;
         $this->title         = $title;
@@ -22,7 +59,17 @@ abstract class SettingsBase
         $this->description   = $description;
     }
 
-    public function PrintField()
+    public function getSettingsManager(): SettingsManagerInterface
+    {
+        return $this->settingsManager;
+    }
+
+    public function setSettingsManager(SettingsManagerInterface $settingsManager)
+    {
+        $this->settingsManager = $settingsManager;
+    }
+
+    public function display()
     {
         ?>
         <label>

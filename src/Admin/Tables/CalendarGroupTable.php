@@ -4,7 +4,6 @@
 namespace TLBM\Admin\Tables;
 
 
-use TLBM\Calendar\CalendarManager;
 use TLBM\Calendar\Contracts\CalendarGroupManagerInterface;
 use TLBM\Calendar\Contracts\CalendarManagerInterface;
 use TLBM\Model\CalendarGroup;
@@ -38,10 +37,7 @@ class CalendarGroupTable extends TableBase
         $this->dateTimeTools        = $dateTimeTools;
 
         parent::__construct(
-            __("Groups", TLBM_TEXT_DOMAIN),
-            __("Group", TLBM_TEXT_DOMAIN),
-            10,
-            __("You haven't created any groups yet", TLBM_TEXT_DOMAIN)
+            __("Groups", TLBM_TEXT_DOMAIN), __("Group", TLBM_TEXT_DOMAIN), 10, __("You haven't created any groups yet", TLBM_TEXT_DOMAIN)
         );
     }
 
@@ -72,7 +68,7 @@ class CalendarGroupTable extends TableBase
                 if ($key > 0) {
                     echo ", ";
                 }
-                echo "<a href='" . $link . "'>" . $cal->GetTitle() . "</a>";
+                echo "<a href='" . $link . "'>" . $cal->getTitle() . "</a>";
             }
         } elseif ($selection->selection_type == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
             echo __("All but ", TLBM_TEXT_DOMAIN);
@@ -82,7 +78,7 @@ class CalendarGroupTable extends TableBase
                 if ($key > 0) {
                     echo ", ";
                 }
-                echo "<a href='" . $link . "'><s>" . $cal->GetTitle() . "</s></a>";
+                echo "<a href='" . $link . "'><s>" . $cal->getTitle() . "</s></a>";
             }
         }
     }
@@ -93,7 +89,7 @@ class CalendarGroupTable extends TableBase
     public function column_title($item)
     {
         $link = get_edit_post_link($item->wp_post_id);
-        if ( ! empty($item->title)) {
+        if ( !empty($item->title)) {
             echo "<strong><a href='" . $link . "'>" . $item->title . "</a></strong>";
         } else {
             echo "<strong><a href='" . $link . "'>" . $item->wp_post_id . "</a></strong>";
@@ -117,16 +113,16 @@ class CalendarGroupTable extends TableBase
             foreach ($ids as $id) {
                 if ($action == "delete") {
                     wp_update_post(array(
-                        "ID"          => $id,
-                        "post_status" => "trash"
-                    ));
+                                       "ID"          => $id,
+                                       "post_status" => "trash"
+                                   ));
                 } elseif ($action == "delete_permanently") {
                     wp_delete_post($id);
                 } elseif ($action == "restore") {
                     wp_update_post(array(
-                        "ID"          => $id,
-                        "post_status" => "publish"
-                    ));
+                                       "ID"          => $id,
+                                       "post_status" => "publish"
+                                   ));
                 }
             }
         }

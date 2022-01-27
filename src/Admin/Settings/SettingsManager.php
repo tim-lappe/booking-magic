@@ -3,95 +3,142 @@
 
 namespace TLBM\Admin\Settings;
 
-
-use InvalidArgumentException;
-use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
-use TLBM\Admin\Settings\SingleSettings\BookingProcess\DefaultBookingState;
-use TLBM\Admin\Settings\SingleSettings\BookingProcess\SinglePageBooking;
-use TLBM\Admin\Settings\SingleSettings\Emails\EmailBookingConfirmation;
-use TLBM\Admin\Settings\SingleSettings\General\AdminMail;
+use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
-use TLBM\Admin\Settings\SingleSettings\Text\TextBookingReceived;
-use TLBM\Admin\Settings\SingleSettings\Text\WeekdayLabels;
 
-class SettingsManager
+class SettingsManager implements SettingsManagerInterface
 {
-
     /**
      * @var SettingsBase[]
      */
-    public static array $settings = array();
+    public array $settings = array();
 
-    public static array $groups = array();
+    /**
+     * @var array
+     */
+    public array $groups = array();
 
-    public static function DefineSettings()
+    public function __construct()
     {
-        self::$groups = array(
-            "general" => __("General", TLBM_TEXT_DOMAIN),
-            "booking_process" => __("Booking Process", TLBM_TEXT_DOMAIN),
-            "emails" => __("E-Mails", TLBM_TEXT_DOMAIN),
-            "text" => __("Text", TLBM_TEXT_DOMAIN),
-            "advanced" => __("Advanced", TLBM_TEXT_DOMAIN)
-        );
-
-        self::$settings = array(
-            /**
-             * General
-             */
-            new AdminMail(),
-            /**
-             * Booking Process,
-             */
-            new SinglePageBooking(),
-            new BookingStates(),
-            new DefaultBookingState(),
-            /**
-             * E-Mail
-             */
-            new EmailBookingConfirmation(),
-            /**
-             * Text
-             */
-            new WeekdayLabels(),
-            new TextBookingReceived(),
-
-        );
     }
 
     /**
-     * @param $name
+     * @param object $setting
      *
-     * @return SettingsBase
+     * @return bool
      */
-    public static function GetSetting($name): SettingsBase
+    public function registerSetting(object $setting): bool
     {
-        foreach (self::$settings as $setting) {
-            if ($setting->option_name == $name) {
-                return $setting;
-            }
+        if ( !isset($this->settings[get_class($setting)]) && $setting instanceof SettingsBase) {
+            $this->settings[get_class($setting)] = $setting;
+            $setting->setSettingsManager($this);
+
+            return true;
         }
 
-        throw new InvalidArgumentException();
+        return false;
     }
 
-    public static function RegisterSettings()
+    /**
+     * @param string $name
+     * @param string $title
+     *
+     * @return bool
+     */
+    public function registerSettingsGroup(string $name, string $title): bool
     {
-        foreach (self::$groups as $key => $group) {
+        if ( !isset($this->groups[$name])) {
+            $this->groups[$name] = $title;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getValue(string $name)
+    {
+        $setting = $this->getSetting($name);
+        if ($setting) {
+            return get_option($setting->option_name, $setting->default_value);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return ?SettingsBase
+     */
+    public function getSetting(string $name): ?SettingsBase
+    {
+        if (isset($this->settings[$name])) {
+            return $this->settings[$name];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function setValue(string $name, $value)
+    {
+        $setting = $this->getSetting($name);
+        if ($setting) {
+            update_option($setting->option_name, $setting->default_value);
+        }
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return ?string
+     */
+    public function getSettingsGroup(string $name): ?string
+    {
+        return $this->groups[$name] ?? null;
+    }
+
+    /**
+     * @return void
+     */
+    public function loadSettings(): void
+    {
+        foreach ($this->groups as $key => $group) {
             add_settings_section("tlbm_" . $key . "_section", $group, null, "tlbm_settings_" . $key);
         }
 
-        foreach (self::$settings as $setting) {
-            register_setting(
-                "tlbm_" . $setting->option_group,
-                $setting->option_name,
-                array("default" => $setting->default_value));
+        foreach ($this->settings as $setting) {
+            register_setting("tlbm_" . $setting->option_group, $setting->option_name, array("default" => $setting->default_value));
             add_settings_field(
-                "tlbm_" . $setting->option_group . "_" . $setting->option_name . "_field",
-                $setting->title,
-                array($setting, "PrintField"),
-                'tlbm_settings_' . $setting->option_group,
-                "tlbm_" . $setting->option_group . "_section"
+                "tlbm_" . $setting->option_group . "_" . $setting->option_name . "_field", $setting->title, array($setting, "display"), 'tlbm_settings_' . $setting->option_group, "tlbm_" . $setting->option_group . "_section"
             );
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllSettings(): array
+    {
+        return $this->settings;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllSettingsGroups(): array
+    {
+        return $this->groups;
     }
 }

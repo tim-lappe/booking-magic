@@ -4,7 +4,7 @@
 namespace TLBM\Model;
 
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 

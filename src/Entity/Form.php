@@ -35,6 +35,7 @@ class Form implements JsonSerializable
     protected string $frontend_html = "";
 
     /**
+     * @var mixed
      * @Doctrine\ORM\Mapping\Column (type="json", nullable=false)
      */
     protected $form_data;
@@ -47,16 +48,16 @@ class Form implements JsonSerializable
     public function jsonSerialize(): array
     {
         return array(
-            "title"         => $this->GetTitle(),
-            "form_data"     => $this->GetFormData(),
-            "frontend_html" => $this->GetFrontendHtml()
+            "title"         => $this->getTitle(),
+            "form_data"     => $this->getFormData(),
+            "frontend_html" => $this->getFrontendHtml()
         );
     }
 
     /**
      * @return string
      */
-    public function GetTitle(): string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -64,20 +65,20 @@ class Form implements JsonSerializable
     /**
      * @param string $title
      */
-    public function SetTitle(string $title): void
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    public function GetFormData()
+    public function getFormData()
     {
         return $this->form_data;
     }
 
     /**
-     * @param $form_data
+     * @param mixed $form_data
      */
-    public function SetFormData($form_data): void
+    public function setFormData($form_data): void
     {
         $this->form_data = $form_data;
     }
@@ -85,7 +86,7 @@ class Form implements JsonSerializable
     /**
      * @return string
      */
-    public function GetFrontendHtml(): string
+    public function getFrontendHtml(): string
     {
         return $this->frontend_html;
     }
@@ -93,7 +94,7 @@ class Form implements JsonSerializable
     /**
      * @param string $frontend_html
      */
-    public function SetFrontendHtml(string $frontend_html): void
+    public function setFrontendHtml(string $frontend_html): void
     {
         $this->frontend_html = $frontend_html;
     }

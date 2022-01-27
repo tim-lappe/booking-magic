@@ -9,14 +9,23 @@ use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
 class BookingStateSelectField extends FormFieldBase
 {
 
-    public function __construct($name, $title, $value = "")
+    /**
+     * @param string $name
+     * @param string $title
+     */
+    public function __construct(string $name, string $title)
     {
-        parent::__construct($name, $title, $value);
+        parent::__construct($name, $title);
     }
 
-    public function displayContent(): void
+    /**
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function displayContent($value): void
     {
-        $states = BookingStates::GetStates();
+        $states = BookingStates::getStates();
         ?>
         <tr>
             <th scope="row"><label for="<?php

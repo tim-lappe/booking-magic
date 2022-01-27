@@ -5,11 +5,11 @@ namespace TLBM\Email\Contracts;
 interface MailSenderInterface
 {
     /**
-     * @param $to
-     * @param $email_option_name
+     * @param string $to
+     * @param string $email_option_name
      * @param array $vars
      *
-     * @return bool|mixed|void
+     * @return mixed
      */
-    public function sendTemplate($to, $email_option_name, array $vars = array());
+    public function sendTemplate(string $to, string $email_option_name, array $vars = array());
 }

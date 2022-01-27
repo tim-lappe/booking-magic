@@ -8,7 +8,7 @@ use TLBM\Admin\WpForm\FormBuilder;
 use TLBM\Admin\WpForm\InputField;
 use WP_Post;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -37,7 +37,7 @@ class MBCapacityRulePriority extends MetaBoxForm
     public function PrintMetaBox(WP_Post $post)
     {
         $priority = get_post_meta($post->ID, "priority", true);
-        if ( ! $priority) {
+        if ( !$priority) {
             $priority = 10;
         }
 

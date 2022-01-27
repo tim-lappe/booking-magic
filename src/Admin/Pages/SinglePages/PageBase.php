@@ -32,8 +32,8 @@ abstract class PageBase
      */
     protected AdminPageManagerInterface $adminPageManager;
 
+
     /**
-     * @param AdminPageManagerInterface $adminPageManager
      * @param string $menu_title
      * @param string $menu_slug
      * @param bool $show_in_menu
@@ -41,7 +41,6 @@ abstract class PageBase
      * @param string $display_default_head_title
      */
     public function __construct(
-        AdminPageManagerInterface $adminPageManager,
         string $menu_title,
         string $menu_slug,
         bool $show_in_menu = true,
@@ -52,7 +51,6 @@ abstract class PageBase
         $this->menu_slug            = $menu_slug;
         $this->show_in_menu         = $show_in_menu;
         $this->display_default_head = $display_default_head;
-        $this->adminPageManager = $adminPageManager;
 
         if (empty($display_default_head_title)) {
             $this->display_default_head_title = $menu_title;
@@ -63,6 +61,23 @@ abstract class PageBase
             remove_all_actions('admin_notices');
             remove_all_actions('all_admin_notices');
         }
+    }
+
+
+    /**
+     * @return AdminPageManagerInterface
+     */
+    public function getAdminPageManager(): AdminPageManagerInterface
+    {
+        return $this->adminPageManager;
+    }
+
+    /**
+     * @param AdminPageManagerInterface $adminPageManager
+     */
+    public function setAdminPageManager(AdminPageManagerInterface $adminPageManager): void
+    {
+        $this->adminPageManager = $adminPageManager;
     }
 
     public function display()
