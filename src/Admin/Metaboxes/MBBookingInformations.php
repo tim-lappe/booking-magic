@@ -50,8 +50,7 @@ class MBBookingInformations extends MetaBoxBase
                 if ($mainvalues->hasCustomValues()) {
                     echo "<div class='tlbm-admin-booking-information-item'>";
                     echo "<span class='tlbm-admin-booking-headline'>" . __(
-                            "Additional",
-                            TLBM_TEXT_DOMAIN
+                            "Additional", TLBM_TEXT_DOMAIN
                         ) . "</span><br>";
                     foreach ($mainvalues->getCustomValues() as $value) {
                         echo "<p class='tlbm-admin-booking-values'><strong>" . $value->title . "</strong><br>" . $value->value . "</p>";

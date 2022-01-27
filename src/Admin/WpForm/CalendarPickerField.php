@@ -3,14 +3,15 @@
 
 namespace TLBM\Admin\WpForm;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
+use TLBM\Admin\WpForm\Contracts\FormFieldReadVarsInterface;
 use TLBM\Calendar\Contracts\CalendarManagerInterface;
 use TLBM\Entity\CalendarSelection;
 
-class CalendarPickerField extends FormFieldBase
+class CalendarPickerField extends FormFieldBase implements FormFieldReadVarsInterface
 {
 
     private CalendarManagerInterface $calendarManager;
@@ -19,31 +20,32 @@ class CalendarPickerField extends FormFieldBase
      * @param CalendarManagerInterface $calendarManager
      * @param string $name
      * @param string $title
-     * @param $value
-     * @param bool $show_calendar_groups
      */
     public function __construct(
         CalendarManagerInterface $calendarManager,
         string $name,
-        string $title,
-        $value = null,
-        bool $show_calendar_groups = true
+        string $title
     ) {
         $this->calendarManager = $calendarManager;
 
-        if ( ! $value) {
+        parent::__construct($name, $title);
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function displayContent($value): void
+    {
+        if ( !$value) {
             $value = new CalendarSelection();
         }
 
-        parent::__construct($name, $title, $value);
-    }
-
-    public function displayContent(): void
-    {
-        $cals = $this->calendarManager->getAllCalendars();
+        $cals      = $this->calendarManager->getAllCalendars();
         $calendars = array();
         foreach ($cals as $cal) {
-            $calendars[$cal->GetId()] = empty($cal->GetTitle()) ? $cal->GetId() : $cal->GetTitle();
+            $calendars[$cal->getId()] = empty($cal->getTitle()) ? $cal->getId() : $cal->getTitle();
         }
 
         ?>
@@ -54,7 +56,7 @@ class CalendarPickerField extends FormFieldBase
             <td>
                 <div
                         data-json="<?php
-                        echo urlencode(json_encode($this->value)) ?>"
+                        echo urlencode(json_encode($value)) ?>"
                         data-calendars="<?php
                         echo urlencode(json_encode($calendars)) ?>"
                         data-name="<?php
@@ -66,12 +68,12 @@ class CalendarPickerField extends FormFieldBase
     }
 
     /**
-     * @param $name
-     * @param $vars
+     * @param string $name
+     * @param mixed $vars
      *
      * @return CalendarSelection
      */
-    public function readFromVars($name, $vars): CalendarSelection
+    public function readFromVars(string $name, $vars): CalendarSelection
     {
         if (isset($vars[$name])) {
             $decoded_var = urldecode($vars[$name]);
@@ -79,11 +81,11 @@ class CalendarPickerField extends FormFieldBase
             if ($json) {
                 if (isset($json->calendar_ids) && isset($json->selection_mode)) {
                     $selection = new CalendarSelection();
-                    if ($selection->SetSelectionMode($json->selection_mode)) {
+                    if ($selection->setSelectionMode($json->selection_mode)) {
                         foreach ($json->calendar_ids as $calendar_id) {
                             $calendar = $this->calendarManager->getCalendar(intval($calendar_id));
                             if ($calendar) {
-                                $selection->AddCalendar($calendar);
+                                $selection->addCalendar($calendar);
                             }
                         }
                     }

@@ -4,29 +4,39 @@
 namespace TLBM\Email;
 
 
-use TLBM\Admin\Settings\SettingsManager;
+use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Email\Contracts\MailSenderInterface;
 
 class MailSender implements MailSenderInterface
 {
 
     /**
-     * @param $to
-     * @param $email_option_name
+     * @var SettingsManagerInterface
+     */
+    private SettingsManagerInterface $settingsManager;
+
+    public function __construct(SettingsManagerInterface $settingsManager)
+    {
+        $this->settingsManager = $settingsManager;
+    }
+
+    /**
+     * @param string $to
+     * @param string $email_option_name
      * @param array $vars
      *
-     * @return bool|mixed|void
+     * @return mixed
      */
-    public function sendTemplate($to, $email_option_name, array $vars = array())
+    public function sendTemplate(string $to, string $email_option_name, array $vars = array())
     {
-        $opt = get_option($email_option_name, SettingsManager::GetSetting($email_option_name)->default_value);
+        $opt = $this->settingsManager->getValue($email_option_name);
         if ($opt) {
             $subject = $opt['subject'];
             $content = $opt['message'];
             $message = '<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>' . $subject . '</title><meta name="viewport" content="width=device-width, initial-scale=1.0"/></head><body>';
 
             $inline_css = file_get_contents(TLBM_DIR . "/assets/css/mail/main.css");
-            $message    .= "<style>" . $inline_css . "</style>";
+            $message    .= '<style>' . $inline_css . '</style>';
             $message    .= $content;
 
             $message .= "</body></html>";

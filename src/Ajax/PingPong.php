@@ -2,15 +2,25 @@
 
 namespace TLBM\Ajax;
 
-class PingPong extends AjaxBase
+use TLBM\Ajax\Contracts\AjaxFunctionInterface;
+
+class PingPong implements AjaxFunctionInterface
 {
 
-    public function registerAjaxAction()
+    /**
+     * @return string
+     */
+    public function getFunctionName(): string
     {
-        $this->addAjaxAction("ping");
+        return "ping";
     }
 
-    public function apiRequest($data): array
+    /**
+     * @param mixed $data
+     *
+     * @return array
+     */
+    public function execute($data): array
     {
         return array(
             "Pong!"

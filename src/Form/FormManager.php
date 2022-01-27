@@ -11,7 +11,7 @@ use TLBM\Database\Contracts\ORMInterface;
 use TLBM\Entity\Form;
 use TLBM\Form\Contracts\FormManagerInterface;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -79,10 +79,7 @@ class FormManager implements FormManagerInterface
     ): array {
         $mgr = $this->repository->getEntityManager();
         $qb  = $mgr->createQueryBuilder();
-        $qb->select("f")
-           ->from("\TLBM\Entity\Form", "f")
-           ->orderBy("f." . $orderby, $order)
-           ->setFirstResult($offset);
+        $qb->select("f")->from("\TLBM\Entity\Form", "f")->orderBy("f." . $orderby, $order)->setFirstResult($offset);
         if ($limit > 0) {
             $qb->setMaxResults($limit);
         }
@@ -107,8 +104,7 @@ class FormManager implements FormManagerInterface
     {
         $mgr = $this->repository->getEntityManager();
         $qb  = $mgr->createQueryBuilder();
-        $qb->select($qb->expr()->count("f"))
-           ->from("\TLBM\Entity\Form", "f");
+        $qb->select($qb->expr()->count("f"))->from("\TLBM\Entity\Form", "f");
 
         $query = $qb->getQuery();
         try {

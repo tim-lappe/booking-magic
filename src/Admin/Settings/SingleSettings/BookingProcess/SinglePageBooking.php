@@ -14,7 +14,7 @@ class SinglePageBooking extends SettingsBase
         parent::__construct("booking_process", "single_page_booking", __("One Page Booking", TLBM_TEXT_DOMAIN), "off");
     }
 
-    public function PrintField()
+    public function display()
     {
         ?>
         <label>

@@ -5,7 +5,7 @@ namespace TLBM\Utilities;
 use DateTime;
 use TLBM\Utilities\Contracts\DateTimeToolsInterface;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 

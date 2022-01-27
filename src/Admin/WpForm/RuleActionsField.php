@@ -3,23 +3,62 @@
 
 namespace TLBM\Admin\WpForm;
 
+use TLBM\Admin\WpForm\Contracts\FormFieldReadVarsInterface;
 use TLBM\Entity\RuleAction;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
 
-class RuleActionsField extends FormFieldBase
+class RuleActionsField extends FormFieldBase implements FormFieldReadVarsInterface
 {
 
     /**
-     * @param $name
-     * @param $vars
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function displayContent($value): void
+    {
+        /**
+         * @var RuleAction[] $actions
+         */
+        $actions = $value;
+        if ( !is_array($actions)) {
+            $actions = array();
+        }
+        ?>
+        <tr>
+            <th scope="row">
+                <label for="<?php
+                echo $this->name ?>">
+                    <?php
+                    echo $this->title ?>
+                </label>
+            </th>
+            <td>
+                <div
+                        data-json="<?php
+                        echo urlencode(json_encode($actions)) ?>"
+                        data-name="<?php
+                        echo $this->name ?>"
+                        class="tlbm-actions tlbm-rule-actions-field">
+
+                </div>
+            </td>
+        </tr>
+        <?php
+    }
+
+
+    /**
+     * @param string $name
+     * @param mixed $vars
      *
      * @return RuleAction[]
      */
-    public static function ReadFromVars($name, $vars): array
+    public function readFromVars(string $name, $vars): array
     {
         if (isset($vars[$name])) {
             $decoded_var = urldecode($vars[$name]);
@@ -29,18 +68,18 @@ class RuleActionsField extends FormFieldBase
             if (is_array($json)) {
                 foreach ($json as $key => $action_obj) {
                     $ruleAction = new RuleAction();
-                    $ruleAction->SetPriority($key);
-                    $ruleAction->SetActions((array)$action_obj->actions);
-                    $ruleAction->SetActionType($action_obj->action_type);
-                    $ruleAction->SetWeekdays($action_obj->weekdays);
+                    $ruleAction->setPriority($key);
+                    $ruleAction->setActions((array) $action_obj->actions);
+                    $ruleAction->setActionType($action_obj->action_type);
+                    $ruleAction->setWeekdays($action_obj->weekdays);
 
                     if ($action_obj->time_hour !== null && $action_obj->time_min !== null) {
-                        $ruleAction->SetTimeHour($action_obj->time_hour);
-                        $ruleAction->SetTimeMin($action_obj->time_min);
+                        $ruleAction->setTimeHour($action_obj->time_hour);
+                        $ruleAction->setTimeMin($action_obj->time_min);
                     }
 
                     if ($action_obj->id > 0 && is_numeric($action_obj->id)) {
-                        $ruleAction->SetId($action_obj->id);
+                        $ruleAction->setId($action_obj->id);
                     }
 
                     $actions[] = $ruleAction;
@@ -51,29 +90,5 @@ class RuleActionsField extends FormFieldBase
         }
 
         return array();
-    }
-
-    public function displayContent(): void
-    {
-        /**
-         * @var RuleAction[] $actions
-         */
-        $actions = $this->value;
-        if ( ! is_array($actions)) {
-            $actions = array();
-        }
-
-        ?>
-        <tr>
-            <th scope="row"><label for="<?php
-                echo $this->name ?>"><?php
-                    echo $this->title ?></label></th>
-            <td>
-                <div data-json="<?php
-                echo urlencode(json_encode($actions)) ?>" data-name="<?php
-                echo $this->name ?>" class="tlbm-actions tlbm-rule-actions-field"></div>
-            </td>
-        </tr>
-        <?php
     }
 }

@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\Metaboxes;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 

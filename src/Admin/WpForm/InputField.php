@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\WpForm;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -24,16 +24,20 @@ class InputField extends FormFieldBase
      * @param string $name
      * @param string $input_type
      * @param string $title
-     * @param mixed $value
      */
-    public function __construct(string $name, string $input_type, string $title = "", $value = "")
+    public function __construct(string $name, string $input_type, string $title = "")
     {
-        parent::__construct($name, $title, $value);
+        parent::__construct($name, $title);
         $this->input_type = $input_type;
         $this->title      = $title;
     }
 
-    public function displayContent(): void
+    /**
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function displayContent($value): void
     {
         $classes = "";
         if ($this->input_type == "text") {
@@ -52,7 +56,7 @@ class InputField extends FormFieldBase
                 echo $classes ?>" type="<?php
                 echo $this->input_type ?>" name="<?php
                 echo $this->name ?>" value="<?php
-                echo $this->value ?>"></td>
+                echo $value ?>"></td>
         </tr>
         <?php
     }

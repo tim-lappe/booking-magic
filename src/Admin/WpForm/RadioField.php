@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\WpForm;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -16,15 +16,19 @@ class RadioField extends FormFieldBase
      * @param string $name
      * @param string $title
      * @param array $radios
-     * @param mixed $value
      */
-    public function __construct(string $name, string $title, array $radios, $value = "")
+    public function __construct(string $name, string $title, array $radios)
     {
         $this->radios = $radios;
-        parent::__construct($name, $title, $value);
+        parent::__construct($name, $title);
     }
 
-    public function displayContent(): void
+    /**
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function displayContent($value): void
     {
         ?>
         <tr>
@@ -33,18 +37,24 @@ class RadioField extends FormFieldBase
             <td>
                 <?php
                 foreach ($this->radios as $key => $text): ?>
-                    <label>
-                        <div class="tlbm-radio-item">
-                            <input <?php
-                            echo $key == $this->value && ! empty($this->value) ? "checked='checked'" : "" ?> id="<?php
-                            echo $this->name ?>-<?php
-                            echo $key ?>" class="regular-text" type="radio" name="<?php
-                            echo $this->name ?>" value="<?php
-                            echo $key ?>"/>
+                    <div class="tlbm-radio-item">
+                        <label>
+                            <input
+                                <?php
+                                echo $key == $value && !empty($value) ? "checked='checked'" : "" ?>
+                                    id="<?php
+                                    echo $this->name ?>-<?php
+                                    echo $key ?>"
+                                    class="regular-text"
+                                    type="radio"
+                                    name="<?php
+                                    echo $this->name ?>"
+                                    value="<?php
+                                    echo $key ?>"/>
                             <?php
                             echo $text ?>
-                        </div>
-                    </label>
+                        </label>
+                    </div>
                 <?php
                 endforeach; ?>
             </td>

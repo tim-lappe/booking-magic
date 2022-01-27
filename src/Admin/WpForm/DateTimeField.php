@@ -5,7 +5,7 @@ namespace TLBM\Admin\WpForm;
 
 use DateTime;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -14,9 +14,9 @@ class DateTimeField extends FormFieldBase
 
     public $endless_checkbox = false;
 
-    public function __construct($name, $title, $value = "", $endless_checkbox = false)
+    public function __construct($name, $title, $endless_checkbox = false)
     {
-        parent::__construct($name, $title, $value);
+        parent::__construct($name, $title);
 
         $this->endless_checkbox = $endless_checkbox;
     }
@@ -27,7 +27,7 @@ class DateTimeField extends FormFieldBase
      *
      * @return DateTime|false
      */
-    public static function GetDateTime($name, $request_arr)
+    public function getDateTime($name, $request_arr)
     {
         $date_string = $request_arr[$name];
         $endless     = $request_arr[$name . "_isEndless"];
@@ -47,13 +47,18 @@ class DateTimeField extends FormFieldBase
         return $date;
     }
 
-    public function displayContent(): void
+    /**
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function displayContent($value): void
     {
         $datetime = new DateTime();
         $datetime->setTimezone(wp_timezone());
 
-        if ($this->value < PHP_INT_MAX) {
-            $datetime->setTimestamp($this->value);
+        if ($value < PHP_INT_MAX) {
+            $datetime->setTimestamp($value);
         }
         ?>
         <tr>
@@ -66,7 +71,7 @@ class DateTimeField extends FormFieldBase
                     <div class="tlbm-endless-checkbox-container">
                         <label>
                             <input type="checkbox" <?php
-                            checked($this->value == PHP_INT_MAX) ?> name="<?php
+                            checked($value == PHP_INT_MAX) ?> name="<?php
                             echo $this->name ?>_isEndless" class="regular-text endless-checkbox"> <?php
                             echo __("endless", TLBM_TEXT_DOMAIN); ?>
                         </label>

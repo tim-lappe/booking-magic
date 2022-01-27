@@ -15,10 +15,10 @@ abstract class TableBase extends WP_List_Table
     public function __construct($title_plural, $title_singular, $items_per_page = 10, $no_items_display = "")
     {
         parent::__construct(array(
-            "plural"   => $title_plural,
-            "singular" => $title_singular,
-            "screen"   => null
-        ));
+                                "plural"   => $title_plural,
+                                "singular" => $title_singular,
+                                "screen"   => null
+                            ));
 
         if (empty($no_items_display)) {
             $no_items_display = __("Nothing to show", TLBM_TEXT_DOMAIN);
@@ -31,8 +31,8 @@ abstract class TableBase extends WP_List_Table
 
     public function prepare_items()
     {
-        $orderby = isset($_REQUEST['orderby']) ? $_REQUEST['orderby'] : "title";
-        $order   = isset($_REQUEST['order']) ? $_REQUEST['order'] : "desc";
+        $orderby = $_REQUEST['orderby'] ?? "title";
+        $order   = $_REQUEST['order'] ?? "desc";
 
         $this->process_bulk_action();
 
@@ -41,18 +41,18 @@ abstract class TableBase extends WP_List_Table
         $total                 = $this->GetTotalItemsCount();
 
         $this->set_pagination_args(array(
-            'total_items' => $total,
-            'per_page'    => $this->items_per_page,
-            'total_pages' => ceil($total / $this->items_per_page)
-        ));
+                                       'total_items' => $total,
+                                       'per_page'    => $this->items_per_page,
+                                       'total_pages' => ceil($total / $this->items_per_page)
+                                   ));
     }
 
     public function process_bulk_action()
     {
-        if (isset($_POST['_wpnonce']) && ! empty($_POST['_wpnonce'])) {
+        if (isset($_POST['_wpnonce']) && !empty($_POST['_wpnonce'])) {
             $nonce  = filter_input(INPUT_POST, '_wpnonce', FILTER_SANITIZE_STRING);
             $action = 'bulk-' . $this->_args['plural'];
-            if ( ! wp_verify_nonce($nonce, $action)) {
+            if ( !wp_verify_nonce($nonce, $action)) {
                 wp_die('Security check failed!');
             }
         }
@@ -135,7 +135,7 @@ abstract class TableBase extends WP_List_Table
     {
         $views            = array();
         $view_definitions = $this->GetViews();
-        $current          = ! empty($_REQUEST['filter']) ? $_REQUEST['filter'] : 'all';
+        $current          = !empty($_REQUEST['filter']) ? $_REQUEST['filter'] : 'all';
 
         foreach ($view_definitions as $key => $title) {
             $class       = ($current == $key ? ' class="current"' : '');

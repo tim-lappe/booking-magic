@@ -12,17 +12,14 @@ class BookingStates extends SettingsBase
     public function __construct()
     {
         parent::__construct(
-            "booking_process",
-            "booking_states",
-            __("Booking States", TLBM_TEXT_DOMAIN),
-            self::GetDefaultStates()
+            "booking_process", "booking_states", __("Booking States", TLBM_TEXT_DOMAIN), self::getDefaultStates()
         );
     }
 
     /**
      * @return array[]
      */
-    public static function GetDefaultStates(): array
+    public function getDefaultStates(): array
     {
         return array(
             array(
@@ -76,9 +73,9 @@ class BookingStates extends SettingsBase
         );
     }
 
-    public static function GetStatesKeyValue(): array
+    public function getStatesKeyValue(): array
     {
-        $states       = self::GetStates();
+        $states       = self::getStates();
         $stateskeyval = array();
         foreach ($states as $state) {
             $stateskeyval[$state['name']] = $state['title'];
@@ -87,15 +84,15 @@ class BookingStates extends SettingsBase
         return $stateskeyval;
     }
 
-    public static function GetStates(): array
+    public function getStates(): array
     {
-        return get_option("booking_states", self::GetDefaultStates());
+        return get_option("booking_states", self::getDefaultStates());
     }
 
-    public static function GetStateByName($name): array
+    public function getStateByName($name): array
     {
-        $name   = empty($name) ? DefaultBookingState::GetDefaultName() : $name;
-        $states = self::GetStates();
+        $name   = empty($name) ? DefaultBookingState::getDefaultName() : $name;
+        $states = self::getStates();
         foreach ($states as $state) {
             if ($state['name'] == $name) {
                 return $state;
@@ -105,11 +102,9 @@ class BookingStates extends SettingsBase
         return array();
     }
 
-    public function PrintField()
+    public function display()
     {
-        $states = get_option("booking_states", self::GetDefaultStates());
-        //s   $states = self::GetDefaultStates();
-        ?>
+        $states = get_option("booking_states", self::getDefaultStates()); ?>
         <table class="tlbm-inner-settings-table">
             <thead>
             <tr>
@@ -160,7 +155,7 @@ class BookingStates extends SettingsBase
                         </label>
                     </td>
                     <?php
-                    if (isset($state['custom']) && boolval($state['custom'])): ?>
+                    if (isset($state['custom']) && $state['custom']): ?>
                         <td>
                             <input type='hidden' name="<?php
                             echo $this->option_name ?>[<?php
@@ -180,8 +175,8 @@ class BookingStates extends SettingsBase
                 </tr>
                 <?php
             } ?>
-            <tr class="tlbm-booking-states-edit" nametag="<?php
-            echo $this->option_name ?>" count="<?php
+            <tr class="tlbm-booking-states-edit" data-nametag="<?php
+            echo $this->option_name ?>" data-count="<?php
             echo sizeof($states) ?>">
                 <td>
                     <button class="button tlbm-add-booking-state"><?php

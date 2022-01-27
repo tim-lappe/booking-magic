@@ -8,19 +8,24 @@ use TLBM\Admin\WpForm\Contracts\FormFieldReadVarsInterface;
 use TLBM\Entity\RulePeriod;
 use TLBM\Entity\TimeSlot;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
 class PeriodEditorField extends FormFieldBase implements FormFieldReadVarsInterface
 {
-    public function displayContent(): void
+    /**
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function displayContent($value): void
     {
         /**
          * @var RulePeriod[] $periods
          */
-        $periods = $this->value;
-        if ( ! is_array($periods)) {
+        $periods = $value;
+        if ( !is_array($periods)) {
             $periods = array();
         }
         ?>
@@ -54,22 +59,22 @@ class PeriodEditorField extends FormFieldBase implements FormFieldReadVarsInterf
             if (is_array($json)) {
                 foreach ($json as $key => $period_obj) {
                     $period = new RulePeriod();
-                    $period->SetFromTstamp($period_obj->from_tstamp);
-                    $period->SetFromTimeset((bool)$period_obj->from_timeset);
-                    $period->SetToTstamp($period_obj->to_tstamp);
-                    $period->SetToTimeset((bool)$period_obj->to_timeset);
+                    $period->setFromTstamp($period_obj->from_tstamp);
+                    $period->setFromTimeset((bool) $period_obj->from_timeset);
+                    $period->setToTstamp($period_obj->to_tstamp);
+                    $period->setToTimeset((bool) $period_obj->to_timeset);
 
                     if ($period_obj->id > 0 && is_numeric($period_obj->id)) {
-                        $period->SetId($period_obj->id);
+                        $period->setId($period_obj->id);
                     }
 
                     foreach ($period_obj->daily_time_ranges as $time_range_obj) {
                         $time_range = new TimeSlot();
-                        $time_range->SetFromHour($time_range_obj->from_hour);
-                        $time_range->SetToHour($time_range_obj->to_hour);
-                        $time_range->SetFromMin($time_range_obj->from_min);
-                        $time_range->SetToMin($time_range_obj->to_min);
-                        $period->AddTimeSlot($time_range);
+                        $time_range->setFromHour($time_range_obj->from_hour);
+                        $time_range->setToHour($time_range_obj->to_hour);
+                        $time_range->setFromMin($time_range_obj->from_min);
+                        $time_range->setToMin($time_range_obj->to_min);
+                        $period->addTimeSlot($time_range);
                     }
 
                     $periods[] = $period;

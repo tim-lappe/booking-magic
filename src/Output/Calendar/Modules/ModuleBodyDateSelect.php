@@ -20,7 +20,7 @@ class ModuleBodyDateSelect implements ICalendarPrintModule
      */
     public function GetOutput($data): string
     {
-        $group = CalendarGroup::FromCalendarOrGroupId((int)$data['id']);
+        $group = CalendarGroup::FromCalendarOrGroupId((int) $data['id']);
         $date  = new DateTime();
         $date->setTimestamp($data['focused_tstamp']);
 
@@ -29,7 +29,7 @@ class ModuleBodyDateSelect implements ICalendarPrintModule
 
         $html .= "<tr class='tlbm-head-row'>";
 
-        $weekdays = WeekdayLabels::GetWeekdayLabels($data['weekday_form']);
+        $weekdays = WeekdayLabels::getWeekdayLabels($data['weekday_form']);
         foreach ($weekdays as $key => $weekday) {
             $html .= "<th class='tlbm-weekday tlbm-weekday-" . $key . "'>";
             $html .= $weekday;
@@ -98,7 +98,7 @@ class ModuleBodyDateSelect implements ICalendarPrintModule
         $html    = "";
         $classes = array();
 
-        if ( ! $date) {
+        if ( !$date) {
             $html .= "<td class='tlbm-cell tlbm-cell-empty'></td>";
         } else {
             $today = new DateTime();
@@ -122,9 +122,8 @@ class ModuleBodyDateSelect implements ICalendarPrintModule
                 $classes[] = "tlbm-cell-selectable";
             }
 
-            $html .= "<td date='" . intval($date->getTimestamp()) . "' class='tlbm-cell tlbm-cell-not-empty " . implode(
-                    " ",
-                    $classes
+            $html .= "<td date='" . $date->getTimestamp() . "' class='tlbm-cell tlbm-cell-not-empty " . implode(
+                    " ", $classes
                 ) . "'><span class='tlbm-datenumber-span'>" . intval(
                          $date->format("d")
                      ) . "</span>&nbsp;" . $capacity . "/" . $all_capacities . "</td>";

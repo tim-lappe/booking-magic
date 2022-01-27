@@ -31,7 +31,7 @@ class CalendarGroupManager implements CalendarGroupManagerInterface
      */
     public function getCalendarListFromGroup(CalendarGroup $group): array
     {
-        return $this->calendarSelectionHandler->getSelectedCalendarList($group->GetCalendarSelection());
+        return $this->calendarSelectionHandler->getSelectedCalendarList($group->getCalendarSelection());
     }
 
     /**
@@ -77,10 +77,7 @@ class CalendarGroupManager implements CalendarGroupManagerInterface
     ): array {
         $mgr = $this->repository->getEntityManager();
         $qb  = $mgr->createQueryBuilder();
-        $qb->select("c")
-           ->from("\TLBM\Entity\CalendarGroup", "c")
-           ->orderBy("c." . $orderby, $order)
-           ->setFirstResult($offset);
+        $qb->select("c")->from("\TLBM\Entity\CalendarGroup", "c")->orderBy("c." . $orderby, $order)->setFirstResult($offset);
         if ($limit > 0) {
             $qb->setMaxResults($limit);
         }
@@ -102,10 +99,10 @@ class CalendarGroupManager implements CalendarGroupManagerInterface
         //TODO: Orm Implementation
 
         $posts = get_posts(
-            array_merge(array(
-                "post_type"   => TLBM_PT_CALENDAR_GROUPS,
-                "numberposts" => -1
-            ), $options)
+            array_merge(                                                                                                                                                            array(
+                                                                                                                                                                                     "post_type"   => TLBM_PT_CALENDAR_GROUPS,
+                                                                                                                                                                                     "numberposts" => -1
+                                                                                                                                                                                 ), $options)
         );
 
         return sizeof($posts);

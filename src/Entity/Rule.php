@@ -68,27 +68,27 @@ class Rule implements JsonSerializable
      *
      * @return RuleAction
      */
-    public function AddAction(RuleAction $action): RuleAction
+    public function addAction(RuleAction $action): RuleAction
     {
-        if ( ! $this->actions->contains($action)) {
+        if ( !$this->actions->contains($action)) {
             $this->actions[] = $action;
-            $action->SetRule($this);
+            $action->setRule($this);
         }
 
         return $action;
     }
 
-    public function RemoveAction(RuleAction $action): RuleAction
+    public function removeAction(RuleAction $action): RuleAction
     {
         if ($this->actions->contains($action)) {
             $this->actions->removeElement($action);
-            $action->SetRule(null);
+            $action->setRule(null);
         }
 
         return $action;
     }
 
-    public function ClearActions()
+    public function clearActions()
     {
         foreach ($this->actions as $action) {
             $action->SetRule(null);
@@ -100,7 +100,7 @@ class Rule implements JsonSerializable
     /**
      * @return Collection
      */
-    public function GetActions(): Collection
+    public function getActions(): Collection
     {
         return $this->actions;
     }
@@ -108,7 +108,7 @@ class Rule implements JsonSerializable
     /**
      * @return Collection
      */
-    public function GetPeriods(): Collection
+    public function getPeriods(): Collection
     {
         return $this->periods;
     }
@@ -118,11 +118,11 @@ class Rule implements JsonSerializable
      *
      * @return RulePeriod
      */
-    public function AddPeriod(RulePeriod $period): RulePeriod
+    public function addPeriod(RulePeriod $period): RulePeriod
     {
-        if ( ! $this->periods->contains($period)) {
+        if ( !$this->periods->contains($period)) {
             $this->periods[] = $period;
-            $period->SetRule($this);
+            $period->setRule($this);
         }
 
         return $period;
@@ -133,17 +133,17 @@ class Rule implements JsonSerializable
      *
      * @return RulePeriod
      */
-    public function RemovePeriod(RulePeriod $period): RulePeriod
+    public function removePeriod(RulePeriod $period): RulePeriod
     {
         if ($this->periods->contains($period)) {
             $this->periods->removeElement($period);
-            $period->SetRule(null);
+            $period->setRule(null);
         }
 
         return $period;
     }
 
-    public function ClearPeriods()
+    public function clearPeriods()
     {
         foreach ($this->periods as $period) {
             $period->SetRule(null);
@@ -155,7 +155,7 @@ class Rule implements JsonSerializable
     /**
      * @return string
      */
-    public function GetTitle(): string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -163,7 +163,7 @@ class Rule implements JsonSerializable
     /**
      * @param string $title
      */
-    public function SetTitle(string $title): void
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
@@ -171,7 +171,7 @@ class Rule implements JsonSerializable
     /**
      * @return CalendarSelection
      */
-    public function GetCalendarSelection(): CalendarSelection
+    public function getCalendarSelection(): CalendarSelection
     {
         return $this->calendar_selection;
     }
@@ -179,7 +179,7 @@ class Rule implements JsonSerializable
     /**
      * @param CalendarSelection $calendar_selection
      */
-    public function SetCalendarSelection(CalendarSelection $calendar_selection): void
+    public function setCalendarSelection(CalendarSelection $calendar_selection): void
     {
         $this->calendar_selection = $calendar_selection;
     }
@@ -187,7 +187,7 @@ class Rule implements JsonSerializable
     /**
      * @return int
      */
-    public function GetPriority(): int
+    public function getPriority(): int
     {
         return $this->priority;
     }
@@ -195,7 +195,7 @@ class Rule implements JsonSerializable
     /**
      * @param int $priority
      */
-    public function SetPriority(int $priority): void
+    public function setPriority(int $priority): void
     {
         $this->priority = $priority;
     }

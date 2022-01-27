@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\FormEditor\FrontendGeneration;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 

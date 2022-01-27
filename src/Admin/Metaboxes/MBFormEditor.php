@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\Metaboxes;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -87,7 +87,7 @@ class MBFormEditor extends MetaBoxForm
             $ffg           = new FormFrontendGenerator($form_data);
             $frontend_html = $ffg->generateContent();
 
-            if ( ! $this->HasDuplicateNames($form_data)) {
+            if ( !$this->HasDuplicateNames($form_data)) {
                 update_post_meta($post_id, "form-data", $_REQUEST['tlbm-form-editor-data']);
                 update_post_meta($post_id, "frontend-html", $frontend_html);
             } else {
@@ -100,13 +100,12 @@ class MBFormEditor extends MetaBoxForm
     {
         if (is_array($form_data)) {
             $ri    = new RecursiveIteratorIterator(
-                new RecursiveArrayIterator($form_data),
-                RecursiveIteratorIterator::SELF_FIRST
+                new RecursiveArrayIterator($form_data), RecursiveIteratorIterator::SELF_FIRST
             );
             $names = array();
             foreach ($ri as $elem) {
                 if (isset($elem->name)) {
-                    if ( ! in_array($elem->name, $names)) {
+                    if ( !in_array($elem->name, $names)) {
                         $names[] = $elem->name;
                     } else {
                         return true;
@@ -132,8 +131,7 @@ class MBFormEditor extends MetaBoxForm
             <div class="notice notice-error is-dismissible">
                 <p><?php
                     _e(
-                        '<strong>Could not save Form!</strong><br> Duplicate names are not allowed',
-                        TLBM_TEXT_DOMAIN
+                        '<strong>Could not save Form!</strong><br> Duplicate names are not allowed', TLBM_TEXT_DOMAIN
                     ); ?></p>
             </div>
             <?php

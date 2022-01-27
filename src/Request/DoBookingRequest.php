@@ -10,7 +10,7 @@ use TLBM\Email\Contracts\MailSenderInterface;
 use TLBM\Form\Contracts\FormManagerInterface;
 use TLBM\Output\FrontendMessenger;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -37,7 +37,7 @@ class DoBookingRequest extends RequestBase
         $this->mailSender  = $mailSender;
         $this->formManager = $formManager;
         $this->action      = "dobooking";
-        $this->hasContent = true;
+        $this->hasContent  = true;
     }
 
     public function onAction($vars)
@@ -61,9 +61,7 @@ class DoBookingRequest extends RequestBase
                             $vars[$value->key] = $value->value;
                         }
                         $this->mailSender->sendTemplate(
-                            $booking->booking_values['contact_email']->value,
-                            "email_booking_confirmation",
-                            $vars
+                            $booking->booking_values['contact_email']->value, "email_booking_confirmation", $vars
                         );
                     }
 

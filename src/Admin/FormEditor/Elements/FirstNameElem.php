@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\FormEditor\Elements;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -17,7 +17,7 @@ final class FirstNameElem extends FormInputElem
         parent::__construct("field_first_name", __("First Name", TLBM_TEXT_DOMAIN));
 
         $this->menu_category = __("Predefined fields", TLBM_TEXT_DOMAIN);
-        $this->description = __("A field in which the user can enter his/her first name", TLBM_TEXT_DOMAIN);
+        $this->description   = __("A field in which the user can enter his/her first name", TLBM_TEXT_DOMAIN);
 
         $name_setting                = $this->GetSettingsType("name");
         $name_setting->default_value = "first_name";
@@ -36,14 +36,10 @@ final class FirstNameElem extends FormInputElem
      *
      * @return mixed
      */
-    public function GetFrontendOutput($form_node, callable $insert_child = null)
+    public function getFrontendOutput($form_node, callable $insert_child = null)
     {
         return InputGenerator::GetFormControl(
-            "text",
-            $form_node->formData->title,
-            $form_node->formData->name,
-            $form_node->formData->required == "yes",
-            ($form_node->formData->css_classes ?? "")
+            "text", $form_node->formData->title, $form_node->formData->name, $form_node->formData->required == "yes", ($form_node->formData->css_classes ?? "")
         );
     }
 }

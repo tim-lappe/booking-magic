@@ -4,7 +4,6 @@
 namespace TLBM\Admin\Settings\SingleSettings\Text;
 
 
-use TLBM\Admin\Settings\SettingsManager;
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
 
 class WeekdayLabels extends SettingsBase
@@ -34,43 +33,43 @@ class WeekdayLabels extends SettingsBase
         ));
     }
 
-    public static function GetWeekdayLabels($name): array
+    public function getWeekdayLabels($name): array
     {
         if ($name == "long") {
-            return self::GetLongWeekdayLabels();
+            return $this->getLongWeekdayLabels();
         } else {
-            return self::GetShortWeekdayLabels();
+            return $this->getShortWeekdayLabels();
         }
     }
 
-    public static function GetLongWeekdayLabels(): array
+    public function getLongWeekdayLabels(): array
     {
-        $setting = SettingsManager::GetSetting("weekday_labels");
-        if ($setting instanceof WeekdayLabels) {
-            $val = get_option($setting->option_name);
-
-            return $val['long'];
+        $value = $this->settingsManager->getValue(WeekdayLabels::class);
+        if (is_array($value)) {
+            if (isset($value['long']) && is_array($value['long'])) {
+                return $value['long'];
+            }
         }
 
         return array();
     }
 
-    public static function GetShortWeekdayLabels(): array
+    public function getShortWeekdayLabels(): array
     {
-        $setting = SettingsManager::GetSetting("weekday_labels");
-        if ($setting instanceof WeekdayLabels) {
-            $val = get_option($setting->option_name);
-
-            return $val['short'];
+        $value = $this->settingsManager->getValue(WeekdayLabels::class);
+        if (is_array($value)) {
+            if (isset($value['short']) && is_array($value['short'])) {
+                return $value['short'];
+            }
         }
 
         return array();
     }
 
-    public function PrintField()
+    public function display()
     {
         if ($this->CheckOptions()) {
-            update_option($this->option_name, $this->default_value);
+            $this->settingsManager->setValue(WeekdayLabels::class, $this->default_value);
         }
 
         ?>
@@ -207,20 +206,20 @@ class WeekdayLabels extends SettingsBase
      */
     private function CheckOptions(): bool
     {
-        $option = get_option($this->option_name);
+        $option = $this->settingsManager->getValue(WeekdayLabels::class);
         $keys   = array("mon", "tue", "wed", "thu", "fri", "sat", "sun");
         $fail   = false;
 
         if (isset($option['long']) && is_array($option['long'])) {
             foreach ($keys as $item) {
-                if ( ! isset($option['long'][$item])) {
+                if ( !isset($option['long'][$item])) {
                     $fail = true;
                 }
             }
         }
         if (isset($option['short']) && is_array($option['short'])) {
             foreach ($keys as $item) {
-                if ( ! isset($option['short'][$item])) {
+                if ( !isset($option['short'][$item])) {
                     $fail = true;
                 }
             }

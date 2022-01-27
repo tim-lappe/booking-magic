@@ -74,9 +74,9 @@ class MainValues
 
     public function hasOne(...$names): bool
     {
-        $arr_names = (array)$names;
+        $arr_names = (array) $names;
         foreach ($arr_names as $name) {
-            if ( ! empty($this->getValue($name))) {
+            if ( !empty($this->getValue($name))) {
                 return true;
             }
         }
@@ -104,7 +104,7 @@ class MainValues
 
     public function hasAll(...$names): bool
     {
-        $arr_names = (array)$names;
+        $arr_names = (array) $names;
         foreach ($arr_names as $name) {
             if (empty($this->getValue($name))) {
                 return false;
@@ -169,7 +169,7 @@ class MainValues
         }
 
         foreach ($this->booking_values as $booking_value) {
-            if ( ! in_array($booking_value->key, $fixednames)) {
+            if ( !in_array($booking_value->key, $fixednames)) {
                 $custom[] = $booking_value;
             }
         }
@@ -203,7 +203,7 @@ class MainValues
     public function getCalendarName($index = 0): string
     {
         if (isset($this->calendars[$index]) && $this->calendars[$index] instanceof Calendar) {
-            return $this->calendars[$index]->GetTitle();
+            return $this->calendars[$index]->getTitle();
         }
 
         return "";

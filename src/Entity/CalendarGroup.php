@@ -38,7 +38,7 @@ class CalendarGroup
     /**
      * @return CalendarSelection
      */
-    public function GetCalendarSelection(): CalendarSelection
+    public function getCalendarSelection(): CalendarSelection
     {
         return $this->calendar_selection;
     }
@@ -46,7 +46,7 @@ class CalendarGroup
     /**
      * @param CalendarSelection $calendar_selection
      */
-    public function SetCalendarSelection(CalendarSelection $calendar_selection): void
+    public function setCalendarSelection(CalendarSelection $calendar_selection): void
     {
         $this->calendar_selection = $calendar_selection;
     }
@@ -54,7 +54,7 @@ class CalendarGroup
     /**
      * @return string
      */
-    public function GetTitle(): string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -62,7 +62,7 @@ class CalendarGroup
     /**
      * @param string $title
      */
-    public function SetTitle(string $title): void
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
@@ -70,7 +70,7 @@ class CalendarGroup
     /**
      * @return string
      */
-    public function GetBookingDisitribution(): string
+    public function getBookingDisitribution(): string
     {
         return $this->booking_disitribution;
     }
@@ -78,7 +78,7 @@ class CalendarGroup
     /**
      * @param string $booking_disitribution
      */
-    public function SetBookingDisitribution(string $booking_disitribution): void
+    public function setBookingDisitribution(string $booking_disitribution): void
     {
         $this->booking_disitribution = $booking_disitribution;
     }

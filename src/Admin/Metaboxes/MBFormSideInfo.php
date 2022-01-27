@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\Metaboxes;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -54,7 +54,7 @@ class MBFormSideInfo extends MetaBoxForm
     {
         if (isset($_REQUEST['show_on_page_id'])) {
             $show_on_page_id = $_REQUEST['show_on_page_id'];
-            if (isset($show_on_page_id) && strlen($show_on_page_id) > 0 && is_numeric($show_on_page_id)) {
+            if (strlen($show_on_page_id) > 0 && is_numeric($show_on_page_id)) {
                 update_post_meta($post_id, "show_on_page_id", intval($show_on_page_id));
             } else {
                 update_post_meta($post_id, "show_on_page_id", "");

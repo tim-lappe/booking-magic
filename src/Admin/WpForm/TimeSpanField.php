@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\WpForm;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -13,9 +13,9 @@ use TLBM\Utilities\Contracts\DateTimeToolsInterface;
 class TimeSpanField extends FormFieldBase
 {
 
-    public $setting = array();
+    public array $setting = array();
 
-    private $all_settings = array(
+    private array $all_settings = array(
         "years",
         "days",
         "hours",
@@ -24,22 +24,32 @@ class TimeSpanField extends FormFieldBase
 
     private DateTimeToolsInterface $dateTimeTools;
 
+    /**
+     * @param DateTimeToolsInterface $dateTimeTools
+     * @param string $name
+     * @param string $title
+     * @param array $setting
+     */
     public function __construct(
         DateTimeToolsInterface $dateTimeTools,
         string $name,
         string $title,
-        array $setting = array("days", "hours"),
-        $value = ""
+        array $setting = array("days", "hours")
     ) {
-        parent::__construct($name, $title, $value);
+        parent::__construct($name, $title);
 
         $this->dateTimeTools = $dateTimeTools;
         $this->setting       = $setting;
     }
 
-    public function displayContent(): void
+    /**
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function displayContent($value): void
     {
-        $timeparts = $this->dateTimeTools->fromMinutesToTimeparts($this->value);
+        $timeparts = $this->dateTimeTools->fromMinutesToTimeparts($value);
         ?>
         <tr>
             <th scope="row"><label for="<?php

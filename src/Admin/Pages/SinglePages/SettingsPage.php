@@ -4,27 +4,30 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 
-use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
-use TLBM\Admin\Settings\SettingsManager;
+use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 
 class SettingsPage extends PageBase
 {
+    /**
+     * @var SettingsManagerInterface
+     */
+    private SettingsManagerInterface $settingsManager;
 
-    public function __construct(AdminPageManagerInterface $adminPageManager)
+    public function __construct(SettingsManagerInterface $settingsManager)
     {
-        parent::__construct($adminPageManager, "Settings", "booking-magic-settings");
-
-        $this->parent_slug = "booking-magic";
+        parent::__construct("Settings", "booking-magic-settings");
+        $this->settingsManager = $settingsManager;
+        $this->parent_slug     = "booking-magic";
     }
 
     public function displayPageBody()
     {
-        $tab = isset($_GET['tab']) ? $_GET['tab'] : "general";
+        $tab = $_GET['tab'] ?? "general";
         ?>
         <div class="wrap">
             <nav class="nav-tab-wrapper">
                 <?php
-                foreach (SettingsManager::$groups as $key => $group): ?>
+                foreach ($this->settingsManager->getAllSettingsGroups() as $key => $group): ?>
                     <a href="?page=<?php
                     echo $this->menu_slug ?>&tab=<?php
                     echo $key ?>" class="nav-tab <?php

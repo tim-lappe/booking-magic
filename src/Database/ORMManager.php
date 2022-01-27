@@ -22,11 +22,7 @@ class ORMManager implements ORMInterface
     public function __construct()
     {
         $configuration = Setup::createAnnotationMetadataConfiguration(
-            [TLBM_DIR . "/src/Entity"],
-            true,
-            null,
-            null,
-            false
+            [TLBM_DIR . "/src/Entity"], true, null, null, false
         );
         $connection    = array(
             "driver"   => "mysqli",

@@ -42,7 +42,7 @@ class Calendar
     /**
      * @return int
      */
-    public function GetTimestampCreated(): int
+    public function getTimestampCreated(): int
     {
         return $this->timestamp_created;
     }
@@ -50,7 +50,7 @@ class Calendar
     /**
      * @param int $timestamp_created
      */
-    public function SetTimestampCreated(int $timestamp_created): void
+    public function setTimestampCreated(int $timestamp_created): void
     {
         $this->timestamp_created = $timestamp_created;
     }
@@ -58,7 +58,7 @@ class Calendar
     /**
      * @return string
      */
-    public function GetTitle(): string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -66,7 +66,7 @@ class Calendar
     /**
      * @param string $title
      */
-    public function SetTitle(string $title): void
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
@@ -74,26 +74,26 @@ class Calendar
     /**
      * @return Collection|CalendarSelection[]
      */
-    public function GetCalendarSelections(): Collection
+    public function getCalendarSelections(): Collection
     {
         return $this->calendar_selections;
     }
 
-    public function AddCalendarSelection(CalendarSelection $calendar_selection): CalendarSelection
+    public function addCalendarSelection(CalendarSelection $calendar_selection): CalendarSelection
     {
-        if ( ! $this->calendar_selections->contains($calendar_selection)) {
+        if ( !$this->calendar_selections->contains($calendar_selection)) {
             $this->calendar_selections[] = $calendar_selection;
-            $calendar_selection->AddCalendar($this);
+            $calendar_selection->addCalendar($this);
         }
 
         return $calendar_selection;
     }
 
-    public function RemoveCalendarSelection(CalendarSelection $calendar_selection): CalendarSelection
+    public function removeCalendarSelection(CalendarSelection $calendar_selection): CalendarSelection
     {
         if ($this->calendar_selections->contains($calendar_selection)) {
             $this->calendar_selections->removeElement($calendar_selection);
-            $calendar_selection->RemoveCalendar($this);
+            $calendar_selection->removeCalendar($this);
         }
 
         return $calendar_selection;

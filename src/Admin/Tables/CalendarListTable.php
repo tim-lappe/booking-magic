@@ -28,10 +28,7 @@ class CalendarListTable extends TableBase
         $this->dateTimeTools   = $dateTimeTools;
 
         parent::__construct(
-            __("Calendars", TLBM_TEXT_DOMAIN),
-            __("Calendar", TLBM_TEXT_DOMAIN),
-            10,
-            __("You haven't created any calendars yet", TLBM_TEXT_DOMAIN)
+            __("Calendars", TLBM_TEXT_DOMAIN), __("Calendar", TLBM_TEXT_DOMAIN), 10, __("You haven't created any calendars yet", TLBM_TEXT_DOMAIN)
         );
     }
 
@@ -40,12 +37,12 @@ class CalendarListTable extends TableBase
      */
     public function column_title(Calendar $item)
     {
-        $link = admin_url("admin.php?page=booking-calendar-edit&calendar_id=" . $item->GetId());
+        $link = admin_url("admin.php?page=booking-calendar-edit&calendar_id=" . $item->getId());
 
-        if ( ! empty($item->GetTitle())) {
-            echo "<strong><a href='" . $link . "'>" . $item->GetTitle() . "</a></strong>";
+        if ( !empty($item->getTitle())) {
+            echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
         } else {
-            echo "<strong><a href='" . $link . "'>" . $item->GetId() . "</a></strong>";
+            echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
         }
     }
 
@@ -54,7 +51,7 @@ class CalendarListTable extends TableBase
      */
     public function column_datetime(Calendar $item)
     {
-        $p = get_post($item->GetId());
+        $p = get_post($item->getId());
         echo $this->dateTimeTools->formatWithTime(strtotime($p->post_date));
     }
 
@@ -66,16 +63,16 @@ class CalendarListTable extends TableBase
             foreach ($ids as $id) {
                 if ($action == "delete") {
                     wp_update_post(array(
-                        "ID"          => $id,
-                        "post_status" => "trash"
-                    ));
+                                       "ID"          => $id,
+                                       "post_status" => "trash"
+                                   ));
                 } elseif ($action == "delete_permanently") {
                     wp_delete_post($id);
                 } elseif ($action == "restore") {
                     wp_update_post(array(
-                        "ID"          => $id,
-                        "post_status" => "publish"
-                    ));
+                                       "ID"          => $id,
+                                       "post_status" => "publish"
+                                   ));
                 }
             }
         }
@@ -137,7 +134,7 @@ class CalendarListTable extends TableBase
      */
     protected function GetItemId($item): int
     {
-        return $item->GetId();
+        return $item->getId();
     }
 
     /**

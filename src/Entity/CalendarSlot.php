@@ -19,38 +19,43 @@ class CalendarSlot
      * @Doctrine\ORM\Mapping\OneToOne (targetEntity=Booking::class)
      */
     public Booking $booking;
+
     /**
      * @var Calendar
      * @Doctrine\ORM\Mapping\ManyToOne (targetEntity=Calendar::class)
      */
     public Calendar $calendar;
+
     /**
      * @var Form
      * @Doctrine\ORM\Mapping\ManyToOne (targetEntity=Form::class)
      */
     public Form $form;
+
     /**
      * @var string
      * @Doctrine\ORM\Mapping\Column (type="string", nullable=false)
      */
     public string $name_from_form = "";
+
     /**
      * @var string
      * @Doctrine\ORM\Mapping\Column (type="string", nullable=false)
      */
     public string $title_from_form = "";
+
     /**
      * @var int
      * @Doctrine\ORM\Mapping\Column (type="bigint", nullable=false)
      */
     protected int $timestamp = 0;
 
-    public function GetBooking(): Booking
+    public function getBooking(): Booking
     {
         return $this->booking;
     }
 
-    public function SetBooking(Booking $booking)
+    public function setBooking(Booking $booking)
     {
         $this->booking = $booking;
     }
@@ -58,7 +63,7 @@ class CalendarSlot
     /**
      * @return int
      */
-    public function GetTimestamp(): int
+    public function getTimestamp(): int
     {
         return $this->timestamp;
     }
@@ -66,7 +71,7 @@ class CalendarSlot
     /**
      * @param int $timestamp
      */
-    public function SetTimestamp(int $timestamp): void
+    public function setTimestamp(int $timestamp): void
     {
         $this->timestamp = $timestamp;
     }
@@ -74,7 +79,7 @@ class CalendarSlot
     /**
      * @return Calendar
      */
-    public function GetCalendar(): Calendar
+    public function getCalendar(): Calendar
     {
         return $this->calendar;
     }
@@ -82,7 +87,7 @@ class CalendarSlot
     /**
      * @param Calendar $calendar
      */
-    public function SetCalendar(Calendar $calendar): void
+    public function setCalendar(Calendar $calendar): void
     {
         $this->calendar = $calendar;
     }
@@ -90,7 +95,7 @@ class CalendarSlot
     /**
      * @return Form
      */
-    public function GetForm(): Form
+    public function getForm(): Form
     {
         return $this->form;
     }
@@ -98,7 +103,7 @@ class CalendarSlot
     /**
      * @param Form $form
      */
-    public function SetForm(Form $form): void
+    public function setForm(Form $form): void
     {
         $this->form = $form;
     }
@@ -106,7 +111,7 @@ class CalendarSlot
     /**
      * @return string
      */
-    public function GetNameFromForm(): string
+    public function getNameFromForm(): string
     {
         return $this->name_from_form;
     }
@@ -114,7 +119,7 @@ class CalendarSlot
     /**
      * @param string $name_from_form
      */
-    public function SetNameFromForm(string $name_from_form): void
+    public function setNameFromForm(string $name_from_form): void
     {
         $this->name_from_form = $name_from_form;
     }
@@ -122,7 +127,7 @@ class CalendarSlot
     /**
      * @return string
      */
-    public function GetTitleFromForm(): string
+    public function getTitleFromForm(): string
     {
         return $this->title_from_form;
     }
@@ -130,7 +135,7 @@ class CalendarSlot
     /**
      * @param string $title_from_form
      */
-    public function SetTitleFromForm(string $title_from_form): void
+    public function setTitleFromForm(string $title_from_form): void
     {
         $this->title_from_form = $title_from_form;
     }

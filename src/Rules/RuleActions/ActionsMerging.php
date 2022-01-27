@@ -5,6 +5,7 @@ namespace TLBM\Rules\RuleActions;
 use TLBM\Entity\Rule;
 use TLBM\Entity\RuleAction;
 use TLBM\Rules\Contracts\RuleActionsManagerInterface;
+use TLBM\Rules\Contracts\RulesQueryInterface;
 use TLBM\Rules\RulesQuery;
 
 class ActionsMerging
@@ -13,19 +14,26 @@ class ActionsMerging
     /**
      * @var RulesQuery
      */
-    private RulesQuery $rules_query;
+    private RulesQueryInterface $rulesQuery;
 
     /**
      * @var RuleActionsManagerInterface
      */
     private RuleActionsManagerInterface $ruleActionsManager;
 
-    public function __construct(RuleActionsManagerInterface $ruleActionsManager, RulesQuery $query)
+    /**
+     * @param RuleActionsManagerInterface $ruleActionsManager
+     * @param RulesQuery $query
+     */
+    public function __construct(RuleActionsManagerInterface $ruleActionsManager, RulesQueryInterface $query)
     {
-        $this->rules_query        = $query;
+        $this->rulesQuery         = $query;
         $this->ruleActionsManager = $ruleActionsManager;
     }
 
+    /**
+     * @return array
+     */
     public function getRuleActionsMerged(): array
     {
         $all_sums = array();
@@ -39,7 +47,7 @@ class ActionsMerging
                 $handler = $this->ruleActionsManager->getActionMerger($rule_action);
                 if ($handler) {
                     $merge_term = $handler->getEmptyMergeInstance()->getMergeTerm();
-                    if ( ! isset($action_sum[$merge_term])) {
+                    if ( !isset($action_sum[$merge_term])) {
                         $action_sum[$merge_term] = $handler->getEmptyMergeInstance();
                     }
                     $action_sum[$merge_term] = $handler->merge($action_sum[$merge_term]);
@@ -59,7 +67,7 @@ class ActionsMerging
      */
     public function getRuleActions(callable $forEach = null): array
     {
-        $result = $this->rules_query->getResult();
+        $result = $this->rulesQuery->getResult();
 
         $end_result = array();
         foreach ($result as $tstamp => $rules) {
@@ -69,7 +77,7 @@ class ActionsMerging
              * @var Rule $rule
              */
             foreach ($rules as $rule) {
-                $actions = array_merge($actions, $rule->GetActions()->toArray());
+                $actions = array_merge($actions, $rule->getActions()->toArray());
             }
 
             if ($forEach) {

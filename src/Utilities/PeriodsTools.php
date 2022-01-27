@@ -42,10 +42,10 @@ class PeriodsTools implements PeriodsToolsInterface
     public function isDateTimeInPeriod(RulePeriod $period, DateTime $dateTime): bool
     {
         $fromDateTime = new DateTime();
-        $fromDateTime->setTimestamp($period->GetFromTstamp());
+        $fromDateTime->setTimestamp($period->getFromTstamp());
 
         $toDateTime = new DateTime();
-        $toDateTime->setTimestamp($period->GetToTstamp());
+        $toDateTime->setTimestamp($period->getToTstamp());
 
         $from_day   = $fromDateTime->format("d");
         $from_month = $fromDateTime->format("m");
@@ -55,10 +55,10 @@ class PeriodsTools implements PeriodsToolsInterface
         $to_month = $toDateTime->format("m");
         $to_year  = $toDateTime->format("Y");
 
-        if ( ! $from_year) {
+        if ( !$from_year) {
             $from_year = $dateTime->format("Y");
         }
-        if ( ! $to_year) {
+        if ( !$to_year) {
             $to_year = $dateTime->format("Y");
         }
 
@@ -67,7 +67,6 @@ class PeriodsTools implements PeriodsToolsInterface
         $toDt = new DateTime();
         $toDt->setDate($to_year, $to_month, intval($to_day));
 
-        return $fromDt->getTimestamp() <= $dateTime->getTimestamp() && $toDt->getTimestamp() >= $dateTime->getTimestamp(
-            );
+        return $fromDt->getTimestamp() <= $dateTime->getTimestamp() && $toDt->getTimestamp() >= $dateTime->getTimestamp();
     }
 }

@@ -13,22 +13,25 @@ class FormEditorField extends FormFieldBase
      * @param FormElementsCollectionInterface $elementsCollection
      * @param string $name
      * @param string $title
-     * @param $value
      */
     public function __construct(
         FormElementsCollectionInterface $elementsCollection,
         string $name,
-        string $title,
-        $value = ""
+        string $title
     ) {
         $this->elementsCollection = $elementsCollection;
 
-        parent::__construct($name, $title, $value);
+        parent::__construct($name, $title);
     }
 
-    public function displayContent(): void
+    /**
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function displayContent($value): void
     {
-        $form_data = $this->value;
+        $form_data = $value;
         ?>
 
         <div class="tlbm-form-editor-field" data-name="<?php

@@ -14,7 +14,7 @@ class AdminMail extends SettingsBase
         parent::__construct("general", "admin_mail", __("Admin Mail", TLBM_TEXT_DOMAIN), get_option("admin_email"));
     }
 
-    public function PrintField()
+    public function display()
     {
         ?>
         <label>

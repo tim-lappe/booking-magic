@@ -45,16 +45,13 @@ class BookingListTable extends TableBase
         $this->colors          = new Colors();
 
         parent::__construct(
-            __("Bookings", TLBM_TEXT_DOMAIN),
-            __("Booking", TLBM_TEXT_DOMAIN),
-            10,
-            __("You don't have any bookings yet", TLBM_TEXT_DOMAIN)
+            __("Bookings", TLBM_TEXT_DOMAIN), __("Booking", TLBM_TEXT_DOMAIN), 10, __("You don't have any bookings yet", TLBM_TEXT_DOMAIN)
         );
     }
 
     public function extra_tablenav($which)
     {
-        if ($which == "top" && ! $this->slim) {
+        if ($which == "top" && !$this->slim) {
             $calendars = $this->calendarManager->getAllCalendars();
             ?>
             <div class="alignleft actions bulkactions">
@@ -64,9 +61,9 @@ class BookingListTable extends TableBase
                     <?php
                     foreach ($calendars as $calendar): ?>
                         <option <?php
-                        echo selected($_REQUEST['calendar-filter'], $calendar->GetId()) ?> value="<?php
-                        echo $calendar->GetId() ?>"><?php
-                            echo $calendar->GetTitle() ?></option>
+                        echo selected($_REQUEST['calendar-filter'], $calendar->getId()) ?> value="<?php
+                        echo $calendar->getId() ?>"><?php
+                            echo $calendar->getTitle() ?></option>
                     <?php
                     endforeach; ?>
                 </select>
@@ -78,7 +75,7 @@ class BookingListTable extends TableBase
 
     public function display_tablenav($which)
     {
-        if ( ! $this->slim) {
+        if ( !$this->slim) {
             parent::display_tablenav($which);
         }
     }
@@ -116,14 +113,12 @@ class BookingListTable extends TableBase
             }
 
             if ($calendar) {
-                echo $prefix . "<a href='" . $link . "'>" . $calendar->GetTitle(
-                    ) . "</a>&nbsp;&nbsp;&nbsp;" . $this->dateTimeTools->formatWithTime(
+                echo $prefix . "<a href='" . $link . "'>" . $calendar->getTitle() . "</a>&nbsp;&nbsp;&nbsp;" . $this->dateTimeTools->formatWithTime(
                         $calendar_slot->timestamp
                     ) . "<br>";
             } else {
                 echo $prefix . "<strong>" . __(
-                        "Calendar deleted",
-                        TLBM_TEXT_DOMAIN
+                        "Calendar deleted", TLBM_TEXT_DOMAIN
                     ) . "</strong>&nbsp;&nbsp;&nbsp;" . $this->dateTimeTools->formatWithTime(
                         $calendar_slot->timestamp
                     ) . "<br>";
@@ -140,7 +135,7 @@ class BookingListTable extends TableBase
      */
     public function column_state($item)
     {
-        $state = BookingStates::GetStateByName($item->state);
+        $state = BookingStates::getStateByName($item->state);
         $rgb   = $this->colors->getRgbFromHex($state['color']);
 
         ?>
@@ -164,22 +159,22 @@ class BookingListTable extends TableBase
 
     protected function ProcessBuldActions()
     {
-        if (isset($_REQUEST['wp_post_ids']) && ! $this->slim) {
+        if (isset($_REQUEST['wp_post_ids']) && !$this->slim) {
             $ids    = $_REQUEST['wp_post_ids'];
             $action = $this->current_action();
             foreach ($ids as $id) {
                 if ($action == "delete") {
                     wp_update_post(array(
-                        "ID"          => $id,
-                        "post_status" => "trash"
-                    ));
+                                       "ID"          => $id,
+                                       "post_status" => "trash"
+                                   ));
                 } elseif ($action == "delete_permanently") {
                     wp_delete_post($id);
                 } elseif ($action == "restore") {
                     wp_update_post(array(
-                        "ID"          => $id,
-                        "post_status" => "publish"
-                    ));
+                                       "ID"          => $id,
+                                       "post_status" => "publish"
+                                   ));
                 }
             }
         }
@@ -187,14 +182,14 @@ class BookingListTable extends TableBase
 
     protected function GetTotalItemsCount(): int
     {
-        if ( ! $this->slim) {
+        if ( !$this->slim) {
             return BookingManager::GetAllBookingsCount();
         }
 
         return BookingManager::GetAllBookingsCount(array(
-            "posts_per_page" => 5,
-            "paged"          => false
-        ));
+                                                       "posts_per_page" => 5,
+                                                       "paged"          => false
+                                                   ));
     }
 
     protected function GetItems($orderby, $order): array
@@ -222,17 +217,17 @@ class BookingListTable extends TableBase
         foreach ($bookings as $booking) {
             $add = sizeof(
                        $booking->calendar_slots
-                   ) == 0 && ( ! isset($_REQUEST['calendar-filter']) || empty($_REQUEST['calendar-filter']));
-            if ( ! $add) {
+                   ) == 0 && (empty($_REQUEST['calendar-filter']));
+            if ( !$add) {
                 foreach ($booking->calendar_slots as $slot) {
-                    if ( ! isset($_REQUEST['calendar-filter']) || empty($_REQUEST['calendar-filter']) || $slot->booked_calendar_id == $_REQUEST['calendar-filter']) {
+                    if (empty($_REQUEST['calendar-filter']) || $slot->booked_calendar_id == $_REQUEST['calendar-filter']) {
                         $add = true;
                     }
                 }
             }
 
             if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "new") {
-                $add = $booking->state == DefaultBookingState::GetDefaultName() || empty($booking->state);
+                $add = $booking->state == DefaultBookingState::getDefaultName() || empty($booking->state);
             }
 
             if ($add) {
@@ -245,7 +240,7 @@ class BookingListTable extends TableBase
 
     protected function GetViews(): array
     {
-        if ( ! $this->slim) {
+        if ( !$this->slim) {
             return array(
                 "all"     => __("All", TLBM_TEXT_DOMAIN),
                 "new"     => __("New", TLBM_TEXT_DOMAIN),
@@ -258,7 +253,7 @@ class BookingListTable extends TableBase
 
     protected function GetColumns(): array
     {
-        if ( ! $this->slim) {
+        if ( !$this->slim) {
             return array(
                 "cb"       => "<input type='checkbox' />",
                 "id"       => __('ID', TLBM_TEXT_DOMAIN),
@@ -278,7 +273,7 @@ class BookingListTable extends TableBase
 
     protected function GetSortableColumns(): array
     {
-        if ( ! $this->slim) {
+        if ( !$this->slim) {
             return array(
                 'id'       => array('id', true),
                 'datetime' => array('datetime', true)
@@ -290,7 +285,7 @@ class BookingListTable extends TableBase
 
     protected function GetBulkActions(): array
     {
-        if ( ! $this->slim) {
+        if ( !$this->slim) {
             if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
                 return array(
                     'delete_permanently' => __('Delete permanently', TLBM_TEXT_DOMAIN),

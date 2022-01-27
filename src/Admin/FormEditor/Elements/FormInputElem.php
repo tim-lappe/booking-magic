@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\FormEditor\Elements;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -19,27 +19,18 @@ abstract class FormInputElem extends FormElem
 
 
         $setting_title = new Input(
-            "title", __("Title", TLBM_TEXT_DOMAIN),
-            "text",
-            $this->title
+            "title", __("Title", TLBM_TEXT_DOMAIN), "text", $this->title
         );
 
         $setting_name = new Input(
-            "name", __("Name", TLBM_TEXT_DOMAIN),
-            "text",
-            str_replace(" ", "_", strtolower($this->title)),
-            false,
-            true,
-            Input::GetForbiddenNameValues()
+            "name", __("Name", TLBM_TEXT_DOMAIN), "text", str_replace(" ", "_", strtolower($this->title)), false, true, Input::GetForbiddenNameValues()
         );
 
         $setting_required = new Select(
-            "required", __("Required", TLBM_TEXT_DOMAIN),
-            array(
-                "yes" => __("Yes", TLBM_TEXT_DOMAIN),
-                "no"  => __("No", TLBM_TEXT_DOMAIN)
-            ),
-            "no"
+            "required", __("Required", TLBM_TEXT_DOMAIN), array(
+                          "yes" => __("Yes", TLBM_TEXT_DOMAIN),
+                          "no"  => __("No", TLBM_TEXT_DOMAIN)
+                      ), "no"
         );
 
 
@@ -52,7 +43,7 @@ abstract class FormInputElem extends FormElem
         if (isset($form_data['name'])) {
             $name = $form_data['name'];
             if (isset($input_vars[$name])) {
-                return ! empty($input_vars[$name]);
+                return !empty($input_vars[$name]);
             }
         }
 

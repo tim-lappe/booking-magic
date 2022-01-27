@@ -64,7 +64,7 @@ class RulePeriod implements JsonSerializable
     /**
      * @return bool
      */
-    public function IsFromTimeset(): bool
+    public function isFromTimeset(): bool
     {
         return $this->from_timeset;
     }
@@ -72,7 +72,7 @@ class RulePeriod implements JsonSerializable
     /**
      * @param bool $from_timeset
      */
-    public function SetFromTimeset(bool $from_timeset): void
+    public function setFromTimeset(bool $from_timeset): void
     {
         $this->from_timeset = $from_timeset;
     }
@@ -80,7 +80,7 @@ class RulePeriod implements JsonSerializable
     /**
      * @return bool
      */
-    public function IsToTimeset(): bool
+    public function isToTimeset(): bool
     {
         return $this->to_timeset;
     }
@@ -88,7 +88,7 @@ class RulePeriod implements JsonSerializable
     /**
      * @param bool $to_timeset
      */
-    public function SetToTimeset(bool $to_timeset): void
+    public function setToTimeset(bool $to_timeset): void
     {
         $this->to_timeset = $to_timeset;
     }
@@ -98,11 +98,11 @@ class RulePeriod implements JsonSerializable
      *
      * @return TimeSlot
      */
-    public function AddTimeSlot(TimeSlot $slot): TimeSlot
+    public function addTimeSlot(TimeSlot $slot): TimeSlot
     {
-        if ( ! $this->daily_time_ranges->contains($slot)) {
+        if ( !$this->daily_time_ranges->contains($slot)) {
             $this->daily_time_ranges[] = $slot;
-            $slot->SetRulePeriod($this);
+            $slot->setRulePeriod($this);
         }
 
         return $slot;
@@ -113,11 +113,11 @@ class RulePeriod implements JsonSerializable
      *
      * @return TimeSlot
      */
-    public function RemoveTimeSlot(TimeSlot $slot): TimeSlot
+    public function removeTimeSlot(TimeSlot $slot): TimeSlot
     {
         if ($this->daily_time_ranges->contains($slot)) {
             $this->daily_time_ranges->removeElement($slot);
-            $slot->SetRulePeriod(null);
+            $slot->setRulePeriod(null);
         }
 
         return $slot;
@@ -126,7 +126,7 @@ class RulePeriod implements JsonSerializable
     /**
      * @return int
      */
-    public function GetFromTstamp(): int
+    public function getFromTstamp(): int
     {
         return $this->from_tstamp;
     }
@@ -136,7 +136,7 @@ class RulePeriod implements JsonSerializable
      *
      * @return void
      */
-    public function SetFromTstamp(int $from_tstamp)
+    public function setFromTstamp(int $from_tstamp)
     {
         $this->from_tstamp = $from_tstamp;
     }
@@ -144,7 +144,7 @@ class RulePeriod implements JsonSerializable
     /**
      * @return int
      */
-    public function GetToTstamp(): int
+    public function getToTstamp(): int
     {
         return $this->to_tstamp;
     }
@@ -154,17 +154,17 @@ class RulePeriod implements JsonSerializable
      *
      * @return void
      */
-    public function SetToTstamp(int $to_tstamp)
+    public function setToTstamp(int $to_tstamp)
     {
         $this->to_tstamp = $to_tstamp;
     }
 
-    public function GetRule(): Rule
+    public function getRule(): Rule
     {
         return $this->rule;
     }
 
-    public function SetRule($rule)
+    public function setRule($rule)
     {
         $this->rule = $rule;
     }

@@ -49,7 +49,7 @@ class TimeSlot implements JsonSerializable
     /**
      * @return ?RulePeriod
      */
-    public function GetRulePeriod(): ?RulePeriod
+    public function getRulePeriod(): ?RulePeriod
     {
         return $this->rule_period;
     }
@@ -57,7 +57,7 @@ class TimeSlot implements JsonSerializable
     /**
      * @param ?RulePeriod $rule_period
      */
-    public function SetRulePeriod(?RulePeriod $rule_period): void
+    public function setRulePeriod(?RulePeriod $rule_period): void
     {
         $this->rule_period = $rule_period;
     }
@@ -65,7 +65,7 @@ class TimeSlot implements JsonSerializable
     /**
      * @return int
      */
-    public function GetFromHour(): int
+    public function getFromHour(): int
     {
         return $this->from_hour;
     }
@@ -73,7 +73,7 @@ class TimeSlot implements JsonSerializable
     /**
      * @param int $from_hour
      */
-    public function SetFromHour(int $from_hour): void
+    public function setFromHour(int $from_hour): void
     {
         $this->from_hour = $from_hour;
     }
@@ -81,7 +81,7 @@ class TimeSlot implements JsonSerializable
     /**
      * @return int
      */
-    public function GetFromMin(): int
+    public function getFromMin(): int
     {
         return $this->from_min;
     }
@@ -89,7 +89,7 @@ class TimeSlot implements JsonSerializable
     /**
      * @param int $from_min
      */
-    public function SetFromMin(int $from_min): void
+    public function setFromMin(int $from_min): void
     {
         $this->from_min = $from_min;
     }
@@ -97,7 +97,7 @@ class TimeSlot implements JsonSerializable
     /**
      * @return int
      */
-    public function GetToHour(): int
+    public function getToHour(): int
     {
         return $this->to_hour;
     }
@@ -105,7 +105,7 @@ class TimeSlot implements JsonSerializable
     /**
      * @param int $to_hour
      */
-    public function SetToHour(int $to_hour): void
+    public function setToHour(int $to_hour): void
     {
         $this->to_hour = $to_hour;
     }
@@ -113,7 +113,7 @@ class TimeSlot implements JsonSerializable
     /**
      * @return int
      */
-    public function GetToMin(): int
+    public function getToMin(): int
     {
         return $this->to_min;
     }
@@ -121,7 +121,7 @@ class TimeSlot implements JsonSerializable
     /**
      * @param int $to_min
      */
-    public function SetToMin(int $to_min): void
+    public function setToMin(int $to_min): void
     {
         $this->to_min = $to_min;
     }

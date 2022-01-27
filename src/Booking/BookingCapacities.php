@@ -26,7 +26,7 @@ class BookingCapacities
         try {
             $datetime = new DateTime();
             $datetime->setTimestamp($calendar_slot->timestamp);
-            $group = CalendarGroup::FromCalendarOrGroupId($calendar_slot->calendar_selection_id);
+            $group     = CalendarGroup::FromCalendarOrGroupId($calendar_slot->calendar_selection_id);
             $freeseats = self::GetFreeDaySeatsForGroup($group, $datetime);
             if ($freeseats > 0) {
                 if ($group->booking_distribution == TLBM_BOOKING_DISTRIBUTION_FILL_ONE) {
@@ -92,7 +92,7 @@ class BookingCapacities
         $seats    = 0;
         foreach ($bookings as $booking) {
             foreach ($booking->calendar_slots as $slot) {
-                if ($slot->booked_calendar_id == $calendar->GetId()) {
+                if ($slot->booked_calendar_id == $calendar->getId()) {
                     if ($datetime->format("d-m-Y") == date("d-m-Y", $slot->timestamp)) {
                         $seats++;
                     }

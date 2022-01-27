@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\WpForm;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -16,11 +16,6 @@ abstract class FormFieldBase
     public string $name;
 
     /**
-     * @var mixed
-     */
-    public $value;
-
-    /**
      * @var string
      */
     public string $title;
@@ -28,17 +23,17 @@ abstract class FormFieldBase
     /**
      * @param string $name
      * @param string $title
-     * @param mixed $value
      */
-    public function __construct(string $name, string $title, $value = null)
+    public function __construct(string $name, string $title)
     {
         $this->name  = $name;
-        $this->value = $value;
         $this->title = $title;
     }
 
     /**
+     * @param mixed $value
+     *
      * @return void
      */
-    abstract public function displayContent(): void;
+    abstract public function displayContent($value): void;
 }

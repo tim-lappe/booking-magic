@@ -2,6 +2,7 @@
 
 namespace TLBM\Output\Calendar\ViewSettings;
 
+use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\Text\WeekdayLabels;
 
 class MonthViewSetting
@@ -9,8 +10,14 @@ class MonthViewSetting
 
     public array $weekday_labels = array();
 
-    public function __construct()
+    /**
+     * @param SettingsManagerInterface $settingsManager
+     */
+    public function __construct(SettingsManagerInterface $settingsManager)
     {
-        $this->weekday_labels = array_values(WeekdayLabels::GetLongWeekdayLabels());
+        $setting = $settingsManager->getSetting(WeekdayLabels::class);
+        if ($setting instanceof WeekdayLabels) {
+            $this->weekday_labels = array_values($setting->getLongWeekdayLabels());
+        }
     }
 }

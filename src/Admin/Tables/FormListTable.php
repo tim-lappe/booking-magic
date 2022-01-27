@@ -9,7 +9,6 @@ use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\FormEditPage;
 use TLBM\Entity\Form;
 use TLBM\Form\Contracts\FormManagerInterface;
-use WP_CLI\Context\Admin;
 
 class FormListTable extends TableBase
 {
@@ -26,14 +25,11 @@ class FormListTable extends TableBase
 
     public function __construct(FormManagerInterface $formManager, AdminPageManagerInterface $adminPageManager)
     {
-        $this->formManager = $formManager;
+        $this->formManager      = $formManager;
         $this->adminPageManager = $adminPageManager;
 
         parent::__construct(
-            __("Forms", TLBM_TEXT_DOMAIN),
-            __("Form", TLBM_TEXT_DOMAIN),
-            10,
-            __("You haven't created any forms yet", TLBM_TEXT_DOMAIN)
+            __("Forms", TLBM_TEXT_DOMAIN), __("Form", TLBM_TEXT_DOMAIN), 10, __("You haven't created any forms yet", TLBM_TEXT_DOMAIN)
         );
     }
 
@@ -43,12 +39,12 @@ class FormListTable extends TableBase
     public function column_title(Form $item)
     {
         $page = $this->adminPageManager->getPage(FormEditPage::class);
-        if($page instanceof FormEditPage) {
-            $link = $page->getEditLink($item->GetId());
-            if ( ! empty($item->GetTitle())) {
-                echo "<strong><a href='" . $link . "'>" . $item->GetTitle() . "</a></strong>";
+        if ($page instanceof FormEditPage) {
+            $link = $page->getEditLink($item->getId());
+            if ( !empty($item->getTitle())) {
+                echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
             } else {
-                echo "<strong><a href='" . $link . "'>" . $item->GetId() . "</a></strong>";
+                echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
             }
         }
     }
@@ -61,16 +57,16 @@ class FormListTable extends TableBase
             foreach ($ids as $id) {
                 if ($action == "delete") {
                     wp_update_post(array(
-                        "ID"          => $id,
-                        "post_status" => "trash"
-                    ));
+                                       "ID"          => $id,
+                                       "post_status" => "trash"
+                                   ));
                 } elseif ($action == "delete_permanently") {
                     wp_delete_post($id);
                 } elseif ($action == "restore") {
                     wp_update_post(array(
-                        "ID"          => $id,
-                        "post_status" => "publish"
-                    ));
+                                       "ID"          => $id,
+                                       "post_status" => "publish"
+                                   ));
                 }
             }
         }
@@ -130,7 +126,7 @@ class FormListTable extends TableBase
      */
     protected function GetItemId($item): int
     {
-        return $item->GetId();
+        return $item->getId();
     }
 
     /**

@@ -29,4 +29,9 @@ interface RequestManagerInterface
      * @return RequestBase
      */
     public function getRequest(string $action): ?RequestBase;
+
+    /**
+     * @return RequestBase|null
+     */
+    public function getCurrentRequest(): ?RequestBase;
 }

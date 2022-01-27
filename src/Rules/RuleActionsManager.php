@@ -41,8 +41,8 @@ class RuleActionsManager implements RuleActionsManagerInterface
      */
     public function getActionMerger(RuleAction $action): ?RuleActionMergingBase
     {
-        if (isset($this->ruleActions[$action->GetActionType()])) {
-            return new $this->ruleActions[$action->GetActionType()]($action);
+        if (isset($this->ruleActions[$action->getActionType()])) {
+            return new $this->ruleActions[$action->getActionType()]($action);
         }
 
         return null;
@@ -57,7 +57,7 @@ class RuleActionsManager implements RuleActionsManagerInterface
      */
     public function getActionsForDateTime(Calendar $calendar, DateTime $date_time): array
     {
-        $rules          = $this->rulesManager->getAllRulesForCalendarForDateTime($calendar->GetId(), $date_time);
+        $rules          = $this->rulesManager->getAllRulesForCalendarForDateTime($calendar->getId(), $date_time);
         $actions        = array();
         $workingactions = array();
 

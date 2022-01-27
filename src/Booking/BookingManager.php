@@ -7,7 +7,7 @@ namespace TLBM\Booking;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\DefaultBookingState;
 use TLBM\Model\Booking;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -19,12 +19,12 @@ class BookingManager
      */
     public static function SetBooking(Booking $booking)
     {
-        if ( ! (intval($booking->wp_post_id) > 0)) {
+        if ( !($booking->wp_post_id > 0)) {
             $post_id = wp_insert_post(array(
-                'post_title'  => empty($booking->title) ? time() : $booking->title,
-                'post_status' => 'publish',
-                'post_type'   => TLBM_PT_BOOKING
-            ));
+                                          'post_title'  => empty($booking->title) ? time() : $booking->title,
+                                          'post_status' => 'publish',
+                                          'post_type'   => TLBM_PT_BOOKING
+                                      ));
 
             $booking->wp_post_id = $post_id;
         }
@@ -65,9 +65,6 @@ class BookingManager
             if (strtolower($order) == "asc") {
                 return $a->{$orderby} > $b->{$orderby};
             }
-            if (strtolower($order) == "desc") {
-                return $a->{$orderby} < $b->{$orderby};
-            }
 
             return $a->{$orderby} < $b->{$orderby};
         });
@@ -85,15 +82,13 @@ class BookingManager
         $wp_post = get_post($wp_post_id);
         if ($wp_post != null) {
             $booking = get_post_meta($wp_post_id, "tlbm_booking_object", true);
-            if ($booking instanceof Booking) {
-                return $booking;
-            } else {
+            if ( !$booking instanceof Booking) {
                 $booking             = new Booking();
                 $booking->wp_post_id = $wp_post_id;
-                $booking->state      = DefaultBookingState::GetDefaultName();
-
-                return $booking;
+                $booking->state      = DefaultBookingState::getDefaultName();
             }
+
+            return $booking;
         }
 
         return false;

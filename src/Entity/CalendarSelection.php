@@ -53,12 +53,12 @@ class CalendarSelection implements JsonSerializable
     /**
      * @return array
      */
-    public function GetCalendarIds(): array
+    public function getCalendarIds(): array
     {
-        $calendars = $this->GetCalendars();
+        $calendars = $this->getCalendars();
         $ids       = array();
         foreach ($calendars as $calendar) {
-            $ids[] = $calendar->GetId();
+            $ids[] = $calendar->getId();
         }
 
         return $ids;
@@ -67,7 +67,7 @@ class CalendarSelection implements JsonSerializable
     /**
      * @return Collection|Calendar[]
      */
-    public function GetCalendars(): Collection
+    public function getCalendars(): Collection
     {
         return $this->calendars;
     }
@@ -77,11 +77,11 @@ class CalendarSelection implements JsonSerializable
      *
      * @return Calendar
      */
-    public function RemoveCalendar(Calendar $calendar): Calendar
+    public function removeCalendar(Calendar $calendar): Calendar
     {
         if ($this->calendars->contains($calendar)) {
             $this->calendars->removeElement($calendar);
-            $calendar->RemoveCalendarSelection($this);
+            $calendar->removeCalendarSelection($this);
         }
 
         return $calendar;
@@ -92,11 +92,11 @@ class CalendarSelection implements JsonSerializable
      *
      * @return Calendar
      */
-    public function AddCalendar(Calendar $calendar): Calendar
+    public function addCalendar(Calendar $calendar): Calendar
     {
-        if ( ! $this->calendars->contains($calendar)) {
+        if ( !$this->calendars->contains($calendar)) {
             $this->calendars[] = $calendar;
-            $calendar->AddCalendarSelection($this);
+            $calendar->addCalendarSelection($this);
         }
 
         return $calendar;
@@ -104,14 +104,14 @@ class CalendarSelection implements JsonSerializable
 
     public function jsonSerialize(): array
     {
-        $calendars = $this->GetCalendars()->toArray();
+        $calendars = $this->getCalendars()->toArray();
         $cal_ids   = array();
         foreach ($this->calendars as $cal) {
-            $cal_ids[] = $cal->GetId();
+            $cal_ids[] = $cal->getId();
         }
 
         return array(
-            "selection_mode" => $this->GetSelectionMode(),
+            "selection_mode" => $this->getSelectionMode(),
             "calendar_ids"   => $cal_ids
         );
     }
@@ -119,7 +119,7 @@ class CalendarSelection implements JsonSerializable
     /**
      * @return string
      */
-    public function GetSelectionMode(): string
+    public function getSelectionMode(): string
     {
         return $this->selection_mode;
     }
@@ -129,9 +129,9 @@ class CalendarSelection implements JsonSerializable
      *
      * @return bool
      */
-    public function SetSelectionMode(string $selection_mode): bool
+    public function setSelectionMode(string $selection_mode): bool
     {
-        if (self::IsValidSelectionMode($selection_mode)) {
+        if (self::isValidSelectionMode($selection_mode)) {
             $this->selection_mode = $selection_mode;
 
             return true;
@@ -140,7 +140,7 @@ class CalendarSelection implements JsonSerializable
         return false;
     }
 
-    public static function IsValidSelectionMode($selection_mode): bool
+    public static function isValidSelectionMode($selection_mode): bool
     {
         return in_array($selection_mode, array(
             TLBM_CALENDAR_SELECTION_TYPE_ALL,

@@ -3,7 +3,7 @@
 
 namespace TLBM\Output;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -33,8 +33,8 @@ class FormPrint implements FormPrintInterface
 
         if ($form instanceof Form) {
             $html .= "<form action='" . $_SERVER['REQUEST_URI'] . "' method='post'>";
-            $html .= $form->GetFrontendHtml();
-            $html .= "<input type='hidden' name='form' value='" . $form->GetId() . "'>";
+            $html .= $form->getFrontendHtml();
+            $html .= "<input type='hidden' name='form' value='" . $form->getId() . "'>";
 
             if (get_option("single_page_booking") == "on") {
                 $html .= "<input type='hidden' name='action' value='dobooking'>";

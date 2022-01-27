@@ -8,7 +8,7 @@ use TLBM\Calendar\Contracts\CalendarSelectionHandlerInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarSelection;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -33,12 +33,12 @@ class CalendarSelectionHandler implements CalendarSelectionHandlerInterface
      */
     public function containsCalendar(CalendarSelection $calendar_selection, int $calendar_id): bool
     {
-        if ($calendar_selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
+        if ($calendar_selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
             return true;
-        } elseif ($calendar_selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
-            return in_array($calendar_id, $calendar_selection->GetCalendarIds());
-        } elseif ($calendar_selection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
-            return ! in_array($calendar_id, $calendar_selection->GetCalendarIds());
+        } elseif ($calendar_selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
+            return in_array($calendar_id, $calendar_selection->getCalendarIds());
+        } elseif ($calendar_selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
+            return !in_array($calendar_id, $calendar_selection->getCalendarIds());
         }
 
         return false;
@@ -51,21 +51,21 @@ class CalendarSelectionHandler implements CalendarSelectionHandlerInterface
      */
     public function getSelectedCalendarList(CalendarSelection $calendarSelection): array
     {
-        if ($calendarSelection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
+        if ($calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
             return $this->calendarManager->getAllCalendars();
-        } elseif ($calendarSelection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
+        } elseif ($calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
             $list = array();
-            foreach ($calendarSelection->GetCalendarIds() as $id) {
+            foreach ($calendarSelection->getCalendarIds() as $id) {
                 $cal    = $this->calendarManager->getCalendar($id);
                 $list[] = $cal;
             }
 
             return $list;
-        } elseif ($calendarSelection->GetSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
+        } elseif ($calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
             $allcals = $this->calendarManager->getAllCalendars();
             $list    = array();
             foreach ($allcals as $cal) {
-                if ( ! in_array($cal->GetId(), $calendarSelection->GetCalendarIds())) {
+                if ( !in_array($cal->getId(), $calendarSelection->getCalendarIds())) {
                     $list[] = $cal;
                 }
             }

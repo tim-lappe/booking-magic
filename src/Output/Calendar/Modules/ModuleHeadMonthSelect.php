@@ -13,7 +13,7 @@ class ModuleHeadMonthSelect implements ICalendarPrintModule
     {
         $tstamp = $data['focused_tstamp'];
 
-        if ( ! $tstamp) {
+        if ( !$tstamp) {
             $tstamp = time();
         }
 

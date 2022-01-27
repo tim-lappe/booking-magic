@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\FormEditor\Elements;
 
-if ( ! defined('ABSPATH')) {
+if ( !defined('ABSPATH')) {
     return;
 }
 
@@ -28,7 +28,7 @@ final class SpacingElem extends FormElem
      *
      * @return mixed
      */
-    public function GetFrontendOutput($form_node, callable $insert_child = null): string
+    public function getFrontendOutput($form_node, callable $insert_child = null): string
     {
         return "<div style='height: " . $form_node->formData->spacing . "px' class='tlbm-fe-spacing " . ($form_node->formData->css_classes ?? "") . "'></div>";
     }

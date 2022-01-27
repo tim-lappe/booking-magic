@@ -42,6 +42,6 @@ class Booking
 
     public function __construct()
     {
-        $this->state = DefaultBookingState::GetDefaultName();
+        $this->state = DefaultBookingState::getDefaultName();
     }
 }
