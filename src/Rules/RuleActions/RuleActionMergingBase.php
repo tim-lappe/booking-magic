@@ -4,41 +4,42 @@
 namespace TLBM\Rules\RuleActions;
 
 use TLBM\Entity\RuleAction;
-use TLBM\Rules\RuleActions\MergeEntities\MergeEntityBase;
+use TLBM\Rules\RuleActions\Contracts\RuleActionMergingInterface;
+use TLBM\Rules\RuleActions\MergeEntities\Contracts\MergeEntityInterface;
 
-abstract class RuleActionMergingBase
+abstract class RuleActionMergingBase implements RuleActionMergingInterface
 {
 
     /**
      * @var RuleAction
      */
-    public RuleAction $rule_action;
+    public RuleAction $ruleAction;
 
     /**
      * @var object
      */
-    public object $action_data;
+    public object $actionData;
 
     /**
      * ActionHandlerBase constructor.
      *
-     * @param RuleAction $rule_action
+     * @param RuleAction $ruleAction
      */
-    public function __construct(RuleAction $rule_action)
+    public function __construct(RuleAction $ruleAction)
     {
-        $this->rule_action = $rule_action;
-        $this->action_data = (object) $rule_action->getActions();
+        $this->ruleAction = $ruleAction;
+        $this->actionData = (object) $ruleAction->getActions();
     }
 
     /**
-     * @param MergeEntityBase $merge_obj
+     * @param MergeEntityInterface $mergeObj
      *
-     * @return MergeEntityBase
+     * @return MergeEntityInterface
      */
-    abstract public function merge(MergeEntityBase &$merge_obj): MergeEntityBase;
+    abstract public function merge(MergeEntityInterface &$mergeObj): MergeEntityInterface;
 
     /**
-     * @return MergeEntityBase
+     * @return MergeEntityInterface
      */
-    abstract public function getEmptyMergeInstance(): MergeEntityBase;
+    abstract public function getEmptyMergeInstance(): MergeEntityInterface;
 }

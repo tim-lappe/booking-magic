@@ -36,28 +36,28 @@ class ActionsMerging
      */
     public function getRuleActionsMerged(): array
     {
-        $all_sums = array();
-        $this->getRuleActions(function (int $tstamp, array $actions) use (&$all_sums) {
-            $action_sum = array();
+        $allSums = array();
+        $this->getRuleActions(function (int $tstamp, array $actions) use (&$allSums) {
+            $actionSum = array();
 
             /**
-             * @var RuleAction $rule_action
+             * @var RuleAction $ruleAction
              */
-            foreach ($actions as $rule_action) {
-                $handler = $this->ruleActionsManager->getActionMerger($rule_action);
+            foreach ($actions as $ruleAction) {
+                $handler = $this->ruleActionsManager->getActionMerger($ruleAction);
                 if ($handler) {
-                    $merge_term = $handler->getEmptyMergeInstance()->getMergeTerm();
-                    if ( !isset($action_sum[$merge_term])) {
-                        $action_sum[$merge_term] = $handler->getEmptyMergeInstance();
+                    $mergeTerm = $handler->getEmptyMergeInstance()->getMergeTerm();
+                    if ( !isset($actionSum[$mergeTerm])) {
+                        $actionSum[$mergeTerm] = $handler->getEmptyMergeInstance();
                     }
-                    $action_sum[$merge_term] = $handler->merge($action_sum[$merge_term]);
+                    $actionSum[$mergeTerm] = $handler->merge($actionSum[$mergeTerm]);
                 }
             }
 
-            $all_sums[$tstamp] = $action_sum;
+            $allSums[$tstamp] = $actionSum;
         });
 
-        return $all_sums;
+        return $allSums;
     }
 
     /**
@@ -69,7 +69,7 @@ class ActionsMerging
     {
         $result = $this->rulesQuery->getResult();
 
-        $end_result = array();
+        $endResult = array();
         foreach ($result as $tstamp => $rules) {
             $actions = array();
 
@@ -84,9 +84,9 @@ class ActionsMerging
                 $forEach($tstamp, $actions);
             }
 
-            $end_result[$tstamp] = $actions;
+            $endResult[$tstamp] = $actions;
         }
 
-        return $end_result;
+        return $endResult;
     }
 }

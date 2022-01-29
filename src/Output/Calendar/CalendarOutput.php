@@ -50,8 +50,8 @@ class CalendarOutput
      * @return string
      */
     public static function GetCalendarContainerShell(
-        int $calendar_id,
-        int $focused_tstamp,
+        ?int $calendar_id = null,
+        ?int $focused_tstamp = null,
         string $view = "no-view",
         object $view_settings = null,
         string $form_name = "calendar",
@@ -60,7 +60,7 @@ class CalendarOutput
         $options = array(
             "data_source_id"   => $calendar_id,
             "data_source_type" => "calendar",
-            "focused_tstamp"   => $focused_tstamp,
+            "focused_tstamp"   => $focused_tstamp ?? time(),
             "readonly"         => $readonly
         );
 

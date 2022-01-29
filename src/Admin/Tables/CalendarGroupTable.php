@@ -6,7 +6,7 @@ namespace TLBM\Admin\Tables;
 
 use TLBM\Calendar\Contracts\CalendarGroupManagerInterface;
 use TLBM\Calendar\Contracts\CalendarManagerInterface;
-use TLBM\Model\CalendarGroup;
+use TLBM\Entity\CalendarGroup;
 use TLBM\Utilities\Contracts\DateTimeToolsInterface;
 
 class CalendarGroupTable extends TableBase
@@ -42,27 +42,29 @@ class CalendarGroupTable extends TableBase
     }
 
     /**
+     * @SuppressWarnings(PHPMD)
      * @param CalendarGroup $item
      */
-    public function column_booking_distribution($item)
+    public function column_booking_distribution(CalendarGroup $item)
     {
-        if ($item->booking_distribution == TLBM_BOOKING_DISTRIBUTION_EVENLY) {
+        if ($item->getBookingDisitribution() == TLBM_BOOKING_DISTRIBUTION_EVENLY) {
             echo "Evenly";
-        } elseif ($item->booking_distribution == TLBM_BOOKING_DISTRIBUTION_FILL_ONE) {
+        } elseif ($item->getBookingDisitribution() == TLBM_BOOKING_DISTRIBUTION_FILL_ONE) {
             echo "Fill One First";
         }
     }
 
     /**
+     * @SuppressWarnings(PHPMD)
      * @param CalendarGroup $item
      */
-    public function column_selected_calendars($item)
+    public function column_selected_calendars(CalendarGroup $item)
     {
-        $selection = $item->calendar_selection;
-        if ($selection->selection_type == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
+        $selection = $item->getCalendarSelection();
+        if ($selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
             echo __("All", TLBM_TEXT_DOMAIN);
-        } elseif ($selection->selection_type == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
-            foreach ($selection->selected_calendar_ids as $key => $id) {
+        } elseif ($selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
+            foreach ($selection->getCalendarIds() as $key => $id) {
                 $cal  = $this->calendarManager->getCalendar($id);
                 $link = get_edit_post_link($id);
                 if ($key > 0) {
@@ -70,9 +72,9 @@ class CalendarGroupTable extends TableBase
                 }
                 echo "<a href='" . $link . "'>" . $cal->getTitle() . "</a>";
             }
-        } elseif ($selection->selection_type == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
+        } elseif ($selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
             echo __("All but ", TLBM_TEXT_DOMAIN);
-            foreach ($selection->selected_calendar_ids as $key => $id) {
+            foreach ($selection->getCalendarIds() as $key => $id) {
                 $cal  = $this->calendarManager->getCalendar($id);
                 $link = get_edit_post_link($id);
                 if ($key > 0) {
@@ -84,51 +86,42 @@ class CalendarGroupTable extends TableBase
     }
 
     /**
+     * @SuppressWarnings(PHPMD)
      * @param CalendarGroup $item
      */
-    public function column_title($item)
+    public function column_title(CalendarGroup $item)
     {
-        $link = get_edit_post_link($item->wp_post_id);
-        if ( !empty($item->title)) {
-            echo "<strong><a href='" . $link . "'>" . $item->title . "</a></strong>";
+        $link = get_edit_post_link($item->getId());
+        if ( !empty($item->getTitle())) {
+            echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
         } else {
-            echo "<strong><a href='" . $link . "'>" . $item->wp_post_id . "</a></strong>";
+            echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
         }
     }
 
     /**
+     * @SuppressWarnings(PHPMD)
      * @param CalendarGroup $item
      */
-    public function column_datetime($item)
+    public function column_datetime(CalendarGroup $item)
     {
-        $p = get_post($item->wp_post_id);
+        $p = get_post($item->getId());
         echo $this->dateTimeTools->formatWithTime(strtotime($p->post_date));
     }
 
-    protected function ProcessBuldActions()
+    protected function processBuldActions()
     {
-        if (isset($_REQUEST['wp_post_ids'])) {
-            $ids    = $_REQUEST['wp_post_ids'];
-            $action = $this->current_action();
-            foreach ($ids as $id) {
-                if ($action == "delete") {
-                    wp_update_post(array(
-                                       "ID"          => $id,
-                                       "post_status" => "trash"
-                                   ));
-                } elseif ($action == "delete_permanently") {
-                    wp_delete_post($id);
-                } elseif ($action == "restore") {
-                    wp_update_post(array(
-                                       "ID"          => $id,
-                                       "post_status" => "publish"
-                                   ));
-                }
-            }
-        }
+
     }
 
-    protected function GetItems($orderby, $order): array
+    /**
+     * @param string $orderby
+     * @param string $order
+     * @SuppressWarnings(PHPMD)
+     *
+     * @return array
+     */
+    protected function getItems(string $orderby, string $order): array
     {
         $pt_args = array();
         if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
@@ -138,7 +131,10 @@ class CalendarGroupTable extends TableBase
         return $this->calendarGroupManager->getAllGroups($pt_args, $orderby, $order);
     }
 
-    protected function GetViews(): array
+    /**
+     * @return array
+     */
+    protected function getViews(): array
     {
         return array(
             "all"     => __("All", TLBM_TEXT_DOMAIN),
@@ -146,7 +142,10 @@ class CalendarGroupTable extends TableBase
         );
     }
 
-    protected function GetColumns(): array
+    /**
+     * @return array
+     */
+    protected function getColumns(): array
     {
         return array(
             "cb"                   => "<input type='checkbox' />",
@@ -157,7 +156,10 @@ class CalendarGroupTable extends TableBase
         );
     }
 
-    protected function GetSortableColumns(): array
+    /**
+     * @return array[]
+     */
+    protected function getSortableColumns(): array
     {
         return array(
             'title'    => array('title', true),
@@ -165,7 +167,10 @@ class CalendarGroupTable extends TableBase
         );
     }
 
-    protected function GetBulkActions(): array
+    /**
+     * @return array
+     */
+    protected function getBulkActions(): array
     {
         if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
             return array(
@@ -179,7 +184,12 @@ class CalendarGroupTable extends TableBase
         }
     }
 
-    protected function GetItemId($item): int
+    /**
+     * @param $item
+     *
+     * @return int
+     */
+    protected function getItemId($item): int
     {
         return $item->wp_post_id;
     }
@@ -187,7 +197,7 @@ class CalendarGroupTable extends TableBase
     /**
      * @return int
      */
-    protected function GetTotalItemsCount(): int
+    protected function getTotalItemsCount(): int
     {
         return $this->calendarGroupManager->getAllGroupsCount();
     }

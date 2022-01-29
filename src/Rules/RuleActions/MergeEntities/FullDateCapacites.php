@@ -2,7 +2,10 @@
 
 namespace TLBM\Rules\RuleActions\MergeEntities;
 
-class FullDateCapacites extends MergeEntityBase implements CapacityMerge
+use TLBM\Rules\RuleActions\MergeEntities\Contracts\CapacityMerge;
+use TLBM\Rules\RuleActions\MergeEntities\Contracts\MergeEntityInterface;
+
+class FullDateCapacites implements CapacityMerge, MergeEntityInterface
 {
 
     public int $capacity = 0;

@@ -42,4 +42,16 @@ class Labels implements LabelsInterface
             "sunday"    => __("Sunday", TLBM_TEXT_DOMAIN),
         );
     }
+
+    /**
+     * @return array
+     */
+    public function getWeekdayRangeLabels(): array
+    {
+        return array(
+            "every_day" => __("Every Day", TLBM_TEXT_DOMAIN),
+            "mo_to_fr" => __("Monday to Friday", TLBM_TEXT_DOMAIN),
+            "sat_and_sun" => __("Saturday and Sunday", TLBM_TEXT_DOMAIN)
+        );
+    }
 }

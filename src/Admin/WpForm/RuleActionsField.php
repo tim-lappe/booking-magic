@@ -73,7 +73,7 @@ class RuleActionsField extends FormFieldBase implements FormFieldReadVarsInterfa
                     $ruleAction->setActionType($action_obj->action_type);
                     $ruleAction->setWeekdays($action_obj->weekdays);
 
-                    if ($action_obj->time_hour !== null && $action_obj->time_min !== null) {
+                    if (isset($action_obj->time_hour) && isset($action_obj->time_min)) {
                         $ruleAction->setTimeHour($action_obj->time_hour);
                         $ruleAction->setTimeMin($action_obj->time_min);
                     }

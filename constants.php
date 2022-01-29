@@ -1,7 +1,6 @@
 <?php
 const TLBM_VERSION = "Dev 1.0";
 const TLBM_DIR = __DIR__;
-const TLBM_PLUGIN_FILE = __FILE__;
 const TLBM_PLUGIN_DIR = __DIR__;
 
 const TLBM_INCLUDES_DIR = TLBM_DIR . "/includes/";

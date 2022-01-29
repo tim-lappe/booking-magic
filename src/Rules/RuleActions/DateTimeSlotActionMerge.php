@@ -4,28 +4,28 @@
 namespace TLBM\Rules\RuleActions;
 
 
+use TLBM\Rules\RuleActions\MergeEntities\Contracts\MergeEntityInterface;
 use TLBM\Rules\RuleActions\MergeEntities\FullDateCapacites;
-use TLBM\Rules\RuleActions\MergeEntities\MergeEntityBase;
 
 class DateTimeSlotActionMerge extends RuleActionMergingBase
 {
 
     /**
-     * @param MergeEntityBase $merge_obj
+     * @param MergeEntityInterface $mergeObj
      *
-     * @return MergeEntityBase
+     * @return MergeEntityInterface
      */
-    public function merge(MergeEntityBase &$merge_obj): MergeEntityBase
+    public function merge(MergeEntityInterface &$mergeObj): MergeEntityInterface
     {
-        if ($merge_obj instanceof FullDateCapacites) {
-            $capacity_merger = new CapacityMerger($this->action_data);
-            $merge_obj       = $capacity_merger->merge($merge_obj);
+        if ($mergeObj instanceof FullDateCapacites) {
+            $capacityMerger = new CapacityMerger($this->actionData);
+            $mergeObj        = $capacityMerger->merge($mergeObj);
         }
 
-        return $merge_obj;
+        return $mergeObj;
     }
 
-    public function getEmptyMergeInstance(): MergeEntityBase
+    public function getEmptyMergeInstance(): MergeEntityInterface
     {
         return new FullDateCapacites();
     }

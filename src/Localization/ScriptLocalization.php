@@ -48,6 +48,7 @@ class ScriptLocalization implements ScriptLocalizationInterface
     {
         return array(
             "weekdays" => $this->labels->getWeekdayLabels(),
+            "weekdaysRange" => $this->labels->getWeekdayRangeLabels(),
             "months"   => $this->labels->getMonthLabels()
         );
     }

@@ -13,16 +13,16 @@ interface CalendarManagerInterface
      *
      * @throws Exception
      */
-    public function saveCalendar(Calendar $calendar);
+    public function saveCalendar(Calendar $calendar): int;
 
     /**
      * Returns the BookingCalender from the given Post-Id
      *
-     * @param mixed $id The Post-Id of the Calendar
+     * @param mixed $calendar_id The Post-Id of the Calendar
      *
      * @return Calendar|null
      */
-    public function getCalendar($id): ?Calendar;
+    public function getCalendar($calendar_id): ?Calendar;
 
     /**
      * Return a List of all active Calendars

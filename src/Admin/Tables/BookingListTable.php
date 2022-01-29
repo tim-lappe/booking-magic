@@ -49,6 +49,12 @@ class BookingListTable extends TableBase
         );
     }
 
+    /**
+     * @SuppressWarnings(PHPMD)
+     * @param $which
+     *
+     * @return void
+     */
     public function extra_tablenav($which)
     {
         if ($which == "top" && !$this->slim) {
@@ -73,6 +79,11 @@ class BookingListTable extends TableBase
         }
     }
 
+    /**
+     * @param $which
+     * @SuppressWarnings(PHPMD)
+     * @return void
+     */
     public function display_tablenav($which)
     {
         if ( !$this->slim) {
@@ -81,6 +92,7 @@ class BookingListTable extends TableBase
     }
 
     /**
+     * @SuppressWarnings(PHPMD)
      * @param Booking|object $item
      */
     public function column_id($item)
@@ -90,6 +102,7 @@ class BookingListTable extends TableBase
     }
 
     /**
+     * @SuppressWarnings(PHPMD)
      * @param Booking|object $item
      */
     public function column_datetime($item)
@@ -99,6 +112,7 @@ class BookingListTable extends TableBase
     }
 
     /**
+     * @SuppressWarnings(PHPMD)
      * @param Booking|object $item
      */
     public function column_calendar($item)
@@ -131,6 +145,7 @@ class BookingListTable extends TableBase
     }
 
     /**
+     * @SuppressWarnings(PHPMD)
      * @param Booking $item
      */
     public function column_state($item)
@@ -148,6 +163,7 @@ class BookingListTable extends TableBase
     }
 
     /**
+     * @SuppressWarnings(PHPMD)
      * @param Booking $item
      *
      * @return string|void
@@ -157,30 +173,15 @@ class BookingListTable extends TableBase
         return '<input type="checkbox" name="wp_post_ids[]" value="' . $item->wp_post_id . '" />';
     }
 
-    protected function ProcessBuldActions()
+    /**
+     * @return void
+     */
+    protected function processBuldActions()
     {
-        if (isset($_REQUEST['wp_post_ids']) && !$this->slim) {
-            $ids    = $_REQUEST['wp_post_ids'];
-            $action = $this->current_action();
-            foreach ($ids as $id) {
-                if ($action == "delete") {
-                    wp_update_post(array(
-                                       "ID"          => $id,
-                                       "post_status" => "trash"
-                                   ));
-                } elseif ($action == "delete_permanently") {
-                    wp_delete_post($id);
-                } elseif ($action == "restore") {
-                    wp_update_post(array(
-                                       "ID"          => $id,
-                                       "post_status" => "publish"
-                                   ));
-                }
-            }
-        }
+
     }
 
-    protected function GetTotalItemsCount(): int
+    protected function getTotalItemsCount(): int
     {
         if ( !$this->slim) {
             return BookingManager::GetAllBookingsCount();
@@ -192,7 +193,14 @@ class BookingListTable extends TableBase
                                                    ));
     }
 
-    protected function GetItems($orderby, $order): array
+    /**
+     * @SuppressWarnings(PHPMD)
+     * @param $orderby
+     * @param $order
+     *
+     * @return array
+     */
+    protected function getItems($orderby, $order): array
     {
         $pt_args = array();
         if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
@@ -238,7 +246,7 @@ class BookingListTable extends TableBase
         return $filteredbookings;
     }
 
-    protected function GetViews(): array
+    protected function getViews(): array
     {
         if ( !$this->slim) {
             return array(
@@ -251,7 +259,7 @@ class BookingListTable extends TableBase
         return array();
     }
 
-    protected function GetColumns(): array
+    protected function getColumns(): array
     {
         if ( !$this->slim) {
             return array(
@@ -271,7 +279,7 @@ class BookingListTable extends TableBase
         );
     }
 
-    protected function GetSortableColumns(): array
+    protected function getSortableColumns(): array
     {
         if ( !$this->slim) {
             return array(
@@ -283,7 +291,11 @@ class BookingListTable extends TableBase
         return array();
     }
 
-    protected function GetBulkActions(): array
+    /**
+     * @SuppressWarnings(PHPMD)
+     * @return array
+     */
+    protected function getBulkActions(): array
     {
         if ( !$this->slim) {
             if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
@@ -306,7 +318,7 @@ class BookingListTable extends TableBase
      *
      * @return int
      */
-    protected function GetItemId($item): int
+    protected function getItemId($item): int
     {
         return $item->wp_post_id;
     }

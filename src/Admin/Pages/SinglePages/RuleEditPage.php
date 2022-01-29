@@ -4,6 +4,7 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 use DI\FactoryInterface;
 use Exception;
+use Throwable;
 use TLBM\Admin\WpForm\CalendarPickerField;
 use TLBM\Admin\WpForm\PeriodEditorField;
 use TLBM\Admin\WpForm\RuleActionsField;
@@ -11,6 +12,7 @@ use TLBM\Calendar\Contracts\CalendarManagerInterface;
 use TLBM\Entity\CalendarSelection;
 use TLBM\Entity\Rule;
 use TLBM\Rules\Contracts\RulesManagerInterface;
+use TLBM\Validation\ValidatorFactory;
 
 class RuleEditPage extends FormPageBase
 {
@@ -25,6 +27,10 @@ class RuleEditPage extends FormPageBase
      */
     private CalendarManagerInterface $calendarManager;
 
+    /**
+     * @var Rule|null
+     */
+    private ?Rule $editingRule = null;
 
     public function __construct(
         FactoryInterface $factory,
@@ -60,8 +66,15 @@ class RuleEditPage extends FormPageBase
         );
     }
 
+    /**
+     * @return Rule|null
+     */
     private function getEditingRule(): ?Rule
     {
+        if($this->editingRule) {
+            return $this->editingRule;
+        }
+
         $rule = null;
         if (isset($_REQUEST['rule_id'])) {
             $rule = $this->rulesManager->getRule($_REQUEST['rule_id']);
@@ -70,11 +83,16 @@ class RuleEditPage extends FormPageBase
         return $rule;
     }
 
-    public function getEditLink(int $id = -1): string
+    /**
+     * @param int $ruleId
+     *
+     * @return string
+     */
+    public function getEditLink(int $ruleId = -1): string
     {
         $page = $this->adminPageManager->getPage(RuleEditPage::class);
-        if ($id >= 0) {
-            return admin_url() . "admin.php?page=" . urlencode($page->menu_slug) . "&rule_id=" . urlencode($id);
+        if ($ruleId >= 0) {
+            return admin_url() . "admin.php?page=" . urlencode($page->menu_slug) . "&rule_id=" . urlencode($ruleId);
         }
 
         return admin_url() . "admin.php?page=" . urlencode($page->menu_slug);
@@ -90,10 +108,10 @@ class RuleEditPage extends FormPageBase
 
         ?>
         <div class="tlbm-admin-page-tile">
-            <input value="<?php
-            echo $title ?>" placeholder="<?php
-            _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title"
-                   class="tlbm-admin-form-input-title">
+            <input
+                    value="<?php echo $title ?>"
+                    placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>"
+                    type="text" name="title" class="tlbm-admin-form-input-title">
         </div>
         <div class="tlbm-admin-page-tile">
             <?php
@@ -124,11 +142,7 @@ class RuleEditPage extends FormPageBase
      */
     public function onSave($vars): array
     {
-        $rule = null;
-        if (isset($_REQUEST['rule_id'])) {
-            $rule = $this->rulesManager->getRule($_REQUEST['rule_id']);
-        }
-
+        $rule = $this->getEditingRule();
         if ($rule == null) {
             $rule = new Rule();
         }
@@ -150,7 +164,22 @@ class RuleEditPage extends FormPageBase
         }
 
         $rule->setCalendarSelection($calendar_selection);
-        $this->rulesManager->saveRule($rule);
+
+        $rulesValidator = ValidatorFactory::createRuleValidator($rule);
+        $validationResult = $rulesValidator->getValidationErrors();
+
+        if(count($validationResult) == 0) {
+            try {
+                $this->rulesManager->saveRule($rule);
+                $this->editingRule = $rule;
+            } catch (Throwable $exception) {
+                return array(
+                    "error" => __("An internal error occured: " . $exception->getMessage(), TLBM_TEXT_DOMAIN)
+                );
+            }
+        } else {
+            return $validationResult;
+        }
 
         return array();
     }
