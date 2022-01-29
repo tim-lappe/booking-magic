@@ -4,36 +4,34 @@
 namespace TLBM\Rules\RuleActions;
 
 
-use TLBM\Rules\RuleActions\MergeEntities\MergeEntityBase;
+use TLBM\Rules\RuleActions\MergeEntities\Contracts\MergeEntityInterface;
 use TLBM\Rules\RuleActions\MergeEntities\TimeCapacities;
 
 class DateTimeTimeSlotActionMerge extends RuleActionMergingBase
 {
-
-
     /**
-     * @param MergeEntityBase $merge_obj
+     * @param MergeEntityInterface $mergeObj
      *
-     * @return MergeEntityBase
+     * @return MergeEntityInterface
      */
-    public function merge(MergeEntityBase &$merge_obj): MergeEntityBase
+    public function merge(MergeEntityInterface &$mergeObj): MergeEntityInterface
     {
-        if ($merge_obj instanceof TimeCapacities) {
-            $hour   = $this->rule_action->getTimeHour();
-            $minute = $this->rule_action->getTimeMin();
+        if ($mergeObj instanceof TimeCapacities) {
+            $hour   = $this->ruleAction->getTimeHour();
+            $minute = $this->ruleAction->getTimeMin();
 
-            $time_cap        = $merge_obj->getTimeCapacity($hour, $minute);
-            $capacity_merger = new CapacityMerger($this->action_data);
-            $capacity_merger->merge($time_cap);
+            $timeCap        = $mergeObj->getTimeCapacity($hour, $minute);
+            $capacityMerger = new CapacityMerger($this->actionData);
+            $capacityMerger->merge($timeCap);
         }
 
-        return $merge_obj;
+        return $mergeObj;
     }
 
     /**
-     * @return MergeEntityBase
+     * @return MergeEntityInterface
      */
-    public function getEmptyMergeInstance(): MergeEntityBase
+    public function getEmptyMergeInstance(): MergeEntityInterface
     {
         return new TimeCapacities();
     }

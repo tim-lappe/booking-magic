@@ -48,14 +48,13 @@ class FormEditPage extends FormPageBase
         );
     }
 
-    public function getEditLink(int $id = -1): string
+    public function getEditLink(int $form_id = -1): string
     {
-        $page = $this->adminPageManager->getPage(FormEditPage::class);
-        if ($id >= 0) {
-            return admin_url() . "admin.php?page=" . urlencode($page->menu_slug) . "&form_id=" . urlencode($id);
+        if ($form_id >= 0) {
+            return admin_url() . "admin.php?page=" . urlencode($this->menu_slug) . "&form_id=" . urlencode($form_id);
         }
 
-        return admin_url() . "admin.php?page=" . urlencode($page->menu_slug);
+        return admin_url() . "admin.php?page=" . urlencode($this->menu_slug);
     }
 
     public function getHeadTitle(): string

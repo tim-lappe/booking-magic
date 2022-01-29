@@ -12,11 +12,17 @@ interface RuleActionsManagerInterface
 
     /**
      * @param string $term
-     * @param $class
+     * @param string $class
      *
-     * @return mixed
+     * @return bool
      */
-    public function registerActionMerger(string $term, $class);
+    public function registerActionMerger(string $term, string $class): bool;
+
+    /**
+     * @return array
+     */
+    public function getAllActionsMerger(): array;
+
 
     /**
      *
@@ -28,9 +34,9 @@ interface RuleActionsManagerInterface
 
     /**
      * @param Calendar $calendar
-     * @param DateTime $date_time
+     * @param DateTime $dateTime
      *
      * @return RuleAction[]
      */
-    public function getActionsForDateTime(Calendar $calendar, DateTime $date_time): array;
+    public function getActionsForDateTime(Calendar $calendar, DateTime $dateTime): array;
 }

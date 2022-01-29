@@ -10,6 +10,7 @@ use TLBM\Calendar\Contracts\CalendarManagerInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Output\Calendar\CalendarOutput;
 use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
+use TLBM\Validation\ValidatorFactory;
 
 class CalendarEditPage extends FormPageBase
 {
@@ -24,6 +25,11 @@ class CalendarEditPage extends FormPageBase
      */
     private FactoryInterface $factory;
 
+    /**
+     * @var Calendar|null
+     */
+    private ?Calendar $editingCalendar = null;
+
     public function __construct(FactoryInterface $factory, CalendarManagerInterface $calendarManager)
     {
         $this->calendarManager = $calendarManager;
@@ -37,12 +43,10 @@ class CalendarEditPage extends FormPageBase
      */
     public function showFormPageContent()
     {
-        $calendar = null;
-        if (isset($_REQUEST['calendar_id'])) {
-            $calendar = $this->calendarManager->getCalendar($_REQUEST['calendar_id']);
+        $calendar = $this->getEditingCalendar();
+        if ($calendar) {
             ?>
-            <input type="hidden" name="calendar_id" value="<?php
-            echo $calendar->getId() ?>">
+            <input type="hidden" name="calendar_id" value="<?php echo $calendar->getId() ?>">
             <?php
         } else {
             $calendar = new Calendar();
@@ -66,28 +70,54 @@ class CalendarEditPage extends FormPageBase
         <?php
     }
 
+    /**
+     * @param mixed $vars
+     *
+     * @return array
+     */
     public function onSave($vars): array
     {
-        $calendar = new Calendar();
-        if (isset($_REQUEST['calendar_id'])) {
-            $calendar = $this->calendarManager->getCalendar($vars['calendar_id']);
+        $calendar = $this->getEditingCalendar();
+        if (!$calendar) {
+            $calendar = new Calendar();
         }
 
-        $calendar->setTitle($vars['title']);
+        $calendarValidator = ValidatorFactory::createCalendarValidator($calendar);
         $calendar->setTimestampCreated(time());
+        $calendar->setTitle($vars['title']);
 
-        if (strlen($calendar->getTitle()) < 3) {
-            return array(
-                "error" => __("Error: the title of the calendar is too short.")
-            );
+        $validationResult = $calendarValidator->getValidationErrors();
+
+        if(count($validationResult) == 0) {
+            try {
+                $this->calendarManager->saveCalendar($calendar);
+                $this->editingCalendar = $calendar;
+            } catch (Exception $e) {
+                return array(
+                    "error" => __("An internal error occured: " . $e->getMessage(), TLBM_TEXT_DOMAIN)
+                );
+            }
+        } else {
+            return $validationResult;
         }
 
-        try {
-            $this->calendarManager->saveCalendar($calendar);
-        } catch (Exception $e) {
+        return array(
+                "success" => __("Calendar has been updated", TLBM_TEXT_DOMAIN)
+        );
+    }
+
+    /**
+     * @param int $calendar_id
+     *
+     * @return string
+     */
+    public function getEditLink(int $calendar_id = -1): string
+    {
+        if ($calendar_id >= 0) {
+            return admin_url() . "admin.php?page=" . urlencode($this->menu_slug) . "&calendar_id=" . urlencode($calendar_id);
         }
 
-        return array();
+        return admin_url() . "admin.php?page=" . urlencode($this->menu_slug);
     }
 
     protected function getHeadTitle(): string
@@ -99,11 +129,14 @@ class CalendarEditPage extends FormPageBase
 
     private function getEditingCalendar(): ?Calendar
     {
-        $calendar = null;
-        if (isset($_REQUEST['calendar_id'])) {
-            $calendar = $this->calendarManager->getCalendar($_REQUEST['calendar_id']);
+        if($this->editingCalendar) {
+            return $this->editingCalendar;
         }
 
-        return $calendar;
+        if (isset($_REQUEST['calendar_id'])) {
+            return $this->calendarManager->getCalendar($_REQUEST['calendar_id']);
+        }
+
+        return null;
     }
 }

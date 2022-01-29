@@ -2,31 +2,31 @@
 
 namespace TLBM\Rules\RuleActions;
 
-use TLBM\Rules\RuleActions\MergeEntities\CapacityMerge;
+use TLBM\Rules\RuleActions\MergeEntities\Contracts\CapacityMerge;
 
 class CapacityMerger
 {
 
-    public object $rule_action_data;
+    public object $ruleActionData;
 
-    public function __construct(object $rule_action_data)
+    public function __construct(object $ruleActionData)
     {
-        $this->rule_action_data = $rule_action_data;
+        $this->ruleActionData = $ruleActionData;
     }
 
-    public function merge(CapacityMerge $capacity_merge): CapacityMerge
+    public function merge(CapacityMerge $capacityMerge): CapacityMerge
     {
-        $action_data = $this->rule_action_data;
-        if (isset($action_data->mode) && isset($action_data->amount)) {
-            if ($action_data->mode == "set") {
-                $capacity_merge->setCapacity(intval($action_data->amount));
-            } elseif ($action_data->mode == "add") {
-                $capacity_merge->setCapacity($capacity_merge->getCapacity() + $action_data->amount);
-            } elseif ($action_data->mode == "subtract") {
-                $capacity_merge->setCapacity($capacity_merge->getCapacity() - $action_data->amount);
+        $actionData = $this->ruleActionData;
+        if (isset($actionData->mode) && isset($actionData->amount)) {
+            if ($actionData->mode == "set") {
+                $capacityMerge->setCapacity(intval($actionData->amount));
+            } elseif ($actionData->mode == "add") {
+                $capacityMerge->setCapacity($capacityMerge->getCapacity() + $actionData->amount);
+            } elseif ($actionData->mode == "subtract") {
+                $capacityMerge->setCapacity($capacityMerge->getCapacity() - $actionData->amount);
             }
         }
 
-        return $capacity_merge;
+        return $capacityMerge;
     }
 }

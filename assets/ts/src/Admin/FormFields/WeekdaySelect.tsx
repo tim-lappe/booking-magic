@@ -48,9 +48,11 @@ export class WeekdaySelect extends React.Component<WeekdaySelectProps, WeekdaySe
     render() {
         return (<select ref={this.selectDom} value={this.state.weekday} onLoad={this.onChange} onChange={this.onChange} name={this.props.name ?? "weekday"}>
             <optgroup label={Localization.__('Multiple Weekdays')}>
-                <option value="every_day">{Localization.__("Every Day")}</option>
-                <option value="mo_to_fr">{Localization.__("Monday to Friday")}</option>
-                <option value="sat_and_sun">{Localization.__("Saturday and Sunday")}</option>
+                {Object.entries(Localization.__Arr("weekdaysRange")).map((item) => {
+                    return (
+                        <option value={item[0]} key={item[0]}>{item[1]}</option>
+                    )
+                })}
             </optgroup>
             <optgroup label={Localization.__('Single Weekday')}>
                 {Object.entries(Localization.__Arr("weekdays")).map((item) => {

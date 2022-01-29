@@ -23,7 +23,7 @@ class RulesListTable extends WP_List_Table
     /**
      * @var bool|mixed
      */
-    public $specific_calendar_id = false;
+    public $specificCalendarId = false;
 
     /**
      * @var RulesManagerInterface
@@ -38,10 +38,10 @@ class RulesListTable extends WP_List_Table
     public function __construct(
         RulesManagerInterface $rulesManager,
         CalendarManagerInterface $calendarManager,
-        $specific_calendar_id = false
+        $specificCalendarId = false
     ) {
-        $this->specific_calendar_id = $specific_calendar_id;
-        $this->rulesManager         = $rulesManager;
+        $this->specificCalendarId = $specificCalendarId;
+        $this->rulesManager       = $rulesManager;
         $this->calendarManager      = $calendarManager;
 
         parent::__construct(array(
@@ -51,6 +51,11 @@ class RulesListTable extends WP_List_Table
                             ));
     }
 
+    /**
+     * @SuppressWarnings(PHPMD)
+     *
+     * @return void
+     */
     public function prepare_items()
     {
         $orderby = $_REQUEST['orderby'] ?? "priority";
@@ -58,11 +63,11 @@ class RulesListTable extends WP_List_Table
 
         $this->_column_headers = array($this->get_columns(), array(), $this->get_sortable_columns());
 
-        if ( !$this->specific_calendar_id) {
+        if ( !$this->specificCalendarId) {
             $this->items = $this->rulesManager->getAllRules(array(), $orderby, $order);
         } else {
             $this->items = $this->rulesManager->getAllRulesForCalendar(
-                $this->specific_calendar_id, array(), $orderby, $order
+                $this->specificCalendarId, array(), $orderby, $order
             );
         }
 
@@ -72,6 +77,11 @@ class RulesListTable extends WP_List_Table
                                    ));
     }
 
+    /**
+     * @SuppressWarnings(PHPMD)
+     *
+     * @return array
+     */
     public function get_columns(): array
     {
         return array(
@@ -81,6 +91,11 @@ class RulesListTable extends WP_List_Table
         );
     }
 
+    /**
+     * @SuppressWarnings(PHPMD)
+     *
+     * @return array[]
+     */
     public function get_sortable_columns(): array
     {
         return array(
@@ -90,6 +105,7 @@ class RulesListTable extends WP_List_Table
     }
 
     /**
+     * @SuppressWarnings(PHPMD)
      * @param Rule|object $item
      * @param string $column_name
      */
@@ -99,9 +115,10 @@ class RulesListTable extends WP_List_Table
     }
 
     /**
-     * @param Rule|object $item
+     * @SuppressWarnings(PHPMD)
+     * @param Rule $item
      */
-    public function column_calendars($item)
+    public function column_calendars(Rule $item)
     {
         $selection = $item->getCalendarSelection();
         if ($selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
@@ -127,16 +144,22 @@ class RulesListTable extends WP_List_Table
     }
 
     /**
-     * @param Rule|object $item
+     * @param Rule $item
+     * @SuppressWarnings(PHPMD)
      */
     public function column_title(Rule $item)
     {
-        $link = get_edit_post_link($item->wp_post_id);
+        $link = get_edit_post_link($item->getId());
         echo "<strong><a href='" . $link . "'>" . $item->title . "</a></strong>";
     }
 
+    /**
+     * @param mixed $which
+     * @SuppressWarnings(PHPMD)
+     * @return void
+     */
     protected function display_tablenav($which)
     {
-        //Important to remove the wp_nonce
+
     }
 }

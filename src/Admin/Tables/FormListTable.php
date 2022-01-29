@@ -35,6 +35,7 @@ class FormListTable extends TableBase
 
     /**
      * @param Form $item
+     * @SuppressWarnings(PHPMD)
      */
     public function column_title(Form $item)
     {
@@ -49,30 +50,18 @@ class FormListTable extends TableBase
         }
     }
 
-    protected function ProcessBuldActions()
+    protected function processBuldActions()
     {
-        if (isset($_REQUEST['wp_post_ids'])) {
-            $ids    = $_REQUEST['wp_post_ids'];
-            $action = $this->current_action();
-            foreach ($ids as $id) {
-                if ($action == "delete") {
-                    wp_update_post(array(
-                                       "ID"          => $id,
-                                       "post_status" => "trash"
-                                   ));
-                } elseif ($action == "delete_permanently") {
-                    wp_delete_post($id);
-                } elseif ($action == "restore") {
-                    wp_update_post(array(
-                                       "ID"          => $id,
-                                       "post_status" => "publish"
-                                   ));
-                }
-            }
-        }
+
     }
 
-    protected function GetItems($orderby, $order): array
+    /**
+     * @param string $orderby
+     * @param string $order
+     * @SuppressWarnings(PHPMD)
+     * @return array
+     */
+    protected function getItems(string $orderby, string $order): array
     {
         $pt_args = array();
         if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
@@ -82,7 +71,10 @@ class FormListTable extends TableBase
         return $this->formManager->getAllForms($pt_args, $orderby, $order);
     }
 
-    protected function GetViews(): array
+    /**
+     * @return array
+     */
+    protected function getViews(): array
     {
         return array(
             "all"     => __("All", TLBM_TEXT_DOMAIN),
@@ -90,7 +82,10 @@ class FormListTable extends TableBase
         );
     }
 
-    protected function GetColumns(): array
+    /**
+     * @return array
+     */
+    protected function getColumns(): array
     {
         return array(
             "cb"    => "<input type='checkbox' />",
@@ -98,14 +93,21 @@ class FormListTable extends TableBase
         );
     }
 
-    protected function GetSortableColumns(): array
+    /**
+     * @return array[]
+     */
+    protected function getSortableColumns(): array
     {
         return array(
             'title' => array('title', true)
         );
     }
 
-    protected function GetBulkActions(): array
+    /**
+     * @SuppressWarnings(PHPMD)
+     * @return array
+     */
+    protected function getBulkActions(): array
     {
         if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
             return array(
@@ -124,7 +126,7 @@ class FormListTable extends TableBase
      *
      * @return int
      */
-    protected function GetItemId($item): int
+    protected function getItemId($item): int
     {
         return $item->getId();
     }
@@ -134,7 +136,7 @@ class FormListTable extends TableBase
      * @throws Exception
      */
 
-    protected function GetTotalItemsCount(): int
+    protected function getTotalItemsCount(): int
     {
         return $this->formManager->getAllFormsCount();
     }

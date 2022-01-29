@@ -2,7 +2,9 @@
 
 namespace TLBM\Rules\RuleActions\MergeEntities;
 
-class TimeCapacities extends MergeEntityBase
+use TLBM\Rules\RuleActions\MergeEntities\Contracts\MergeEntityInterface;
+
+class TimeCapacities implements MergeEntityInterface
 {
 
     /**
@@ -18,25 +20,25 @@ class TimeCapacities extends MergeEntityBase
     /**
      * @param int $hour
      * @param int $minute
-     * @param bool $auto_create
+     * @param bool $autoCreate
      *
      * @return TimeCapacity|null
      */
-    public function getTimeCapacity(int $hour, int $minute, bool $auto_create = true): ?TimeCapacity
+    public function getTimeCapacity(int $hour, int $minute, bool $autoCreate = true): ?TimeCapacity
     {
-        foreach ($this->capacities as $time_capacity) {
-            if ($time_capacity->hour == $hour && $time_capacity->minute) {
-                return $time_capacity;
+        foreach ($this->capacities as $timeCapacity) {
+            if ($timeCapacity->hour == $hour && $timeCapacity->minute) {
+                return $timeCapacity;
             }
         }
 
-        if ($auto_create) {
-            $time_cap           = new TimeCapacity();
-            $time_cap->hour     = $hour;
-            $time_cap->minute   = $minute;
-            $this->capacities[] = $time_cap;
+        if ($autoCreate) {
+            $timeCap           = new TimeCapacity();
+            $timeCap->hour     = $hour;
+            $timeCap->minute   = $minute;
+            $this->capacities[] = $timeCap;
 
-            return $time_cap;
+            return $timeCap;
         }
 
         return null;

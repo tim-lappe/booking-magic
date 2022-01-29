@@ -4,6 +4,8 @@ namespace TLBM\Calendar;
 
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Exception;
 use TLBM\Calendar\Contracts\CalendarManagerInterface;
 use TLBM\Database\Contracts\ORMInterface;
@@ -29,27 +31,31 @@ class CalendarManager implements CalendarManagerInterface
     /**
      * @param Calendar $calendar
      *
-     * @throws Exception
+     * @return int
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
-    public function saveCalendar(Calendar $calendar)
+    public function saveCalendar(Calendar $calendar): int
     {
         $mgr = $this->repository->getEntityManager();
         $mgr->persist($calendar);
         $mgr->flush();
+
+        return $calendar->getId();
     }
 
     /**
      * Returns the BookingCalender from the given Post-Id
      *
-     * @param mixed $id The Post-Id of the Calendar
+     * @param mixed $calendar_id The Post-Id of the Calendar
      *
      * @return Calendar|null
      */
-    public function getCalendar($id): ?Calendar
+    public function getCalendar($calendar_id): ?Calendar
     {
         try {
             $mgr      = $this->repository->getEntityManager();
-            $calendar = $mgr->find("\TLBM\Entity\Calendar", $id);
+            $calendar = $mgr->find("\TLBM\Entity\Calendar", $calendar_id);
             if ($calendar instanceof Calendar) {
                 return $calendar;
             }

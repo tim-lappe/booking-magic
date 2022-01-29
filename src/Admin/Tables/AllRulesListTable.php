@@ -40,6 +40,7 @@ class AllRulesListTable extends TableBase
     }
 
     /**
+     * @SuppressWarnings(PHPMD)
      * @param Rule $item
      */
     public function column_calendars(Rule $item)
@@ -70,6 +71,7 @@ class AllRulesListTable extends TableBase
     }
 
     /**
+     * @SuppressWarnings(PHPMD)
      * @param Rule $item
      */
     public function column_title(Rule $item)
@@ -85,43 +87,40 @@ class AllRulesListTable extends TableBase
         }
     }
 
+    /**
+     * @param Rule $item
+     * @SuppressWarnings(PHPMD)
+     * @return int
+     */
     public function column_priority(Rule $item): int
     {
         return $item->getPriority();
     }
 
-    protected function ProcessBuldActions()
+    /**
+     * @SuppressWarnings(PHPMD)
+     * @return void
+     */
+    protected function processBuldActions()
     {
-        if (isset($_REQUEST['wp_post_ids'])) {
-            $ids = $_REQUEST['wp_post_ids'];
 
-            $action = $this->current_action();
-            foreach ($ids as $id) {
-                if ($action == "delete") {
-                    wp_update_post(array(
-                                       "ID"          => $id,
-                                       "post_status" => "trash"
-                                   ));
-                } elseif ($action == "delete_permanently") {
-                    wp_delete_post($id);
-                } elseif ($action == "restore") {
-                    wp_update_post(array(
-                                       "ID"          => $id,
-                                       "post_status" => "publish"
-                                   ));
-                }
-            }
-        }
     }
 
-    protected function GetItems($orderby, $order): array
+    /**
+     * @param $orderby
+     * @param $order
+     *
+     * @return array
+     */
+    protected function getItems($orderby, $order): array
     {
-        $filteredbookings = array();
-
         return $this->rulesManager->getAllRules(array(), $orderby, $order);
     }
 
-    protected function GetViews(): array
+    /**
+     * @return array
+     */
+    protected function getViews(): array
     {
         return array(
             "all"     => __("All", TLBM_TEXT_DOMAIN),
@@ -129,7 +128,10 @@ class AllRulesListTable extends TableBase
         );
     }
 
-    protected function GetColumns(): array
+    /**
+     * @return array
+     */
+    protected function getColumns(): array
     {
         return array(
             "cb"        => "<input type='checkbox' />",
@@ -139,7 +141,10 @@ class AllRulesListTable extends TableBase
         );
     }
 
-    protected function GetSortableColumns(): array
+    /**
+     * @return array[]
+     */
+    protected function getSortableColumns(): array
     {
         return array(
             'title'    => array('title', true),
@@ -147,7 +152,11 @@ class AllRulesListTable extends TableBase
         );
     }
 
-    protected function GetBulkActions(): array
+    /**
+     * @SuppressWarnings(PHPMD)
+     * @return array
+     */
+    protected function getBulkActions(): array
     {
         if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
             return array(
@@ -166,7 +175,7 @@ class AllRulesListTable extends TableBase
      *
      * @return int
      */
-    protected function GetItemId($item): int
+    protected function getItemId($item): int
     {
         return $item->getId();
     }
@@ -174,7 +183,7 @@ class AllRulesListTable extends TableBase
     /**
      * @return int
      */
-    protected function GetTotalItemsCount(): int
+    protected function getTotalItemsCount(): int
     {
         return $this->rulesManager->getAllRulesCount();
     }

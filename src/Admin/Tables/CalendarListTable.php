@@ -33,6 +33,7 @@ class CalendarListTable extends TableBase
     }
 
     /**
+     * @SuppressWarnings(PHPMD)
      * @param Calendar $item
      */
     public function column_title(Calendar $item)
@@ -47,6 +48,7 @@ class CalendarListTable extends TableBase
     }
 
     /**
+     * @SuppressWarnings(PHPMD)
      * @param Calendar $item
      */
     public function column_datetime(Calendar $item)
@@ -55,30 +57,21 @@ class CalendarListTable extends TableBase
         echo $this->dateTimeTools->formatWithTime(strtotime($p->post_date));
     }
 
-    protected function ProcessBuldActions()
+    /**
+     * @return void
+     */
+    protected function processBuldActions()
     {
-        if (isset($_REQUEST['wp_post_ids'])) {
-            $ids    = $_REQUEST['wp_post_ids'];
-            $action = $this->current_action();
-            foreach ($ids as $id) {
-                if ($action == "delete") {
-                    wp_update_post(array(
-                                       "ID"          => $id,
-                                       "post_status" => "trash"
-                                   ));
-                } elseif ($action == "delete_permanently") {
-                    wp_delete_post($id);
-                } elseif ($action == "restore") {
-                    wp_update_post(array(
-                                       "ID"          => $id,
-                                       "post_status" => "publish"
-                                   ));
-                }
-            }
-        }
+
     }
 
-    protected function GetItems($orderby, $order): array
+    /**
+     * @param string $orderby
+     * @param string $order
+     * @SuppressWarnings(PHPMD)
+     * @return array
+     */
+    protected function getItems(string $orderby, string $order): array
     {
         $pt_args = array();
         if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
@@ -88,7 +81,10 @@ class CalendarListTable extends TableBase
         return $this->calendarManager->getAllCalendars($pt_args, $orderby, $order);
     }
 
-    protected function GetViews(): array
+    /**
+     * @return array
+     */
+    protected function getViews(): array
     {
         return array(
             "all"     => __("All", TLBM_TEXT_DOMAIN),
@@ -96,7 +92,7 @@ class CalendarListTable extends TableBase
         );
     }
 
-    protected function GetColumns(): array
+    protected function getColumns(): array
     {
         return array(
             "cb"       => "<input type='checkbox' />",
@@ -105,7 +101,7 @@ class CalendarListTable extends TableBase
         );
     }
 
-    protected function GetSortableColumns(): array
+    protected function getSortableColumns(): array
     {
         return array(
             'title'    => array('title', true),
@@ -113,7 +109,11 @@ class CalendarListTable extends TableBase
         );
     }
 
-    protected function GetBulkActions(): array
+    /**
+     * @SuppressWarnings(PHPMD)
+     * @return array
+     */
+    protected function getBulkActions(): array
     {
         if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
             return array(
@@ -132,7 +132,7 @@ class CalendarListTable extends TableBase
      *
      * @return int
      */
-    protected function GetItemId($item): int
+    protected function getItemId($item): int
     {
         return $item->getId();
     }
@@ -140,7 +140,7 @@ class CalendarListTable extends TableBase
     /**
      * @return int
      */
-    protected function GetTotalItemsCount(): int
+    protected function getTotalItemsCount(): int
     {
         return $this->calendarManager->getAllCalendarsCount();
     }

@@ -2,6 +2,8 @@
 
 namespace TLBM\Rules\RuleActions\MergeEntities;
 
+use TLBM\Rules\RuleActions\MergeEntities\Contracts\CapacityMerge;
+
 class TimeCapacity implements CapacityMerge
 {
 

@@ -25,7 +25,7 @@ class RulePeriod implements JsonSerializable
     protected ?Rule $rule;
 
     /**
-     * @var ArrayCollection
+     * @var Collection
      * @Doctrine\ORM\Mapping\OneToMany (targetEntity=TimeSlot::class, mappedBy="rule_period", orphanRemoval=true, cascade={"all"})
      */
     protected Collection $daily_time_ranges;
@@ -157,6 +157,22 @@ class RulePeriod implements JsonSerializable
     public function setToTstamp(int $to_tstamp)
     {
         $this->to_tstamp = $to_tstamp;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getDailyTimeRanges()
+    {
+        return $this->daily_time_ranges;
+    }
+
+    /**
+     * @param Collection $daily_time_ranges
+     */
+    public function setDailyTimeRanges(Collection $daily_time_ranges): void
+    {
+        $this->daily_time_ranges = $daily_time_ranges;
     }
 
     public function getRule(): Rule

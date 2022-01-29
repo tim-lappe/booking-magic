@@ -36,7 +36,7 @@ class MailSender implements MailSenderInterface
             $message = '<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>' . $subject . '</title><meta name="viewport" content="width=device-width, initial-scale=1.0"/></head><body>';
 
             $inline_css = file_get_contents(TLBM_DIR . "/assets/css/mail/main.css");
-            $message    .= '<style>' . $inline_css . '</style>';
+            $message    .= sprintf("<style>%s</style>", $inline_css);
             $message    .= $content;
 
             $message .= "</body></html>";

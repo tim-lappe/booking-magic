@@ -74,6 +74,8 @@ use TLBM\Request\ShowBookingOverview;
 use TLBM\Rules\Contracts\RuleActionsManagerInterface;
 use TLBM\Rules\Contracts\RulesManagerInterface;
 use TLBM\Rules\Contracts\RulesQueryInterface;
+use TLBM\Rules\RuleActions\DateTimeSlotActionMerge;
+use TLBM\Rules\RuleActions\DateTimeTimeSlotActionMerge;
 use TLBM\Rules\RuleActionsManager;
 use TLBM\Rules\RulesManager;
 use TLBM\Rules\RulesQuery;
@@ -85,6 +87,16 @@ use TLBM\Utilities\Contracts\WeekdayToolsInterface;
 use TLBM\Utilities\DateTimeTools;
 use TLBM\Utilities\PeriodsTools;
 use TLBM\Utilities\WeekdayTools;
+use TLBM\Validation\CalendarEntityValidator;
+use TLBM\Validation\Contracts\CalendarEntityValidatorInterface;
+use TLBM\Validation\Contracts\RulesActionEntityValidatorInterface;
+use TLBM\Validation\Contracts\RulesEntityValidatorInterface;
+use TLBM\Validation\Contracts\RulesPeriodEntityValidatorInterface;
+use TLBM\Validation\Contracts\TimeSlotEntityValidatorInterface;
+use TLBM\Validation\RulesActionEntityValidator;
+use TLBM\Validation\RulesEntityValidator;
+use TLBM\Validation\RulesPeriodEntityValidator;
+use TLBM\Validation\TimeSlotEntityValidator;
 
 use function DI\autowire;
 use function DI\factory;
@@ -99,7 +111,6 @@ return [
     LabelsInterface::class                   => autowire(Labels::class),
     ScriptLocalizationInterface::class       => autowire(ScriptLocalization::class),
     CalendarSelectionHandlerInterface::class => autowire(CalendarSelectionHandler::class),
-    RuleActionsManagerInterface::class       => autowire(RuleActionsManager::class),
     RulesManagerInterface::class             => autowire(RulesManager::class),
     DateTimeToolsInterface::class            => autowire(DateTimeTools::class),
     PeriodsToolsInterface::class             => autowire(PeriodsTools::class),
@@ -109,10 +120,29 @@ return [
     FormBuilderInterface::class              => autowire(FormBuilder::class),
     RulesQueryInterface::class               => autowire(RulesQuery::class),
 
+    CalendarEntityValidatorInterface::class    => autowire(CalendarEntityValidator::class),
+    RulesActionEntityValidatorInterface::class => autowire(RulesActionEntityValidator::class),
+    RulesPeriodEntityValidatorInterface::class => autowire(RulesPeriodEntityValidator::class),
+    TimeSlotEntityValidatorInterface::class    => autowire(TimeSlotEntityValidator::class),
+    RulesEntityValidatorInterface::class       => autowire(RulesEntityValidator::class),
+
+    /**
+     * Register Rule Actions
+     */
+    RuleActionsManagerInterface::class         => factory(function (ContainerInterface $container, FactoryInterface $factory) {
+        $ruleActionManager = $container->get(RuleActionsManager::class);
+        if ($ruleActionManager instanceof RuleActionsManager) {
+            $ruleActionManager->registerActionMerger("date_slot", DateTimeSlotActionMerge::class);
+            $ruleActionManager->registerActionMerger("time_slot", DateTimeTimeSlotActionMerge::class);
+        }
+
+        return $ruleActionManager;
+    }),
+
     /**
      * Register all Form Elements
      */
-    FormElementsCollectionInterface::class   => factory(function (ContainerInterface $container, FactoryInterface $factory) {
+    FormElementsCollectionInterface::class     => factory(function (ContainerInterface $container, FactoryInterface $factory) {
         $formElementsCollection = $container->get(FormElementsCollection::class);
         if ($formElementsCollection instanceof FormElementsCollectionInterface) {
             $formElementsCollection->registerFormElement(
@@ -170,7 +200,7 @@ return [
     /**
      * Requests
      */
-    RequestManagerInterface::class           => factory(function (ContainerInterface $container) {
+    RequestManagerInterface::class             => factory(function (ContainerInterface $container) {
         $requestManager = $container->get(RequestManager::class);
         if ($requestManager instanceof RequestManagerInterface) {
             $requestManager->registerEndpoint($container->get(DoBookingRequest::class));
@@ -184,7 +214,7 @@ return [
     /**
      * Admin Pages
      */
-    AdminPageManagerInterface::class         => factory(function (FactoryInterface $factory, ContainerInterface $container) {
+    AdminPageManagerInterface::class           => factory(function (FactoryInterface $factory, ContainerInterface $container) {
         $adminPageManager = $container->get(AdminPageManager::class);
         if ($adminPageManager instanceof AdminPageManagerInterface) {
             $adminPageManager->registerPage($container->get(BookingMagicRoot::class));
@@ -204,7 +234,7 @@ return [
     /**
      * Settings Manager
      */
-    SettingsManagerInterface::class          => factory(function (FactoryInterface $factory, ContainerInterface $container) {
+    SettingsManagerInterface::class            => factory(function (FactoryInterface $factory, ContainerInterface $container) {
         $settingsManager = $container->get(SettingsManager::class);
         if ($settingsManager instanceof SettingsManagerInterface) {
             /**
@@ -248,7 +278,7 @@ return [
     /**
      * Admin Dashboard
      */
-    DashboardInterface::class                => factory(function (FactoryInterface $factory, ContainerInterface $container) {
+    DashboardInterface::class                  => factory(function (FactoryInterface $factory, ContainerInterface $container) {
         $dashboard = $container->get(Dashboard::class);
         if ($dashboard instanceof DashboardInterface) {
             $dashboard->registerTile(1, $factory->make(DatesTodayTile::class));

@@ -105,13 +105,11 @@ abstract class FormPageBase extends PageBase
 
     public function displayNotices()
     {
-        if (sizeof($this->notices) > 0) {
+        if (count($this->notices) > 0) {
             foreach ($this->notices as $key => $msg) {
                 ?>
-                <div class="notice notice-<?php
-                echo $key ?> is-dismissible">
-                    <p><?php
-                        _e($msg, TLBM_TEXT_DOMAIN); ?></p>
+                <div class="notice notice-<?php echo is_numeric($key) ? "error" : $key ?> is-dismissible">
+                    <p><?php _e($msg, TLBM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php
             }
