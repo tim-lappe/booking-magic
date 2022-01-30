@@ -69,7 +69,7 @@ class WeekdayLabels extends SettingsBase
     public function display()
     {
         if ($this->CheckOptions()) {
-            $this->settingsManager->setValue(WeekdayLabels::class, $this->default_value);
+            $this->settingsManager->setValue(WeekdayLabels::class, $this->defaultValue);
         }
 
         ?>
@@ -87,31 +87,15 @@ class WeekdayLabels extends SettingsBase
                 <td>
                     <label>
                         <input type="text" class="regular-text" name="<?php
-                        echo $this->option_name ?>[long][mon]" value="<?php
-                        echo get_option($this->option_name)["long"]["mon"]; ?>">
+                        echo $this->optionName ?>[long][mon]" value="<?php
+                        echo get_option($this->optionName)["long"]["mon"]; ?>">
                     </label>
                 </td>
                 <td>
                     <label>
                         <input type="text" class="regular-text" name="<?php
-                        echo $this->option_name ?>[short][mon]" value="<?php
-                        echo get_option($this->option_name)["short"]["mon"]; ?>">
-                    </label>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>
-                        <input type="text" class="regular-text" name="<?php
-                        echo $this->option_name ?>[long][tue]" value="<?php
-                        echo get_option($this->option_name)["long"]["tue"]; ?>">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="text" class="regular-text" name="<?php
-                        echo $this->option_name ?>[short][tue]" value="<?php
-                        echo get_option($this->option_name)["short"]["tue"]; ?>">
+                        echo $this->optionName ?>[short][mon]" value="<?php
+                        echo get_option($this->optionName)["short"]["mon"]; ?>">
                     </label>
                 </td>
             </tr>
@@ -119,31 +103,15 @@ class WeekdayLabels extends SettingsBase
                 <td>
                     <label>
                         <input type="text" class="regular-text" name="<?php
-                        echo $this->option_name ?>[long][wed]" value="<?php
-                        echo get_option($this->option_name)["long"]["wed"]; ?>">
+                        echo $this->optionName ?>[long][tue]" value="<?php
+                        echo get_option($this->optionName)["long"]["tue"]; ?>">
                     </label>
                 </td>
                 <td>
                     <label>
                         <input type="text" class="regular-text" name="<?php
-                        echo $this->option_name ?>[short][wed]" value="<?php
-                        echo get_option($this->option_name)["short"]["wed"]; ?>">
-                    </label>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>
-                        <input type="text" class="regular-text" name="<?php
-                        echo $this->option_name ?>[long][thu]" value="<?php
-                        echo get_option($this->option_name)["long"]["thu"]; ?>">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="text" class="regular-text" name="<?php
-                        echo $this->option_name ?>[short][thu]" value="<?php
-                        echo get_option($this->option_name)["short"]["thu"]; ?>">
+                        echo $this->optionName ?>[short][tue]" value="<?php
+                        echo get_option($this->optionName)["short"]["tue"]; ?>">
                     </label>
                 </td>
             </tr>
@@ -151,31 +119,15 @@ class WeekdayLabels extends SettingsBase
                 <td>
                     <label>
                         <input type="text" class="regular-text" name="<?php
-                        echo $this->option_name ?>[long][fri]" value="<?php
-                        echo get_option($this->option_name)["long"]["fri"]; ?>">
+                        echo $this->optionName ?>[long][wed]" value="<?php
+                        echo get_option($this->optionName)["long"]["wed"]; ?>">
                     </label>
                 </td>
                 <td>
                     <label>
                         <input type="text" class="regular-text" name="<?php
-                        echo $this->option_name ?>[short][fri]" value="<?php
-                        echo get_option($this->option_name)["short"]["fri"]; ?>">
-                    </label>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>
-                        <input type="text" class="regular-text" name="<?php
-                        echo $this->option_name ?>[long][sat]" value="<?php
-                        echo get_option($this->option_name)["long"]["sat"]; ?>">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="text" class="regular-text" name="<?php
-                        echo $this->option_name ?>[short][sat]" value="<?php
-                        echo get_option($this->option_name)["short"]["sat"]; ?>">
+                        echo $this->optionName ?>[short][wed]" value="<?php
+                        echo get_option($this->optionName)["short"]["wed"]; ?>">
                     </label>
                 </td>
             </tr>
@@ -183,15 +135,63 @@ class WeekdayLabels extends SettingsBase
                 <td>
                     <label>
                         <input type="text" class="regular-text" name="<?php
-                        echo $this->option_name ?>[long][sun]" value="<?php
-                        echo get_option($this->option_name)["long"]["sun"]; ?>">
+                        echo $this->optionName ?>[long][thu]" value="<?php
+                        echo get_option($this->optionName)["long"]["thu"]; ?>">
                     </label>
                 </td>
                 <td>
                     <label>
                         <input type="text" class="regular-text" name="<?php
-                        echo $this->option_name ?>[short][sun]" value="<?php
-                        echo get_option($this->option_name)["short"]["sun"]; ?>">
+                        echo $this->optionName ?>[short][thu]" value="<?php
+                        echo get_option($this->optionName)["short"]["thu"]; ?>">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>
+                        <input type="text" class="regular-text" name="<?php
+                        echo $this->optionName ?>[long][fri]" value="<?php
+                        echo get_option($this->optionName)["long"]["fri"]; ?>">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="text" class="regular-text" name="<?php
+                        echo $this->optionName ?>[short][fri]" value="<?php
+                        echo get_option($this->optionName)["short"]["fri"]; ?>">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>
+                        <input type="text" class="regular-text" name="<?php
+                        echo $this->optionName ?>[long][sat]" value="<?php
+                        echo get_option($this->optionName)["long"]["sat"]; ?>">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="text" class="regular-text" name="<?php
+                        echo $this->optionName ?>[short][sat]" value="<?php
+                        echo get_option($this->optionName)["short"]["sat"]; ?>">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>
+                        <input type="text" class="regular-text" name="<?php
+                        echo $this->optionName ?>[long][sun]" value="<?php
+                        echo get_option($this->optionName)["long"]["sun"]; ?>">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="text" class="regular-text" name="<?php
+                        echo $this->optionName ?>[short][sun]" value="<?php
+                        echo get_option($this->optionName)["short"]["sun"]; ?>">
                     </label>
                 </td>
             </tr>

@@ -5,10 +5,15 @@ namespace TLBM\Admin\Pages\SinglePages;
 use DI\FactoryInterface;
 use Exception;
 use Throwable;
+use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
+use TLBM\Admin\Settings\SingleSettings\Rules\PriorityLevels;
 use TLBM\Admin\WpForm\CalendarPickerField;
+use TLBM\Admin\WpForm\InputField;
 use TLBM\Admin\WpForm\PeriodEditorField;
 use TLBM\Admin\WpForm\RuleActionsField;
+use TLBM\Admin\WpForm\SelectField;
 use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarSelection;
 use TLBM\Entity\Rule;
 use TLBM\Rules\Contracts\RulesManagerInterface;
@@ -28,6 +33,11 @@ class RuleEditPage extends FormPageBase
     private CalendarManagerInterface $calendarManager;
 
     /**
+     * @var SettingsManagerInterface
+     */
+    private SettingsManagerInterface $settingsManager;
+
+    /**
      * @var Rule|null
      */
     private ?Rule $editingRule = null;
@@ -35,11 +45,13 @@ class RuleEditPage extends FormPageBase
     public function __construct(
         FactoryInterface $factory,
         RulesManagerInterface $rulesManager,
+        SettingsManagerInterface $settingsManager,
         CalendarManagerInterface $calendarManager
     ) {
         parent::__construct($factory, "rule-edit", "booking-magic-rule-edit", false);
 
         $this->rulesManager    = $rulesManager;
+        $this->settingsManager = $settingsManager;
         $this->calendarManager = $calendarManager;
         $this->parent_slug     = "booking-magic-rules";
 
@@ -56,6 +68,9 @@ class RuleEditPage extends FormPageBase
         );
         $this->formBuilder->defineFormField(
             new PeriodEditorField("rule_periods", __("Periods", TLBM_TEXT_DOMAIN))
+        );
+        $this->formBuilder->defineFormField(
+            new SelectField("rule_priority", __("Priority", TLBM_TEXT_DOMAIN), $this->settingsManager->getValue(PriorityLevels::class))
         );
     }
 
@@ -100,40 +115,44 @@ class RuleEditPage extends FormPageBase
 
     public function showFormPageContent()
     {
-        $rule        = $this->getEditingRule();
-        $title       = $rule ? $rule->getTitle() : "";
-        $actions_val = $rule ? $rule->getActions()->toArray() : array();
-        $periods     = $rule ? $rule->getPeriods()->toArray() : array();
-        $selection   = $rule ? $rule->getCalendarSelection() : new CalendarSelection();
-
+        $rule = $this->getEditingRule();
+        if ($rule) {
+            ?>
+            <input type="hidden" name="rule_id" value="<?php echo $rule->getId() ?>">
+            <?php
+        } else {
+            $rule = new Rule();
+        }
         ?>
+
         <div class="tlbm-admin-page-tile">
-            <input
-                    value="<?php echo $title ?>"
-                    placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>"
-                    type="text" name="title" class="tlbm-admin-form-input-title">
+            <input value="<?php echo $rule->getTitle() ?>" placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
+        </div>
+        <div class="tlbm-admin-page-tile-row">
+            <div class="tlbm-admin-page-tile">
+                <?php
+                $this->formBuilder->displayFormHead();
+                $this->formBuilder->displayFormField("calendars", $rule->getCalendarSelection());
+                $this->formBuilder->displayFormFooter();
+                ?>
+            </div>
         </div>
         <div class="tlbm-admin-page-tile">
             <?php
             $this->formBuilder->displayFormHead();
-            $this->formBuilder->displayFormField("calendars", $selection);
+            $this->formBuilder->displayFormField("rule_priority", $rule->getPriority());
+            $this->formBuilder->displayFormField("rule_actions", $rule->getActions()->toArray());
             $this->formBuilder->displayFormFooter();
             ?>
         </div>
         <div class="tlbm-admin-page-tile">
             <?php
             $this->formBuilder->displayFormHead();
-            $this->formBuilder->displayFormField("rule_actions", $actions_val);
+            $this->formBuilder->displayFormField("rule_periods", $rule->getPeriods()->toArray());
             $this->formBuilder->displayFormFooter();
             ?>
         </div>
-        <div class="tlbm-admin-page-tile">
-            <?php
-            $this->formBuilder->displayFormHead();
-            $this->formBuilder->displayFormField("rule_periods", $periods);
-            $this->formBuilder->displayFormFooter();
-            ?>
-        </div>
+
         <?php
     }
 
@@ -148,6 +167,7 @@ class RuleEditPage extends FormPageBase
         }
 
         $rule->setTitle($vars['title']);
+        $rule->setPriority($vars['rule_priority']);
 
         $actions            = $this->formBuilder->readVars("rule_actions", $vars);
         $calendar_selection = $this->formBuilder->readVars("calendars", $vars);

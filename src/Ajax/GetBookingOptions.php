@@ -12,7 +12,7 @@ use TLBM\Booking\BookableSlot;
 use TLBM\Rules\Contracts\RuleActionsManagerInterface;
 use TLBM\Rules\Contracts\RulesManagerInterface;
 use TLBM\Rules\Contracts\RulesQueryInterface;
-use TLBM\Rules\RuleActions\ActionsMerging;
+use TLBM\Rules\Actions\ActionsMerging;
 use TLBM\Rules\RulesQuery;
 
 class GetBookingOptions implements AjaxFunctionInterface

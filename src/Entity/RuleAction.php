@@ -55,21 +55,21 @@ class RuleAction implements JsonSerializable
     /**
      * @Doctrine\ORM\Mapping\Column (type="json", nullable=false)
      */
-    protected ?array $actions = null;
+    protected ?array $data = null;
 
     public function __construct()
     {
-        $this->actions = array();
+        $this->data = array();
     }
 
-    public function getActions(): ?array
+    public function getData(): ?array
     {
-        return $this->actions;
+        return $this->data;
     }
 
-    public function setActions(?array $actions)
+    public function setData(?array $data)
     {
-        $this->actions = $actions;
+        $this->data = $data;
     }
 
     /**
@@ -177,7 +177,7 @@ class RuleAction implements JsonSerializable
             "time_hour"   => $this->time_hour,
             "time_min"    => $this->time_min,
             "priority"    => $this->priority,
-            "actions"     => $this->actions
+            "actions"     => $this->data
         );
     }
 }

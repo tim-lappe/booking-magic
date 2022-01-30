@@ -41,6 +41,7 @@ use TLBM\Admin\Settings\SingleSettings\BookingProcess\DefaultBookingState;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\SinglePageBooking;
 use TLBM\Admin\Settings\SingleSettings\Emails\EmailBookingConfirmation;
 use TLBM\Admin\Settings\SingleSettings\General\AdminMail;
+use TLBM\Admin\Settings\SingleSettings\Rules\PriorityLevels;
 use TLBM\Admin\Settings\SingleSettings\Text\TextBookingReceived;
 use TLBM\Admin\Settings\SingleSettings\Text\WeekdayLabels;
 use TLBM\Admin\WpForm\Contracts\FormBuilderInterface;
@@ -71,12 +72,13 @@ use TLBM\Request\Contracts\RequestManagerInterface;
 use TLBM\Request\DoBookingRequest;
 use TLBM\Request\RequestManager;
 use TLBM\Request\ShowBookingOverview;
+use TLBM\Rules\Actions\DateSlotActionHandler;
+use TLBM\Rules\Actions\DateTimeSlotActionMerge;
+use TLBM\Rules\Actions\DateTimeTimeSlotActionMerge;
+use TLBM\Rules\Actions\RuleActionsManager;
 use TLBM\Rules\Contracts\RuleActionsManagerInterface;
 use TLBM\Rules\Contracts\RulesManagerInterface;
 use TLBM\Rules\Contracts\RulesQueryInterface;
-use TLBM\Rules\RuleActions\DateTimeSlotActionMerge;
-use TLBM\Rules\RuleActions\DateTimeTimeSlotActionMerge;
-use TLBM\Rules\RuleActionsManager;
 use TLBM\Rules\RulesManager;
 use TLBM\Rules\RulesQuery;
 use TLBM\Utilities\Colors;
@@ -132,8 +134,7 @@ return [
     RuleActionsManagerInterface::class         => factory(function (ContainerInterface $container, FactoryInterface $factory) {
         $ruleActionManager = $container->get(RuleActionsManager::class);
         if ($ruleActionManager instanceof RuleActionsManager) {
-            $ruleActionManager->registerActionMerger("date_slot", DateTimeSlotActionMerge::class);
-            $ruleActionManager->registerActionMerger("time_slot", DateTimeTimeSlotActionMerge::class);
+            $ruleActionManager->registerActionHandlerClass("date_slot", DateSlotActionHandler::class);
         }
 
         return $ruleActionManager;
@@ -265,6 +266,12 @@ return [
             $settingsManager->registerSettingsGroup("text", __("Text", TLBM_TEXT_DOMAIN));
             $settingsManager->registerSetting($container->get(WeekdayLabels::class));
             $settingsManager->registerSetting($container->get(TextBookingReceived::class));
+
+            /**
+             * Rules
+             */
+            $settingsManager->registerSettingsGroup("rules", __("Rules", TLBM_TEXT_DOMAIN));
+            $settingsManager->registerSetting($container->get(PriorityLevels::class));
 
             /**
              * Advanced

@@ -23,8 +23,8 @@ class TextBookingReceived extends SettingsBase
         ?>
         <label>
             <textarea class="regular-text tlbm-admin-textarea" name="<?php
-            echo $this->option_name ?>"><?php
-                echo get_option($this->option_name) ?></textarea>
+            echo $this->optionName ?>"><?php
+                echo get_option($this->optionName) ?></textarea>
         </label>
         <?php
     }

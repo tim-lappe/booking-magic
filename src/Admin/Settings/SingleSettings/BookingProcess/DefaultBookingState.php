@@ -31,13 +31,13 @@ class DefaultBookingState extends SettingsBase
         ?>
         <label>
             <select name="<?php
-            echo $this->option_name ?>">
+            echo $this->optionName ?>">
                 <?php
                 $states = BookingStates::getStates();
                 foreach ($states as $state): ?>
                     <option value="<?php
                     echo $state['name'] ?>" <?php
-                    selected($state['name'] == get_option($this->option_name, $this->default_value)) ?>><?php
+                    selected($state['name'] == get_option($this->optionName, $this->defaultValue)) ?>><?php
                         echo $state['title'] ?></option>
                 <?php
                 endforeach; ?>

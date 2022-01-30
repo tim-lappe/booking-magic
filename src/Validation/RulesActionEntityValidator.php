@@ -46,7 +46,7 @@ class RulesActionEntityValidator implements RulesActionEntityValidatorInterface
         $errors = array();
 
         $type = $this->ruleAction->getActionType();
-        $allTypes = array_keys($this->ruleActionsManager->getAllActionsMerger());
+        $allTypes = array_keys($this->ruleActionsManager->getAllActionsHandlerClasses());
 
         if(!in_array($type, $allTypes)) {
             $errors[] = sprintf(__("Unknown action type: %s", TLBM_TEXT_DOMAIN), $type);

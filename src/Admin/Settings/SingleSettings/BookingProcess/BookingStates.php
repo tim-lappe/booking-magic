@@ -125,7 +125,7 @@ class BookingStates extends SettingsBase
                     <td>
                         <label>
                             <input type="checkbox" name="<?php
-                            echo $this->option_name ?>[<?php
+                            echo $this->optionName ?>[<?php
                             echo $key ?>][enabled]" <?php
                             checked(boolval($state['enabled'])) ?> value="true">
                         </label>
@@ -134,14 +134,14 @@ class BookingStates extends SettingsBase
                         <label>
                             <input class="tlbm-status-name-input" readonly type="text" value="<?php
                             echo $state['name'] ?>" name="<?php
-                            echo $this->option_name ?>[<?php
+                            echo $this->optionName ?>[<?php
                             echo $key ?>][name]">
                         </label>
                     </td>
                     <td>
                         <label>
                             <input type="text" class="regular-text tlbm-settings-table-short-input" name="<?php
-                            echo $this->option_name ?>[<?php
+                            echo $this->optionName ?>[<?php
                             echo $key ?>][title]" value="<?php
                             echo $state['title']; ?>">
                         </label>
@@ -149,7 +149,7 @@ class BookingStates extends SettingsBase
                     <td>
                         <label>
                             <input type="color" class="tlbm-settings-table-short-input" name="<?php
-                            echo $this->option_name ?>[<?php
+                            echo $this->optionName ?>[<?php
                             echo $key ?>][color]" value="<?php
                             echo $state['color']; ?>">
                         </label>
@@ -158,7 +158,7 @@ class BookingStates extends SettingsBase
                     if (isset($state['custom']) && $state['custom']): ?>
                         <td>
                             <input type='hidden' name="<?php
-                            echo $this->option_name ?>[<?php
+                            echo $this->optionName ?>[<?php
                             echo $key ?>][custom]" value='true'>
                             <a class='button-status-delete button-link-delete' href='#'><span
                                         class="dashicons dashicons-trash"></span></a>
@@ -167,7 +167,7 @@ class BookingStates extends SettingsBase
                     else: ?>
                         <td>
                             <input type='hidden' name="<?php
-                            echo $this->option_name ?>[<?php
+                            echo $this->optionName ?>[<?php
                             echo $key ?>][custom]" value=''>
                         </td>
                     <?php
@@ -176,7 +176,7 @@ class BookingStates extends SettingsBase
                 <?php
             } ?>
             <tr class="tlbm-booking-states-edit" data-nametag="<?php
-            echo $this->option_name ?>" data-count="<?php
+            echo $this->optionName ?>" data-count="<?php
             echo sizeof($states) ?>">
                 <td>
                     <button class="button tlbm-add-booking-state"><?php

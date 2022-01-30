@@ -19,8 +19,8 @@ class AdminMail extends SettingsBase
         ?>
         <label>
             <input type="email" class="regular-text" name="<?php
-            echo $this->option_name ?>" value="<?php
-            echo get_option($this->option_name); ?>">
+            echo $this->optionName ?>" value="<?php
+            echo get_option($this->optionName); ?>">
         </label>
         <?php
     }
