@@ -11,17 +11,17 @@ abstract class SettingsBase
     /**
      * @var string
      */
-    public string $option_group;
+    public string $optionGroup;
 
     /**
      * @var string
      */
-    public string $option_name;
+    public string $optionName;
 
     /**
      * @var mixed
      */
-    public $default_value;
+    public $defaultValue;
 
     /**
      * @var string
@@ -39,23 +39,23 @@ abstract class SettingsBase
     protected SettingsManagerInterface $settingsManager;
 
     /**
-     * @param string $option_group
-     * @param string $option_name
+     * @param string $optionGroup
+     * @param string $optionName
      * @param string $title
-     * @param mixed $default_value
+     * @param mixed $defaultValue
      * @param string $description
      */
     public function __construct(
-        string $option_group,
-        string $option_name,
+        string $optionGroup,
+        string $optionName,
         string $title,
-        $default_value = "",
+        $defaultValue = "",
         string $description = ""
     ) {
-        $this->option_name   = $option_name;
-        $this->option_group  = $option_group;
-        $this->title         = $title;
-        $this->default_value = $default_value;
+        $this->optionName  = $optionName;
+        $this->optionGroup = $optionGroup;
+        $this->title       = $title;
+        $this->defaultValue = $defaultValue;
         $this->description   = $description;
     }
 
@@ -69,13 +69,21 @@ abstract class SettingsBase
         $this->settingsManager = $settingsManager;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getValue()
+    {
+        return get_option($this->optionName, $this->defaultValue);
+    }
+
     public function display()
     {
         ?>
         <label>
             <input type="text" class="regular-text" name="<?php
-            echo $this->option_name ?>" value="<?php
-            echo get_option($this->option_name); ?>">
+            echo $this->optionName ?>" value="<?php
+            echo get_option($this->optionName); ?>">
         </label>
         <?php
     }

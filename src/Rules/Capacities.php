@@ -8,6 +8,7 @@ use DateTime;
 use TLBM\Calendar\CalendarSelectionHandler;
 use TLBM\Entity\Calendar;
 use TLBM\Model\CalendarGroup;
+use TLBM\Rules\Actions\RuleActionsManager;
 
 class Capacities
 {

@@ -69,7 +69,7 @@ class RuleActionsField extends FormFieldBase implements FormFieldReadVarsInterfa
                 foreach ($json as $key => $action_obj) {
                     $ruleAction = new RuleAction();
                     $ruleAction->setPriority($key);
-                    $ruleAction->setActions((array) $action_obj->actions);
+                    $ruleAction->setData((array) $action_obj->actions);
                     $ruleAction->setActionType($action_obj->action_type);
                     $ruleAction->setWeekdays($action_obj->weekdays);
 

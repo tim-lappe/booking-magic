@@ -2,10 +2,9 @@
 
 namespace TLBM\Rules\Contracts;
 
-use DateTime;
-use TLBM\Entity\Calendar;
+
 use TLBM\Entity\RuleAction;
-use TLBM\Rules\RuleActions\RuleActionMergingBase;
+use TLBM\Rules\Actions\Contracts\ActionHandlerInterface;
 
 interface RuleActionsManagerInterface
 {
@@ -16,27 +15,18 @@ interface RuleActionsManagerInterface
      *
      * @return bool
      */
-    public function registerActionMerger(string $term, string $class): bool;
+    public function registerActionHandlerClass(string $term, string $class): bool;
 
     /**
      * @return array
      */
-    public function getAllActionsMerger(): array;
-
+    public function getAllActionsHandlerClasses(): array;
 
     /**
      *
      * @param RuleAction $action
      *
-     * @return ?RuleActionMergingBase
+     * @return ?ActionHandlerInterface
      */
-    public function getActionMerger(RuleAction $action): ?RuleActionMergingBase;
-
-    /**
-     * @param Calendar $calendar
-     * @param DateTime $dateTime
-     *
-     * @return RuleAction[]
-     */
-    public function getActionsForDateTime(Calendar $calendar, DateTime $dateTime): array;
+    public function getActionHandler(RuleAction $action): ?ActionHandlerInterface;
 }

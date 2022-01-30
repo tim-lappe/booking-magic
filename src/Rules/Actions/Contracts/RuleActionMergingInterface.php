@@ -1,8 +1,8 @@
 <?php
 
-namespace TLBM\Rules\RuleActions\Contracts;
+namespace TLBM\Rules\Actions\Contracts;
 
-use TLBM\Rules\RuleActions\MergeEntities\Contracts\MergeEntityInterface;
+use TLBM\Rules\Actions\Actions\LegacyMerging\Contracts\MergeEntityInterface;
 
 interface RuleActionMergingInterface
 {

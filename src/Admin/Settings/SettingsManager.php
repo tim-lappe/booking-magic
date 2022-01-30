@@ -65,7 +65,7 @@ class SettingsManager implements SettingsManagerInterface
     {
         $setting = $this->getSetting($name);
         if ($setting) {
-            return get_option($setting->option_name, $setting->default_value);
+            return $setting->getValue();
         }
 
         return null;
@@ -95,7 +95,7 @@ class SettingsManager implements SettingsManagerInterface
     {
         $setting = $this->getSetting($name);
         if ($setting) {
-            update_option($setting->option_name, $setting->default_value);
+            update_option($setting->optionName, $setting->defaultValue);
         }
     }
 
@@ -119,9 +119,9 @@ class SettingsManager implements SettingsManagerInterface
         }
 
         foreach ($this->settings as $setting) {
-            register_setting("tlbm_" . $setting->option_group, $setting->option_name, array("default" => $setting->default_value));
+            register_setting("tlbm_" . $setting->optionGroup, $setting->optionName, array("default" => $setting->defaultValue));
             add_settings_field(
-                "tlbm_" . $setting->option_group . "_" . $setting->option_name . "_field", $setting->title, array($setting, "display"), 'tlbm_settings_' . $setting->option_group, "tlbm_" . $setting->option_group . "_section"
+                "tlbm_" . $setting->optionGroup . "_" . $setting->optionName . "_field", $setting->title, array($setting, "display"), 'tlbm_settings_' . $setting->optionGroup, "tlbm_" . $setting->optionGroup . "_section"
             );
         }
     }

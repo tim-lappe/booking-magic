@@ -1,9 +1,10 @@
 <?php
 
-namespace TLBM\Rules\RuleActions;
+namespace TLBM\Rules\Actions;
 
 use TLBM\Entity\Rule;
 use TLBM\Entity\RuleAction;
+use TLBM\Rules\Actions\Merging\Merger\Merger;
 use TLBM\Rules\Contracts\RuleActionsManagerInterface;
 use TLBM\Rules\Contracts\RulesQueryInterface;
 use TLBM\Rules\RulesQuery;
@@ -38,23 +39,28 @@ class ActionsMerging
     {
         $allSums = array();
         $this->getRuleActions(function (int $tstamp, array $actions) use (&$allSums) {
-            $actionSum = array();
+
+            /**
+             * @var Merger[] $actionMergeChains
+             */
+            $actionMergeChains = array();
 
             /**
              * @var RuleAction $ruleAction
              */
             foreach ($actions as $ruleAction) {
-                $handler = $this->ruleActionsManager->getActionMerger($ruleAction);
+                $handler = $this->ruleActionsManager->getActionHandler($ruleAction);
                 if ($handler) {
-                    $mergeTerm = $handler->getEmptyMergeInstance()->getMergeTerm();
-                    if ( !isset($actionSum[$mergeTerm])) {
-                        $actionSum[$mergeTerm] = $handler->getEmptyMergeInstance();
-                    }
-                    $actionSum[$mergeTerm] = $handler->merge($actionSum[$mergeTerm]);
+                    $mergeTerm = $handler->getMergeTerm();
+                    $nextMerger = $actionMergeChains[$mergeTerm] ?? null;
+                    $actionMergeChains[$mergeTerm] = $handler->getMerger($nextMerger);
                 }
             }
 
-            $allSums[$tstamp] = $actionSum;
+            $allSums[$tstamp] = array();
+            foreach ($actionMergeChains as $term => $mergeChain) {
+                $allSums[$tstamp][$term] = $mergeChain->merge();
+            }
         });
 
         return $allSums;

@@ -1,8 +1,8 @@
 <?php
 
-namespace TLBM\Rules\RuleActions\MergeEntities\Contracts;
+namespace TLBM\Rules\Actions\Merging\Contracts;
 
-interface CapacityMerge
+interface CapacityMergeResultInterface extends MergeResultInterface
 {
 
     /**

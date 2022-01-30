@@ -58,7 +58,7 @@
 }
 .tlbm-calendar-container .tlbm-calendar-table .tlbm-cell {
   padding: 5px;
-  min-height: 4em;
+  min-height: 5em;
   border: 3px solid transparent;
 }
 .tlbm-calendar-container .tlbm-calendar-table .tlbm-cell .tlbm-datenumber-span {
@@ -647,12 +647,13 @@
   margin: 0;
 }
 .tlbm-admin-page .tlbm-admin-page-tile-row {
-  display: flex;
+  display: grid;
+  grid-gap: 1.2rem;
+  grid-auto-flow: column;
   justify-content: stretch;
 }
 .tlbm-admin-page .tlbm-admin-page-tile-row > .tlbm-admin-page-tile {
-  margin-left: 10px;
-  margin-right: 10px;
+  margin: 0;
   flex-basis: 0;
   flex-grow: 1;
 }
