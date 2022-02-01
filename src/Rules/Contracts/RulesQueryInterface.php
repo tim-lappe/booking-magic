@@ -2,7 +2,9 @@
 
 namespace TLBM\Rules\Contracts;
 
-use DateTime;
+use TLBM\Rules\Actions\TimedRuleCollection;
+use TLBM\Rules\TimedRules;
+use TLBM\Utilities\ExtendedDateTime;
 
 interface RulesQueryInterface
 {
@@ -21,22 +23,22 @@ interface RulesQueryInterface
     public function setActionTypes(array $actionType): void;
 
     /**
-     * @param DateTime $dateTime
+     * @param ExtendedDateTime $dateTime
      *
      * @return void
      */
-    public function setDateTime(DateTime $dateTime): void;
+    public function setDateTime(ExtendedDateTime $dateTime): void;
 
     /**
-     * @param DateTime $dateTimeFrom
-     * @param DateTime $dateTimeTo
+     * @param ExtendedDateTime $dateTimeFrom
+     * @param ExtendedDateTime $dateTimeTo
      *
      * @return void
      */
-    public function setDateTimeRange(DateTime $dateTimeFrom, DateTime $dateTimeTo): void;
+    public function setDateTimeRange(ExtendedDateTime $dateTimeFrom, ExtendedDateTime $dateTimeTo): void;
 
     /**
-     * @return array
+     * @return TimedRules[]
      */
     public function getResult(): array;
 }

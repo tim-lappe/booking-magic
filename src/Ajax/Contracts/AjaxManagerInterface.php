@@ -17,9 +17,9 @@ interface AjaxManagerInterface
     public function getAllAjaxFunctions(): array;
 
     /**
-     * @param AjaxFunctionInterface $ajaxFunction
+     * @param string $action
      *
-     * @return void
+     * @return AjaxFunctionInterface|null
      */
-    public function executeAjaxFunction(AjaxFunctionInterface $ajaxFunction);
+    public function getAjaxFunction(string $action): ?AjaxFunctionInterface;
 }

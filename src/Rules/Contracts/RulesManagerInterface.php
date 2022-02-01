@@ -12,11 +12,11 @@ interface RulesManagerInterface
     /**
      * Get a Rule
      *
-     * @param $id
+     * @param $rule_id
      *
      * @return false|Rule
      */
-    public function getRule($id): ?Rule;
+    public function getRule($rule_id): ?Rule;
 
     /**
      * @param Rule $rule

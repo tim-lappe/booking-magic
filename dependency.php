@@ -48,7 +48,7 @@ use TLBM\Admin\WpForm\Contracts\FormBuilderInterface;
 use TLBM\Admin\WpForm\FormBuilder;
 use TLBM\Ajax\AjaxManager;
 use TLBM\Ajax\Contracts\AjaxManagerInterface;
-use TLBM\Ajax\GetBookingOptions;
+use TLBM\Ajax\GetMergedActions;
 use TLBM\Ajax\PingPong;
 use TLBM\Calendar\CalendarGroupManager;
 use TLBM\Calendar\CalendarManager;
@@ -75,6 +75,7 @@ use TLBM\Request\ShowBookingOverview;
 use TLBM\Rules\Actions\DateSlotActionHandler;
 use TLBM\Rules\Actions\DateTimeSlotActionMerge;
 use TLBM\Rules\Actions\DateTimeTimeSlotActionMerge;
+use TLBM\Rules\Actions\MessageActionHandler;
 use TLBM\Rules\Actions\RuleActionsManager;
 use TLBM\Rules\Contracts\RuleActionsManagerInterface;
 use TLBM\Rules\Contracts\RulesManagerInterface;
@@ -135,6 +136,7 @@ return [
         $ruleActionManager = $container->get(RuleActionsManager::class);
         if ($ruleActionManager instanceof RuleActionsManager) {
             $ruleActionManager->registerActionHandlerClass("date_slot", DateSlotActionHandler::class);
+            $ruleActionManager->registerActionHandlerClass("message", MessageActionHandler::class);
         }
 
         return $ruleActionManager;
@@ -299,7 +301,7 @@ return [
     AjaxManagerInterface::class => factory(function (FactoryInterface $factory, ContainerInterface $container) {
         $ajaxManager = $container->get(AjaxManager::class);
         if ($ajaxManager instanceof AjaxManagerInterface) {
-            $ajaxManager->registerAjaxFunction($container->get(GetBookingOptions::class));
+            $ajaxManager->registerAjaxFunction($container->get(GetMergedActions::class));
             $ajaxManager->registerAjaxFunction($container->get(PingPong::class));
         }
 

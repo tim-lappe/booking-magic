@@ -27,4 +27,12 @@ class CapacityResult implements MergeResultInterface, CapacityMergeResultInterfa
     {
         $this->capacity = max(0, $capacity);
     }
+
+    /**
+     * @return int
+     */
+    public function getMergeResult(): int
+    {
+        return $this->capacity;
+    }
 }

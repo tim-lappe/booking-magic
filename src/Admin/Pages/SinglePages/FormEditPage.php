@@ -10,6 +10,7 @@ use TLBM\Admin\FormEditor\FrontendGeneration\FormFrontendGenerator;
 use TLBM\Admin\WpForm\FormEditorField;
 use TLBM\Entity\Form;
 use TLBM\Form\Contracts\FormManagerInterface;
+use TLBM\Validation\FormEntityValidator;
 
 class FormEditPage extends FormPageBase
 {
@@ -22,21 +23,20 @@ class FormEditPage extends FormPageBase
     /**
      * @var FormElementsCollectionInterface
      */
-    private FormElementsCollectionInterface $formElementsCollection;
+    private FormElementsCollectionInterface $elementsCollection;
 
 
     public function __construct(
-        FactoryInterface $factory,
         FormManagerInterface $formManager,
         FormElementsCollectionInterface $elementsCollection
     ) {
         parent::__construct(
-            $factory, __("Form Edit", TLBM_TEXT_DOMAIN), "booking-magic-form-edit", false
+             __("Form Edit", TLBM_TEXT_DOMAIN), "booking-magic-form-edit", false
         );
 
-        $this->formManager            = $formManager;
-        $this->formElementsCollection = $elementsCollection;
-        $this->parent_slug            = "booking-magic-form";
+        $this->formManager        = $formManager;
+        $this->elementsCollection = $elementsCollection;
+        $this->parent_slug        = "booking-magic-form";
 
         $this->defineFormFields();
     }
@@ -44,7 +44,7 @@ class FormEditPage extends FormPageBase
     private function defineFormFields()
     {
         $this->formBuilder->defineFormField(
-            new FormEditorField($this->formElementsCollection, "form", __("Form", TLBM_TEXT_DOMAIN))
+            new FormEditorField($this->elementsCollection, "form", __("Form", TLBM_TEXT_DOMAIN))
         );
     }
 
@@ -106,21 +106,20 @@ class FormEditPage extends FormPageBase
      */
     public function onSave($vars): array
     {
-        $form = null;
-        if (isset($_REQUEST['form_id'])) {
-            $form = $this->formManager->getForm($_REQUEST['form_id']);
-        }
-
+        $form = $this->getEditingForm();
         if ($form == null) {
             $form = new Form();
         }
 
+        $formValidator = new FormEntityValidator($form);
         $form->setTitle($vars['title']);
+
+
         try {
             $form_node_tree = json_decode(urldecode($vars['form']));
             $form->setFormData($form_node_tree);
 
-            $generator = new FormFrontendGenerator($this->formElementsCollection, $form_node_tree);
+            $generator = new FormFrontendGenerator($this->elementsCollection, $form_node_tree);
             $html      = $generator->generateContent();
             $form->setFrontendHtml($html);
         } catch (Throwable $exception) {
@@ -129,8 +128,16 @@ class FormEditPage extends FormPageBase
             );
         }
 
-        $this->formManager->saveForm($form);
+        $validationResult = $formValidator->getValidationErrors();
 
-        return array();
+        if(count($validationResult) == 0) {
+            $this->formManager->saveForm($form);
+
+            return array(
+                "success" => __("Form has been saved", TLBM_TEXT_DOMAIN)
+            );
+        }
+
+        return $validationResult;
     }
 }

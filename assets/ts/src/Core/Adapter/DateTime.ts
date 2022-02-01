@@ -1,16 +1,49 @@
 export class DateTime {
 
+    public fullDay: boolean = false;
+
     public date: Date;
 
-    constructor(tstamp: number) {
+    constructor(year: number = null, month: number = null, day: number = null, hour: number = null, minute: number = null, seconds: number = null) {
         this.date = new Date();
-        if(tstamp > 0) {
-            this.setTime(tstamp);
+
+        if(year > 0) {
+            this.setYear(year, month, day);
+        }
+        if(hour != null) {
+            this.setHourMin(hour, minute, seconds);
         }
     }
 
-    public setHourMin(hours: number, minutes: number) {
-        this.date.setHours(hours, minutes);
+    public toJSON(): any {
+        if(this.isFullDay()) {
+            return {
+                "year": this.getYear(),
+                "month": this.getMonth(),
+                "day": this.getMonthDay()
+            };
+        }
+
+        return {
+            "year": this.getYear(),
+            "month": this.getMonth(),
+            "day": this.getMonthDay(),
+            "hour": this.getHour(),
+            "minute": this.getMinute(),
+            "seconds": this.getSeconds()
+        };
+    }
+
+    public setFullDay(isFullDay: boolean) {
+        this.fullDay = isFullDay;
+    }
+
+    public isFullDay() {
+        return this.fullDay;
+    }
+
+    public setHourMin(hours: number, minutes: number, seconds: number = 0) {
+        this.date.setHours(hours, minutes, seconds);
     }
 
     public getHour(): number {
@@ -19,6 +52,10 @@ export class DateTime {
 
     public getMinute(): number {
         return this.date.getMinutes();
+    }
+
+    public getSeconds(): number {
+        return this.date.getSeconds();
     }
 
     public addMonth(months: number) {
@@ -39,20 +76,22 @@ export class DateTime {
     }
 
     public addDays(days: number) {
-        let time = this.getTime();
-        time += 60 * 60 * 24 * days;
-        this.setTime(time);
+        this.date.setDate(this.date.getDate() + days);
     }
 
     public getFirstDayThisMonth(): DateTime {
-        let firstDay = new DateTime(this.getTime());
+        let firstDay = new DateTime();
         firstDay.setYear(this.getYear(), this.getMonth(), 1);
+        firstDay.setHourMin(0, 0, 1);
+        firstDay.setFullDay(true);
         return firstDay;
     }
 
     public getLastDayThisMonth(): DateTime {
-        let lastDay = new DateTime(this.getTime());
-        lastDay.setYear(this.getYear(), this.getMonth() + 1, 0);
+        let lastDay = new DateTime();
+        lastDay.setYear(this.getYear(), (this.getMonth() + 1), 0);
+        lastDay.setHourMin(23, 59, 59);
+        lastDay.setFullDay(true);
         return lastDay;
     }
 
@@ -68,20 +107,18 @@ export class DateTime {
         this.date.setDate(day);
     }
 
-    public setYear(year: number, month?: number, date?: number) {
-        this.date.setFullYear(year, month - 1, date)
+    public setYear(year: number, month: number = null, date: number = null) {
+        if(month != null && date != null) {
+            this.date.setFullYear(year, month - 1, date);
+        } else if(month != null) {
+            this.date.setFullYear(year, month - 1);
+        } else {
+            this.date.setFullYear(year);
+        }
     }
 
     public getYear(): number {
         return this.date.getFullYear();
-    }
-
-    public setTime(time: number) {
-        this.date.setTime(time * 1000);
-    }
-
-    public getTime(): number {
-        return Math.floor(this.date.getTime() / 1000);
     }
 
     public getMonth(): number {
@@ -92,28 +129,41 @@ export class DateTime {
         return this.date.setMonth(month - 1);
     }
 
+    public getDaysAsDateTimesInMonth(): DateTime[] {
+        let dateTimes: DateTime[] = [];
+        let firstDay = this.getFirstDayThisMonth().getMonthDay();
+        let lastDay = this.getLastDayThisMonth().getMonthDay();
+
+        for(let d = firstDay; d <= lastDay; d++) {
+            let dt = new DateTime(this.getYear(), this.getMonth(), d, this.getHour(), this.getMinute(), this.getSeconds());
+            dateTimes.push(dt);
+        }
+
+        return dateTimes;
+    }
+
+
     public static create(): DateTime {
-        return new DateTime(DateTime.time());
+        return new DateTime();
     }
 
     public static time(): number {
         return Date.now() / 1000;
     }
 
-    public static getDatesBetween(start: DateTime, end: DateTime): DateTime[] {
-        if(start.getTime() < end.getTime()) {
-            let dates = [];
-            let dateTraverse = new DateTime(start.getTime());
+    public static fromObj(obj: any): DateTime {
+        return new DateTime(obj.year, obj.month, obj.day, obj.hour, obj.minute, obj.seconds);
+    }
 
-            while(dateTraverse.getYear() <= end.getYear() && dateTraverse.getMonth() <= end.getMonth() && dateTraverse.getMonthDay() <= end.getMonthDay()) {
-                dates.push(new DateTime(dateTraverse.getTime()));
-                dateTraverse.addDays(1);
-            }
-
-            return dates;
-        }
-
-        return [];
+    public static copy(dateTime: DateTime) {
+        return new DateTime(
+            dateTime.getYear(),
+            dateTime.getMonth(),
+            dateTime.getMonthDay(),
+            dateTime.getHour(),
+            dateTime.getMinute(),
+            dateTime.getSeconds()
+        )
     }
 
     public static isSameMinute(...dateTimes: DateTime[]) {
@@ -137,8 +187,10 @@ export class DateTime {
 
     public static isSameDay(...dateTimes: DateTime[]) {
         if(dateTimes.length >= 2) {
+            dateTimes = dateTimes.filter(dt => dt);
             let prev: DateTime = dateTimes[0];
             dateTimes.splice(0, 1);
+
             for (let dateTime of dateTimes) {
                 if (prev.getMonthDay() != dateTime.getMonthDay() ||
                     prev.getMonth() != dateTime.getMonth() ||

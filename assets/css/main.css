@@ -40,7 +40,7 @@
 }
 .tlbm-calendar-container .tlbm-calendar-table {
   width: 100%;
-  box-shadow: 0 2px 3px 0 #dedede;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2);
   display: grid;
   border-radius: 5px 5px 10px 10px;
   overflow: hidden;
@@ -72,16 +72,13 @@
   padding: 0;
   font-size: 1em;
 }
-.tlbm-calendar-container .tlbm-calendar-table .tlbm-cell.tlbm-cell-not-empty {
-  background-color: #ffffff;
-}
 .tlbm-calendar-container .tlbm-calendar-table .tlbm-cell:not(.tlbm-cell-not-empty) {
   background-color: rgba(0, 0, 0, 0.03);
 }
 .tlbm-calendar-container .tlbm-calendar-table .tlbm-cell.tlbm-cell-selectable {
   transition-property: background-color;
   transition-duration: 0.1s;
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.3);
 }
 .tlbm-calendar-container .tlbm-calendar-table .tlbm-cell.tlbm-cell-selectable:hover {
   cursor: pointer;

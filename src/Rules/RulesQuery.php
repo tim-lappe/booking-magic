@@ -3,15 +3,17 @@
 namespace TLBM\Rules;
 
 use DateInterval;
-use DatePeriod;
-use DateTime;
+use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use TLBM\Database\Contracts\ORMInterface;
 use TLBM\Entity\CalendarSelection;
 use TLBM\Entity\Rule;
 use TLBM\Localization\Contracts\LabelsInterface;
+use TLBM\Rules\Actions\TimedRuleCollection;
 use TLBM\Rules\Contracts\RulesQueryInterface;
+use TLBM\Utilities\ExtendedDateTime;
 
+use const TLBM\Utilities\EXTDATETIME_INTERVAL_DAY;
 use const TLBM_CALENDAR_SELECTION_TYPE_ALL;
 use const TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT;
 use const TLBM_CALENDAR_SELECTION_TYPE_ONLY;
@@ -25,19 +27,19 @@ class RulesQuery implements RulesQueryInterface
     private ?int $calendarId = null;
 
     /**
-     * @var DateTime|null
+     * @var ExtendedDateTime|null
      */
-    private ?DateTime $dateTime;
+    private ?ExtendedDateTime $dateTime;
 
     /**
-     * @var DateTime|null
+     * @var ExtendedDateTime|null
      */
-    private ?DateTime $dateTimeFrom;
+    private ?ExtendedDateTime $dateTimeFrom;
 
     /**
-     * @var DateTime|null
+     * @var ExtendedDateTime|null
      */
-    private ?DateTime $dateTimeTo;
+    private ?ExtendedDateTime $dateTimeTo;
 
     /**
      * @var array|null
@@ -53,6 +55,7 @@ class RulesQuery implements RulesQueryInterface
      * @var LabelsInterface
      */
     private LabelsInterface $labels;
+
 
     public function __construct(ORMInterface $repository, LabelsInterface $labels)
     {
@@ -81,11 +84,11 @@ class RulesQuery implements RulesQueryInterface
     }
 
     /**
-     * @param DateTime $dateTime
+     * @param ExtendedDateTime $dateTime
      *
      * @return void
      */
-    public function setDateTime(DateTime $dateTime): void
+    public function setDateTime(ExtendedDateTime $dateTime): void
     {
         $this->dateTimeFrom = null;
         $this->dateTimeTo   = null;
@@ -93,12 +96,12 @@ class RulesQuery implements RulesQueryInterface
     }
 
     /**
-     * @param DateTime $dateTimeFrom
-     * @param DateTime $dateTimeTo
+     * @param ExtendedDateTime $dateTimeFrom
+     * @param ExtendedDateTime $dateTimeTo
      *
      * @return void
      */
-    public function setDateTimeRange(DateTime $dateTimeFrom, DateTime $dateTimeTo): void
+    public function setDateTimeRange(ExtendedDateTime $dateTimeFrom, ExtendedDateTime $dateTimeTo): void
     {
         $this->dateTimeFrom = $dateTimeFrom;
         $this->dateTimeTo   = $dateTimeTo;
@@ -106,48 +109,51 @@ class RulesQuery implements RulesQueryInterface
     }
 
     /**
-     * @return array
+     * @return TimedRules[]
      */
     public function getResult(): array
     {
         if ($this->dateTime) {
             $queryBuilder = $this->getQueryforSingle($this->dateTime);
-            return array($queryBuilder->getQuery()->getResult());
+            return [
+                new TimedRules($this->dateTime, $queryBuilder->getQuery()->getResult())
+            ];
 
         } elseif ($this->dateTimeTo && $this->dateTimeFrom) {
-            $period = new DatePeriod($this->dateTimeFrom, new DateInterval('P1D'), $this->dateTimeTo);
-            $results = array();
-
-            /**
-             * @var DateTime $dt
-             */
+            $period = $this->dateTimeFrom->getDateTimesBetween(EXTDATETIME_INTERVAL_DAY, $this->dateTimeTo);
+            $timedRules = [];
             foreach ($period as $dt) {
-                $queryBuilder = $this->getQueryforSingle($dt);
-                $results[$dt->getTimestamp()] = $queryBuilder->getQuery()->getResult();
+                $queryBuilder                 = $this->getQueryforSingle($dt);
+                $timedRules[] = new TimedRules($dt, $queryBuilder->getQuery()->getResult());
             }
 
-            return $results;
+            return $timedRules;
         }
 
-        return array();
+        return [];
     }
 
     /**
-     * @param DateTime|null $date_time
+     * @param ExtendedDateTime|null $dateTime
      *
      * @return QueryBuilder
      */
-    private function getQueryforSingle(?DateTime $date_time = null): QueryBuilder
+    private function getQueryforSingle(?ExtendedDateTime $dateTime = null): QueryBuilder
     {
         $entityManager = $this->repository->getEntityManager();
-        $queryBuilder = $entityManager->createQueryBuilder();
-        $queryBuilder->select("rule,actions,periods,calendarSelection,calendarSelectionCalendars")->from(Rule::class, "rule")->distinct(true)->leftJoin('rule.calendar_selection', 'calendarSelection')->leftJoin("calendarSelection.calendars", "calendarSelectionCalendars")->leftJoin("rule.actions", "actions")->leftJoin("rule.periods", "periods");
+        $queryBuilder  = $entityManager->createQueryBuilder();
+        $queryBuilder->select("rule,actions,periods,calendarSelection,calendarSelectionCalendars")
+                     ->from(Rule::class, "rule")
+                     ->distinct(true)
+                     ->leftJoin('rule.calendar_selection', 'calendarSelection')
+                     ->leftJoin("calendarSelection.calendars", "calendarSelectionCalendars")
+                     ->leftJoin("rule.actions", "actions")
+                     ->leftJoin("rule.periods", "periods");
 
         $where = $queryBuilder->expr()->andX();
 
         if ($this->calendarId) {
             $queryBuilder->setParameter("calendarId", $this->calendarId);
-
             $selectionWhere = $queryBuilder->expr()->orX();
             $selectionWhere->add(
                 "calendarSelection.selection_mode = '" . TLBM_CALENDAR_SELECTION_TYPE_ALL . "'"
@@ -171,23 +177,9 @@ class RulesQuery implements RulesQueryInterface
             $where->add($selectionWhere);
         }
 
-        if ($date_time) {
-            $weekday       = intval($date_time->format("N"));
-            $satOrSun    = $weekday == 6 || $weekday == 7;
-            $mofr          = $weekday <= 5;
-            $labels        = array_keys($this->labels->getWeekdayLabels());
-            $weekday_label = $labels[$weekday - 1];
-
-            $weekdays_where = $queryBuilder->expr()->orX();
-            if ($satOrSun) {
-                $weekdays_where->add("actions.weekdays = 'sat_and_sun'");
-            } elseif ($mofr) {
-                $weekdays_where->add("actions.weekdays = 'mo_to_fr'");
-            }
-
-            $weekdays_where->add("actions.weekdays = 'every_day'");
-            $weekdays_where->add("actions.weekdays = '" . $weekday_label . "'");
-            $where->add($weekdays_where);
+        if ($dateTime) {
+            $where->add($this->buildWeekdaysWhereExpr($queryBuilder->expr(), $dateTime));
+            $where->add($this->buildPeriodsWhereExpr($queryBuilder, $dateTime));
         }
 
         if ($this->actionTypes) {
@@ -196,9 +188,76 @@ class RulesQuery implements RulesQueryInterface
         }
 
         $queryBuilder->where($where);
-        $queryBuilder->addOrderBy("rule.priority","ASC");
+        $queryBuilder->addOrderBy("rule.priority", "DESC");
         $queryBuilder->addOrderBy("actions.priority", "DESC");
-
         return $queryBuilder;
+    }
+
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param ExtendedDateTime $dateTime
+     *
+     * @return Expr\Base
+     */
+    private function buildPeriodsWhereExpr(QueryBuilder $queryBuilder, ExtendedDateTime $dateTime): Expr\Base
+    {
+        $timestampBeginOfDay = $dateTime->getTimestampBeginOfDay();
+        $timestampEndOfDay = $dateTime->getTimestampEndOfDay();
+
+        $timestampFrom = $dateTime->isFullDay() ? $timestampEndOfDay : $dateTime->getTimestamp();
+        $timestampTo = $dateTime->isFullDay() ? $timestampBeginOfDay : $dateTime->getTimestamp();
+
+        $expr = $queryBuilder->expr();
+        $periodsWhere = $expr->orX();
+        $periodsNotEmpty = $expr->andX();
+
+        $periodsFromOr = $expr->orX();
+        $periodsFromOr->add("periods.fromTimestamp <= '" . $timestampFrom . "'");
+
+        $periodsFromNoTimeset = $expr->andX();
+        $periodsFromNoTimeset->add("periods.fromTimestamp <= '" . $timestampEndOfDay . "'");
+        $periodsFromNoTimeset->add("periods.fromTimeset = false");
+        $periodsFromOr->add($periodsFromNoTimeset);
+
+        $periodsToOr = $expr->orX();
+        $periodsToOr->add($expr->isNull("periods.toTimestamp"));
+        $periodsToOr->add("periods.toTimestamp >= '" . $timestampTo . "'");
+
+        $periodsToNoTimeset = $expr->andX();
+        $periodsToNoTimeset->add("periods.toTimestamp >= '" . $timestampBeginOfDay . "'");
+        $periodsToNoTimeset->add("periods.toTimeset = false");
+        $periodsToOr->add($periodsToNoTimeset);
+
+        $periodsWhere->add("SIZE(rule.periods) = 0");
+        $periodsNotEmpty->add($periodsFromOr);
+        $periodsNotEmpty->add($periodsToOr);
+        $periodsWhere->add($periodsNotEmpty);
+        return $periodsWhere;
+    }
+
+    /**
+     * @param Expr $expr
+     * @param ExtendedDateTime $dateTime
+     *
+     * @return Expr\Base
+     */
+    private function buildWeekdaysWhereExpr(Expr $expr, ExtendedDateTime $dateTime): Expr\Base
+    {
+        $weekday       = $dateTime->getWeekday();
+        $satOrSun      = $weekday == 6 || $weekday == 7;
+        $mofr          = $weekday <= 5;
+        $labels        = array_keys($this->labels->getWeekdayLabels());
+        $weekday_label = $labels[$weekday - 1];
+
+        $weekdays_where = $expr->orX();
+        if ($satOrSun) {
+            $weekdays_where->add("actions.weekdays = 'sat_and_sun'");
+        } elseif ($mofr) {
+            $weekdays_where->add("actions.weekdays = 'mo_to_fr'");
+        }
+
+        $weekdays_where->add("actions.weekdays = 'every_day'");
+        $weekdays_where->add("actions.weekdays = '" . $weekday_label . "'");
+        return $weekdays_where;
     }
 }

@@ -102,7 +102,7 @@ export class ElementSettingsWindow extends React.Component<ElementSettingsWindow
 
     onSettingChanged(index: number, formData: FormElementData) {
         this.setState((prevState: ElementSettingsWindowState) => {
-            prevState.formDataCopy[index] = formData;
+            prevState.formDataCopy = formData;
             return prevState;
         });
     }

@@ -1,10 +1,10 @@
 import * as React from "react";
 import {Localization} from "../../Localization";
-import {Utils} from "../../Utils";
 import {TimeSelect, TimeSelectTime} from "./TimeSelect";
+import {DateTime} from "../../Core/Adapter/DateTime";
 
 export interface DateSelectState {
-    tstamp?: number;
+    dateTime?: DateTime;
     timeset: boolean;
 }
 
@@ -17,7 +17,7 @@ interface DateSelectProps {
     maxMinute?: number;
     allowTimeSet?: boolean;
     forceTimeSet?: boolean;
-    defaultTstamp?: number;
+    defaultDateTime?: DateTime;
     timeset?: boolean;
     onChange: (dateSelectState: DateSelectState) => void;
 }
@@ -35,18 +35,14 @@ export class DateSelect extends React.Component<DateSelectProps, DateSelectState
         this.onChangeTime = this.onChangeTime.bind(this);
 
         this.state = {
-            tstamp: this.props.defaultTstamp ?? Utils.getUnixTimestamp(),
+            dateTime: this.props.defaultDateTime ?? new DateTime(),
             timeset: this.props.timeset ?? false
         }
     }
 
     onChangeDay(event: any) {
         this.setState((prevState: DateSelectState) => {
-            let date = new Date();
-            date.setTime(prevState.tstamp * 1000);
-            date.setDate(event.target.value);
-            prevState.tstamp = Utils.getUnixTimestamp(date);
-
+            prevState.dateTime.setMonthDay(event.target.value);
             this.props.onChange(prevState);
             return prevState;
         });
@@ -56,11 +52,7 @@ export class DateSelect extends React.Component<DateSelectProps, DateSelectState
 
     onChangeMonth(event: any) {
         this.setState((prevState: DateSelectState) => {
-            let date = new Date();
-            date.setTime(prevState.tstamp * 1000);
-
-            prevState.tstamp = Utils.getUnixTimestamp(this.setDateFitInSameMonth(date, event.target.value - 1, date.getFullYear()));
-
+            prevState.dateTime = this.setDateFitInSameMonth(prevState.dateTime, parseInt(event.target.value), prevState.dateTime.getYear());
             this.props.onChange(prevState);
             return prevState;
         });
@@ -70,11 +62,7 @@ export class DateSelect extends React.Component<DateSelectProps, DateSelectState
 
     onChangeYear(event: any) {
         this.setState((prevState: DateSelectState) => {
-            let date = new Date();
-            date.setTime(prevState.tstamp * 1000);
-
-            prevState.tstamp = Utils.getUnixTimestamp(this.setDateFitInSameMonth(date, date.getMonth(), event.target.value));
-
+            prevState.dateTime = this.setDateFitInSameMonth(prevState.dateTime, prevState.dateTime.getMonth(), parseInt(event.target.value));
             this.props.onChange(prevState);
             return prevState;
         });
@@ -106,47 +94,41 @@ export class DateSelect extends React.Component<DateSelectProps, DateSelectState
 
     onChangeTime(time: TimeSelectTime) {
         this.setState((prevState: DateSelectState) => {
-            let date = new Date();
-            date.setTime(prevState.tstamp * 1000);
-            date.setHours(time.hour, time.minute, 0, 0);
-
-            prevState.tstamp = Utils.getUnixTimestamp(date);
+            prevState.dateTime.setHourMin(time.hour, time.minute, 0);
             this.props.onChange(prevState);
-
             return prevState;
         });
     }
 
+    setDateFitInSameMonth(date: DateTime, newMonth: number, newYear: number) {
+        let newDate = DateTime.create();
+        newDate.setYear(newYear, newMonth);
+        newDate.setMonthDay(1);
+        newDate.setHourMin(date.getHour(), date.getMinute(), date.getSeconds());
 
-    setDateFitInSameMonth(date: Date, newMonth: number, newYear: number) {
-        let newDate = new Date();
-        newDate.setDate(1);
-        newDate.setFullYear(newYear, newMonth);
-        newDate.setHours(date.getHours(), date.getMinutes(), date.getSeconds());
 
-        let newMaxDates = this.getMonthDays(Utils.getUnixTimestamp(newDate));
-        if(date.getDate() <= newMaxDates) {
-            newDate.setDate(date.getDate());
+        let newMaxDates = this.getMonthDays(newDate.getMonth(), newDate.getYear());
+        if(date.getMonthDay() <= newMaxDates) {
+            newDate.setMonthDay(date.getMonthDay());
             return newDate;
         } else {
-            newDate.setDate(newMaxDates);
+            newDate.setMonthDay(newMaxDates);
         }
 
         return newDate;
     }
 
-    getMonthDays(tstamp: number) {
-        let date = new Date();
-        date.setTime(tstamp * 1000);
-        date.setDate(1);
+    getMonthDays(month: number, year: number) {
+        let date = new DateTime(year, month);
+        date.setMonthDay(1);
         date.setMonth(date.getMonth() + 1);
-        date.setDate(0);
+        date.setMonthDay(0);
 
-        return date.getDate();
+        return date.getMonthDay();
     }
 
     getCurrentMonthDays() {
-       return this.getMonthDays(this.state.tstamp);
+        return this.getMonthDays(this.state.dateTime.getMonth(), this.state.dateTime.getYear());
     }
 
     render() {
@@ -171,23 +153,21 @@ export class DateSelect extends React.Component<DateSelectProps, DateSelectState
             minuteOptions.push(<option key={m} value={m}>{m}</option>);
         }
 
-        let selectedDate = new Date();
-        selectedDate.setTime(this.state.tstamp * 1000);
-
+        let selectedDate = this.state.dateTime;
 
         return (
             <div className={"tlbm-date-select"}>
-                <select onChange={this.onChangeDay} value={selectedDate.getDate()}>
+                <select onChange={this.onChangeDay} value={selectedDate.getMonthDay()}>
                     {dayOptions}
                 </select>
-                <select onChange={this.onChangeMonth} value={selectedDate.getMonth() + 1}>
+                <select onChange={this.onChangeMonth} value={selectedDate.getMonth()}>
                     {Object.entries(Localization.__Arr("months")).map((item) => {
                         return (
                             <option key={parseInt(item[0])} value={parseInt(item[0])}>{item[1]}</option>
                         )
                     })}
                 </select>
-                <select onChange={this.onChangeYear} value={selectedDate.getFullYear()}>
+                <select onChange={this.onChangeYear} value={selectedDate.getYear()}>
                     {yearOptions}
                 </select>
                 {((!this.state.timeset && !this.props.forceTimeSet) && this.props.allowTimeSet) ? (
@@ -196,7 +176,7 @@ export class DateSelect extends React.Component<DateSelectProps, DateSelectState
                 {((this.state.timeset  || this.props.forceTimeSet) && this.props.allowTimeSet) ?
                     [
                         <span key={1} className="dashicons dashicons-clock" />,
-                        <TimeSelect key={2} onChange={this.onChangeTime} initState={{minute: selectedDate.getMinutes(), hour: selectedDate.getHours()}} />,
+                        <TimeSelect key={2} onChange={this.onChangeTime} initState={{minute: selectedDate.getMinute(), hour: selectedDate.getHour()}} />,
                         <button key={3} onClick={this.onRemoveTimeset} className={"button button-remove-time"}>Remove Time</button>
                     ]: null}
             </div>

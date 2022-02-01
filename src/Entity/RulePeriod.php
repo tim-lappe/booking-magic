@@ -6,6 +6,7 @@ namespace TLBM\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use JsonSerializable;
+use TLBM\Utilities\ExtendedDateTime;
 
 /**
  * Class Calendar
@@ -28,37 +29,38 @@ class RulePeriod implements JsonSerializable
      * @var Collection
      * @Doctrine\ORM\Mapping\OneToMany (targetEntity=TimeSlot::class, mappedBy="rule_period", orphanRemoval=true, cascade={"all"})
      */
-    protected Collection $daily_time_ranges;
+    protected Collection $dailyTimeRanges;
 
     /**
      * @var int
-     * @Doctrine\ORM\Mapping\Column (type="integer", nullable=false)
+     * @Doctrine\ORM\Mapping\Column (type="bigint", nullable=false)
      */
-    protected int $from_tstamp;
+    protected int $fromTimestamp;
 
     /**
      * @var bool
      * @Doctrine\ORM\Mapping\Column (type="boolean", nullable=false)
      */
-    protected bool $from_timeset = false;
+    protected bool $fromTimeset = false;
 
     /**
-     * @var int
-     * @Doctrine\ORM\Mapping\Column (type="integer")
+     * @var ?int
+     * @Doctrine\ORM\Mapping\Column (type="bigint", nullable=true)
      */
-    protected int $to_tstamp;
+    protected ?int $toTimestamp = null;
+
     /**
      * @var bool
      * @Doctrine\ORM\Mapping\Column (type="boolean", nullable=false)
      */
-    protected bool $to_timeset = false;
+    protected bool $toTimeset = false;
 
     /**
      *
      */
     public function __construct()
     {
-        $this->daily_time_ranges = new ArrayCollection();
+        $this->dailyTimeRanges = new ArrayCollection();
     }
 
     /**
@@ -66,15 +68,15 @@ class RulePeriod implements JsonSerializable
      */
     public function isFromTimeset(): bool
     {
-        return $this->from_timeset;
+        return $this->fromTimeset;
     }
 
     /**
-     * @param bool $from_timeset
+     * @param bool $fromTimeset
      */
-    public function setFromTimeset(bool $from_timeset): void
+    public function setFromTimeset(bool $fromTimeset): void
     {
-        $this->from_timeset = $from_timeset;
+        $this->fromTimeset = $fromTimeset;
     }
 
     /**
@@ -82,15 +84,15 @@ class RulePeriod implements JsonSerializable
      */
     public function isToTimeset(): bool
     {
-        return $this->to_timeset;
+        return $this->toTimeset;
     }
 
     /**
-     * @param bool $to_timeset
+     * @param bool $toTimeset
      */
-    public function setToTimeset(bool $to_timeset): void
+    public function setToTimeset(bool $toTimeset): void
     {
-        $this->to_timeset = $to_timeset;
+        $this->toTimeset = $toTimeset;
     }
 
     /**
@@ -100,8 +102,8 @@ class RulePeriod implements JsonSerializable
      */
     public function addTimeSlot(TimeSlot $slot): TimeSlot
     {
-        if ( !$this->daily_time_ranges->contains($slot)) {
-            $this->daily_time_ranges[] = $slot;
+        if ( !$this->dailyTimeRanges->contains($slot)) {
+            $this->dailyTimeRanges[] = $slot;
             $slot->setRulePeriod($this);
         }
 
@@ -115,8 +117,8 @@ class RulePeriod implements JsonSerializable
      */
     public function removeTimeSlot(TimeSlot $slot): TimeSlot
     {
-        if ($this->daily_time_ranges->contains($slot)) {
-            $this->daily_time_ranges->removeElement($slot);
+        if ($this->dailyTimeRanges->contains($slot)) {
+            $this->dailyTimeRanges->removeElement($slot);
             $slot->setRulePeriod(null);
         }
 
@@ -126,37 +128,37 @@ class RulePeriod implements JsonSerializable
     /**
      * @return int
      */
-    public function getFromTstamp(): int
+    public function getFromTimestamp(): int
     {
-        return $this->from_tstamp;
+        return $this->fromTimestamp;
     }
 
     /**
-     * @param int $from_tstamp
+     * @param int $fromTimestamp
      *
      * @return void
      */
-    public function setFromTstamp(int $from_tstamp)
+    public function setFromTimestamp(int $fromTimestamp)
     {
-        $this->from_tstamp = $from_tstamp;
+        $this->fromTimestamp = $fromTimestamp;
     }
 
     /**
-     * @return int
+     * @return ?int
      */
-    public function getToTstamp(): int
+    public function getToTimestamp(): ?int
     {
-        return $this->to_tstamp;
+        return $this->toTimestamp;
     }
 
     /**
-     * @param int $to_tstamp
+     * @param ?int $toTimestamp
      *
      * @return void
      */
-    public function setToTstamp(int $to_tstamp)
+    public function setToTimestamp(?int $toTimestamp)
     {
-        $this->to_tstamp = $to_tstamp;
+        $this->toTimestamp = $toTimestamp;
     }
 
     /**
@@ -164,15 +166,15 @@ class RulePeriod implements JsonSerializable
      */
     public function getDailyTimeRanges()
     {
-        return $this->daily_time_ranges;
+        return $this->dailyTimeRanges;
     }
 
     /**
-     * @param Collection $daily_time_ranges
+     * @param Collection $dailyTimeRanges
      */
-    public function setDailyTimeRanges(Collection $daily_time_ranges): void
+    public function setDailyTimeRanges(Collection $dailyTimeRanges): void
     {
-        $this->daily_time_ranges = $daily_time_ranges;
+        $this->dailyTimeRanges = $dailyTimeRanges;
     }
 
     public function getRule(): Rule
@@ -187,13 +189,13 @@ class RulePeriod implements JsonSerializable
 
     public function jsonSerialize(): array
     {
-        return array(
-            "from_tstamp"       => $this->from_tstamp,
-            "from_timeset"      => $this->from_timeset,
-            "to_tstamp"         => $this->to_tstamp,
-            "to_timeset"        => $this->to_timeset,
-            "id"                => $this->id,
-            "daily_time_ranges" => $this->daily_time_ranges->toArray()
-        );
+        return [
+            "fromDateTime"    => new ExtendedDateTime($this->fromTimestamp),
+            "fromTimset"      => $this->fromTimeset,
+            "toDateTime"      => $this->toTimestamp ? new ExtendedDateTime($this->toTimestamp): null,
+            "toTimeSet"       => $this->toTimeset,
+            "id"              => $this->id,
+            "dailyTimeRanges" => $this->dailyTimeRanges->toArray()
+        ];
     }
 }

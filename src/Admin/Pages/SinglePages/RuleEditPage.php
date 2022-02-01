@@ -43,12 +43,11 @@ class RuleEditPage extends FormPageBase
     private ?Rule $editingRule = null;
 
     public function __construct(
-        FactoryInterface $factory,
         RulesManagerInterface $rulesManager,
         SettingsManagerInterface $settingsManager,
         CalendarManagerInterface $calendarManager
     ) {
-        parent::__construct($factory, "rule-edit", "booking-magic-rule-edit", false);
+        parent::__construct("rule-edit", "booking-magic-rule-edit", false);
 
         $this->rulesManager    = $rulesManager;
         $this->settingsManager = $settingsManager;
@@ -201,6 +200,8 @@ class RuleEditPage extends FormPageBase
             return $validationResult;
         }
 
-        return array();
+        return array(
+            "success" => __("Rule has been saved", TLBM_TEXT_DOMAIN)
+        );
     }
 }

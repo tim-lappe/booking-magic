@@ -15,9 +15,9 @@ interface AjaxFunctionInterface
     public function getFunctionName(): string;
 
     /**
-     * @param mixed $data
+     * @param mixed $assocData
      *
      * @return mixed
      */
-    public function execute($data);
+    public function execute($assocData);
 }

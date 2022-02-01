@@ -20,15 +20,20 @@ export class PeriodSelect extends React.Component<any, PeriodSelectState>{
         let jsondata = Utils.decodeUriComponent(props.dataset.json);
         jsondata = JSON.parse(jsondata);
 
-        console.log(jsondata);
-
         this.state = {
             items: []
         }
 
+        console.log(jsondata);
+
         if(Array.isArray(jsondata)) {
+            let periods: Period[] = [];
+            for (let data of jsondata) {
+                periods.push(Period.fromData(data));
+            }
+
             this.state = {
-                items: jsondata
+                items: periods
             }
         }
     }

@@ -34,30 +34,30 @@ abstract class PageBase
 
 
     /**
-     * @param string $menu_title
-     * @param string $menu_slug
-     * @param bool $show_in_menu
-     * @param bool $display_default_head
-     * @param string $display_default_head_title
+     * @param string $menuTitle
+     * @param string $menuSlug
+     * @param bool $showInMenu
+     * @param bool $displayDefaultHead
+     * @param string $defaultHeadTitle
      */
     public function __construct(
-        string $menu_title,
-        string $menu_slug,
-        bool $show_in_menu = true,
-        bool $display_default_head = true,
-        string $display_default_head_title = ""
+        string $menuTitle,
+        string $menuSlug,
+        bool $showInMenu = true,
+        bool $displayDefaultHead = true,
+        string $defaultHeadTitle = ""
     ) {
-        $this->menu_title           = $menu_title;
-        $this->menu_slug            = $menu_slug;
-        $this->show_in_menu         = $show_in_menu;
-        $this->display_default_head = $display_default_head;
+        $this->menu_title           = $menuTitle;
+        $this->menu_slug            = $menuSlug;
+        $this->show_in_menu         = $showInMenu;
+        $this->display_default_head = $displayDefaultHead;
 
-        if (empty($display_default_head_title)) {
-            $this->display_default_head_title = $menu_title;
+        if (empty($defaultHeadTitle)) {
+            $this->display_default_head_title = $menuTitle;
         }
 
         global $plugin_page;
-        if ($plugin_page == $menu_slug) {
+        if ($plugin_page == $menuSlug) {
             remove_all_actions('admin_notices');
             remove_all_actions('all_admin_notices');
         }

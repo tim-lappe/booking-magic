@@ -1,9 +1,10 @@
 import * as React from "react";
 import {DateTime} from "../../Adapter/DateTime";
-import {HttpRequest} from "../../Api/HttpRequest";
-import {CalendarBookingOptions} from "../../Entity/CalendarBookingOptions";
+import {MergedActions} from "../../Entity/MergedActions";
 import {CalendarOptions} from "../../Entity/CalendarOptions";
-import {BookingOptionsRequest} from "../../Api/BookingOptionsRequest";
+import {MergedActionsRequest} from "../../Ajax/MergedActionsRequest";
+import {RequestSet} from "../../Ajax/RequestSet";
+import {RequestCommandBase} from "../../Ajax/RequestCommandBase";
 
 export interface CalendarBaseProps<V> {
     options: CalendarOptions;
@@ -13,7 +14,7 @@ export interface CalendarBaseProps<V> {
 export interface CalendarBaseState<S> {
     viewState?: S;
     focusedDate: DateTime;
-    bookingOptions?: CalendarBookingOptions;
+    bookingOptions?: MergedActions;
 }
 
 export abstract class CalendarComponentBase<V, S> extends React.Component<CalendarBaseProps<V>,CalendarBaseState<S>> {
@@ -31,17 +32,29 @@ export abstract class CalendarComponentBase<V, S> extends React.Component<Calend
         this.updateBookingOptions();
     }
 
-    protected abstract prepareUpdateBookingOptions(calendarReuqest: BookingOptionsRequest): BookingOptionsRequest;
+    protected abstract prepareUpdateBookingOptions(calendarReuqest: MergedActionsRequest): MergedActionsRequest;
 
     protected updateBookingOptions() {
-        let calendarRequest = this.prepareUpdateBookingOptions(new BookingOptionsRequest());
-        calendarRequest.fromTstamp = this.state.focusedDate.getFirstDayThisMonth().getTime();
-        calendarRequest.toTstamp =  this.state.focusedDate.getLastDayThisMonth().getTime();
+        let calendarRequest = this.prepareUpdateBookingOptions(new MergedActionsRequest());
+        calendarRequest.fromDateTime = this.state.focusedDate.getFirstDayThisMonth();
+        calendarRequest.toDateTime =  this.state.focusedDate.getLastDayThisMonth();
+
+        console.log(
+            "DateTime:",this.state.focusedDate,
+            "FirstDay:",this.state.focusedDate.getFirstDayThisMonth(),
+            "LastDay:",this.state.focusedDate.getLastDayThisMonth()
+        )
+
         calendarRequest.options = this.props.options;
 
-        calendarRequest.send().then((data) => {
+        let requestSet = new RequestSet(calendarRequest);
+        requestSet.send().then((results: { [p: string]: RequestCommandBase<any> }) => {
             this.setState((prevState: CalendarBaseState<S>) => {
-                prevState.bookingOptions = data;
+                for(const [key, value] of Object.entries(results)) {
+                    if(value.getResult() instanceof MergedActions) {
+                        prevState.bookingOptions = value.getResult();
+                    }
+                }
                 return prevState;
             });
         });

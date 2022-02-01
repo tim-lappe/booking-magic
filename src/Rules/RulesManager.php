@@ -49,15 +49,15 @@ class RulesManager implements RulesManagerInterface
     /**
      * Get a Rule
      *
-     * @param $id
+     * @param int $rule_id
      *
-     * @return false|Rule
+     * @return null|Rule
      */
-    public function getRule($id): ?Rule
+    public function getRule($rule_id): ?Rule
     {
         try {
             $mgr  = $this->repository->getEntityManager();
-            $rule = $mgr->find("\TLBM\Entity\Rule", $id);
+            $rule = $mgr->find("\TLBM\Entity\Rule", $rule_id);
             if ($rule instanceof Rule) {
                 return $rule;
             }
@@ -88,10 +88,10 @@ class RulesManager implements RulesManagerInterface
     public function getAllRulesCount(array $options = array()): int
     {
         $mgr = $this->repository->getEntityManager();
-        $qb  = $mgr->createQueryBuilder();
-        $qb->select($qb->expr()->count("r"))->from("\TLBM\Entity\Rule", "r");
+        $queryBuilder  = $mgr->createQueryBuilder();
+        $queryBuilder->select($queryBuilder->expr()->count("r"))->from("\TLBM\Entity\Rule", "r");
 
-        $query = $qb->getQuery();
+        $query = $queryBuilder->getQuery();
         try {
             return $query->getSingleScalarResult();
         } catch (NoResultException|NonUniqueResultException $e) {

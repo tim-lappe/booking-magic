@@ -4,6 +4,8 @@
 namespace TLBM\Admin\WpForm;
 
 
+use DateTime;
+use Throwable;
 use TLBM\Admin\WpForm\Contracts\FormFieldReadVarsInterface;
 use TLBM\Entity\RulePeriod;
 use TLBM\Entity\TimeSlot;
@@ -57,23 +59,59 @@ class PeriodEditorField extends FormFieldBase implements FormFieldReadVarsInterf
             $periods     = array();
 
             if (is_array($json)) {
-                foreach ($json as $key => $period_obj) {
+                foreach ($json as $periodObj) {
                     $period = new RulePeriod();
-                    $period->setFromTstamp($period_obj->from_tstamp);
-                    $period->setFromTimeset((bool) $period_obj->from_timeset);
-                    $period->setToTstamp($period_obj->to_tstamp);
-                    $period->setToTimeset((bool) $period_obj->to_timeset);
+                    try {
+                        $fromDateTime = new DateTime();
+                        $fromDateTime->setTimezone(wp_timezone());
+                        $fromDateTime->setDate(
+                                $periodObj->fromDateTime->year,
+                                $periodObj->fromDateTime->month,
+                                $periodObj->fromDateTime->day);
+                        $fromDateTime->setTime(
+                            $periodObj->fromDateTime->hour,
+                            $periodObj->fromDateTime->minute,
+                            $periodObj->fromDateTime->seconds);
 
-                    if ($period_obj->id > 0 && is_numeric($period_obj->id)) {
-                        $period->setId($period_obj->id);
+                        $period->setFromTimestamp($fromDateTime->getTimestamp());
+                        $period->setFromTimeset((bool) $periodObj->fromTimeset);
+
+                    } catch (Throwable $exception) {
+                        continue;
                     }
 
-                    foreach ($period_obj->daily_time_ranges as $time_range_obj) {
+                    if(isset($periodObj->toDateTime)) {
+                        try {
+                            $toDateTime = new DateTime();
+                            $toDateTime->setTimezone(wp_timezone());
+                            $toDateTime->setDate(
+                                $periodObj->toDateTime->year, $periodObj->toDateTime->month, $periodObj->toDateTime->day
+                            );
+                            $toDateTime->setTime(
+                                $periodObj->toDateTime->hour, $periodObj->toDateTime->minute, $periodObj->toDateTime->seconds
+                            );
+
+                            if(isset($periodObj->toTimeset)) {
+                                $period->setToTimeset((bool) $periodObj->toTimeset);
+                            }
+
+                            $period->setToTimestamp($toDateTime->getTimestamp());
+                        } catch (Throwable $exception) {
+                            $period->setToTimestamp(null);
+                            $period->setToTimeset(false);
+                        }
+                    }
+
+                    if ($periodObj->id > 0 && is_numeric($periodObj->id)) {
+                        $period->setId($periodObj->id);
+                    }
+
+                    foreach ($periodObj->dailyTimeRanges as $timeRangeObj) {
                         $time_range = new TimeSlot();
-                        $time_range->setFromHour($time_range_obj->from_hour);
-                        $time_range->setToHour($time_range_obj->to_hour);
-                        $time_range->setFromMin($time_range_obj->from_min);
-                        $time_range->setToMin($time_range_obj->to_min);
+                        $time_range->setFromHour($timeRangeObj->from_hour);
+                        $time_range->setToHour($timeRangeObj->to_hour);
+                        $time_range->setFromMin($timeRangeObj->from_min);
+                        $time_range->setToMin($timeRangeObj->to_min);
                         $period->addTimeSlot($time_range);
                     }
 
