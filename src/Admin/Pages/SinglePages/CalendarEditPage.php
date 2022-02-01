@@ -8,6 +8,7 @@ use DI\NotFoundException;
 use Exception;
 use TLBM\Calendar\Contracts\CalendarManagerInterface;
 use TLBM\Entity\Calendar;
+use TLBM\MainFactory;
 use TLBM\Output\Calendar\CalendarOutput;
 use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
 use TLBM\Validation\ValidatorFactory;
@@ -21,20 +22,14 @@ class CalendarEditPage extends FormPageBase
     private CalendarManagerInterface $calendarManager;
 
     /**
-     * @var FactoryInterface
-     */
-    private FactoryInterface $factory;
-
-    /**
      * @var Calendar|null
      */
     private ?Calendar $editingCalendar = null;
 
-    public function __construct(FactoryInterface $factory, CalendarManagerInterface $calendarManager)
+    public function __construct(CalendarManagerInterface $calendarManager)
     {
         $this->calendarManager = $calendarManager;
-        $this->factory         = $factory;
-        parent::__construct($factory, "calendar-edit", "booking-calendar-edit", false);
+        parent::__construct("calendar-edit", "booking-calendar-edit", false);
     }
 
     /**
@@ -63,7 +58,7 @@ class CalendarEditPage extends FormPageBase
         <div class="tlbm-admin-page-tile">
             <?php
             echo CalendarOutput::GetCalendarContainerShell(
-                $calendar->getId(), time(), "month", $this->factory->make(MonthViewSetting::class), "calendar", true
+                $calendar->getId(), null, "month", MainFactory::create(MonthViewSetting::class), "calendar", true
             ); ?>
         </div>
 
@@ -92,18 +87,18 @@ class CalendarEditPage extends FormPageBase
             try {
                 $this->calendarManager->saveCalendar($calendar);
                 $this->editingCalendar = $calendar;
+                return array(
+                    "success" => __("Calendar has been saved", TLBM_TEXT_DOMAIN)
+                );
+
             } catch (Exception $e) {
                 return array(
                     "error" => __("An internal error occured: " . $e->getMessage(), TLBM_TEXT_DOMAIN)
                 );
             }
-        } else {
-            return $validationResult;
         }
 
-        return array(
-                "success" => __("Calendar has been updated", TLBM_TEXT_DOMAIN)
-        );
+        return $validationResult;
     }
 
     /**

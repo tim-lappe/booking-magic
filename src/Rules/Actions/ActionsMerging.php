@@ -2,7 +2,7 @@
 
 namespace TLBM\Rules\Actions;
 
-use TLBM\Entity\Rule;
+use Iterator;
 use TLBM\Entity\RuleAction;
 use TLBM\Rules\Actions\Merging\Merger\Merger;
 use TLBM\Rules\Contracts\RuleActionsManagerInterface;
@@ -33,12 +33,12 @@ class ActionsMerging
     }
 
     /**
-     * @return array
+     * @return TimedMergeData[]
      */
     public function getRuleActionsMerged(): array
     {
-        $allSums = array();
-        $this->getRuleActions(function (int $tstamp, array $actions) use (&$allSums) {
+        $mergedCollection = [];
+        foreach ($this->getRuleActions() as $timedActions) {
 
             /**
              * @var Merger[] $actionMergeChains
@@ -48,7 +48,7 @@ class ActionsMerging
             /**
              * @var RuleAction $ruleAction
              */
-            foreach ($actions as $ruleAction) {
+            foreach ($timedActions->getRuleActions() as $ruleAction) {
                 $handler = $this->ruleActionsManager->getActionHandler($ruleAction);
                 if ($handler) {
                     $mergeTerm = $handler->getMergeTerm();
@@ -57,42 +57,26 @@ class ActionsMerging
                 }
             }
 
-            $allSums[$tstamp] = array();
+            $mergedActions = [];
             foreach ($actionMergeChains as $term => $mergeChain) {
-                $allSums[$tstamp][$term] = $mergeChain->merge();
+                $mergedActions[$term] = $mergeChain->merge()->getMergeResult();
             }
-        });
 
-        return $allSums;
+            $mergedCollection[] = new TimedMergeData($timedActions->getDateTime(), $mergedActions);
+        }
+
+        return $mergedCollection;
     }
 
     /**
-     * @param callable|null $forEach
      *
-     * @return array
+     * @return Iterator
      */
-    public function getRuleActions(callable $forEach = null): array
+    public function getRuleActions(): Iterator
     {
-        $result = $this->rulesQuery->getResult();
-
-        $endResult = array();
-        foreach ($result as $tstamp => $rules) {
-            $actions = array();
-
-            /**
-             * @var Rule $rule
-             */
-            foreach ($rules as $rule) {
-                $actions = array_merge($actions, $rule->getActions()->toArray());
-            }
-
-            if ($forEach) {
-                $forEach($tstamp, $actions);
-            }
-
-            $endResult[$tstamp] = $actions;
+        $timedRules = $this->rulesQuery->getResult();
+        foreach ($timedRules as $timedRule) {
+            yield $timedRule->getTimedActions();
         }
-
-        return $endResult;
     }
 }

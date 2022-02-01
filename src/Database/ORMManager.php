@@ -4,6 +4,7 @@
 namespace TLBM\Database;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -11,6 +12,7 @@ use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\Tools\ToolsException;
 use Throwable;
 use TLBM\Database\Contracts\ORMInterface;
+use TLBM\Database\Functions\Date;
 
 class ORMManager implements ORMInterface
 {
@@ -32,9 +34,8 @@ class ORMManager implements ORMInterface
     public function __construct()
     {
         try {
-            $configuration = Setup::createAnnotationMetadataConfiguration(
-                [TLBM_DIR . "/src/Entity"], true, null, null, false
-            );
+            $configuration = Setup::createAnnotationMetadataConfiguration([TLBM_DIR . "/src/Entity"], true, null, null, false);
+            $this->addCustomFunctions($configuration);
 
             $connection    = [
                 "driver"   => "mysqli",
@@ -51,6 +52,16 @@ class ORMManager implements ORMInterface
         } catch (Throwable $error) {
             echo $error->getMessage();
         }
+    }
+
+    /**
+     * @param Configuration $configuration
+     *
+     * @return void
+     */
+    public function addCustomFunctions(Configuration $configuration): void
+    {
+        $configuration->addCustomStringFunction("DATE", Date::class);
     }
 
     /**

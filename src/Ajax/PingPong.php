@@ -16,11 +16,11 @@ class PingPong implements AjaxFunctionInterface
     }
 
     /**
-     * @param mixed $data
+     * @param mixed $assocData
      *
      * @return array
      */
-    public function execute($data): array
+    public function execute($assocData): array
     {
         return array(
             "Pong!"

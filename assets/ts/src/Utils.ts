@@ -1,10 +1,19 @@
 import {NestedObject} from "./Admin/Entity/NestedObject";
 
 export class Utils {
+
+    /**
+     *
+     * @param str
+     */
     public static decodeUriComponent(str: string): string {
         return decodeURIComponent(str.replace(/\+/g, '%20'))
     }
 
+    /**
+     *
+     * @param val
+     */
     public static getUnixTimestamp(val: any = null): number {
         if(val == null) {
             return Math.floor(Date.now() / 1000);
@@ -17,6 +26,11 @@ export class Utils {
         }
     }
 
+    /**
+     *
+     * @param obj
+     * @param stack
+     */
     public static decycle(obj, stack = []) {
         if (!obj || typeof obj !== 'object') {
             return obj;

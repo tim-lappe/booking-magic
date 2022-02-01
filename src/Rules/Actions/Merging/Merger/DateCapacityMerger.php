@@ -9,16 +9,6 @@ use TLBM\Rules\Actions\Merging\Results\CapacityResult;
 
 class DateCapacityMerger extends Merger
 {
-
-    /**
-     * @param CapacityActionData $actionData
-     * @param Merger|null $nextMerger
-     */
-    public function __construct(CapacityActionData $actionData, ?Merger $nextMerger = null)
-    {
-        parent::__construct($actionData, $nextMerger);
-    }
-
     /**
      * @param MergeResultInterface|null $mergeResult
      *

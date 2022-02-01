@@ -2,9 +2,9 @@ import * as React from "react";
 import {Localization} from "../../Localization";
 import {DateSelect, DateSelectState} from "./DateSelect";
 import {Period} from "../Entity/Period";
-import {Utils} from "../../Utils";
 import {PeriodTimeRange} from "../Entity/PeriodTimeRange";
 import {TimeSelect, TimeSelectTime} from "./TimeSelect";
+import {DateTime} from "../../Core/Adapter/DateTime";
 
 
 interface PeriodSelectItemState {
@@ -38,11 +38,8 @@ export class PeriodSelectItem extends React.Component<PeriodSelectItemProps, Per
 
     onChangeStartDate(dateSelect: DateSelectState) {
         this.setState((prevState: PeriodSelectItemState) => {
-            let date = new Date();
-            date.setTime(dateSelect.tstamp * 1000);
-
-            prevState.item.from_tstamp = Utils.getUnixTimestamp(date);
-            prevState.item.from_timeset = dateSelect.timeset;
+            prevState.item.fromDateTime = dateSelect.dateTime;
+            prevState.item.fromTimeset = dateSelect.timeset;
 
             this.props.onChange(prevState.item);
             return prevState;
@@ -51,11 +48,8 @@ export class PeriodSelectItem extends React.Component<PeriodSelectItemProps, Per
 
     onChangeEndDate(dateSelect: DateSelectState) {
         this.setState((prevState: PeriodSelectItemState) => {
-            let date = new Date();
-            date.setTime(dateSelect.tstamp * 1000);
-
-            prevState.item.to_tstamp = Utils.getUnixTimestamp(date);
-            prevState.item.to_timeset = dateSelect.timeset;
+            prevState.item.toDateTime = dateSelect.dateTime;
+            prevState.item.toTimeset = dateSelect.timeset;
 
             this.props.onChange(prevState.item);
             return prevState;
@@ -64,7 +58,7 @@ export class PeriodSelectItem extends React.Component<PeriodSelectItemProps, Per
 
     onRemoveEnd(event: any) {
         this.setState((prevState: PeriodSelectItemState) => {
-            prevState.item.to_tstamp = 0;
+            prevState.item.toDateTime = null;
             this.props.onChange(prevState.item);
             return prevState;
         });
@@ -74,11 +68,10 @@ export class PeriodSelectItem extends React.Component<PeriodSelectItemProps, Per
 
     onAddEnd(event: any) {
         this.setState((prevState: PeriodSelectItemState) => {
-            let date = new Date();
-            date.setTime(prevState.item.from_tstamp * 1000);
-            date.setHours(23, 59, 59);
+            let date = DateTime.copy(prevState.item.fromDateTime);
+            date.setHourMin(23, 59, 59);
 
-            prevState.item.to_tstamp = Utils.getUnixTimestamp(date);
+            prevState.item.toDateTime = date;
             this.props.onChange(prevState.item);
             return prevState;
         });
@@ -87,7 +80,7 @@ export class PeriodSelectItem extends React.Component<PeriodSelectItemProps, Per
     }
 
     onAddDailyRange(event: any) {
-        let ranges = this.state.item.daily_time_ranges;
+        let ranges = this.state.item.dailyTimeRanges;
         let dataItem = new PeriodTimeRange();
         dataItem.id = -Math.random();
         dataItem.from_min = 0;
@@ -96,7 +89,7 @@ export class PeriodSelectItem extends React.Component<PeriodSelectItemProps, Per
         dataItem.to_min = 59;
 
         this.setState((prevState: PeriodSelectItemState) => {
-            prevState.item.daily_time_ranges = [...ranges, dataItem];
+            prevState.item.dailyTimeRanges = [...ranges, dataItem];
             this.props.onChange(prevState.item);
 
             return prevState;
@@ -106,12 +99,12 @@ export class PeriodSelectItem extends React.Component<PeriodSelectItemProps, Per
     }
 
     onChangeDailyRangeFrom(index: number, time: TimeSelectTime) {
-        let range = this.state.item.daily_time_ranges[index];
+        let range = this.state.item.dailyTimeRanges[index];
         range.from_hour = time.hour;
         range.from_min = time.minute;
 
         this.setState((prevState: PeriodSelectItemState) => {
-            prevState.item.daily_time_ranges[index] = range;
+            prevState.item.dailyTimeRanges[index] = range;
             this.props.onChange(prevState.item);
 
             return prevState;
@@ -119,12 +112,12 @@ export class PeriodSelectItem extends React.Component<PeriodSelectItemProps, Per
     }
 
     onChangeDailyRangeTo(index: number, time: TimeSelectTime) {
-        let range = this.state.item.daily_time_ranges[index];
+        let range = this.state.item.dailyTimeRanges[index];
         range.to_hour = time.hour;
         range.to_min = time.minute;
 
         this.setState((prevState: PeriodSelectItemState) => {
-            prevState.item.daily_time_ranges[index] = range;
+            prevState.item.dailyTimeRanges[index] = range;
             this.props.onChange(prevState.item);
 
             return prevState;
@@ -132,11 +125,11 @@ export class PeriodSelectItem extends React.Component<PeriodSelectItemProps, Per
     }
 
     onRemoveDailyRange(index: number) {
-        let items = this.state.item.daily_time_ranges;
+        let items = this.state.item.dailyTimeRanges;
         items.splice(index, 1);
 
         this.setState((prevState: PeriodSelectItemState) => {
-            prevState.item.daily_time_ranges = [...items];
+            prevState.item.dailyTimeRanges = [...items];
             this.props.onChange(prevState.item);
             
             return prevState;
@@ -150,7 +143,7 @@ export class PeriodSelectItem extends React.Component<PeriodSelectItemProps, Per
     }
 
     hasEndDate(): boolean {
-        return this.state.item.to_tstamp > 0;
+        return this.state.item.toDateTime != null;
     }
 
     render() {
@@ -161,13 +154,13 @@ export class PeriodSelectItem extends React.Component<PeriodSelectItemProps, Per
                 <div className={"tlbm-period-panel"}>
                     <div>
                         <small>{Localization.__("Start")}</small>
-                        <DateSelect defaultTstamp={this.state.item.from_tstamp} timeset={this.state.item.from_timeset} allowTimeSet={true} onChange={this.onChangeStartDate} minYear={currentDate.getFullYear()} />
+                        <DateSelect defaultDateTime={this.state.item.fromDateTime} timeset={this.state.item.fromTimeset} allowTimeSet={true} onChange={this.onChangeStartDate} minYear={currentDate.getFullYear()} />
                     </div>
 
                     {this.hasEndDate() ? (
                         <div>
                             <small>{Localization.__("End")}</small>
-                            <DateSelect defaultTstamp={this.state.item.to_tstamp} timeset={this.state.item.to_timeset} allowTimeSet={true} onChange={this.onChangeEndDate} minYear={currentDate.getFullYear()} />
+                            <DateSelect defaultDateTime={this.state.item.toDateTime} timeset={this.state.item.toTimeset} allowTimeSet={true} onChange={this.onChangeEndDate} minYear={currentDate.getFullYear()} />
                         </div>
                     ): null }
 
@@ -178,7 +171,7 @@ export class PeriodSelectItem extends React.Component<PeriodSelectItemProps, Per
                     <div className={"tlbm-timeslots-container"}>
                         <small>&nbsp;</small>
                         <div className={"tlbm-timeslots"}>
-                            {this.state.item.daily_time_ranges.map((item, index) => {
+                            {this.state.item.dailyTimeRanges.map((item, index) => {
                                 return (
                                     <div key={item.id} className={"tlbm-timeslot-item"}>
                                         <div>

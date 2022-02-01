@@ -12,6 +12,10 @@ class AjaxManager implements AjaxManagerInterface
      */
     private array $ajaxFunctions = array();
 
+    public function __construct()
+    {
+        $this->addWpMainAjaxFunction();
+    }
 
     /**
      * @param AjaxFunctionInterface $ajaxFunction
@@ -22,12 +26,25 @@ class AjaxManager implements AjaxManagerInterface
     {
         if(!isset($this->ajaxFunctions[get_class($ajaxFunction)])) {
             $this->ajaxFunctions[get_class($ajaxFunction)] = $ajaxFunction;
-            $this->addWpAjaxFunction($ajaxFunction->getFunctionName(), function () use ($ajaxFunction) {
-                $this->executeAjaxFunction($ajaxFunction);
-            });
             return true;
         }
         return false;
+    }
+
+    /**
+     * @param string $action
+     *
+     * @return AjaxFunctionInterface|null
+     */
+    public function getAjaxFunction(string $action): ?AjaxFunctionInterface
+    {
+        foreach ($this->ajaxFunctions as $function) {
+            if($function->getFunctionName() == $action) {
+                return $function;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -39,30 +56,36 @@ class AjaxManager implements AjaxManagerInterface
     }
 
     /**
-     * @param AjaxFunctionInterface $ajaxFunction
+     * Helper Function to Register an Ajax Action
      *
+     */
+    private function addWpMainAjaxFunction()
+    {
+        add_action("wp_ajax_tlbm_ajax", [$this, "executeMainAjaxFunction"]);
+        add_action("wp_ajax_nopriv_tlbm_ajax", [$this, "executeMainAjaxFunction"]);
+    }
+
+    /**
      * @return void
      */
-    public function executeAjaxFunction(AjaxFunctionInterface $ajaxFunction) {
+    public function executeMainAjaxFunction()
+    {
         if (WP_DEBUG) {
             error_reporting(E_ALL);
             ini_set("display_errors", 1);
         }
 
-        $data   = json_decode(file_get_contents('php://input'));
-        $result = $ajaxFunction->execute($data);
-        die(json_encode($result));
-    }
-
-    /**
-     * Helper Function to Register an Ajax Action
-     *
-     * @param string $action_name
-     * @param callable $action
-     */
-    private function addWpAjaxFunction(string $action_name, callable $action)
-    {
-        add_action("wp_ajax_tlbm_" . $action_name, $action);
-        add_action("wp_ajax_nopriv_tlbm_" . $action_name, $action);
+        $data = json_decode(file_get_contents('php://input'), true);
+        if($data != null && isset($data['actions'])) {
+            if(is_array($data['actions'])) {
+                $results = array();
+                foreach ($data['actions'] as $singleAction) {
+                    $ajaxFunction = $this->getAjaxFunction($singleAction);
+                    $payload = $data['payload'][$singleAction] ?? null;
+                    $results[$singleAction] = $ajaxFunction->execute($payload);
+                }
+                wp_send_json($results);
+            }
+        }
     }
 }

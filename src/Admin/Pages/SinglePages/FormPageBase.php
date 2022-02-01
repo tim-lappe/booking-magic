@@ -3,10 +3,9 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 use DI\DependencyException;
-use DI\FactoryInterface;
 use DI\NotFoundException;
-use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\WpForm\Contracts\FormBuilderInterface;
+use TLBM\MainFactory;
 
 abstract class FormPageBase extends PageBase
 {
@@ -17,29 +16,26 @@ abstract class FormPageBase extends PageBase
     private array $notices = array();
 
     /**
-     * @param AdminPageManagerInterface $adminPageManager
-     * @param FactoryInterface $factory
-     * @param string $menu_title
-     * @param string $menu_slug
-     * @param bool $show_in_menu
-     * @param bool $display_default_head
-     * @param string $display_default_head_title
+     * @param string $menuTitle
+     * @param string $menuSlug
+     * @param bool $showInMenu
+     * @param bool $displayDefaultHead
+     * @param string $defaultHeadTitle
      *
      * @throws DependencyException
      * @throws NotFoundException
      */
     public function __construct(
-        FactoryInterface $factory,
-        string $menu_title,
-        string $menu_slug,
-        bool $show_in_menu = true,
-        bool $display_default_head = true,
-        string $display_default_head_title = ""
+        string $menuTitle,
+        string $menuSlug,
+        bool $showInMenu = true,
+        bool $displayDefaultHead = true,
+        string $defaultHeadTitle = ""
     ) {
-        $this->formBuilder = $factory->make(FormBuilderInterface::class);
+        $this->formBuilder = MainFactory::create(FormBuilderInterface::class);
 
         parent::__construct(
-            $menu_title, $menu_slug, $show_in_menu, $display_default_head, $display_default_head_title
+            $menuTitle, $menuSlug, $showInMenu, $displayDefaultHead, $defaultHeadTitle
         );
     }
 

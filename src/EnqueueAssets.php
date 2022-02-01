@@ -45,7 +45,7 @@ class EnqueueAssets
         wp_enqueue_script(TLBM_FRONTEND_JS_SLUG, plugins_url("assets/js/dist/frontend.js", TLBM_PLUGIN_FILE));
 
         wp_localize_script(TLBM_FRONTEND_JS_SLUG, 'ajax_information', array(
-            'url' => admin_url('admin-ajax.php'),
+            'url' => admin_url('admin-ajax.php') . "?action=tlbm_ajax",
         ));
 
         wp_localize_script(TLBM_FRONTEND_JS_SLUG, 'tlbm_localization', $this->scriptLocalization->getLabels());

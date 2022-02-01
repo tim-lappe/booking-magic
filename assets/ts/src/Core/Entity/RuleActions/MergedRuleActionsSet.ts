@@ -21,13 +21,14 @@ export class MergedRuleActionsSet {
         this.mergedActions.push(mergedAction);
     }
 
-    public getAction<T>(type: { new(): T; }, name: string): T {
+    /**
+     *
+     * @param name
+     */
+    public getActionResultValue(name: string): any {
         for(let action of this.mergedActions) {
             if (action[name] != null) {
-                let instance = new type();
-                Object.assign(instance, action[name]);
-                console.log(instance);
-                return instance;
+                return action[name];
             }
         }
         return null;

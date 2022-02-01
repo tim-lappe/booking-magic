@@ -4,8 +4,7 @@ import {CalendarMonthViewSetting} from "../../../Entity/CalendarMonthViewSetting
 import {DateLocalization} from "../../../../DateLocalization";
 import {DateTime} from "../../../Adapter/DateTime";
 import {MonthViewDateCell} from "./MonthViewDateCell";
-import {FullDateMergeEntity} from "../../../Entity/RuleActions/FullDateMergeEntity";
-import {BookingOptionsRequest} from "../../../Api/BookingOptionsRequest";
+import {MergedActionsRequest} from "../../../Ajax/MergedActionsRequest";
 
 
 interface CalendarMonthViewState {
@@ -35,7 +34,7 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
         }
     }
 
-    protected prepareUpdateBookingOptions(calendarReuqest: BookingOptionsRequest): BookingOptionsRequest {
+    protected prepareUpdateBookingOptions(calendarReuqest: MergedActionsRequest): MergedActionsRequest {
         return calendarReuqest;
     }
 
@@ -43,7 +42,7 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
         let firstDateThisMonth = this.state.focusedDate.getFirstDayThisMonth();
         let lastDateThisMonth = this.state.focusedDate.getLastDayThisMonth();
 
-        let daysThisMonth = DateTime.getDatesBetween(firstDateThisMonth, lastDateThisMonth);
+        let daysThisMonth = this.state.focusedDate.getDaysAsDateTimesInMonth();
         let dayTiles = [];
 
         for(let i = 1; i < firstDateThisMonth.getWeekday(); i++) {
@@ -120,11 +119,11 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
         }
 
         let labelThisMonth = DateLocalization.GetMonthLabelByNum(this.state.focusedDate.getMonth());
-        let dateNextMonth = new DateTime(this.state.focusedDate.getTime());
+        let dateNextMonth = DateTime.copy(this.state.focusedDate);
         dateNextMonth.addMonth(1);
         let labelNextMonth =  DateLocalization.GetMonthLabelByNum(dateNextMonth.getMonth()) + " " + dateNextMonth.getYear();
 
-        let datePrevMonth = new DateTime(this.state.focusedDate.getTime());
+        let datePrevMonth = DateTime.copy(this.state.focusedDate);
         datePrevMonth.addMonth(-1);
         let labelPrevMonth =  DateLocalization.GetMonthLabelByNum(datePrevMonth.getMonth()) + " " + datePrevMonth.getYear();
 
@@ -157,16 +156,16 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
                             })}
                             {dayTiles.map((date: any, index) => {
                                 if(date instanceof DateTime && this.state.bookingOptions != null) {
-                                    let todaySlots = this.state.bookingOptions?.getFreeSlotsForDay(date);
-                                    let fullDateEntity = this.state.bookingOptions?.getMergedActionsForDay(date).getAction(FullDateMergeEntity, "full_date_capacity");
+                                    let dateCapacity = this.state.bookingOptions?.getMergedActionsForDay(date).getActionResultValue("dateCapacity");
+                                    let cellDisabled = dateCapacity == null || dateCapacity == 0;
+
                                     return (
                                         <MonthViewDateCell
-                                            disabled={todaySlots == null || date.getTime() <= today.getTime() || fullDateEntity == null || fullDateEntity?.capacity == 0}
+                                            disabled={cellDisabled}
                                             empty={false} onClick={this.onClickOnDateTile}
-                                            selected={this.state.viewState.selectedDate?.getTime() == date.getTime()}
+                                            selected={this.state.viewState.selectedDate != null && DateTime.isSameDay(this.state.viewState.selectedDate, date)}
                                             dateTime={date} key={index}>
-
-                                            <span style={{float: "right", visibility: (fullDateEntity?.capacity ? "visible" : "hidden")}}>{fullDateEntity?.capacity ?? 0}</span>
+                                            <span style={{float: "right", visibility: (!cellDisabled ? "visible" : "hidden")}}>{dateCapacity}</span>
 
                                         </MonthViewDateCell>
                                     )

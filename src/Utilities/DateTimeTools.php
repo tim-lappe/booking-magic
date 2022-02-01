@@ -26,6 +26,16 @@ class DateTimeTools implements DateTimeToolsInterface
         return date_i18n(DateTimeTools::getDateFormat(), intval($timestamp));
     }
 
+    public function getTimeZone(): string
+    {
+        $format = get_option('date_format');
+        if (empty($format)) {
+            return "d.m.Y";
+        }
+
+        return get_option('date_format');
+    }
+
     /**
      * @return mixed
      */
