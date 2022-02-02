@@ -145,7 +145,7 @@ class RulesQuery implements RulesQueryInterface
         $queryBuilder->select("rule,actions,periods,calendarSelection,calendarSelectionCalendars")
                      ->from(Rule::class, "rule")
                      ->distinct(true)
-                     ->leftJoin('rule.calendar_selection', 'calendarSelection')
+                     ->leftJoin('rule.calendarSelection', 'calendarSelection')
                      ->leftJoin("calendarSelection.calendars", "calendarSelectionCalendars")
                      ->leftJoin("rule.actions", "actions")
                      ->leftJoin("rule.periods", "periods");
@@ -156,15 +156,15 @@ class RulesQuery implements RulesQueryInterface
             $queryBuilder->setParameter("calendarId", $this->calendarId);
             $selectionWhere = $queryBuilder->expr()->orX();
             $selectionWhere->add(
-                "calendarSelection.selection_mode = '" . TLBM_CALENDAR_SELECTION_TYPE_ALL . "'"
+                "calendarSelection.selectionMode = '" . TLBM_CALENDAR_SELECTION_TYPE_ALL . "'"
             );
 
             $only = $queryBuilder->expr()->andX();
-            $only->add("calendarSelection.selection_mode = '" . TLBM_CALENDAR_SELECTION_TYPE_ONLY . "'");
+            $only->add("calendarSelection.selectionMode = '" . TLBM_CALENDAR_SELECTION_TYPE_ONLY . "'");
             $only->add("calendarSelectionCalendars.id = :calendarId");
 
             $allBut = $queryBuilder->expr()->andX();
-            $allBut->add("calendarSelection.selection_mode = '" . TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT . "'");
+            $allBut->add("calendarSelection.selectionMode = '" . TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT . "'");
             $subqAllButIds = $entityManager->createQueryBuilder();
             $subqAllButIds->setParameter("calendarId", $this->calendarId);
             $subqAllButIds->select("subCalendarSelection")->from(CalendarSelection::class, "subCalendarSelection")->leftJoin("subCalendarSelection.calendars", "subCalendarSeletcionCalendars")->where("subCalendarSeletcionCalendars.id = :calendarId");
@@ -183,8 +183,8 @@ class RulesQuery implements RulesQueryInterface
         }
 
         if ($this->actionTypes) {
-            $queryBuilder->setParameter("action_type", $this->actionTypes);
-            $where->add("actions.action_type IN (:action_type)");
+            $queryBuilder->setParameter("actionType", $this->actionTypes);
+            $where->add("actions.action_type IN (:actionType)");
         }
 
         $queryBuilder->where($where);

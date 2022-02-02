@@ -162,7 +162,7 @@ class MainValues
         $fixednames = array();
         $custom     = array();
         foreach ($elements as $elem) {
-            $st = $elem->GetSettingsType("name");
+            $st = $elem->getSettingsType("name");
             if ($st && $st->readonly) {
                 $fixednames[] = $st->default_value;
             }

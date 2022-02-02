@@ -4,9 +4,11 @@
 namespace TLBM\Request;
 
 
+use phpDocumentor\Reflection\Types\This;
 use TLBM\Booking\BookingProcessing;
+use TLBM\Booking\BookingProcessor;
 use TLBM\Form\Contracts\FormManagerInterface;
-use TLBM\Output\FrontendMessenger;
+use TLBM\Output\Contracts\FrontendMessengerInterface;
 use TLBM\Utilities\Contracts\DateTimeToolsInterface;
 
 class ShowBookingOverview extends RequestBase
@@ -22,41 +24,53 @@ class ShowBookingOverview extends RequestBase
      */
     private DateTimeToolsInterface $dateTimeTools;
 
-    public function __construct(FormManagerInterface $formManager, DateTimeToolsInterface $dateTimeTools)
+    /**
+     * @var FrontendMessengerInterface
+     */
+    private FrontendMessengerInterface $frontendMessenger;
+
+    public function __construct(FormManagerInterface $formManager, DateTimeToolsInterface $dateTimeTools, FrontendMessengerInterface $frontendMessenger)
     {
         parent::__construct();
         $this->action        = "showbookingoverview";
         $this->formManager   = $formManager;
         $this->dateTimeTools = $dateTimeTools;
+        $this->frontendMessenger = $frontendMessenger;
     }
 
-    public function onAction($vars)
+    public function onAction()
     {
+        $vars = $this->getVars();
         $verified = wp_verify_nonce($vars['_wpnonce'], "showbookingoverview_action");
         if (isset($vars['form']) && intval($vars['form']) > 0 && $verified) {
-            $form_id = $vars['form'];
-            $form    = $this->formManager->getForm($form_id);
-            if ($form) {
-                $booking_processing = new BookingProcessing($vars, $form);
-                $not_filled_dps     = $booking_processing->Validate();
-                if (sizeof($not_filled_dps) == 0) {
-                    $this->hasContent = true;
-                } else {
-                    FrontendMessenger::AddFrontendMsg(__("Not all required fields were filled out", TLBM_TEXT_DOMAIN));
+            $bookingProcessor = BookingProcessor::createFromVars($vars);
+            $invalidFields   = $bookingProcessor->validate();
+            if(count($invalidFields) > 0) {
+                $errors = [];
+                foreach($invalidFields as $field) {
+                    $title = $field->getLinkedSettings()->getValue("title");
+                    if(!empty($title)) {
+                        $errors[] = $title;
+                    }
                 }
+
+                $this->frontendMessenger->addMessage(__("Not all required fields were filled out: <br>" . implode("<br>", $errors), TLBM_TEXT_DOMAIN));
+                $this->hasContent = false;
+            } else {
+                $this->hasContent = true;
             }
         }
     }
 
-    public function getDisplayContent($vars): string
+    public function getContent(): string
     {
+        $vars = $this->getVars();
         $verified = wp_verify_nonce($vars['_wpnonce'], "showbookingoverview_action");
         if (isset($vars['form']) && intval($vars['form']) > 0 && $verified) {
-            $form_id = $vars['form'];
-            $form    = $this->formManager->getForm($form_id);
-            if ($form) {
+            $bookingProcessor = BookingProcessor::createFromVars($vars);
+            $invalidFormData  = $bookingProcessor->validate();
+            if (count($invalidFormData) == 0) {
                 $html               = "<h2>" . __("Booking overview", TLBM_TEXT_DOMAIN) . "</h2>";
-                $booking_processing = new BookingProcessing($vars, $form);
                 $booking_values     = $booking_processing->ReadBookingValues();
                 $booking            = $booking_processing->GetProcessedBooking();
 
@@ -103,6 +117,6 @@ class ShowBookingOverview extends RequestBase
             }
         }
 
-        return "";
+        return "hallo";
     }
 }

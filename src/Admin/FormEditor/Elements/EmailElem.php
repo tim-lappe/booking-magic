@@ -8,7 +8,8 @@ if ( !defined('ABSPATH')) {
 }
 
 
-use TLBM\Admin\FormEditor\FrontendGeneration\InputGenerator;
+use TLBM\Admin\FormEditor\FormInputGenerator;
+use TLBM\Admin\FormEditor\LinkedFormData;
 
 final class EmailElem extends FormInputElem
 {
@@ -18,21 +19,22 @@ final class EmailElem extends FormInputElem
 
         $this->description = __("A field in which the user can enter an e-mail", TLBM_TEXT_DOMAIN);
 
-        $this->GetSettingsType("name")->default_value  = "email";
-        $this->GetSettingsType("title")->default_value = __("E-Mail", TLBM_TEXT_DOMAIN);
+        $this->getSettingsType("name")->default_value  = "email";
+        $this->getSettingsType("title")->default_value = __("E-Mail", TLBM_TEXT_DOMAIN);
     }
 
+
     /**
-     * @param      $form_node
-     * @param callable|null $insert_child
+     * @SuppressWarnings(PHPMD)
+     * @param LinkedFormData $linkedFormData
+     * @param callable|null $displayChildren
      *
-     * @return mixed
+     * @return string
      */
-    public function getFrontendOutput($form_node, callable $insert_child = null)
+    public function getFrontendContent(LinkedFormData $linkedFormData, callable $displayChildren = null): string
     {
-        return InputGenerator::GetFormControl(
-            "email", $form_node->formData->title, $form_node->formData->name, $form_node->formData->required == "yes", ($form_node->formData->css_classes ?? "")
-        );
+        $generator = new FormInputGenerator($linkedFormData);
+        return $generator->getFormControl("email");
     }
 }
 

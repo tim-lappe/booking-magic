@@ -6,9 +6,10 @@ interface FormPrintInterface
 {
 
     /**
-     * @param $id
+     * @param int $formId
+     * @param mixed $inputVars
      *
      * @return string
      */
-    public function printForm($id): string;
+    public function printForm(int $formId, $inputVars = null): string;
 }

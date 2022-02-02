@@ -6,6 +6,7 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 use TLBM\Admin\Tables\AllRulesListTable;
 use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\MainFactory;
 use TLBM\Rules\Contracts\RulesManagerInterface;
 
 class RulesPage extends PageBase
@@ -39,6 +40,10 @@ class RulesPage extends PageBase
     }
 
 
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
     public function displayPageBody()
     {
         ?>
@@ -48,9 +53,7 @@ class RulesPage extends PageBase
                     <input type="hidden" name="page" value="<?php
                     echo $_REQUEST['page'] ?>"/>
                     <?php
-                    $post_list_table = new AllRulesListTable(
-                        $this->rulesManager, $this->calendarManager, $this->adminPageManager
-                    );
+                    $post_list_table = MainFactory::create(AllRulesListTable::class);
                     $post_list_table->views();
                     $post_list_table->prepare_items();
                     $post_list_table->display();

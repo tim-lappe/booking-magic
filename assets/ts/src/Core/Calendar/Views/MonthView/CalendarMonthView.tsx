@@ -26,6 +26,7 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
 
         this.state = {
             focusedDate: this.state.focusedDate,
+            formValue: null,
             viewState: {
                 selectedDate: null,
                 smallVersion: false,
@@ -43,6 +44,7 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
         let lastDateThisMonth = this.state.focusedDate.getLastDayThisMonth();
 
         let daysThisMonth = this.state.focusedDate.getDaysAsDateTimesInMonth();
+        daysThisMonth.forEach((date) => date.setFullDay(true));
         let dayTiles = [];
 
         for(let i = 1; i < firstDateThisMonth.getWeekday(); i++) {
@@ -83,6 +85,7 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
     onClickOnDateTile(date: DateTime) {
         this.setState((prevState: CalendarBaseState<CalendarMonthViewState>) => {
             prevState.viewState.selectedDate = date;
+            prevState.formValue = date;
             return prevState;
         }, () => {
             this.updateBookingOptions();
@@ -143,6 +146,7 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
             <div ref={this.calendarDiv} className={"tlbm-calendar-month-view " + (this.state.viewState.smallVersion ? "tlbm-calendar-small" : "")}>
                 {this.state.viewState.contentReady ? (
                     <React.Fragment>
+                        <input type={"hidden"} value={this.getEncodedValue()} name={this.props.name}/>
                         <div className={"tlbm-month-view-header"}>
                             <button onClick={this.onClickPrevMonth} className={"button button-primary tlbm-button-calendar-month-traverse"}>{labelPrevMonth}</button>
                             <span className={"tlbm-month-view-current-month"}>{labelThisMonth} {this.state.focusedDate.getYear()}</span>

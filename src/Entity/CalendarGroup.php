@@ -26,29 +26,29 @@ class CalendarGroup
      * @var string
      * @Doctrine\ORM\Mapping\Column(type="string", nullable=false)
      */
-    protected string $booking_disitribution = TLBM_BOOKING_DISTRIBUTION_EVENLY;
+    protected string $bookingDisitribution = TLBM_BOOKING_DISTRIBUTION_EVENLY;
 
 
     /**
      * @var CalendarSelection
      * @Doctrine\ORM\Mapping\OneToOne(targetEntity=CalendarSelection::class, orphanRemoval=true)
      */
-    protected CalendarSelection $calendar_selection;
+    protected CalendarSelection $calendarSelection;
 
     /**
      * @return CalendarSelection
      */
     public function getCalendarSelection(): CalendarSelection
     {
-        return $this->calendar_selection;
+        return $this->calendarSelection;
     }
 
     /**
-     * @param CalendarSelection $calendar_selection
+     * @param CalendarSelection $calendarSelection
      */
-    public function setCalendarSelection(CalendarSelection $calendar_selection): void
+    public function setCalendarSelection(CalendarSelection $calendarSelection): void
     {
-        $this->calendar_selection = $calendar_selection;
+        $this->calendarSelection = $calendarSelection;
     }
 
     /**
@@ -72,14 +72,14 @@ class CalendarGroup
      */
     public function getBookingDisitribution(): string
     {
-        return $this->booking_disitribution;
+        return $this->bookingDisitribution;
     }
 
     /**
-     * @param string $booking_disitribution
+     * @param string $bookingDisitribution
      */
-    public function setBookingDisitribution(string $booking_disitribution): void
+    public function setBookingDisitribution(string $bookingDisitribution): void
     {
-        $this->booking_disitribution = $booking_disitribution;
+        $this->bookingDisitribution = $bookingDisitribution;
     }
 }

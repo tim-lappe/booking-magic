@@ -22,4 +22,9 @@ interface AjaxManagerInterface
      * @return AjaxFunctionInterface|null
      */
     public function getAjaxFunction(string $action): ?AjaxFunctionInterface;
+
+    /**
+     * @return mixed
+     */
+    public function initMainAjaxFunction();
 }

@@ -43,7 +43,7 @@ class CalendarSelection implements JsonSerializable
      * @var string
      * @Doctrine\ORM\Mapping\Column(type="string", nullable=false)
      */
-    protected string $selection_mode = TLBM_CALENDAR_SELECTION_TYPE_ALL;
+    protected string $selectionMode = TLBM_CALENDAR_SELECTION_TYPE_ALL;
 
     public function __construct()
     {
@@ -121,18 +121,18 @@ class CalendarSelection implements JsonSerializable
      */
     public function getSelectionMode(): string
     {
-        return $this->selection_mode;
+        return $this->selectionMode;
     }
 
     /**
-     * @param string $selection_mode
+     * @param string $selectionMode
      *
      * @return bool
      */
-    public function setSelectionMode(string $selection_mode): bool
+    public function setSelectionMode(string $selectionMode): bool
     {
-        if (self::isValidSelectionMode($selection_mode)) {
-            $this->selection_mode = $selection_mode;
+        if (self::isValidSelectionMode($selectionMode)) {
+            $this->selectionMode = $selectionMode;
 
             return true;
         }

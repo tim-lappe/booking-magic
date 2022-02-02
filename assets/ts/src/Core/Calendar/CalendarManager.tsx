@@ -15,12 +15,12 @@ export class CalendarManager {
         this.calendarComponents.set("month", CalendarMonthView  as (typeof CalendarComponentBase));
     }
 
-    public createCalendarComponent(view: string, options: CalendarOptions, viewSettings: CalendarViewSetting) {
+    public createCalendarComponent(name: string, view: string, options: CalendarOptions, viewSettings: CalendarViewSetting) {
         if(this.calendarComponents.has(view)) {
             const ElementComponent = this.calendarComponents.get(view);
-            return <ElementComponent options={options} viewSettings={viewSettings} />;
+            return <ElementComponent name={name} options={options} viewSettings={viewSettings} />;
         } else {
-            return <CalendarNoView options={options} viewSettings={viewSettings}/>
+            return <CalendarNoView name={name} options={options} viewSettings={viewSettings}/>
         }
     }
 }

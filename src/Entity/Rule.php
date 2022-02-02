@@ -29,13 +29,13 @@ class Rule implements JsonSerializable
      * @var int
      * @Doctrine\ORM\Mapping\Column(type="bigint", nullable=false)
      */
-    protected int $timestamp_created = 0;
+    protected int $tstampCreated = 0;
 
     /**
      * @var CalendarSelection
      * @Doctrine\ORM\Mapping\OneToOne(targetEntity=CalendarSelection::class, orphanRemoval=true, cascade={"all"})
      */
-    protected CalendarSelection $calendar_selection;
+    protected CalendarSelection $calendarSelection;
 
     /**
      * @var int
@@ -59,8 +59,8 @@ class Rule implements JsonSerializable
     {
         $this->actions            = new ArrayCollection();
         $this->periods            = new ArrayCollection();
-        $this->timestamp_created  = time();
-        $this->calendar_selection = new CalendarSelection();
+        $this->tstampCreated  = time();
+        $this->calendarSelection = new CalendarSelection();
     }
 
     /**
@@ -173,15 +173,15 @@ class Rule implements JsonSerializable
      */
     public function getCalendarSelection(): CalendarSelection
     {
-        return $this->calendar_selection;
+        return $this->calendarSelection;
     }
 
     /**
-     * @param CalendarSelection $calendar_selection
+     * @param CalendarSelection $calendarSelection
      */
-    public function setCalendarSelection(CalendarSelection $calendar_selection): void
+    public function setCalendarSelection(CalendarSelection $calendarSelection): void
     {
-        $this->calendar_selection = $calendar_selection;
+        $this->calendarSelection = $calendarSelection;
     }
 
     /**
@@ -205,8 +205,8 @@ class Rule implements JsonSerializable
         return array(
             "id"                 => $this->id,
             "title"              => $this->title,
-            "timestamp_created"  => $this->timestamp_created,
-            "calendar_selection" => $this->calendar_selection,
+            "timestamp_created"  => $this->tstampCreated,
+            "calendar_selection" => $this->calendarSelection,
             "priority"           => $this->priority,
             "actions"            => $this->actions->toArray(),
             "periods"            => $this->periods->toArray()

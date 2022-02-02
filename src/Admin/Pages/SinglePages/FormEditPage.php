@@ -2,11 +2,9 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
-use DI\FactoryInterface;
 use Exception;
 use Throwable;
 use TLBM\Admin\FormEditor\Contracts\FormElementsCollectionInterface;
-use TLBM\Admin\FormEditor\FrontendGeneration\FormFrontendGenerator;
 use TLBM\Admin\WpForm\FormEditorField;
 use TLBM\Entity\Form;
 use TLBM\Form\Contracts\FormManagerInterface;
@@ -24,6 +22,11 @@ class FormEditPage extends FormPageBase
      * @var FormElementsCollectionInterface
      */
     private FormElementsCollectionInterface $elementsCollection;
+
+    /**
+     * @var Form|null
+     */
+    private ?Form $editingForm = null;
 
 
     public function __construct(
@@ -69,6 +72,10 @@ class FormEditPage extends FormPageBase
      */
     private function getEditingForm(): ?Form
     {
+        if($this->editingForm != null) {
+            return $this->editingForm;
+        }
+
         $form = null;
         if (isset($_REQUEST['form_id'])) {
             $form = $this->formManager->getForm($_REQUEST['form_id']);
@@ -85,11 +92,11 @@ class FormEditPage extends FormPageBase
         $form_data = $form ? $form->getFormData() : null;
 
         ?>
+        <?php if($form != null): ?>
+            <input type="hidden" name="form_id" value="<?php echo $form->getId() ?>" />
+        <?php endif; ?>
         <div class="tlbm-admin-page-tile">
-            <input value="<?php
-            echo $title ?>" placeholder="<?php
-            _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title"
-                   class="tlbm-admin-form-input-title">
+            <input value="<?php echo $title ?>" placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
         </div>
         <div class="tlbm-admin-page-tile">
             <?php
@@ -111,28 +118,28 @@ class FormEditPage extends FormPageBase
             $form = new Form();
         }
 
+        $this->editingForm = $form;
         $formValidator = new FormEntityValidator($form);
         $form->setTitle($vars['title']);
 
-
         try {
-            $form_node_tree = json_decode(urldecode($vars['form']));
-            $form->setFormData($form_node_tree);
-
-            $generator = new FormFrontendGenerator($this->elementsCollection, $form_node_tree);
-            $html      = $generator->generateContent();
-            $form->setFrontendHtml($html);
+            if(isset($vars['form'])) {
+                $form_node_tree = json_decode(urldecode($vars['form']));
+                $form->setFormData($form_node_tree);
+            } else {
+                return array(
+                    "error" => __("Unknown Error occured.", TLBM_TEXT_DOMAIN)
+                );
+            }
         } catch (Throwable $exception) {
             return array(
-                "error" => __("Unknown Error " . $exception->getMessage(), TLBM_TEXT_DOMAIN)
+                "error" => __("Unknown Error occured: " . $exception->getMessage(), TLBM_TEXT_DOMAIN)
             );
         }
 
         $validationResult = $formValidator->getValidationErrors();
-
         if(count($validationResult) == 0) {
             $this->formManager->saveForm($form);
-
             return array(
                 "success" => __("Form has been saved", TLBM_TEXT_DOMAIN)
             );

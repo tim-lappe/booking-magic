@@ -7,6 +7,7 @@ namespace TLBM\Admin\Tables;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\DefaultBookingState;
 use TLBM\Booking\BookingManager;
+use TLBM\Booking\Contracts\BookingManagerInterface;
 use TLBM\Calendar\Contracts\CalendarManagerInterface;
 use TLBM\Model\Booking;
 use TLBM\Utilities\Colors;
@@ -32,16 +33,23 @@ class BookingListTable extends TableBase
     private DateTimeToolsInterface $dateTimeTools;
 
     /**
+     * @var BookingManagerInterface
+     */
+    private BookingManagerInterface $bookingManager;
+
+    /**
      * @var ColorsInterface
      */
     private ColorsInterface $colors;
 
     public function __construct(
         CalendarManagerInterface $calendarManager,
-        DateTimeToolsInterface $dateTimeTools
+        DateTimeToolsInterface $dateTimeTools,
+        BookingManagerInterface $bookingManager
     ) {
         $this->calendarManager = $calendarManager;
         $this->dateTimeTools   = $dateTimeTools;
+        $this->bookingManager = $bookingManager;
         $this->colors          = new Colors();
 
         parent::__construct(
@@ -166,7 +174,7 @@ class BookingListTable extends TableBase
      * @SuppressWarnings(PHPMD)
      * @param Booking $item
      *
-     * @return string|void
+     * @return string
      */
     public function column_cb($item): string
     {
@@ -183,67 +191,19 @@ class BookingListTable extends TableBase
 
     protected function getTotalItemsCount(): int
     {
-        if ( !$this->slim) {
-            return BookingManager::GetAllBookingsCount();
-        }
-
-        return BookingManager::GetAllBookingsCount(array(
-                                                       "posts_per_page" => 5,
-                                                       "paged"          => false
-                                                   ));
+        return $this->bookingManager->getAllBookingsCount();
     }
 
     /**
      * @SuppressWarnings(PHPMD)
-     * @param $orderby
-     * @param $order
+     * @param string $orderby
+     * @param string $order
      *
      * @return array
      */
-    protected function getItems($orderby, $order): array
+    protected function getItems(string $orderby, string $order): array
     {
-        $pt_args = array();
-        if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
-            $pt_args = array("post_status" => "trash");
-        }
-
-        $pt_args['posts_per_page'] = 10;
-        if (isset($_REQUEST['paged'])) {
-            $pt_args['paged'] = $_REQUEST['paged'];
-        }
-
-        if ($this->slim) {
-            $pt_args['numberposts']    = 5;
-            $pt_args['posts_per_page'] = 5;
-            $pt_args['paged']          = false;
-            $orderby                   = "datetime";
-            $order                     = "DESC";
-        }
-
-        $filteredbookings = array();
-        $bookings         = BookingManager::GetAllBookings($pt_args, $orderby, $order);
-        foreach ($bookings as $booking) {
-            $add = sizeof(
-                       $booking->calendar_slots
-                   ) == 0 && (empty($_REQUEST['calendar-filter']));
-            if ( !$add) {
-                foreach ($booking->calendar_slots as $slot) {
-                    if (empty($_REQUEST['calendar-filter']) || $slot->booked_calendar_id == $_REQUEST['calendar-filter']) {
-                        $add = true;
-                    }
-                }
-            }
-
-            if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "new") {
-                $add = $booking->state == DefaultBookingState::getDefaultName() || empty($booking->state);
-            }
-
-            if ($add) {
-                $filteredbookings[] = $booking;
-            }
-        }
-
-        return $filteredbookings;
+        return $this->bookingManager->getAllBookings(array(), $orderby, $order);
     }
 
     protected function getViews(): array

@@ -13,7 +13,6 @@ interface CalendarContainerState {
     viewSettings: any;
     options: CalendarOptions;
     formName: string;
-    formValue: any;
 }
 
 export class CalendarContainer extends React.Component<CalendarContainerProps, CalendarContainerState> {
@@ -37,17 +36,15 @@ export class CalendarContainer extends React.Component<CalendarContainerProps, C
             view: this.props.dataset.view ?? "no-view",
             viewSettings: viewSettings ?? {},
             options: options ?? new CalendarOptions(),
-            formValue: {},
             formName: this.props.dataset.name ?? "calendar",
         }
     }
 
     render() {
-        let json = encodeURIComponent(JSON.stringify(this.state.formValue));
+
         return (
             <React.Fragment>
-                <input type={"hidden"} value={json} name={this.state.formName}/>
-                {this.calendarManager.createCalendarComponent(this.state.view, this.state.options, this.state.viewSettings)}
+                {this.calendarManager.createCalendarComponent(this.state.formName, this.state.view, this.state.options, this.state.viewSettings)}
             </React.Fragment>
         );
     }

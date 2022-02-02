@@ -27,6 +27,7 @@ class RegisterShortcodes
     public function __construct(FormPrintInterface $formPrint, RequestManagerInterface $requestManager)
     {
         add_action("init", array($this, "addShortcodes"));
+
         $this->formPrint = $formPrint;
         $this->requestManager = $requestManager;
     }
@@ -48,11 +49,10 @@ class RegisterShortcodes
     {
         if (sizeof($args) > 0) {
             if (isset($args['id'])) {
-                $request = $this->requestManager->getCurrentRequest();
-                if ($request && $request->hasContent) {
-                    return $request->getDisplayContent($_REQUEST);
+                if ($this->requestManager->hasContent()) {
+                    return $this->requestManager->getContent();
                 } else {
-                    return $this->formPrint->printForm($args['id']);
+                    return $this->formPrint->printForm($args['id'], $this->requestManager->getVars());
                 }
             }
         }

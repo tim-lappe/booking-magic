@@ -58,9 +58,9 @@ export class Period {
                 obj['toDateTime']['day']);
 
             period.toDateTime.setHourMin(
-                obj['fromDateTime']['hour'],
-                obj['fromDateTime']['minute'],
-                obj['fromDateTime']['seconds']);
+                obj['toDateTime']['hour'],
+                obj['toDateTime']['minute'],
+                obj['toDateTime']['seconds']);
         } else {
             period.toDateTime = null;
         }

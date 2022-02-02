@@ -36,19 +36,19 @@ class CalendarSlot
      * @var string
      * @Doctrine\ORM\Mapping\Column (type="string", nullable=false)
      */
-    public string $name_from_form = "";
+    public string $nameFromForm = "";
 
     /**
      * @var string
      * @Doctrine\ORM\Mapping\Column (type="string", nullable=false)
      */
-    public string $title_from_form = "";
+    public string $titleFromForm = "";
 
     /**
      * @var int
      * @Doctrine\ORM\Mapping\Column (type="bigint", nullable=false)
      */
-    protected int $timestamp = 0;
+    protected int $tstamp = 0;
 
     public function getBooking(): Booking
     {
@@ -63,17 +63,17 @@ class CalendarSlot
     /**
      * @return int
      */
-    public function getTimestamp(): int
+    public function getTstamp(): int
     {
-        return $this->timestamp;
+        return $this->tstamp;
     }
 
     /**
-     * @param int $timestamp
+     * @param int $tstamp
      */
-    public function setTimestamp(int $timestamp): void
+    public function setTstamp(int $tstamp): void
     {
-        $this->timestamp = $timestamp;
+        $this->tstamp = $tstamp;
     }
 
     /**
@@ -113,15 +113,15 @@ class CalendarSlot
      */
     public function getNameFromForm(): string
     {
-        return $this->name_from_form;
+        return $this->nameFromForm;
     }
 
     /**
-     * @param string $name_from_form
+     * @param string $nameFromForm
      */
-    public function setNameFromForm(string $name_from_form): void
+    public function setNameFromForm(string $nameFromForm): void
     {
-        $this->name_from_form = $name_from_form;
+        $this->nameFromForm = $nameFromForm;
     }
 
     /**
@@ -129,14 +129,14 @@ class CalendarSlot
      */
     public function getTitleFromForm(): string
     {
-        return $this->title_from_form;
+        return $this->titleFromForm;
     }
 
     /**
-     * @param string $title_from_form
+     * @param string $titleFromForm
      */
-    public function setTitleFromForm(string $title_from_form): void
+    public function setTitleFromForm(string $titleFromForm): void
     {
-        $this->title_from_form = $title_from_form;
+        $this->titleFromForm = $titleFromForm;
     }
 }

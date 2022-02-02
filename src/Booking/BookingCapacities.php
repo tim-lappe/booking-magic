@@ -9,7 +9,6 @@ use Exception;
 use TLBM\Calendar\CalendarSelectionHandler;
 use TLBM\Entity\Calendar;
 use TLBM\Model\CalendarGroup;
-use TLBM\Model\CalendarSelection;
 use TLBM\Model\CalendarSlot;
 use TLBM\Rules\Capacities;
 
@@ -91,7 +90,7 @@ class BookingCapacities
         $bookings = BookingManager::GetAllBookings();
         $seats    = 0;
         foreach ($bookings as $booking) {
-            foreach ($booking->calendar_slots as $slot) {
+            foreach ($booking->calendarSlots as $slot) {
                 if ($slot->booked_calendar_id == $calendar->getId()) {
                     if ($datetime->format("d-m-Y") == date("d-m-Y", $slot->timestamp)) {
                         $seats++;

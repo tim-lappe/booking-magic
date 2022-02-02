@@ -20,46 +20,46 @@ class TimeSlot implements JsonSerializable
      * @var ?RulePeriod
      * @Doctrine\ORM\Mapping\ManyToOne (targetEntity=RulePeriod::class)
      */
-    protected ?RulePeriod $rule_period;
+    protected ?RulePeriod $rulePeriod;
 
     /**
      * @var int
      * @Doctrine\ORM\Mapping\Column (type="integer", nullable=false)
      */
-    protected int $from_hour;
+    protected int $fromHour;
 
     /**
      * @var int
      * @Doctrine\ORM\Mapping\Column (type="integer", nullable=false)
      */
-    protected int $from_min;
+    protected int $fromMin;
 
     /**
      * @var int
      * @Doctrine\ORM\Mapping\Column (type="integer", nullable=false)
      */
-    protected int $to_hour;
+    protected int $toHour;
 
     /**
      * @var int
      * @Doctrine\ORM\Mapping\Column (type="integer", nullable=false)
      */
-    protected int $to_min;
+    protected int $toMin;
 
     /**
      * @return ?RulePeriod
      */
     public function getRulePeriod(): ?RulePeriod
     {
-        return $this->rule_period;
+        return $this->rulePeriod;
     }
 
     /**
-     * @param ?RulePeriod $rule_period
+     * @param ?RulePeriod $rulePeriod
      */
-    public function setRulePeriod(?RulePeriod $rule_period): void
+    public function setRulePeriod(?RulePeriod $rulePeriod): void
     {
-        $this->rule_period = $rule_period;
+        $this->rulePeriod = $rulePeriod;
     }
 
     /**
@@ -67,15 +67,15 @@ class TimeSlot implements JsonSerializable
      */
     public function getFromHour(): int
     {
-        return $this->from_hour;
+        return $this->fromHour;
     }
 
     /**
-     * @param int $from_hour
+     * @param int $fromHour
      */
-    public function setFromHour(int $from_hour): void
+    public function setFromHour(int $fromHour): void
     {
-        $this->from_hour = $from_hour;
+        $this->fromHour = $fromHour;
     }
 
     /**
@@ -83,15 +83,15 @@ class TimeSlot implements JsonSerializable
      */
     public function getFromMin(): int
     {
-        return $this->from_min;
+        return $this->fromMin;
     }
 
     /**
-     * @param int $from_min
+     * @param int $fromMin
      */
-    public function setFromMin(int $from_min): void
+    public function setFromMin(int $fromMin): void
     {
-        $this->from_min = $from_min;
+        $this->fromMin = $fromMin;
     }
 
     /**
@@ -99,15 +99,15 @@ class TimeSlot implements JsonSerializable
      */
     public function getToHour(): int
     {
-        return $this->to_hour;
+        return $this->toHour;
     }
 
     /**
-     * @param int $to_hour
+     * @param int $toHour
      */
-    public function setToHour(int $to_hour): void
+    public function setToHour(int $toHour): void
     {
-        $this->to_hour = $to_hour;
+        $this->toHour = $toHour;
     }
 
     /**
@@ -115,15 +115,15 @@ class TimeSlot implements JsonSerializable
      */
     public function getToMin(): int
     {
-        return $this->to_min;
+        return $this->toMin;
     }
 
     /**
-     * @param int $to_min
+     * @param int $toMin
      */
-    public function setToMin(int $to_min): void
+    public function setToMin(int $toMin): void
     {
-        $this->to_min = $to_min;
+        $this->toMin = $toMin;
     }
 
 
@@ -131,10 +131,10 @@ class TimeSlot implements JsonSerializable
     {
         return array(
             "id"        => $this->id,
-            "from_min"  => $this->from_min,
-            "from_hour" => $this->from_hour,
-            "to_min"    => $this->to_min,
-            "to_hour"   => $this->to_hour
+            "from_min"  => $this->fromMin,
+            "from_hour" => $this->fromHour,
+            "to_min"    => $this->toMin,
+            "to_hour"   => $this->toHour
         );
     }
 }

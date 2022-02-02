@@ -1,6 +1,7 @@
 import {BasicSettingsTypeElement} from "./BasicSettingsTypeElement";
 import * as React from "react";
 import {SelectElementSetting} from "../../../../Entity/FormEditor/SelectElementSetting";
+import {Localization} from "../../../../../Localization";
 
 export class SelectSettingsType extends BasicSettingsTypeElement {
     render(): JSX.Element {
@@ -10,6 +11,9 @@ export class SelectSettingsType extends BasicSettingsTypeElement {
             <label>
                 {this.props.elementSetting.title}<br />
                 <select disabled={this.props.elementSetting.readonly ?? false} onChange={this.onChange} value={this.state.value}>
+                    <option disabled={true} value={""}>
+                        {Localization.__("Nothing selected")}
+                    </option>
                     {Object.entries(settings.key_values).map((item: any) => {
                         if (!((typeof item[1] == "string") || (typeof item[1] == "number"))) {
                             return (

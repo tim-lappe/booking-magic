@@ -4,110 +4,116 @@
 namespace TLBM\Booking;
 
 
-use TLBM\Admin\Settings\SingleSettings\BookingProcess\DefaultBookingState;
-use TLBM\Model\Booking;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Exception;
+use TLBM\Booking\Contracts\BookingManagerInterface;
+use TLBM\Database\Contracts\ORMInterface;
+use TLBM\Entity\Booking;
 
 if ( !defined('ABSPATH')) {
     return;
 }
 
-class BookingManager
+class BookingManager implements BookingManagerInterface
 {
 
     /**
-     * @param Booking $booking
+     * @var ORMInterface
      */
-    public static function SetBooking(Booking $booking)
+    private ORMInterface $repository;
+
+    public function __construct(ORMInterface $repository)
     {
-        if ( !($booking->wp_post_id > 0)) {
-            $post_id = wp_insert_post(array(
-                                          'post_title'  => empty($booking->title) ? time() : $booking->title,
-                                          'post_status' => 'publish',
-                                          'post_type'   => TLBM_PT_BOOKING
-                                      ));
-
-            $booking->wp_post_id = $post_id;
-        }
-
-        self::UpdateBooking($booking);
+        $this->repository = $repository;
     }
 
     /**
      * @param Booking $booking
+     *
+     * @return int
+     * @throws OptimisticLockException
+     * @throws ORMException
      */
-    private static function UpdateBooking(Booking $booking)
+    public function saveBooking(Booking $booking): int
     {
-        update_post_meta($booking->wp_post_id, "tlbm_booking_object", $booking);
+        $mgr = $this->repository->getEntityManager();
+        $mgr->persist($booking);
+        $mgr->flush();
+
+        return $booking->getId();
     }
 
     /**
-     * @param array $get_posts_options
+     * @param array $options
      * @param string $orderby
      * @param string $order
+     * @param int $offset
+     * @param int $limit
      *
      * @return Booking[]
      */
-    public static function GetAllBookings($get_posts_options = array(), $orderby = "priority", $order = "desc"): array
+    public function getAllBookings(
+        array $options = array(),
+        string $orderby = "id",
+        string $order = "desc",
+        int $offset = 0,
+        int $limit = 0
+    ): array
     {
-        $wp_posts = get_posts(
-            wp_parse_args($get_posts_options, array(
-                "post_type"   => TLBM_PT_BOOKING,
-                "numberposts" => -1
-            ))
-        );
-
-        $bookings = array();
-        foreach ($wp_posts as $post) {
-            $bookings[] = self::GetBooking($post->ID);
+        $mgr = $this->repository->getEntityManager();
+        $queryBuilder  = $mgr->createQueryBuilder();
+        $queryBuilder->select("b")->from("\TLBM\Entity\Booking", "b")->orderBy("b." . $orderby, $order)->setFirstResult($offset);
+        if ($limit > 0) {
+            $queryBuilder->setMaxResults($limit);
         }
 
-        usort($bookings, function ($a, $b) use ($orderby, $order) {
-            if (strtolower($order) == "asc") {
-                return $a->{$orderby} > $b->{$orderby};
-            }
+        $query  = $queryBuilder->getQuery();
+        $result = $query->getResult();
 
-            return $a->{$orderby} < $b->{$orderby};
-        });
+        if (is_array($result)) {
+            return $result;
+        }
 
-        return $bookings;
+        return array();
     }
 
     /**
-     * @param int $wp_post_id
+     * @param int $booking_id
      *
-     * @return false|Booking
+     * @return ?Booking
      */
-    public static function GetBooking(int $wp_post_id)
+    public function getBooking(int $booking_id): ?Booking
     {
-        $wp_post = get_post($wp_post_id);
-        if ($wp_post != null) {
-            $booking = get_post_meta($wp_post_id, "tlbm_booking_object", true);
-            if ( !$booking instanceof Booking) {
-                $booking             = new Booking();
-                $booking->wp_post_id = $wp_post_id;
-                $booking->state      = DefaultBookingState::getDefaultName();
+        try {
+            $mgr      = $this->repository->getEntityManager();
+            $booking = $mgr->find("\TLBM\Entity\Booking", $booking_id);
+            if ($booking instanceof Booking) {
+                return $booking;
             }
-
-            return $booking;
+        } catch (Exception $e) {
+            var_dump($e);
         }
 
-        return false;
+        return null;
     }
 
     /**
-     * @param array $get_posts_options
-     *
      * @return int
      */
-    public static function GetAllBookingsCount($get_posts_options = array()): int
+    public function getAllBookingsCount(): int
     {
-        $wp_posts = get_posts(
-            array(
-                "post_type"   => TLBM_PT_BOOKING,
-                "numberposts" => -1
-            ) + $get_posts_options
-        );
+        $mgr = $this->repository->getEntityManager();
+        $queryBuilder  = $mgr->createQueryBuilder();
+        $queryBuilder->select($queryBuilder->expr()->count("b"))->from("\TLBM\Entity\Booking", "b");
 
-        return sizeof($wp_posts);
+        $query = $queryBuilder->getQuery();
+        try {
+            return $query->getSingleScalarResult();
+        } catch (NoResultException|NonUniqueResultException $e) {
+            return 0;
+        }
     }
 }

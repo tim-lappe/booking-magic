@@ -12,11 +12,6 @@ class AjaxManager implements AjaxManagerInterface
      */
     private array $ajaxFunctions = array();
 
-    public function __construct()
-    {
-        $this->addWpMainAjaxFunction();
-    }
-
     /**
      * @param AjaxFunctionInterface $ajaxFunction
      *
@@ -59,7 +54,7 @@ class AjaxManager implements AjaxManagerInterface
      * Helper Function to Register an Ajax Action
      *
      */
-    private function addWpMainAjaxFunction()
+    public function initMainAjaxFunction()
     {
         add_action("wp_ajax_tlbm_ajax", [$this, "executeMainAjaxFunction"]);
         add_action("wp_ajax_nopriv_tlbm_ajax", [$this, "executeMainAjaxFunction"]);

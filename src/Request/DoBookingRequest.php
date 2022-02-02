@@ -40,8 +40,9 @@ class DoBookingRequest extends RequestBase
         $this->hasContent  = true;
     }
 
-    public function onAction($vars)
+    public function onAction()
     {
+        $vars = $this->getVars();
         $verifyed = wp_verify_nonce($vars['_wpnonce'], "dobooking_action");
         if (isset($vars['form']) && intval($vars['form']) > 0 && $verifyed) {
             $form_id = $vars['form'];
@@ -67,7 +68,7 @@ class DoBookingRequest extends RequestBase
 
                     $this->booking_successed = true;
                 } else {
-                    FrontendMessenger::AddFrontendMsg(__("Not all required fields were filled out", TLBM_TEXT_DOMAIN));
+                    FrontendMessenger::addMessage(__("Not all required fields were filled out", TLBM_TEXT_DOMAIN));
                     $this->hasContent = false;
                 }
             }
@@ -76,8 +77,9 @@ class DoBookingRequest extends RequestBase
         }
     }
 
-    public function getDisplayContent($vars): string
+    public function getContent(): string
     {
+        $vars = $this->getVars();
         if ($this->booking_successed === true) {
             return "<h2>Die Buchung ist erfolgreich eingegangen.</h2><p>Sie erhalten in kürze eine Bestätigungsmail</p>";
         } elseif ($this->error) {

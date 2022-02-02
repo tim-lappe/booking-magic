@@ -3,9 +3,6 @@
 
 namespace TLBM\Admin\FormEditor\Elements;
 
-
-use TLBM\Admin\FormEditor\FrontendGeneration\InputGenerator;
-
 class CityElem extends FormInputElem
 {
 
@@ -16,24 +13,14 @@ class CityElem extends FormInputElem
         $this->menu_category = __("Predefined fields", TLBM_TEXT_DOMAIN);
         $this->description   = __("text field for the name of the city", TLBM_TEXT_DOMAIN);
 
-        $name_setting                = $this->GetSettingsType("name");
+        $name_setting                = $this->getSettingsType("name");
         $name_setting->default_value = "city";
         $name_setting->readonly      = true;
 
-        $title_setting                = $this->GetSettingsType("title");
+        $title_setting                = $this->getSettingsType("title");
         $title_setting->default_value = __("City", TLBM_TEXT_DOMAIN);
 
-        $required                = $this->GetSettingsType("required");
+        $required                = $this->getSettingsType("required");
         $required->default_value = "yes";
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getFrontendOutput($form_node, callable $insert_child = null)
-    {
-        return InputGenerator::GetFormControl(
-            "text", $form_node->formData->title, $form_node->formData->name, $form_node->formData->required == "yes", ($form_node->formData->css_classes ?? "")
-        );
     }
 }

@@ -7,6 +7,7 @@ use DatePeriod;
 use DateTime;
 use Iterator;
 use JsonSerializable;
+use TLBM\Utilities\Contracts\DateTimeToolsInterface;
 
 const EXTDATETIME_INTERVAL_DAY = 0;
 
@@ -52,7 +53,7 @@ class ExtendedDateTime implements JsonSerializable
     public function getTimestampBeginOfDay(): int
     {
         $extDateTime = new ExtendedDateTime($this->getTimestamp());
-        $extDateTime->setFullTime(0, 0, 1);
+        $extDateTime->setFullTime(0, 0, 0);
         return $extDateTime->getTimestamp();
     }
 
@@ -95,6 +96,25 @@ class ExtendedDateTime implements JsonSerializable
             $this->getMinute() == $dateTime->getMinute() &&
             $this->getSeconds() == $dateTime->getSeconds() &&
             $sameDay;
+    }
+
+    /**
+     * @return string
+     */
+    public function format(): string
+    {
+        $format = get_option('date_format');
+        if (empty($format)) {
+            $format = "d.m.Y";
+        }
+
+        $timeformat = get_option('time_format');
+
+        if($this->isFullDay()) {
+            return date_i18n($format, $this->getTimestamp());
+        } else {
+            return date_i18n($format . " " . $timeformat, $this->getTimestamp());
+        }
     }
 
     /**

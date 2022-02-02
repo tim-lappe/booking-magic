@@ -28,10 +28,25 @@ interface RequestManagerInterface
      *
      * @return RequestBase
      */
-    public function getRequest(string $action): ?RequestBase;
+    public function getEndpointByAction(string $action): ?RequestBase;
 
     /**
      * @return RequestBase|null
      */
     public function getCurrentRequest(): ?RequestBase;
+
+    /**
+     * @return bool
+     */
+    public function hasContent(): bool;
+
+    /**
+     * @return string
+     */
+    public function getContent(): string;
+
+    /**
+     * @return mixed
+     */
+    public function getVars();
 }

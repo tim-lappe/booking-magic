@@ -9,12 +9,14 @@ import {RequestCommandBase} from "../../Ajax/RequestCommandBase";
 export interface CalendarBaseProps<V> {
     options: CalendarOptions;
     viewSettings: V;
+    name?: string;
 }
 
 export interface CalendarBaseState<S> {
     viewState?: S;
     focusedDate: DateTime;
     bookingOptions?: MergedActions;
+    formValue: any;
 }
 
 export abstract class CalendarComponentBase<V, S> extends React.Component<CalendarBaseProps<V>,CalendarBaseState<S>> {
@@ -24,7 +26,8 @@ export abstract class CalendarComponentBase<V, S> extends React.Component<Calend
 
         let focusedDate: DateTime = this.props.options.focused_tstamp ? new DateTime(this.props.options.focused_tstamp) : DateTime.create();
         this.state = {
-            focusedDate: focusedDate
+            focusedDate: focusedDate,
+            formValue: null
         }
     }
 
@@ -58,5 +61,13 @@ export abstract class CalendarComponentBase<V, S> extends React.Component<Calend
                 return prevState;
             });
         });
+    }
+
+    /**
+     *
+     * @protected
+     */
+    protected getEncodedValue(): string {
+        return encodeURIComponent(JSON.stringify(this.state.formValue));
     }
 }

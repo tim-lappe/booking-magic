@@ -8,11 +8,13 @@ if ( !defined('ABSPATH')) {
 }
 
 use TLBM\Admin\FormEditor\ItemSettingsElements\Select;
+use TLBM\Admin\FormEditor\LinkedFormData;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Calendar\Contracts\CalendarGroupManagerInterface;
 use TLBM\Calendar\Contracts\CalendarManagerInterface;
 use TLBM\Output\Calendar\CalendarOutput;
 use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
+use TLBM\Utilities\ExtendedDateTime;
 
 class CalendarElem extends FormInputElem
 {
@@ -42,21 +44,21 @@ class CalendarElem extends FormInputElem
         );
 
         $calendars   = $calendarManager->getAllCalendars();
-        $calendar_kv = array();
+        $calendar_kv = [];
         foreach ($calendars as $calendar) {
             $calendar_kv[$calendar->getId()] = $calendar->getTitle();
         }
 
-        $groups_kv       = array();
+        $groups_kv       = [];
         $calendar_groups = $calendarGroupManager->GetAllGroups();
         foreach ($calendar_groups as $group) {
             $groups_kv[$group->getId()] = $group->getTitle();
         }
 
-        $calendar_select = array(
+        $calendar_select = [
             __("Groups", TLBM_TEXT_DOMAIN)          => $groups_kv,
             __("Single Calendar", TLBM_TEXT_DOMAIN) => $calendar_kv,
-        );
+        ];
 
         $default_calendar = sizeof($calendar_kv) > 0 ? array_keys($calendar_kv)[0] : "";
 
@@ -65,40 +67,30 @@ class CalendarElem extends FormInputElem
         );
 
         $weekdaysForm = new Select(
-                "weekdays_form", __("Weekday Labels", TLBM_TEXT_DOMAIN), array(
-                 "long"  => __("Long", TLBM_TEXT_DOMAIN),
-                 "short" => __("Short", TLBM_TEXT_DOMAIN)
-             ), "short", false, false, __("Calendar Settings", TLBM_TEXT_DOMAIN)
+            "weekdays_form", __("Weekday Labels", TLBM_TEXT_DOMAIN), [
+            "long"  => __("Long", TLBM_TEXT_DOMAIN),
+            "short" => __("Short", TLBM_TEXT_DOMAIN)
+        ],  "short", false, false, __("Calendar Settings", TLBM_TEXT_DOMAIN)
         );
 
-        $this->AddSettings($selectedCalendar, $weekdaysForm);
+        $this->addSettings($selectedCalendar, $weekdaysForm);
         $this->has_user_input = true;
     }
 
-    public function Validate($form_data, $input_vars): bool
-    {
-        if (isset($form_data['name'])) {
-            $name = $form_data['name'];
-            if (isset($input_vars[$name])) {
-                return !empty($input_vars[$name]);
-            }
-        }
-
-        return false;
-    }
-
     /**
-     * @param mixed $form_node
-     * @param callable|null $insert_child
+     * @SuppressWarnings(PHPMD)
+     * @param LinkedFormData $linkedFormData
+     * @param callable|null $displayChildren
      *
      * @return string
      */
-    public function getFrontendOutput($form_node, callable $insert_child = null): string
+    public function getFrontendContent(LinkedFormData $linkedFormData, callable $displayChildren = null): string
     {
-        if ($form_node->formData->selected_calendar) {
-            return CalendarOutput::GetCalendarContainerShell(
-                $form_node->formData->selected_calendar, 0, "month", new MonthViewSetting($this->settingsManager), $form_node->formData->name
-            );
+        $calendar = $linkedFormData->getLinkedSettings()->getValue("selected_calendar");
+        $name = $linkedFormData->getLinkedSettings()->getValue("name");
+
+        if (!empty($calendar)) {
+            return CalendarOutput::GetCalendarContainerShell($calendar, new ExtendedDateTime(), "month", new MonthViewSetting($this->settingsManager), $name);
         } else {
             return "<div class='tlbm-no-calendar-alert'>" . __(
                     "No calendar or calendargroup selected", TLBM_TEXT_DOMAIN

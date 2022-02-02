@@ -3,33 +3,40 @@
 
 namespace TLBM\Admin\FormEditor\Elements;
 
+use TLBM\Admin\FormEditor\Contracts\FrontendElementInterface;
+use TLBM\Admin\FormEditor\FormInputGenerator;
+use TLBM\Admin\FormEditor\LinkedFormData;
+
 if ( !defined('ABSPATH')) {
     return;
 }
 
 
-final class HrElem extends FormElem
+final class HrElem extends FormElem implements FrontendElementInterface
 {
 
     public function __construct()
     {
         parent::__construct("hr", __("Horizontal Line", TLBM_TEXT_DOMAIN));
 
-        $this->description   = __(
-            "Inserts a horizontal dividing line to visually separate areas from each other", TLBM_TEXT_DOMAIN
-        );
+        $this->description   = __("Inserts a horizontal dividing line to visually separate areas from each other", TLBM_TEXT_DOMAIN);
         $this->menu_category = __("Layout", TLBM_TEXT_DOMAIN);
     }
 
     /**
-     * @param      $form_node
-     * @param callable|null $insert_child
+     * @SuppressWarnings(PHPMD)
+     * @param LinkedFormData $linkedFormData
+     * @param callable|null $displayChildren
      *
-     * @return mixed
+     * @return string
      */
-    public function getFrontendOutput($form_node, callable $insert_child = null): string
+    public function getFrontendContent(LinkedFormData $linkedFormData, callable $displayChildren = null): string
     {
-        return "<hr class='tlbm-fe-hr " . ($form_node->formData->css_classes ?? "") . "'>";
+        $lsetting = $linkedFormData->getLinkedSettings();
+        $css = [ "tlbm-fe-hr" ];
+        $css[] = trim($lsetting->getValue("css_classes"));
+
+        return "<hr class='" . implode(" " , $css) . "'>";
     }
 }
 

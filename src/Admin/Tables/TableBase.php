@@ -42,7 +42,7 @@ abstract class TableBase extends WP_List_Table
      */
     public function prepare_items()
     {
-        $orderby = $_REQUEST['orderby'] ?? "title";
+        $orderby = $_REQUEST['orderby'] ?? "id";
         $order   = $_REQUEST['order'] ?? "desc";
 
         $this->process_bulk_action();

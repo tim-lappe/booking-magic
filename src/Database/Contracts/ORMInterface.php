@@ -4,6 +4,7 @@ namespace TLBM\Database\Contracts;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 interface ORMInterface
 {
@@ -16,7 +17,7 @@ interface ORMInterface
     /**
      * @return EntityManager|null
      */
-    public function getEntityManager(): ?EntityManager;
+    public function getEntityManager(): ?EntityManagerInterface;
 
     /**
      * @return void
