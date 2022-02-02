@@ -24,8 +24,6 @@ export class PeriodSelect extends React.Component<any, PeriodSelectState>{
             items: []
         }
 
-        console.log(jsondata);
-
         if(Array.isArray(jsondata)) {
             let periods: Period[] = [];
             for (let data of jsondata) {

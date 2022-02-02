@@ -26,7 +26,7 @@ class RuleAction implements JsonSerializable
      * @var string
      * @Doctrine\ORM\Mapping\Column (type="string", nullable=false)
      */
-    protected string $action_type;
+    protected string $actionType;
 
     /**
      * @var string
@@ -38,13 +38,13 @@ class RuleAction implements JsonSerializable
      * @var int
      * @Doctrine\ORM\Mapping\Column (type="integer")
      */
-    protected int $time_hour = 0;
+    protected int $timeHour = 0;
 
     /**
      * @var int
      * @Doctrine\ORM\Mapping\Column (type="integer")
      */
-    protected int $time_min = 0;
+    protected int $timeMin = 0;
 
     /**
      * @var int
@@ -93,15 +93,15 @@ class RuleAction implements JsonSerializable
      */
     public function getActionType(): string
     {
-        return $this->action_type;
+        return $this->actionType;
     }
 
     /**
-     * @param string $action_type
+     * @param string $actionType
      */
-    public function setActionType(string $action_type): void
+    public function setActionType(string $actionType): void
     {
-        $this->action_type = $action_type;
+        $this->actionType = $actionType;
     }
 
     /**
@@ -125,15 +125,15 @@ class RuleAction implements JsonSerializable
      */
     public function getTimeHour(): int
     {
-        return $this->time_hour;
+        return $this->timeHour;
     }
 
     /**
-     * @param int $time_hour
+     * @param int $timeHour
      */
-    public function setTimeHour(int $time_hour): void
+    public function setTimeHour(int $timeHour): void
     {
-        $this->time_hour = $time_hour;
+        $this->timeHour = $timeHour;
     }
 
     /**
@@ -141,15 +141,15 @@ class RuleAction implements JsonSerializable
      */
     public function getTimeMin(): int
     {
-        return $this->time_min;
+        return $this->timeMin;
     }
 
     /**
-     * @param int $time_min
+     * @param int $timeMin
      */
-    public function setTimeMin(int $time_min): void
+    public function setTimeMin(int $timeMin): void
     {
-        $this->time_min = $time_min;
+        $this->timeMin = $timeMin;
     }
 
     /**
@@ -172,10 +172,10 @@ class RuleAction implements JsonSerializable
     {
         return array(
             "id"          => $this->getId(),
-            "action_type" => $this->action_type,
+            "action_type" => $this->actionType,
             "weekdays"    => $this->weekdays,
-            "time_hour"   => $this->time_hour,
-            "time_min"    => $this->time_min,
+            "time_hour"   => $this->timeHour,
+            "time_min"    => $this->timeMin,
             "priority"    => $this->priority,
             "actions"     => $this->data
         );

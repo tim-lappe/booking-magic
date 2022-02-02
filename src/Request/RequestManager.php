@@ -7,7 +7,7 @@ use TLBM\Request\Contracts\RequestManagerInterface;
 class RequestManager implements RequestManagerInterface
 {
     /**
-     * @var array
+     * @var RequestBase[]
      */
     private array $registeredEndpoints = array();
 
@@ -21,17 +21,35 @@ class RequestManager implements RequestManagerInterface
      */
     public function init()
     {
-        if (isset($_REQUEST['action'])) {
-            $action = $_REQUEST['action'];
-            $vars   = $_REQUEST;
-            unset($vars['action']);
-
-            $request = $this->getRequest($action);
+        if (isset($_REQUEST['tlbm_action'])) {
+            $request = $this->getEndpointByAction($_REQUEST['tlbm_action']);
             if ($request != null) {
-                $request->onAction($vars);
-                $this->currentRequest = $request;
+                $request->setVars($this->getVars());
+                $request->onAction();
             }
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent(): string
+    {
+        if($this->hasContent()) {
+            return $this->currentRequest->getContent();
+        }
+        return "";
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasContent(): bool
+    {
+        if($this->currentRequest != null) {
+            return $this->currentRequest->hasContent;
+        }
+        return false;
     }
 
     /**
@@ -39,10 +57,12 @@ class RequestManager implements RequestManagerInterface
      *
      * @return RequestBase
      */
-    public function getRequest(string $action): ?RequestBase
+    public function getEndpointByAction(string $action): ?RequestBase
     {
-        if (isset($this->registeredEndpoints[$action])) {
-            return $this->registeredEndpoints[$action];
+        foreach ($this->registeredEndpoints as $endpoint) {
+            if($endpoint->action == $action) {
+                return $endpoint;
+            }
         }
 
         return null;
@@ -62,11 +82,10 @@ class RequestManager implements RequestManagerInterface
 
     public function beforeInit()
     {
-        if (isset($_REQUEST['action'])) {
-            $action  = $_REQUEST['action'];
-            $request = $this->getRequest($action);
+        if (isset($_REQUEST['tlbm_action'])) {
+            $action  = $_REQUEST['tlbm_action'];
+            $request = $this->getEndpointByAction($action);
             if ($request != null) {
-                $request->Init($_REQUEST);
                 $this->currentRequest = $request;
             }
         }
@@ -78,5 +97,18 @@ class RequestManager implements RequestManagerInterface
     public function getCurrentRequest(): ?RequestBase
     {
         return $this->currentRequest;
+    }
+
+    /**
+     * @return array
+     */
+    public function getVars(): array
+    {
+        $vars   = $_REQUEST;
+        if (isset($_REQUEST['tlbm_action'])) {
+            unset($vars['tlbm_action']);
+        }
+
+        return $vars;
     }
 }

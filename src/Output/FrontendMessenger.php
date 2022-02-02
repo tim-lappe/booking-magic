@@ -4,25 +4,30 @@
 namespace TLBM\Output;
 
 
+use TLBM\Output\Contracts\FrontendMessengerInterface;
+
 if ( !defined('ABSPATH')) {
     return;
 }
 
-class FrontendMessenger
+class FrontendMessenger implements FrontendMessengerInterface
 {
 
-    private static array $frontend_msgs = array();
+    /**
+     * @var array
+     */
+    private array $frontendMsgs = array();
 
-    public static function AddFrontendMsg($html)
+    public function addMessage($html)
     {
-        self::$frontend_msgs[] = $html;
+        $this->frontendMsgs[] = $html;
     }
 
-    public static function GetMessangesPrint(): string
+    public function getContent(): string
     {
-        if (sizeof(self::$frontend_msgs) > 0) {
+        if (count($this->frontendMsgs) > 0) {
             $html = '<div class="tlbm-messages">';
-            foreach (self::$frontend_msgs as $msg) {
+            foreach ($this->frontendMsgs as $msg) {
                 $html .= "$msg<br>";
             }
             $html .= "</div>";

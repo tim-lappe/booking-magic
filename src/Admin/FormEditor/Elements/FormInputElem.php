@@ -8,45 +8,61 @@ if ( !defined('ABSPATH')) {
 }
 
 
+use TLBM\Admin\FormEditor\Contracts\FrontendElementInterface;
+use TLBM\Admin\FormEditor\FormInputGenerator;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Input;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Select;
+use TLBM\Admin\FormEditor\LinkedFormData;
+use TLBM\Admin\FormEditor\Validators\FormElementValidatorInterface;
 
-abstract class FormInputElem extends FormElem
+abstract class FormInputElem extends FormElem implements FormElementValidatorInterface, FrontendElementInterface
 {
-    public function __construct($name, $title)
+    /**
+     * @param string $name
+     * @param string $title
+     */
+    public function __construct(string $name, string $title)
     {
         parent::__construct($name, $title);
 
-
-        $setting_title = new Input(
-            "title", __("Title", TLBM_TEXT_DOMAIN), "text", $this->title
+        $settingTitle = new Input("title", __("Title", TLBM_TEXT_DOMAIN), "text", $this->title);
+        $settingName = new Input("name", __("Name", TLBM_TEXT_DOMAIN), "text", str_replace(" ", "_", strtolower($this->title)), false, true, Input::GetForbiddenNameValues());
+        $settingRequired = new Select("required", __("Required", TLBM_TEXT_DOMAIN), [
+                "yes" => __("Yes", TLBM_TEXT_DOMAIN),
+                "no"  => __("No", TLBM_TEXT_DOMAIN)
+            ],  "yes"
         );
 
-        $setting_name = new Input(
-            "name", __("Name", TLBM_TEXT_DOMAIN), "text", str_replace(" ", "_", strtolower($this->title)), false, true, Input::GetForbiddenNameValues()
-        );
-
-        $setting_required = new Select(
-            "required", __("Required", TLBM_TEXT_DOMAIN), array(
-                          "yes" => __("Yes", TLBM_TEXT_DOMAIN),
-                          "no"  => __("No", TLBM_TEXT_DOMAIN)
-                      ), "no"
-        );
-
-
-        $this->AddSettings($setting_title, $setting_name, $setting_required);
+        $this->addSettings($settingTitle, $settingName, $settingRequired);
         $this->has_user_input = true;
     }
 
-    public function Validate($form_data, $input_vars): bool
+    /**
+     * @param LinkedFormData $linkedFormData
+     *
+     * @return bool
+     */
+    public function validate(LinkedFormData $linkedFormData): bool
     {
-        if (isset($form_data['name'])) {
-            $name = $form_data['name'];
-            if (isset($input_vars[$name])) {
-                return !empty($input_vars[$name]);
-            }
+        $linkedSettings = $linkedFormData->getLinkedSettings();
+        if($linkedSettings->getValue("required") == "no") {
+            return true;
         }
 
-        return false;
+        $name = $linkedSettings->getValue("name");
+        $value = $linkedFormData->getInputVarByName($name);
+        return !empty($value) && $value != "null";
+    }
+
+    /**
+     * @param LinkedFormData $linkedFormData
+     * @param callable|null $displayChildren
+     *
+     * @return string
+     */
+    public function getFrontendContent(LinkedFormData $linkedFormData, callable $displayChildren = null): string
+    {
+        $generator = new FormInputGenerator($linkedFormData);
+        return $generator->getFormControl();
     }
 }

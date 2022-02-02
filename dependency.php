@@ -50,6 +50,8 @@ use TLBM\Ajax\AjaxManager;
 use TLBM\Ajax\Contracts\AjaxManagerInterface;
 use TLBM\Ajax\GetMergedActions;
 use TLBM\Ajax\PingPong;
+use TLBM\Booking\BookingManager;
+use TLBM\Booking\Contracts\BookingManagerInterface;
 use TLBM\Calendar\CalendarGroupManager;
 use TLBM\Calendar\CalendarManager;
 use TLBM\Calendar\CalendarSelectionHandler;
@@ -67,7 +69,9 @@ use TLBM\Localization\Contracts\ScriptLocalizationInterface;
 use TLBM\Localization\Labels;
 use TLBM\Localization\ScriptLocalization;
 use TLBM\Output\Contracts\FormPrintInterface;
+use TLBM\Output\Contracts\FrontendMessengerInterface;
 use TLBM\Output\FormPrint;
+use TLBM\Output\FrontendMessenger;
 use TLBM\Request\Contracts\RequestManagerInterface;
 use TLBM\Request\DoBookingRequest;
 use TLBM\Request\RequestManager;
@@ -109,6 +113,7 @@ return [
     ORMInterface::class                      => autowire(ORMManager::class),
     CalendarManagerInterface::class          => autowire(CalendarManager::class),
     CalendarGroupManagerInterface::class     => autowire(CalendarGroupManager::class),
+    BookingManagerInterface::class           => autowire(BookingManager::class),
     MailSenderInterface::class               => autowire(MailSender::class),
     FormManagerInterface::class              => autowire(FormManager::class),
     LabelsInterface::class                   => autowire(Labels::class),
@@ -122,6 +127,7 @@ return [
     FormPrintInterface::class                => autowire(FormPrint::class),
     FormBuilderInterface::class              => autowire(FormBuilder::class),
     RulesQueryInterface::class               => autowire(RulesQuery::class),
+    FrontendMessengerInterface::class => autowire(FrontendMessenger::class),
 
     CalendarEntityValidatorInterface::class    => autowire(CalendarEntityValidator::class),
     RulesActionEntityValidatorInterface::class => autowire(RulesActionEntityValidator::class),

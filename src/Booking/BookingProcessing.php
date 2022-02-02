@@ -8,11 +8,10 @@ use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
 use TLBM\Admin\FormEditor\Elements\CalendarElem;
 use TLBM\Admin\FormEditor\FormElementsCollection;
+use TLBM\Entity\Form;
 use TLBM\Model\Booking;
 use TLBM\Model\BookingValue;
 use TLBM\Model\CalendarSlot;
-use TLBM\Model\Form;
-use TLBM\Model\FormElementsDataPack;
 
 if ( !defined('ABSPATH')) {
     return;
@@ -25,24 +24,24 @@ class BookingProcessing
     /**
      * @var array
      */
-    private $input_vars;
+    private array $input_vars;
 
     /**
      * @var Form
      */
-    private $form;
+    private Form $form;
 
-    public function __construct($input_vars, $form)
+    public function __construct($inputVars, $form)
     {
-        $this->input_vars = $this->EscapeInputVars($input_vars);
+        $this->input_vars = $this->escapeInputVars($inputVars);
         $this->form       = $form;
     }
 
-    public function EscapeInputVars($input_vars): array
+    public function escapeInputVars($inputVars): array
     {
         $escaped = array();
-        foreach ($input_vars as $key => $input_var) {
-            $escaped[$key] = strip_tags($input_var);
+        foreach ($inputVars as $key => $inputVar) {
+            $escaped[$key] = strip_tags($inputVar);
         }
 
         return $escaped;
@@ -75,7 +74,7 @@ class BookingProcessing
      */
     public function ParseFormDataToFormElements($form_data, array $input_vars = array()): array
     {
-        $it       = new RecursiveIteratorIterator(
+        $it = new RecursiveIteratorIterator(
             new RecursiveArrayIterator($form_data, RecursiveArrayIterator::CHILD_ARRAYS_ONLY), RecursiveIteratorIterator::SELF_FIRST
         );
         $elements = array();

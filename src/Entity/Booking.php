@@ -21,19 +21,19 @@ class Booking
      * @var ArrayCollection
      * @Doctrine\ORM\Mapping\OneToMany(targetEntity=BookingValue::class, mappedBy="booking", orphanRemoval=true)
      */
-    protected Collection $booking_values;
+    protected Collection $bookingValues;
 
     /**
      * @var ArrayCollection
      * @Doctrine\ORM\Mapping\OneToMany(targetEntity=CalendarSlot::class, mappedBy="booking", orphanRemoval=true)
      */
-    protected Collection $calendar_slots;
+    protected Collection $calendarSlots;
 
     /**
      * @var int
      * @Doctrine\ORM\Mapping\Column(type="bigint", nullable=false)
      */
-    protected int $timestamp_created;
+    protected int $tstampCreated;
 
     /**
      * @var string
@@ -43,8 +43,8 @@ class Booking
 
     public function __construct()
     {
-        $this->booking_values = new ArrayCollection();
-        $this->calendar_slots = new ArrayCollection();
+        $this->bookingValues = new ArrayCollection();
+        $this->calendarSlots = new ArrayCollection();
     }
 
     /**
@@ -54,8 +54,8 @@ class Booking
      */
     public function addCalendarSlot(CalendarSlot $calendar_slot): CalendarSlot
     {
-        if ( !$this->calendar_slots->contains($calendar_slot)) {
-            $this->calendar_slots[] = $calendar_slot;
+        if ( !$this->calendarSlots->contains($calendar_slot)) {
+            $this->calendarSlots[] = $calendar_slot;
             $calendar_slot->setBooking($this);
         }
 
@@ -69,8 +69,8 @@ class Booking
      */
     public function removeCalendarSlot(CalendarSlot $calendar_slot): CalendarSlot
     {
-        if ($this->calendar_slots->contains($calendar_slot)) {
-            $this->calendar_slots->removeElement($calendar_slot);
+        if ($this->calendarSlots->contains($calendar_slot)) {
+            $this->calendarSlots->removeElement($calendar_slot);
         }
 
         return $calendar_slot;
@@ -81,7 +81,7 @@ class Booking
      */
     public function getCalendarSlots(): ArrayCollection
     {
-        return $this->calendar_slots;
+        return $this->calendarSlots;
     }
 
     /**
@@ -91,8 +91,8 @@ class Booking
      */
     public function addBookingValue(BookingValue $booking_value): BookingValue
     {
-        if ( !$this->booking_values->contains($booking_value)) {
-            $this->booking_values[] = $booking_value;
+        if ( !$this->bookingValues->contains($booking_value)) {
+            $this->bookingValues[] = $booking_value;
             $booking_value->setBooking($this);
         }
 
@@ -106,8 +106,8 @@ class Booking
      */
     public function removeBookingValue(BookingValue $booking_value): BookingValue
     {
-        if ($this->booking_values->contains($booking_value)) {
-            $this->booking_values->removeElement($booking_value);
+        if ($this->bookingValues->contains($booking_value)) {
+            $this->bookingValues->removeElement($booking_value);
         }
 
         return $booking_value;

@@ -78,7 +78,7 @@ class CalendarEditPage extends FormPageBase
         }
 
         $calendarValidator = ValidatorFactory::createCalendarValidator($calendar);
-        $calendar->setTimestampCreated(time());
+        $calendar->setTstampCreated(time());
         $calendar->setTitle($vars['title']);
 
         $validationResult = $calendarValidator->getValidationErrors();

@@ -21,7 +21,7 @@ class CalendarStatistics
         foreach ($bookings as $booking) {
             $dt = get_post_datetime($booking->wp_post_id);
             if ($from->getTimestamp() <= $dt->getTimestamp() && $dt->getTimestamp() <= $to->getTimestamp()) {
-                foreach ($booking->calendar_slots as $slot) {
+                foreach ($booking->calendarSlots as $slot) {
                     if (isset($cals[$slot->booked_calendar_id])) {
                         $cals[$slot->booked_calendar_id]++;
                     } else {

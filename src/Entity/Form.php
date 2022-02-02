@@ -26,13 +26,7 @@ class Form implements JsonSerializable
      * @var int
      * @Doctrine\ORM\Mapping\Column(type="bigint", nullable=false)
      */
-    protected int $timestamp_created;
-
-    /**
-     * @var string
-     * @Doctrine\ORM\Mapping\Column (type="text", nullable=false)
-     */
-    protected string $frontend_html = "";
+    protected int $tstampCreated;
 
     /**
      * @var mixed
@@ -42,7 +36,7 @@ class Form implements JsonSerializable
 
     public function __construct()
     {
-        $this->timestamp_created = time();
+        $this->tstampCreated = time();
     }
 
     public function jsonSerialize(): array
@@ -50,7 +44,6 @@ class Form implements JsonSerializable
         return array(
             "title"         => $this->getTitle(),
             "form_data"     => $this->getFormData(),
-            "frontend_html" => $this->getFrontendHtml()
         );
     }
 
@@ -81,21 +74,5 @@ class Form implements JsonSerializable
     public function setFormData($form_data): void
     {
         $this->form_data = $form_data;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFrontendHtml(): string
-    {
-        return $this->frontend_html;
-    }
-
-    /**
-     * @param string $frontend_html
-     */
-    public function setFrontendHtml(string $frontend_html): void
-    {
-        $this->frontend_html = $frontend_html;
     }
 }

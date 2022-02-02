@@ -3,29 +3,17 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
-
+use Exception;
 use TLBM\Admin\Tables\BookingListTable;
-use TLBM\Booking\BookingManager;
-use TLBM\Calendar\Contracts\CalendarManagerInterface;
-use TLBM\Utilities\Contracts\DateTimeToolsInterface;
+use TLBM\MainFactory;
+
 
 class BookingsPage extends PageBase
 {
-    /**
-     * @var CalendarManagerInterface
-     */
-    private CalendarManagerInterface $calendarManager;
 
-    /**
-     * @var DateTimeToolsInterface
-     */
-    private DateTimeToolsInterface $dateTimeTools;
-
-    public function __construct(CalendarManagerInterface $calendarManager, DateTimeToolsInterface $dateTimeTools)
+    public function __construct()
     {
         parent::__construct("Bookings", "booking-magic-bookings");
-        $this->calendarManager = $calendarManager;
-        $this->dateTimeTools   = $dateTimeTools;
         $this->parent_slug     = "booking-magic";
     }
 
@@ -41,7 +29,6 @@ class BookingsPage extends PageBase
 
     public function displayPageBody()
     {
-        global $wp_query;
         ?>
         <div class="tlbm-admin-page">
             <div class="tlbm-admin-page-tile">
@@ -49,11 +36,17 @@ class BookingsPage extends PageBase
                     <input type="hidden" name="page" value="<?php
                     echo $_REQUEST['page'] ?>"/>
                     <?php
-                    $bookings        = BookingManager::GetAllBookings();
-                    $post_list_table = new BookingListTable($this->calendarManager, $this->dateTimeTools);
-                    $post_list_table->views();
-                    $post_list_table->prepare_items();
-                    $post_list_table->display();
+                    try {
+                        $bookingsListTable = MainFactory::create(BookingListTable::class);
+                        $bookingsListTable->views();
+                        $bookingsListTable->prepare_items();
+                        $bookingsListTable->display();
+
+                    } catch (Exception $exception) {
+                        if(WP_DEBUG) {
+                            var_dump($exception);
+                        }
+                    }
                     ?>
                 </form>
             </div>

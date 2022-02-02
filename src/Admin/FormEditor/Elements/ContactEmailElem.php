@@ -3,11 +3,12 @@
 
 namespace TLBM\Admin\FormEditor\Elements;
 
+use TLBM\Admin\FormEditor\FormInputGenerator;
+use TLBM\Admin\FormEditor\LinkedFormData;
+
 if ( !defined('ABSPATH')) {
     return;
 }
-
-use TLBM\Admin\FormEditor\FrontendGeneration\InputGenerator;
 
 final class ContactEmailElem extends FormInputElem
 {
@@ -20,27 +21,27 @@ final class ContactEmailElem extends FormInputElem
             "The contact email to which the user receives emails such as booking confirmations", TLBM_TEXT_DOMAIN
         );
 
-        $name_setting                = $this->GetSettingsType("name");
+        $name_setting                = $this->getSettingsType("name");
         $name_setting->default_value = "contact_email";
         $name_setting->readonly      = true;
 
-        $title_setting                = $this->GetSettingsType("title");
+        $title_setting                = $this->getSettingsType("title");
         $title_setting->default_value = __("E-Mail", TLBM_TEXT_DOMAIN);
 
-        $required                = $this->GetSettingsType("required");
+        $required                = $this->getSettingsType("required");
         $required->default_value = "yes";
     }
 
     /**
-     * @param      $form_node
-     * @param callable|null $insert_child
+     * @SuppressWarnings(PHPMD)
+     * @param LinkedFormData $linkedFormData
+     * @param callable|null $displayChildren
      *
-     * @return mixed
+     * @return string
      */
-    public function getFrontendOutput($form_node, callable $insert_child = null)
+    public function getFrontendContent(LinkedFormData $linkedFormData, callable $displayChildren = null): string
     {
-        return InputGenerator::GetFormControl(
-            "email", $form_node->formData->title, $form_node->formData->name, $form_node->formData->required == "yes", ($form_node->formData->css_classes ?? "")
-        );
+        $generator = new FormInputGenerator($linkedFormData);
+        return $generator->getFormControl("email");
     }
 }

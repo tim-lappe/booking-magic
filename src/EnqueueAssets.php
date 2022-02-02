@@ -49,53 +49,5 @@ class EnqueueAssets
         ));
 
         wp_localize_script(TLBM_FRONTEND_JS_SLUG, 'tlbm_localization', $this->scriptLocalization->getLabels());
-        $this->localizeConstats();
-    }
-
-    /**
-     * @return void
-     * @throws Exception
-     */
-    public function localizeConstats()
-    {
-        $dt = new DateTime("now", wp_timezone());
-        wp_localize_script(TLBM_FRONTEND_JS_SLUG, "tlbm_constants", array(
-            "months"   => array(
-                __('January', TLBM_TEXT_DOMAIN),
-                __('February', TLBM_TEXT_DOMAIN),
-                __('March', TLBM_TEXT_DOMAIN),
-                __('April', TLBM_TEXT_DOMAIN),
-                __('May', TLBM_TEXT_DOMAIN),
-                __('June', TLBM_TEXT_DOMAIN),
-                __('July ', TLBM_TEXT_DOMAIN),
-                __('August', TLBM_TEXT_DOMAIN),
-                __('September', TLBM_TEXT_DOMAIN),
-                __('October', TLBM_TEXT_DOMAIN),
-                __('November', TLBM_TEXT_DOMAIN),
-                __('December', TLBM_TEXT_DOMAIN)
-            ),
-            "weekdays" => array(
-                __('Monday', TLBM_TEXT_DOMAIN),
-                __('Tuesday', TLBM_TEXT_DOMAIN),
-                __('Wednesday', TLBM_TEXT_DOMAIN),
-                __('Thursday', TLBM_TEXT_DOMAIN),
-                __('Friday', TLBM_TEXT_DOMAIN),
-                __('Saturday', TLBM_TEXT_DOMAIN),
-                __('Sunday', TLBM_TEXT_DOMAIN)
-            ),
-            "today"    => array(
-                "day"   => intval($dt->format("j")),
-                "month" => intval($dt->format("n")),
-                "year"  => intval($dt->format("Y"))
-            ),
-            "labels"   => array(
-                "to"                => __("To", TLBM_TEXT_DOMAIN),
-                "from"              => __("From", TLBM_TEXT_DOMAIN),
-                "everyYear"         => __("Yearly", TLBM_TEXT_DOMAIN),
-                "onlyUseInTimeSpan" => __("Limit", TLBM_TEXT_DOMAIN),
-                "addTimeSlot"       => __("Add Timespan", TLBM_TEXT_DOMAIN),
-                "delete"            => __("Delete", TLBM_TEXT_DOMAIN)
-            )
-        ));
     }
 }

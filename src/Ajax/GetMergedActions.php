@@ -46,17 +46,14 @@ class GetMergedActions implements AjaxFunctionInterface
          * @var RulesQueryInterface $query
          */
         $query = MainFactory::create(RulesQueryInterface::class);
-        if (isset($assocData['actionType'])) {
-            if (is_array($assocData['actionType'])) {
-                $query->setActionTypes($assocData['actionType']);
-            } else {
-                $query->setActionTypes(array($assocData['actionType']));
+        if(isset($assocData['options']['dataSourceId']) && isset($assocData['options']['dataSourceType'])) {
+            if($assocData['options']['dataSourceType'] == "calendar") {
+                $query->setTypeCalendar($assocData['options']['dataSourceId']);
             }
         }
 
         $fromDateTime = new ExtendedDateTime();
         $fromDateTime->setFromObject($assocData['fromDateTime']);
-
         $toDateTime = new ExtendedDateTime();
         $toDateTime->setFromObject($assocData['toDateTime']);
 

@@ -8,9 +8,12 @@ if ( !defined('ABSPATH')) {
 }
 
 
+use TLBM\Admin\FormEditor\Contracts\FrontendElementInterface;
+use TLBM\Admin\FormEditor\FormInputGenerator;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Input;
+use TLBM\Admin\FormEditor\LinkedFormData;
 
-final class SpacingElem extends FormElem
+final class SpacingElem extends FormElem implements FrontendElementInterface
 {
 
     public function __construct()
@@ -19,18 +22,24 @@ final class SpacingElem extends FormElem
         $this->description   = __("Useful to leave space within the form", TLBM_TEXT_DOMAIN);
         $this->menu_category = __("Layout", TLBM_TEXT_DOMAIN);
 
-        $this->AddSettings(new Input("spacing", __("Spacing (in px)", TLBM_TEXT_DOMAIN), "number", 100));
+        $this->addSettings(new Input("spacing", __("Spacing (in px)", TLBM_TEXT_DOMAIN), "number", 100));
     }
 
     /**
-     * @param      $form_node
-     * @param callable|null $insert_child
+     * @SuppressWarnings(PHPMD)
+     * @param LinkedFormData $linkedFormData
+     * @param callable|null $displayChildren
      *
-     * @return mixed
+     * @return string
      */
-    public function getFrontendOutput($form_node, callable $insert_child = null): string
+    public function getFrontendContent(LinkedFormData $linkedFormData, callable $displayChildren = null): string
     {
-        return "<div style='height: " . $form_node->formData->spacing . "px' class='tlbm-fe-spacing " . ($form_node->formData->css_classes ?? "") . "'></div>";
+        $lsetting = $linkedFormData->getLinkedSettings();
+        $spacing = $lsetting->getValue("spacing");
+        $css = [ "tlbm-fe-spacing" ];
+        $css[] = $lsetting->getValue("css_classes");
+
+        return "<div style='height: " . $spacing . "px' class='".implode(" ", $css)."'></div>";
     }
 }
 

@@ -27,7 +27,7 @@ class RulePeriod implements JsonSerializable
 
     /**
      * @var Collection
-     * @Doctrine\ORM\Mapping\OneToMany (targetEntity=TimeSlot::class, mappedBy="rule_period", orphanRemoval=true, cascade={"all"})
+     * @Doctrine\ORM\Mapping\OneToMany (targetEntity=TimeSlot::class, mappedBy="rulePeriod", orphanRemoval=true, cascade={"all"})
      */
     protected Collection $dailyTimeRanges;
 
@@ -191,9 +191,9 @@ class RulePeriod implements JsonSerializable
     {
         return [
             "fromDateTime"    => new ExtendedDateTime($this->fromTimestamp),
-            "fromTimset"      => $this->fromTimeset,
+            "fromTimeset"      => $this->fromTimeset,
             "toDateTime"      => $this->toTimestamp ? new ExtendedDateTime($this->toTimestamp): null,
-            "toTimeSet"       => $this->toTimeset,
+            "toTimeset"       => $this->toTimeset,
             "id"              => $this->id,
             "dailyTimeRanges" => $this->dailyTimeRanges->toArray()
         ];

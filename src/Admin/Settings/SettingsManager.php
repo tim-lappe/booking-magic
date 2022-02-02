@@ -6,6 +6,11 @@ namespace TLBM\Admin\Settings;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
 
+use function add_settings_field;
+use function add_settings_section;
+use function register_setting;
+use function update_option;
+
 class SettingsManager implements SettingsManagerInterface
 {
     /**
@@ -115,12 +120,12 @@ class SettingsManager implements SettingsManagerInterface
     public function loadSettings(): void
     {
         foreach ($this->groups as $key => $group) {
-            add_settings_section("tlbm_" . $key . "_section", $group, null, "tlbm_settings_" . $key);
+            \add_settings_section("tlbm_" . $key . "_section", $group, null, "tlbm_settings_" . $key);
         }
 
         foreach ($this->settings as $setting) {
-            register_setting("tlbm_" . $setting->optionGroup, $setting->optionName, array("default" => $setting->defaultValue));
-            add_settings_field(
+            \register_setting("tlbm_" . $setting->optionGroup, $setting->optionName, array("default" => $setting->defaultValue));
+            \add_settings_field(
                 "tlbm_" . $setting->optionGroup . "_" . $setting->optionName . "_field", $setting->title, array($setting, "display"), 'tlbm_settings_' . $setting->optionGroup, "tlbm_" . $setting->optionGroup . "_section"
             );
         }

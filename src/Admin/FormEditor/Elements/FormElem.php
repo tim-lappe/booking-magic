@@ -31,7 +31,7 @@ abstract class FormElem
     /**
      * @var ElementSetting[]
      */
-    public array $settings = array();
+    public array $settings = [];
 
     /**
      * @var string
@@ -61,24 +61,22 @@ abstract class FormElem
         $this->description   = "";
         $this->type          = $name;
 
-        $setting_css_class = new Input(
-            "css_classes", __("Custom CSS Classes (seperate with whitespace)"), "text", "", false, false, array(), __("Advanced", TLBM_TEXT_DOMAIN)
-        );
+        $setting_css_class = new Input("css_classes", __("Custom CSS Classes (seperate with whitespace)"), "text", "", false, false, [], __("Advanced", TLBM_TEXT_DOMAIN));
 
-        $this->AddSettings($setting_css_class);
+        $this->addSettings($setting_css_class);
     }
 
-    public function AddSettings(ElementSetting ...$settings)
+    public function addSettings(ElementSetting ...$settings)
     {
         $this->settings = array_merge($settings, $this->settings);
     }
 
     /**
-     * @param $name
+     * @param string $name
      *
      * @return false|ElementSetting
      */
-    public function GetSettingsType($name)
+    public function getSettingsType(string $name)
     {
         foreach ($this->settings as $setting) {
             if ($setting->name == $name) {
@@ -87,24 +85,5 @@ abstract class FormElem
         }
 
         return false;
-    }
-
-    /**
-     * @param object $form_node
-     * @param callable|null $insert_child
-     *
-     * @return mixed
-     */
-    abstract public function getFrontendOutput(object $form_node, ?callable $insert_child = null);
-
-    /**
-     * @param $form_data
-     * @param $input_vars
-     *
-     * @return bool
-     */
-    public function Validate($form_data, $input_vars): bool
-    {
-        return true;
     }
 }

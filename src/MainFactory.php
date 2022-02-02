@@ -5,25 +5,55 @@ namespace TLBM;
 use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
+use Exception;
 
 class MainFactory
 {
     /**
-     * @param string $class
+     * @template T
+     * @param class-string<T> $class
      * @param array $parameters
      *
-     * @return mixed
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @return ?T
      */
     public static function create(string $class, array $parameters = []) {
-        /**
-         * @global Container $TLBM_DICONTAINER
-         */
-        global $TLBM_DICONTAINER;
+        try {
+            /**
+             * @global Container $TLBM_DICONTAINER
+             */ global $TLBM_DICONTAINER;
 
-        if($TLBM_DICONTAINER) {
-            return $TLBM_DICONTAINER->make($class, $parameters);
+            if ($TLBM_DICONTAINER) {
+                return $TLBM_DICONTAINER->make($class, $parameters);
+            }
+        } catch (Exception $exception) {
+            if(WP_DEBUG) {
+                var_dump($exception);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @template T
+     * @param class-string<T> $class
+     *
+     * @return ?T
+     */
+    public static function get(string $class) {
+        try {
+            /**
+             * @global Container $TLBM_DICONTAINER
+             */
+            global $TLBM_DICONTAINER;
+
+            if($TLBM_DICONTAINER) {
+                return $TLBM_DICONTAINER->get($class);
+            }
+        } catch (Exception $exception) {
+            if(WP_DEBUG) {
+                var_dump($exception);
+            }
         }
 
         return null;
