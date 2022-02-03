@@ -16,7 +16,7 @@ class BookingValue
 
     /**
      * @var Booking
-     * @Doctrine\ORM\Mapping\OneToOne(targetEntity=Booking::class)
+     * @Doctrine\ORM\Mapping\ManyToOne(targetEntity=Booking::class, cascade={"all"})
      */
     protected Booking $booking;
 
@@ -24,7 +24,7 @@ class BookingValue
      * @var string
      * @Doctrine\ORM\Mapping\Column (type="string", nullable=false)
      */
-    protected string $key;
+    protected string $name;
 
     /**
      * @var string
@@ -41,17 +41,17 @@ class BookingValue
     /**
      * @return string
      */
-    public function getKey(): string
+    public function getName(): string
     {
-        return $this->key;
+        return $this->name;
     }
 
     /**
-     * @param string $key
+     * @param string $name
      */
-    public function setKey(string $key): void
+    public function setName(string $name): void
     {
-        $this->key = $key;
+        $this->name = $name;
     }
 
     /**

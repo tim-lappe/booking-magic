@@ -7,7 +7,7 @@
     "build": "webpack build",
     "dev:start": "npm run env:start; npm run watch",
     "env:start": "docker-compose up -d wordpress wordpress_phpmyadmin",
-    "env:stop": "docker-compose down",
+    "env:stop": "docker-compose down --remove-orphans",
     "watch": "webpack --watch",
     "test": "docker-compose run -w /var/www/html/wp-content/plugins/booking-magic wordpress_it php ./vendor/bin/phpunit"
   },

@@ -31,7 +31,7 @@ class CalendarGroup
 
     /**
      * @var CalendarSelection
-     * @Doctrine\ORM\Mapping\OneToOne(targetEntity=CalendarSelection::class, orphanRemoval=true)
+     * @Doctrine\ORM\Mapping\OneToOne(targetEntity=CalendarSelection::class, orphanRemoval=true, cascade={"all"})
      */
     protected CalendarSelection $calendarSelection;
 

@@ -104,6 +104,7 @@ class LinkedFormData
         if($this->inputVars != null && isset($this->inputVars[$name])) {
             return trim($this->inputVars[$name]);
         }
+
         return "";
     }
 

@@ -3,15 +3,17 @@
 
 namespace TLBM\Booking;
 
-
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Exception;
+use Throwable;
+use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
+use TLBM\Admin\Settings\SingleSettings\BookingProcess\ExpiryTime;
 use TLBM\Booking\Contracts\BookingManagerInterface;
 use TLBM\Database\Contracts\ORMInterface;
 use TLBM\Entity\Booking;
+use TLBM\Utilities\ExtendedDateTime;
+
 
 if ( !defined('ABSPATH')) {
     return;
@@ -25,17 +27,24 @@ class BookingManager implements BookingManagerInterface
      */
     private ORMInterface $repository;
 
-    public function __construct(ORMInterface $repository)
+    /**
+     * @var SettingsManagerInterface
+     */
+    private SettingsManagerInterface $settingsManager;
+
+    public function __construct(ORMInterface $repository, SettingsManagerInterface $settingsManager)
     {
         $this->repository = $repository;
+        $this->settingsManager = $settingsManager;
+
+        $this->cleanExpiredReservedBookings();
     }
 
     /**
      * @param Booking $booking
      *
      * @return int
-     * @throws OptimisticLockException
-     * @throws ORMException
+     * @throws Throwable
      */
     public function saveBooking(Booking $booking): int
     {
@@ -94,10 +103,40 @@ class BookingManager implements BookingManagerInterface
                 return $booking;
             }
         } catch (Exception $e) {
-            var_dump($e);
+            var_dump($e->getMessage());
         }
 
         return null;
+    }
+
+    /**
+     *
+     * @return void
+     */
+    public function cleanExpiredReservedBookings()
+    {
+        try {
+            $dateTime   = new ExtendedDateTime();
+            $expiryTime = $this->settingsManager->getValue(ExpiryTime::class);
+            $dateTime->setMinute($dateTime->getMinute() - $expiryTime);
+            $thresholdTsamp = $dateTime->getTimestamp();
+
+            $mgr          = $this->repository->getEntityManager();
+            $queryBuilder = $mgr->createQueryBuilder();
+            $queryBuilder->select("b")->from("\TLBM\Entity\Booking", "b")->where("b.tstampCreated < :tstamp AND b.internalState = :state")->setParameter("tstamp", $thresholdTsamp)->setParameter("state", TLBM_BOOKING_INTERNAL_STATE_RESERVED);
+
+            $result = $queryBuilder->getQuery()->getResult();
+            foreach ($result as $r) {
+                $mgr->remove($r);
+            }
+
+            $mgr->flush();
+
+        } catch (Throwable $exception) {
+            if(WP_DEBUG) {
+                var_dump($exception->getMessage());
+            }
+        }
     }
 
     /**

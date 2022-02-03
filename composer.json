@@ -15,7 +15,7 @@
   "require": {
     "php": "7.4",
     "ext-json": "*",
-    "doctrine/orm": "2.10",
+    "doctrine/orm": "^2.11",
     "symfony/cache": "^5.3",
     "doctrine/annotations": "^1.13",
     "php-di/php-di": "^6.3"

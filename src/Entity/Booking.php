@@ -6,6 +6,9 @@ namespace TLBM\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
+const BOOKING_INTERNAL_STATE_RESERVED = "RESERVED";
+const BOOKING_INTERNAL_STATE_COMPLETED = "COMPLETED";
+
 /**
  * Class Calendar
  * @package TLBM\Entity
@@ -19,15 +22,21 @@ class Booking
 
     /**
      * @var ArrayCollection
-     * @Doctrine\ORM\Mapping\OneToMany(targetEntity=BookingValue::class, mappedBy="booking", orphanRemoval=true)
+     * @Doctrine\ORM\Mapping\OneToMany(targetEntity=BookingValue::class, mappedBy="booking", orphanRemoval=true, cascade={"all"})
      */
     protected Collection $bookingValues;
 
     /**
      * @var ArrayCollection
-     * @Doctrine\ORM\Mapping\OneToMany(targetEntity=CalendarSlot::class, mappedBy="booking", orphanRemoval=true)
+     * @Doctrine\ORM\Mapping\OneToMany(targetEntity=CalendarBooking::class, mappedBy="booking", orphanRemoval=true, cascade={"all"})
      */
-    protected Collection $calendarSlots;
+    protected Collection $calendarBookings;
+
+    /**
+     * @var ?Form
+     * @Doctrine\ORM\Mapping\ManyToOne (targetEntity=Form::class)
+     */
+    protected ?Form $form;
 
     /**
      * @var int
@@ -39,23 +48,30 @@ class Booking
      * @var string
      * @Doctrine\ORM\Mapping\Column(type="string", nullable=false)
      */
-    protected string $state;
+    protected string $internalState = BOOKING_INTERNAL_STATE_RESERVED;
+
+    /**
+     * @var string
+     * @Doctrine\ORM\Mapping\Column(type="string", nullable=false)
+     */
+    protected string $state = "New";
 
     public function __construct()
     {
-        $this->bookingValues = new ArrayCollection();
-        $this->calendarSlots = new ArrayCollection();
+        $this->bookingValues    = new ArrayCollection();
+        $this->calendarBookings = new ArrayCollection();
+        $this->tstampCreated = time();
     }
 
     /**
-     * @param CalendarSlot $calendar_slot
+     * @param CalendarBooking $calendar_slot
      *
-     * @return CalendarSlot
+     * @return CalendarBooking
      */
-    public function addCalendarSlot(CalendarSlot $calendar_slot): CalendarSlot
+    public function addCalendarBooking(CalendarBooking $calendar_slot): CalendarBooking
     {
-        if ( !$this->calendarSlots->contains($calendar_slot)) {
-            $this->calendarSlots[] = $calendar_slot;
+        if ( !$this->calendarBookings->contains($calendar_slot)) {
+            $this->calendarBookings[] = $calendar_slot;
             $calendar_slot->setBooking($this);
         }
 
@@ -63,25 +79,25 @@ class Booking
     }
 
     /**
-     * @param CalendarSlot $calendar_slot
+     * @param CalendarBooking $calendar_slot
      *
-     * @return CalendarSlot
+     * @return CalendarBooking
      */
-    public function removeCalendarSlot(CalendarSlot $calendar_slot): CalendarSlot
+    public function removeCalendarBooking(CalendarBooking $calendar_slot): CalendarBooking
     {
-        if ($this->calendarSlots->contains($calendar_slot)) {
-            $this->calendarSlots->removeElement($calendar_slot);
+        if ($this->calendarBookings->contains($calendar_slot)) {
+            $this->calendarBookings->removeElement($calendar_slot);
         }
 
         return $calendar_slot;
     }
 
     /**
-     * @return ArrayCollection|CalendarSlot[]
+     * @return ArrayCollection|CalendarBooking[]
      */
-    public function getCalendarSlots(): ArrayCollection
+    public function getCalendarBookings(): ArrayCollection
     {
-        return $this->calendarSlots;
+        return $this->calendarBookings;
     }
 
     /**
@@ -119,5 +135,53 @@ class Booking
     public function getBookingValues()
     {
         return $this->getBookingValues();
+    }
+
+    /**
+     * @return string
+     */
+    public function getInternalState(): string
+    {
+        return $this->internalState;
+    }
+
+    /**
+     * @param string $internalState
+     */
+    public function setInternalState(string $internalState): void
+    {
+        $this->internalState = $internalState;
+    }
+
+    /**
+     * @return string
+     */
+    public function getState(): string
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param string $state
+     */
+    public function setState(string $state): void
+    {
+        $this->state = $state;
+    }
+
+    /**
+     * @return ?Form
+     */
+    public function getForm(): ?Form
+    {
+        return $this->form;
+    }
+
+    /**
+     * @param ?Form $form
+     */
+    public function setForm(?Form $form): void
+    {
+        $this->form = $form;
     }
 }

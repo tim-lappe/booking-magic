@@ -43,32 +43,34 @@ class FormPrint implements FormPrintInterface
     public function printForm(int $formId, $inputVars = null): string
     {
         $form = $this->formManager->getForm($formId);
-        $html = $this->frontendMessenger->getContent();
+        if($form != null) {
+            $html = $this->frontendMessenger->getContent();
 
-        $formWalker = FormDataWalker::createFromData($form->getFormData());
-        $contentWalker = new RecursiveFormContentWalker($inputVars);
-        $result = $formWalker->walkCallback($contentWalker);
+            $formWalker    = FormDataWalker::createFromData($form->getFormData());
+            $contentWalker = new RecursiveFormContentWalker($inputVars);
+            $result        = $formWalker->walkCallback($contentWalker);
 
-        if ($form instanceof Form) {
-            $html .= "<form class='tlbm-frontend-form' action='" . $_SERVER['REQUEST_URI'] . "' method='post'>";
-            $html .= $result;
-            $html .= "<input type='hidden' name='form' value='" . $form->getId() . "'>";
+            if ($form instanceof Form) {
+                $html .= "<form class='tlbm-frontend-form' action='" . $_SERVER['REQUEST_URI'] . "' method='post'>";
+                $html .= $result;
+                $html .= "<input type='hidden' name='form' value='" . $form->getId() . "'>";
 
-            if (get_option("single_page_booking") == "on") {
-                $html .= "<input type='hidden' name='tlbm_action' value='dobooking'>";
-                $html .= wp_nonce_field("dobooking_action", "_wpnonce", true, false);
-                $html .= "<button class='tlbm-form-submit-button'>" . __("Book now", TLBM_TEXT_DOMAIN) . "</button>";
-            } else {
-                $html .= "<input type='hidden' name='tlbm_action' value='showbookingoverview'>";
-                $html .= wp_nonce_field("showbookingoverview_action", "_wpnonce", true, false);
-                $html .= "<button class='tlbm-form-submit-button'>" . __("Continue", TLBM_TEXT_DOMAIN) . "</button>";
+                if (get_option("single_page_booking") == "on") {
+                    $html .= "<input type='hidden' name='tlbm_action' value='dobooking'>";
+                    $html .= wp_nonce_field("dobooking_action", "_wpnonce", true, false);
+                    $html .= "<button class='tlbm-form-submit-button'>" . __("Book now", TLBM_TEXT_DOMAIN) . "</button>";
+                } else {
+                    $html .= "<input type='hidden' name='tlbm_action' value='showbookingoverview'>";
+                    $html .= wp_nonce_field("showbookingoverview_action", "_wpnonce", true, false);
+                    $html .= "<button class='tlbm-form-submit-button'>" . __("Continue", TLBM_TEXT_DOMAIN) . "</button>";
+                }
+
+                $html .= "</form>";
+
+                return $html;
             }
-
-            $html .= "</form>";
-
-            return $html;
         }
 
-        return "";
+        return sprintf(__("<p><b>Unknown Form-Id: %s</b></p>", TLBM_TEXT_DOMAIN), $formId);
     }
 }

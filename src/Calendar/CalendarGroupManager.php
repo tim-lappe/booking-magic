@@ -50,7 +50,7 @@ class CalendarGroupManager implements CalendarGroupManagerInterface
                 return $calendarGroup;
             }
         } catch (Exception $e) {
-            var_dump($e);
+            var_dump($e->getMessage());
         }
 
         return null;

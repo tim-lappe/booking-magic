@@ -2,6 +2,7 @@
 
 namespace TLBM\Rules\Actions\Merging\Merger;
 
+use TLBM\MainFactory;
 use TLBM\Rules\Actions\ActionData\CapacityActionData;
 use TLBM\Rules\Actions\Merging\CapacityMergeHelper;
 use TLBM\Rules\Actions\Merging\Contracts\MergeResultInterface;
@@ -17,7 +18,7 @@ class DateCapacityMerger extends Merger
     public function merge(?MergeResultInterface $mergeResult = null): ?CapacityResult
     {
         if($mergeResult == null) {
-            $mergeResult = new CapacityResult();
+            $mergeResult = MainFactory::create(CapacityResult::class);
         }
 
         if($mergeResult instanceof CapacityResult) {
@@ -31,7 +32,7 @@ class DateCapacityMerger extends Merger
             return $mergeResult;
         }
 
-        return new CapacityResult();
+        return MainFactory::create(CapacityResult::class);
     }
 
     /**

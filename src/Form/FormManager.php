@@ -43,7 +43,7 @@ class FormManager implements FormManagerInterface
                 return $form;
             }
         } catch (Exception $e) {
-            var_dump($e);
+            var_dump($e->getMessage());
         }
 
         return null;

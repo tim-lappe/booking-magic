@@ -38,6 +38,7 @@ use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SettingsManager;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\DefaultBookingState;
+use TLBM\Admin\Settings\SingleSettings\BookingProcess\ExpiryTime;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\SinglePageBooking;
 use TLBM\Admin\Settings\SingleSettings\Emails\EmailBookingConfirmation;
 use TLBM\Admin\Settings\SingleSettings\General\AdminMail;
@@ -51,7 +52,9 @@ use TLBM\Ajax\Contracts\AjaxManagerInterface;
 use TLBM\Ajax\GetMergedActions;
 use TLBM\Ajax\PingPong;
 use TLBM\Booking\BookingManager;
+use TLBM\Booking\CalendarBookingManager;
 use TLBM\Booking\Contracts\BookingManagerInterface;
+use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
 use TLBM\Calendar\CalendarGroupManager;
 use TLBM\Calendar\CalendarManager;
 use TLBM\Calendar\CalendarSelectionHandler;
@@ -72,18 +75,18 @@ use TLBM\Output\Contracts\FormPrintInterface;
 use TLBM\Output\Contracts\FrontendMessengerInterface;
 use TLBM\Output\FormPrint;
 use TLBM\Output\FrontendMessenger;
+use TLBM\Request\CompleteBookingRequest;
 use TLBM\Request\Contracts\RequestManagerInterface;
-use TLBM\Request\DoBookingRequest;
 use TLBM\Request\RequestManager;
 use TLBM\Request\ShowBookingOverview;
 use TLBM\Rules\Actions\DateSlotActionHandler;
-use TLBM\Rules\Actions\DateTimeSlotActionMerge;
-use TLBM\Rules\Actions\DateTimeTimeSlotActionMerge;
 use TLBM\Rules\Actions\MessageActionHandler;
 use TLBM\Rules\Actions\RuleActionsManager;
 use TLBM\Rules\Contracts\RuleActionsManagerInterface;
+use TLBM\Rules\Contracts\RulesCapacityManagerInterface;
 use TLBM\Rules\Contracts\RulesManagerInterface;
 use TLBM\Rules\Contracts\RulesQueryInterface;
+use TLBM\Rules\RulesCapacityManager;
 use TLBM\Rules\RulesManager;
 use TLBM\Rules\RulesQuery;
 use TLBM\Utilities\Colors;
@@ -127,7 +130,9 @@ return [
     FormPrintInterface::class                => autowire(FormPrint::class),
     FormBuilderInterface::class              => autowire(FormBuilder::class),
     RulesQueryInterface::class               => autowire(RulesQuery::class),
-    FrontendMessengerInterface::class => autowire(FrontendMessenger::class),
+    FrontendMessengerInterface::class        => autowire(FrontendMessenger::class),
+    RulesCapacityManagerInterface::class     => autowire(RulesCapacityManager::class),
+    CalendarBookingManagerInterface::class => autowire(CalendarBookingManager::class),
 
     CalendarEntityValidatorInterface::class    => autowire(CalendarEntityValidator::class),
     RulesActionEntityValidatorInterface::class => autowire(RulesActionEntityValidator::class),
@@ -212,7 +217,7 @@ return [
     RequestManagerInterface::class             => factory(function (ContainerInterface $container) {
         $requestManager = $container->get(RequestManager::class);
         if ($requestManager instanceof RequestManagerInterface) {
-            $requestManager->registerEndpoint($container->get(DoBookingRequest::class));
+            $requestManager->registerEndpoint($container->get(CompleteBookingRequest::class));
             $requestManager->registerEndpoint($container->get(ShowBookingOverview::class));
             $requestManager->beforeInit();
         }
@@ -261,6 +266,7 @@ return [
             $settingsManager->registerSetting($container->get(SinglePageBooking::class));
             $settingsManager->registerSetting($container->get(BookingStates::class));
             $settingsManager->registerSetting($container->get(DefaultBookingState::class));
+            $settingsManager->registerSetting($container->get(ExpiryTime::class));
 
             /**
              * E-Mails

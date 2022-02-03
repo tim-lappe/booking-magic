@@ -86,13 +86,12 @@ class ORMManager implements ORMInterface
 
     /**
      * @return void
-     * @throws ToolsException
      */
     public function buildSchema(): void
     {
         $mgr    = $this->entityManager;
         $schema = new SchemaTool($mgr);
-        $schema->createSchema($mgr->getMetadataFactory()->getAllMetadata());
+        $schema->updateSchema($mgr->getMetadataFactory()->getAllMetadata(), true);
     }
 
     /**

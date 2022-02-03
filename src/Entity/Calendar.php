@@ -31,7 +31,7 @@ class Calendar
 
     /**
      * @var Collection|CalendarSelection[]
-     * @Doctrine\ORM\Mapping\ManyToMany(targetEntity=CalendarSelection::class)
+     * @Doctrine\ORM\Mapping\ManyToMany(targetEntity=CalendarSelection::class, orphanRemoval=true, cascade={"all"})
      */
     protected Collection $calendarSelections;
 

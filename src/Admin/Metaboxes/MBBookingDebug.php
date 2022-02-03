@@ -36,8 +36,5 @@ class MBBookingDebug extends MetaBoxBase
     public function PrintMetaBox(WP_Post $post)
     {
         $booking = BookingManager::GetBooking($post->ID);
-        echo "<pre>";
-        var_dump($booking);
-        echo "</pre>";
     }
 }
