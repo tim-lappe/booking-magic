@@ -62,7 +62,7 @@ class RulesManager implements RulesManagerInterface
                 return $rule;
             }
         } catch (Exception $e) {
-            var_dump($e);
+            var_dump($e->getMessage());
         }
 
         return null;

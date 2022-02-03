@@ -44,7 +44,7 @@ class BookingsPage extends PageBase
 
                     } catch (Exception $exception) {
                         if(WP_DEBUG) {
-                            var_dump($exception);
+                            var_dump($exception->getMessage());
                         }
                     }
                     ?>

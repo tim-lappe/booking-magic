@@ -15,7 +15,7 @@ if ( !defined('ABSPATH')) {
 }
 
 
-class DoBookingRequest extends RequestBase
+class CompleteBookingRequest extends RequestBase
 {
     public bool $booking_successed = false;
     public bool $error = false;

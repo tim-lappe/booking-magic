@@ -79,4 +79,20 @@ class ActionsMerging
             yield $timedRule->getTimedActions();
         }
     }
+
+    /**
+     * @return RulesQuery
+     */
+    public function getRulesQuery()
+    {
+        return $this->rulesQuery;
+    }
+
+    /**
+     * @param RulesQuery $rulesQuery
+     */
+    public function setRulesQuery(RulesQuery $rulesQuery): void
+    {
+        $this->rulesQuery = $rulesQuery;
+    }
 }

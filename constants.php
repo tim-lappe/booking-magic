@@ -22,8 +22,10 @@ const TLBM_ADMIN_JS_SLUG = "tlbm-script-admin";
 
 const TLBM_TEXT_DOMAIN = "tl-booking-calendar";
 const TLBM_SHORTCODETAG_FORM = "booking_magic_form";
-const TLBM_DELETE_DATA_ON_DEACTIVATION = true;
+const TLBM_DELETE_DATA_ON_DEACTIVATION = false;
 
+const TLBM_BOOKING_INTERNAL_STATE_RESERVED = "RESERVED";
+const TLBM_BOOKING_INTERNAL_STATE_COMPLETED = "COMPLETED";
 
 if(!defined("WP_PLUGIN_DIR")) {
     define("WP_PLUGIN_DIR", "");

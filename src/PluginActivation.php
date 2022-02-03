@@ -26,6 +26,8 @@ class PluginActivation
     }
 
     public function onDeactivation() {
-        $this->repository->dropSchema();
+        if(TLBM_DELETE_DATA_ON_DEACTIVATION) {
+            $this->repository->dropSchema();
+        }
     }
 }

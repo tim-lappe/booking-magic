@@ -60,7 +60,7 @@ class CalendarManager implements CalendarManagerInterface
                 return $calendar;
             }
         } catch (Exception $e) {
-            var_dump($e);
+            var_dump($e->getMessage());
         }
 
         return null;
