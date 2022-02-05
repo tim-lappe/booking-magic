@@ -23,14 +23,14 @@ class BookingEditPage extends FormPageBase
 
     public function showFormPageContent()
     {
-
+        //TODO: Implement Booking Edit Seite
     }
 
     public function onSave($vars): array
     {
+        //TODO Implement OnSave von Booking Edit Seite
         return [];
     }
-
 
     /**
      * @param int $bookingId

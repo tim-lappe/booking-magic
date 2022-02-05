@@ -3,42 +3,11 @@
 
 namespace TLBM\Output\Calendar;
 
-
-use TLBM\Model\CalendarGroup;
-use TLBM\Output\Calendar\Printers\CalendarDateSelectPrinter;
-use TLBM\Output\Calendar\Printers\CalendarNoPrinter;
-use TLBM\Output\Calendar\Printers\CalendarPrinterBase;
 use TLBM\Output\Calendar\ViewSettings\SettingsCollection;
 use TLBM\Utilities\ExtendedDateTime;
 
 class CalendarOutput
 {
-
-    /**
-     * @var CalendarPrinterBase[]
-     */
-    private static array $calendarPrinters = array();
-
-    public static function RegisterCalendarPrinters()
-    {
-        self::$calendarPrinters[] = new CalendarDateSelectPrinter();
-    }
-
-    /**
-     * @param CalendarGroup $group
-     *
-     * @return CalendarPrinterBase
-     */
-    public static function GetCalendarPrinterForCalendarGroup(CalendarGroup $group): CalendarPrinterBase
-    {
-        foreach (self::$calendarPrinters as $calendarPrinter) {
-            if ($calendarPrinter->CanPrintGroup($group)) {
-                return $calendarPrinter;
-            }
-        }
-
-        return new CalendarNoPrinter();
-    }
 
     /**
      * @param int|null $calendarId

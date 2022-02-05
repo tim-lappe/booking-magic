@@ -6,6 +6,8 @@ namespace TLBM\Admin\Settings\SingleSettings\BookingProcess;
 
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
 
+//TODO: Booking States Setting neu schreiben
+
 class BookingStates extends SettingsBase
 {
 

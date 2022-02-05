@@ -14,7 +14,6 @@ use TLBM\Repository\Contracts\BookingRepositoryInterface;
 use TLBM\Repository\Contracts\ORMInterface;
 use TLBM\Utilities\ExtendedDateTime;
 
-use const TLBM\Booking\WP_DEBUG;
 use const TLBM_BOOKING_INTERNAL_STATE_PENDING;
 
 

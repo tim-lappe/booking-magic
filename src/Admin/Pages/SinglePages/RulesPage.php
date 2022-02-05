@@ -5,27 +5,13 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 
 use TLBM\Admin\Tables\RulesListTable;
-use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\MainFactory;
-use TLBM\Repository\Contracts\RulesRepositoryInterface;
 
 class RulesPage extends PageBase
 {
-    /**
-     * @var RulesRepositoryInterface
-     */
-    private RulesRepositoryInterface $rulesManager;
-
-    /**
-     * @var CalendarRepositoryInterface
-     */
-    private CalendarRepositoryInterface $calendarManager;
-
-    public function __construct(RulesRepositoryInterface $rulesManager, CalendarRepositoryInterface $calendarManager)
+    public function __construct()
     {
         parent::__construct(__("Rules", TLBM_TEXT_DOMAIN), "booking-magic-rules");
-        $this->rulesManager    = $rulesManager;
-        $this->calendarManager = $calendarManager;
         $this->parent_slug     = "booking-magic";
     }
 
@@ -39,11 +25,6 @@ class RulesPage extends PageBase
         <?php
     }
 
-
-    /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     */
     public function displayPageBody()
     {
         ?>
