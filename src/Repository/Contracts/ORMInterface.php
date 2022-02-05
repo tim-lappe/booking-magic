@@ -1,6 +1,6 @@
 <?php
 
-namespace TLBM\Database\Contracts;
+namespace TLBM\Repository\Contracts;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\EntityManager;

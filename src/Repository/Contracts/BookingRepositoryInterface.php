@@ -1,12 +1,12 @@
 <?php
 
-namespace TLBM\Booking\Contracts;
+namespace TLBM\Repository\Contracts;
 
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use TLBM\Entity\Booking;
 
-interface BookingManagerInterface
+interface BookingRepositoryInterface
 {
     /**
      * @param Booking $booking
@@ -39,4 +39,10 @@ interface BookingManagerInterface
      * @return int
      */
     public function getAllBookingsCount(): int;
+
+    /**
+     *
+     * @return void
+     */
+    public function cleanExpiredReservedBookings();
 }

@@ -6,10 +6,10 @@ interface MailSenderInterface
 {
     /**
      * @param string $to
-     * @param string $email_option_name
+     * @param string $emailSetting
      * @param array $vars
      *
      * @return mixed
      */
-    public function sendTemplate(string $to, string $email_option_name, array $vars = array());
+    public function sendTemplate(string $to, string $emailSetting, array $vars = array());
 }

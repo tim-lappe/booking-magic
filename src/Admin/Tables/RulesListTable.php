@@ -4,162 +4,164 @@
 namespace TLBM\Admin\Tables;
 
 
-use TLBM\Calendar\Contracts\CalendarManagerInterface;
-use TLBM\Entity\Rule;
-use TLBM\Rules\Contracts\RulesManagerInterface;
-use WP_List_Table;
+use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
+use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
+use TLBM\Admin\Pages\SinglePages\RuleEditPage;
+use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
+use TLBM\Admin\Settings\SingleSettings\Rules\PriorityLevels;
+use TLBM\Admin\Tables\DisplayHelper\DisplayCalendarSelection;
+use TLBM\Admin\Tables\DisplayHelper\DisplayPeriods;
+use TLBM\MainFactory;
+use TLBM\Repository\Contracts\RulesRepositoryInterface;
+use TLBM\Repository\Query\RulesQuery;
 
-if ( !defined('ABSPATH')) {
-    return;
-}
-
-if ( !class_exists("\WP_Posts_List_Table")) {
-    require_once(ABSPATH . 'wp-admin/includes/class-wp-posts-list-table.php');
-}
-
-class RulesListTable extends WP_List_Table
+class RulesListTable extends TableBase
 {
 
     /**
-     * @var bool|mixed
+     * @var RulesRepositoryInterface
      */
-    public $specificCalendarId = false;
+    private RulesRepositoryInterface $rulesManager;
 
     /**
-     * @var RulesManagerInterface
+     * @var AdminPageManagerInterface
      */
-    private RulesManagerInterface $rulesManager;
+    private AdminPageManagerInterface $adminPageManager;
 
     /**
-     * @var CalendarManagerInterface
+     * @var SettingsManagerInterface
      */
-    private CalendarManagerInterface $calendarManager;
+    private SettingsManagerInterface $settingsManager;
 
-    public function __construct(
-        RulesManagerInterface $rulesManager,
-        CalendarManagerInterface $calendarManager,
-        $specificCalendarId = false
-    ) {
-        $this->specificCalendarId = $specificCalendarId;
-        $this->rulesManager       = $rulesManager;
-        $this->calendarManager      = $calendarManager;
+    public function __construct(RulesRepositoryInterface $rulesManager, AdminPageManagerInterface $adminPageManager, SettingsManagerInterface $settingsManager)
+    {
+        $this->rulesManager     = $rulesManager;
+        $this->adminPageManager = $adminPageManager;
+        $this->settingsManager = $settingsManager;
 
-        parent::__construct(array(
-                                "plural"   => __("Rules", TLBM_TEXT_DOMAIN),
-                                "singular" => __("Rule", TLBM_TEXT_DOMAIN),
-                                "screen"   => null
-                            ));
+        parent::__construct(
+            __("Rules", TLBM_TEXT_DOMAIN), __("Rule", TLBM_TEXT_DOMAIN), 10, __("You haven't created any rules yet", TLBM_TEXT_DOMAIN)
+        );
     }
 
     /**
      * @SuppressWarnings(PHPMD)
-     *
      * @return void
      */
-    public function prepare_items()
+    protected function processBuldActions()
     {
-        $orderby = $_REQUEST['orderby'] ?? "priority";
-        $order   = $_REQUEST['order'] ?? "desc";
+        //TODO: Bulk Actions für Rules Tabelle implementieren
 
-        $this->_column_headers = array($this->get_columns(), array(), $this->get_sortable_columns());
-
-        if ( !$this->specificCalendarId) {
-            $this->items = $this->rulesManager->getAllRules(array(), $orderby, $order);
-        } else {
-            $this->items = $this->rulesManager->getAllRulesForCalendar(
-                $this->specificCalendarId, array(), $orderby, $order
-            );
-        }
-
-        $this->set_pagination_args(array(
-                                       'total_items' => sizeof($this->items),
-                                       'per_page'    => 10
-                                   ));
     }
 
     /**
-     * @SuppressWarnings(PHPMD)
+     * @param string $orderby
+     * @param string $order
+     * @param int $page
      *
      * @return array
      */
-    public function get_columns(): array
+    protected function getItems(string $orderby, string $order, int $page): array
+    {
+        $rulesQuery = MainFactory::create(RulesQuery::class);
+
+        if($orderby == "title") {
+            $rulesQuery->setOrderBy([[TLBM_RULE_QUERY_ALIAS . ".title", $order]]);
+        } elseif ($orderby == "priority") {
+            $rulesQuery->setOrderBy([[TLBM_RULE_QUERY_ALIAS . ".priority", $order]]);
+        } else {
+            $rulesQuery->setOrderBy([[TLBM_RULE_QUERY_ALIAS . ".priority", "desc"]]);
+        }
+
+        return iterator_to_array($rulesQuery->getResult());
+    }
+
+    /**
+     * @return array
+     */
+    protected function getViews(): array
     {
         return array(
-            'title'     => __('Title', TLBM_TEXT_DOMAIN),
-            'calendars' => __('Calendars', TLBM_TEXT_DOMAIN),
-            'priority'  => __('Priority', TLBM_TEXT_DOMAIN),
+            "all"     => __("All", TLBM_TEXT_DOMAIN),
+            "trashed" => __("Trash", TLBM_TEXT_DOMAIN)
         );
     }
 
     /**
-     * @SuppressWarnings(PHPMD)
-     *
-     * @return array[]
+     * @return array
      */
-    public function get_sortable_columns(): array
+    protected function getColumns(): array
     {
-        return array(
-            'title'    => array('title', true),
-            'priority' => array('priority', true)
-        );
+        return [
+            $this->getCheckboxColumn(function ($item) {
+                return $item->getId();
+            }),
+            new Column("title", __("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
+                $ruleEditPage = $this->adminPageManager->getPage(RuleEditPage::class);
+                if ($ruleEditPage instanceof RuleEditPage) {
+                    $link = $ruleEditPage->getEditLink($item->getId());
+                    if ( !empty($item->getTitle())) {
+                        echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
+                    } else {
+                        echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
+                    }
+                }
+            }),
+            new Column("calendars", __("Calendars", TLBM_TEXT_DOMAIN), false, function ($item) {
+                $calendarEditPage = $this->adminPageManager->getPage(CalendarEditPage::class);
+                $selection = $item->getCalendarSelection();
+                $selectionDisplay = MainFactory::create(DisplayCalendarSelection::class);
+                $selectionDisplay->setCalendarSelection($selection);
+                $selectionDisplay->display();
+
+            }),
+            new Column("priority", __("Priority", TLBM_TEXT_DOMAIN), true, function ($item) {
+                $levels = $this->settingsManager->getValue(PriorityLevels::class);
+                echo $levels[$item->getPriority()];
+
+            }),
+            new Column("periods", __("Periods", TLBM_TEXT_DOMAIN), false, function ($item) {
+                $periods = $item->getPeriods();
+                $periodsDisplay = MainFactory::create(DisplayPeriods::class);
+                $periodsDisplay->setRulePeriods($periods);
+                $periodsDisplay->display();
+            }),
+        ];
     }
 
     /**
      * @SuppressWarnings(PHPMD)
-     * @param Rule|object $item
-     * @param string $column_name
+     * @return array
      */
-    public function column_default($item, $column_name)
+    protected function getBulkActions(): array
     {
-        echo $item->{$column_name};
-    }
-
-    /**
-     * @SuppressWarnings(PHPMD)
-     * @param Rule $item
-     */
-    public function column_calendars(Rule $item)
-    {
-        $selection = $item->getCalendarSelection();
-        if ($selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
-            echo __("All", TLBM_TEXT_DOMAIN);
-        } elseif ($selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
-            foreach ($selection->getCalendarIds() as $key => $id) {
-                $cal = $this->calendarManager->getCalendar($id);
-                if ($key > 0) {
-                    echo ", ";
-                }
-                echo $cal->getTitle();
-            }
-        } elseif ($selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
-            echo __("All but ", TLBM_TEXT_DOMAIN);
-            foreach ($selection->getCalendarIds() as $key => $id) {
-                $cal = $this->calendarManager->getCalendar($id);
-                if ($key > 0) {
-                    echo ", ";
-                }
-                echo "<s>" . $cal->getTitle() . "</s>";
-            }
+        if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
+            return array(
+                'delete_permanently' => __('Delete permanently', TLBM_TEXT_DOMAIN),
+                'restore'            => __('Restore', TLBM_TEXT_DOMAIN)
+            );
+        } else {
+            return array(
+                'delete' => __('Move to trash', TLBM_TEXT_DOMAIN)
+            );
         }
     }
 
     /**
-     * @param Rule $item
-     * @SuppressWarnings(PHPMD)
+     * @return int
      */
-    public function column_title(Rule $item)
+    protected function getTotalItemsCount(): int
     {
-        $link = get_edit_post_link($item->getId());
-        echo "<strong><a href='" . $link . "'>" . $item->title . "</a></strong>";
+        return $this->rulesManager->getAllRulesCount();
     }
 
     /**
-     * @param mixed $which
-     * @SuppressWarnings(PHPMD)
+     * @param string $which
+     *
      * @return void
      */
-    protected function display_tablenav($which)
+    protected function tableNav(string $which): void
     {
-
+        // TODO: Implement tableNav() method.
     }
 }

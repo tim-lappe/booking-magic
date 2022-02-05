@@ -5,8 +5,17 @@ namespace TLBM\Admin\Tables;
 
 use WP_List_Table;
 
+/**
+ * @template T
+ *
+ */
 abstract class TableBase extends WP_List_Table
 {
+
+    /**
+     * @var bool
+     */
+    public bool $slim = false;
 
     /**
      * @var int
@@ -17,6 +26,11 @@ abstract class TableBase extends WP_List_Table
      * @var string
      */
     public string $noItemsDisplay = "";
+
+    /**
+     * @var Column[]
+     */
+    protected array $columns = [];
 
     public function __construct($titlePlural, $titleSingular, $itemsPerPage = 10, $noItemsDisplay = "")
     {
@@ -33,6 +47,19 @@ abstract class TableBase extends WP_List_Table
 
         $this->noItemsDisplay = $noItemsDisplay;
         $this->itemsPerPage   = $itemsPerPage;
+
+        $this->columns = $this->getColumns();
+    }
+
+    /**
+     * @param callable $getIdCallback
+     *
+     * @return Column
+     */
+    protected function getCheckboxColumn(callable $getIdCallback): Column {
+        return new Column("cb", "<input type='checkbox' />", false, function ($item) use ($getIdCallback) {
+            echo '<input type="checkbox" name="ids[]" value="' . call_user_func($getIdCallback, $item) . '" />';
+        });
     }
 
     /**
@@ -44,11 +71,17 @@ abstract class TableBase extends WP_List_Table
     {
         $orderby = $_REQUEST['orderby'] ?? "id";
         $order   = $_REQUEST['order'] ?? "desc";
+        $page    = $_REQUEST['page'] ?? 0;
+        $page    = intval($page);
+
+        if(!in_array($order, ["asc", "desc"])) {
+            $order = "";
+        }
 
         $this->process_bulk_action();
 
         $this->_column_headers = array($this->get_columns(), array(), $this->get_sortable_columns());
-        $this->items           = $this->getItems($orderby, $order);
+        $this->items           = $this->getItems($orderby, $order, $page);
         $total                 = $this->getTotalItemsCount();
 
         $this->set_pagination_args(array(
@@ -57,6 +90,7 @@ abstract class TableBase extends WP_List_Table
                                        'total_pages' => ceil($total / $this->itemsPerPage)
                                    ));
     }
+
 
     /**
      * @SuppressWarnings(PHPMD)
@@ -81,13 +115,49 @@ abstract class TableBase extends WP_List_Table
      * @SuppressWarnings(PHPMD)
      * @return array
      */
-    public function get_columns(): array
+    final public function get_columns(): array
     {
-        return $this->getColumns();
+        $columns = [];
+        foreach ($this->columns as $column) {
+            $columns[$column->getName()] = $column->getTitle();
+        }
+
+        return $columns;
+    }
+
+
+    /**
+     * @param mixed $which
+     * @SuppressWarnings(PHPMD)
+     * @return void
+     */
+    final public function display_tablenav($which)
+    {
+        if ( !$this->slim && $this->getTotalItemsCount() > 0) {
+            parent::display_tablenav($which);
+        }
+    }
+
+
+    /**
+     * @param mixed $which
+     *
+     * @return void
+     */
+    final public function extra_tablenav($which): void
+    {
+        $this->tableNav((string)$which);
     }
 
     /**
-     * @return array
+     * @param string $which
+     *
+     * @return void
+     */
+    abstract protected function tableNav(string $which): void;
+
+    /**
+     * @return Column[]
      */
     abstract protected function getColumns(): array;
 
@@ -95,23 +165,26 @@ abstract class TableBase extends WP_List_Table
      * @SuppressWarnings(PHPMD)
      * @return array
      */
-    public function get_sortable_columns(): array
+    final public function get_sortable_columns(): array
     {
-        return $this->getSortableColumns();
-    }
+        $sortableArr = [];
+        foreach ($this->columns as $column) {
+            if($column->isSortable()) {
+                $sortableArr[$column->getName()] = [$column->getName(), true];
+            }
+        }
 
-    /**
-     * @return array
-     */
-    abstract protected function getSortableColumns(): array;
+        return $sortableArr;
+    }
 
     /**
      * @param string $orderby
      * @param string $order
+     * @param int $page
      *
      * @return array
      */
-    abstract protected function getItems(string $orderby, string $order): array;
+    abstract protected function getItems(string $orderby, string $order, int $page): array;
 
     /**
      * @return int
@@ -132,32 +205,34 @@ abstract class TableBase extends WP_List_Table
      */
     abstract protected function getBulkActions(): array;
 
-    /**
-     * @param mixed $item
-     * @SuppressWarnings(PHPMD)
-     * @return string
-     */
-    public function column_cb($item): string
-    {
-        return '<input type="checkbox" name="wp_post_ids[]" value="' . $this->getItemId($item) . '" />';
-    }
-
-    /**
-     * @param mixed $item
-     *
-     * @return int
-     */
-    abstract protected function getItemId($item): int;
 
     /**
      * @SuppressWarnings(PHPMD)
-     * @param object $item
+     * @param T $item
      * @param string $column_name
      */
     public function column_default($item, $column_name)
     {
-        echo $item->{$column_name};
+        foreach ($this->columns as $column) {
+            if($column->getName() == $column_name) {
+                call_user_func($column->getDisplay(), $item);
+            }
+        }
     }
+
+    /**
+     * @SuppressWarnings(PHPMD)
+     * @param T $item
+     */
+    public function column_cb($item)
+    {
+        foreach ($this->columns as $column) {
+            if($column->getName() == "cb") {
+                call_user_func($column->getDisplay(), $item);
+            }
+        }
+    }
+
 
     /**
      * @return void
@@ -179,22 +254,9 @@ abstract class TableBase extends WP_List_Table
         } else {
             ?>
             <div class="tlbm-admin-empty-table">
-                <span class="tlbm-text-big-light"><?php
-                    echo $this->noItemsDisplay ?></span>
+                <span class="tlbm-text-big-light"><?php echo $this->noItemsDisplay ?></span>
             </div>
             <?php
-        }
-    }
-
-    /**
-     * @param mixed $which
-     * @SuppressWarnings(PHPMD)
-     * @return void
-     */
-    public function display_tablenav($which)
-    {
-        if ($this->getTotalItemsCount() > 0) {
-            parent::display_tablenav($which);
         }
     }
 

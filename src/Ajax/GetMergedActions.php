@@ -4,11 +4,11 @@ namespace TLBM\Ajax;
 
 use TLBM\Ajax\Contracts\AjaxFunctionInterface;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
-use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\MainFactory;
-use TLBM\Rules\Contracts\RuleActionsManagerInterface;
-use TLBM\Rules\Contracts\RulesQueryInterface;
+use TLBM\Repository\Query\Contracts\FullRuleActionQueryInterface;
 use TLBM\Rules\Actions\ActionsMerging;
+use TLBM\Rules\Contracts\RuleActionsManagerInterface;
 use TLBM\Utilities\ExtendedDateTime;
 
 class GetMergedActions implements AjaxFunctionInterface
@@ -25,13 +25,13 @@ class GetMergedActions implements AjaxFunctionInterface
     private CalendarBookingManagerInterface $calendarBookingManager;
 
     /**
-     * @var CalendarManagerInterface
+     * @var CalendarRepositoryInterface
      */
-    private CalendarManagerInterface $calendarManager;
+    private CalendarRepositoryInterface $calendarManager;
 
     public function __construct
     (
-        CalendarManagerInterface $calendarManager,
+        CalendarRepositoryInterface $calendarManager,
         CalendarBookingManagerInterface $calendarBookingManager,
         RuleActionsManagerInterface $ruleActionsManager
     )
@@ -57,9 +57,9 @@ class GetMergedActions implements AjaxFunctionInterface
     public function execute($assocData): array
     {
         /**
-         * @var RulesQueryInterface $query
+         * @var FullRuleActionQueryInterface $query
          */
-        $query = MainFactory::create(RulesQueryInterface::class);
+        $query = MainFactory::create(FullRuleActionQueryInterface::class);
         $calendar = null;
         if(isset($assocData['options']['dataSourceId']) && isset($assocData['options']['dataSourceType'])) {
             if($assocData['options']['dataSourceType'] == "calendar") {
@@ -72,8 +72,8 @@ class GetMergedActions implements AjaxFunctionInterface
         $fromDateTime->setFromObject($assocData['fromDateTime']);
         $toDateTime = new ExtendedDateTime();
         $toDateTime->setFromObject($assocData['toDateTime']);
-
         $focusedDateTime = new ExtendedDateTime();
+
         if(isset($assocData['options']['focusedDateTime'])) {
             $focusedDateTime->setFromObject($assocData['options']['focusedDateTime']);
         } else {
@@ -95,15 +95,19 @@ class GetMergedActions implements AjaxFunctionInterface
         $actionsReader = new ActionsMerging($this->ruleActionsManager, $query);
 
         $mergedCollection = $actionsReader->getRuleActionsMerged();
+        $editedCollection = [];
         foreach ($mergedCollection as $mergeData) {
             $actions = $mergeData->getMergedActions();
-            if(isset($actions['dateCapacity'])) {
-                $actions['dateCapacity'] = $this->calendarBookingManager->getFreeCapacitiesForCalendar($calendar, $mergeData->getDateTime());
-            }
+
+            //TODO: Get Remaining Slots muss auch für calendar=null funktionieren und dann für alle Kalendar die Kapazitäten zurückgeben
+            $actions['dateCapacity'] = $this->calendarBookingManager->getRemainingSlots($calendar, $mergeData->getDateTime());
+
+            $mergeData->setMergedActions($actions);
+            $editedCollection[] = $mergeData;
         }
 
         return array(
-            "actionsResult" => $mergedCollection
+            "actionsResult" => $editedCollection
         );
     }
 }

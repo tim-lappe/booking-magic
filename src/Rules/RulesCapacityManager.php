@@ -4,9 +4,9 @@ namespace TLBM\Rules;
 
 use TLBM\Entity\Calendar;
 use TLBM\MainFactory;
+use TLBM\Repository\Query\Contracts\FullRuleActionQueryInterface;
 use TLBM\Rules\Actions\ActionsMerging;
 use TLBM\Rules\Contracts\RulesCapacityManagerInterface;
-use TLBM\Rules\Contracts\RulesQueryInterface;
 use TLBM\Utilities\ExtendedDateTime;
 
 class RulesCapacityManager implements RulesCapacityManagerInterface
@@ -18,9 +18,9 @@ class RulesCapacityManager implements RulesCapacityManagerInterface
      *
      * @return int
      */
-    public function getCapacitiesForCalendar(Calendar $calendar, ExtendedDateTime $dateTime): int
+    public function getOriginalCapacity(Calendar $calendar, ExtendedDateTime $dateTime): int
     {
-        $query = MainFactory::create(RulesQueryInterface::class);
+        $query = MainFactory::create(FullRuleActionQueryInterface::class);
         $copyDateTime = $dateTime;
         $copyDateTime->setFullDay(true);
 

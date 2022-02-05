@@ -41,7 +41,7 @@ class RulePeriod implements JsonSerializable
      * @var bool
      * @Doctrine\ORM\Mapping\Column (type="boolean", nullable=false)
      */
-    protected bool $fromTimeset = false;
+    protected bool $fromFullDay = false;
 
     /**
      * @var ?int
@@ -53,7 +53,7 @@ class RulePeriod implements JsonSerializable
      * @var bool
      * @Doctrine\ORM\Mapping\Column (type="boolean", nullable=false)
      */
-    protected bool $toTimeset = false;
+    protected bool $toFullDay = false;
 
     /**
      *
@@ -66,33 +66,33 @@ class RulePeriod implements JsonSerializable
     /**
      * @return bool
      */
-    public function isFromTimeset(): bool
+    public function isFromFullDay(): bool
     {
-        return $this->fromTimeset;
+        return $this->fromFullDay;
     }
 
     /**
-     * @param bool $fromTimeset
+     * @param bool $fromFullDay
      */
-    public function setFromTimeset(bool $fromTimeset): void
+    public function setFromFullDay(bool $fromFullDay): void
     {
-        $this->fromTimeset = $fromTimeset;
+        $this->fromFullDay = $fromFullDay;
     }
 
     /**
      * @return bool
      */
-    public function isToTimeset(): bool
+    public function isToFullDay(): bool
     {
-        return $this->toTimeset;
+        return $this->toFullDay;
     }
 
     /**
-     * @param bool $toTimeset
+     * @param bool $toFullDay
      */
-    public function setToTimeset(bool $toTimeset): void
+    public function setToFullDay(bool $toFullDay): void
     {
-        $this->toTimeset = $toTimeset;
+        $this->toFullDay = $toFullDay;
     }
 
     /**
@@ -191,9 +191,9 @@ class RulePeriod implements JsonSerializable
     {
         return [
             "fromDateTime"    => new ExtendedDateTime($this->fromTimestamp),
-            "fromTimeset"      => $this->fromTimeset,
+            "fromTimeset"      => !$this->fromFullDay,
             "toDateTime"      => $this->toTimestamp ? new ExtendedDateTime($this->toTimestamp): null,
-            "toTimeset"       => $this->toTimeset,
+            "toTimeset"       => !$this->toFullDay,
             "id"              => $this->id,
             "dailyTimeRanges" => $this->dailyTimeRanges->toArray()
         ];

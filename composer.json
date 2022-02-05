@@ -24,8 +24,7 @@
     "phpunit/phpunit": "^9.5",
     "wp-cli/wp-cli-bundle": "*",
     "phpstan/phpstan": "^1.4",
-    "szepeviktor/phpstan-wordpress": "^1.0",
-    "phpmd/phpmd": "^2.11"
+    "szepeviktor/phpstan-wordpress": "^1.0"
   },
   "scripts": {
     "phpstan": "vendor/bin/phpstan -c phpstan.neon"

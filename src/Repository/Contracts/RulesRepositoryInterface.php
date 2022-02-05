@@ -1,12 +1,12 @@
 <?php
 
-namespace TLBM\Rules\Contracts;
+namespace TLBM\Repository\Contracts;
 
 use DateTime;
 use Exception;
 use TLBM\Entity\Rule;
 
-interface RulesManagerInterface
+interface RulesRepositoryInterface
 {
 
     /**

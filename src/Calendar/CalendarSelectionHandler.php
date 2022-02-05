@@ -3,7 +3,7 @@
 
 namespace TLBM\Calendar;
 
-use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\Calendar\Contracts\CalendarSelectionHandlerInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarSelection;
@@ -16,11 +16,11 @@ class CalendarSelectionHandler implements CalendarSelectionHandlerInterface
 {
 
     /**
-     * @var CalendarManagerInterface
+     * @var CalendarRepositoryInterface
      */
-    private CalendarManagerInterface $calendarManager;
+    private CalendarRepositoryInterface $calendarManager;
 
-    public function __construct(CalendarManagerInterface $calendarManager)
+    public function __construct(CalendarRepositoryInterface $calendarManager)
     {
         $this->calendarManager = $calendarManager;
     }

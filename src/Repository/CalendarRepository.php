@@ -1,23 +1,20 @@
 <?php
 
-
-namespace TLBM\Form;
-
+namespace TLBM\Repository;
 
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Exception;
-use TLBM\Database\Contracts\ORMInterface;
-use TLBM\Entity\Form;
-use TLBM\Form\Contracts\FormManagerInterface;
+use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
+use TLBM\Entity\Calendar;
+use TLBM\Repository\Contracts\ORMInterface;
 
 if ( !defined('ABSPATH')) {
     return;
 }
 
-class FormManager implements FormManagerInterface
+class CalendarRepository implements CalendarRepositoryInterface
 {
-
 
     /**
      * @var ORMInterface
@@ -30,17 +27,34 @@ class FormManager implements FormManagerInterface
     }
 
     /**
-     * @param $id
+     * @param Calendar $calendar
      *
-     * @return Form
+     * @return int
+     * @throws Exception
      */
-    public function getForm($id): ?Form
+    public function saveCalendar(Calendar $calendar): int
+    {
+        $mgr = $this->repository->getEntityManager();
+        $mgr->persist($calendar);
+        $mgr->flush();
+
+        return $calendar->getId();
+    }
+
+    /**
+     * Returns the BookingCalender from the given Post-Id
+     *
+     * @param mixed $calendar_id The Post-Id of the Calendar
+     *
+     * @return Calendar|null
+     */
+    public function getCalendar($calendar_id): ?Calendar
     {
         try {
-            $mgr  = $this->repository->getEntityManager();
-            $form = $mgr->find("\TLBM\Entity\Form", $id);
-            if ($form instanceof Form) {
-                return $form;
+            $mgr      = $this->repository->getEntityManager();
+            $calendar = $mgr->find("\TLBM\Entity\Calendar", $calendar_id);
+            if ($calendar instanceof Calendar) {
+                return $calendar;
             }
         } catch (Exception $e) {
             var_dump($e->getMessage());
@@ -50,27 +64,17 @@ class FormManager implements FormManagerInterface
     }
 
     /**
-     * @param Form $form
+     * Return a List of all active Calendars
      *
-     * @throws Exception
-     */
-    public function saveForm(Form $form): void
-    {
-        $mgr = $this->repository->getEntityManager();
-        $mgr->persist($form);
-        $mgr->flush();
-    }
-
-    /**
      * @param array $options
      * @param string $orderby
      * @param string $order
      * @param int $offset
      * @param int $limit
      *
-     * @return Form[]
+     * @return Calendar[]
      */
-    public function getAllForms(
+    public function getAllCalendars(
         array $options = array(),
         string $orderby = "title",
         string $order = "desc",
@@ -79,7 +83,7 @@ class FormManager implements FormManagerInterface
     ): array {
         $mgr = $this->repository->getEntityManager();
         $qb  = $mgr->createQueryBuilder();
-        $qb->select("f")->from("\TLBM\Entity\Form", "f")->orderBy("f." . $orderby, $order)->setFirstResult($offset);
+        $qb->select("c")->from("\TLBM\Entity\Calendar", "c")->orderBy("c." . $orderby, $order)->setFirstResult($offset);
         if ($limit > 0) {
             $qb->setMaxResults($limit);
         }
@@ -98,13 +102,12 @@ class FormManager implements FormManagerInterface
      * @param array $options
      *
      * @return int
-     * @throws Exception
      */
-    public function getAllFormsCount(array $options = array()): int
+    public function getAllCalendarsCount(array $options = array()): int
     {
         $mgr = $this->repository->getEntityManager();
         $qb  = $mgr->createQueryBuilder();
-        $qb->select($qb->expr()->count("f"))->from("\TLBM\Entity\Form", "f");
+        $qb->select($qb->expr()->count("c"))->from("\TLBM\Entity\Calendar", "c");
 
         $query = $qb->getQuery();
         try {

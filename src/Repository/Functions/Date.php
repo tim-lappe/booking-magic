@@ -1,6 +1,6 @@
 <?php
 
-namespace TLBM\Database\Functions;
+namespace TLBM\Repository\Functions;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Lexer;

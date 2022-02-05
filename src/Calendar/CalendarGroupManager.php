@@ -7,7 +7,7 @@ namespace TLBM\Calendar;
 use Exception;
 use TLBM\Calendar\Contracts\CalendarGroupManagerInterface;
 use TLBM\Calendar\Contracts\CalendarSelectionHandlerInterface;
-use TLBM\Database\Contracts\ORMInterface;
+use TLBM\Repository\Contracts\ORMInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarGroup;
 

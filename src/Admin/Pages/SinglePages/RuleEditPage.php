@@ -2,35 +2,31 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
-use DI\FactoryInterface;
 use Exception;
 use Throwable;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\Rules\PriorityLevels;
 use TLBM\Admin\WpForm\CalendarPickerField;
-use TLBM\Admin\WpForm\InputField;
 use TLBM\Admin\WpForm\PeriodEditorField;
 use TLBM\Admin\WpForm\RuleActionsField;
 use TLBM\Admin\WpForm\SelectField;
-use TLBM\Calendar\Contracts\CalendarManagerInterface;
-use TLBM\Entity\Calendar;
-use TLBM\Entity\CalendarSelection;
+use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\Entity\Rule;
-use TLBM\Rules\Contracts\RulesManagerInterface;
+use TLBM\Repository\Contracts\RulesRepositoryInterface;
 use TLBM\Validation\ValidatorFactory;
 
 class RuleEditPage extends FormPageBase
 {
 
     /**
-     * @var RulesManagerInterface
+     * @var RulesRepositoryInterface
      */
-    private RulesManagerInterface $rulesManager;
+    private RulesRepositoryInterface $rulesManager;
 
     /**
-     * @var CalendarManagerInterface
+     * @var CalendarRepositoryInterface
      */
-    private CalendarManagerInterface $calendarManager;
+    private CalendarRepositoryInterface $calendarManager;
 
     /**
      * @var SettingsManagerInterface
@@ -43,9 +39,9 @@ class RuleEditPage extends FormPageBase
     private ?Rule $editingRule = null;
 
     public function __construct(
-        RulesManagerInterface $rulesManager,
+        RulesRepositoryInterface $rulesManager,
         SettingsManagerInterface $settingsManager,
-        CalendarManagerInterface $calendarManager
+        CalendarRepositoryInterface $calendarManager
     ) {
         parent::__construct("rule-edit", "booking-magic-rule-edit", false);
 

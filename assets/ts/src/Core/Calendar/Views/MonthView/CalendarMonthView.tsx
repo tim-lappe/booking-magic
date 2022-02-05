@@ -167,7 +167,7 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
                                         <MonthViewDateCell
                                             disabled={cellDisabled}
                                             empty={false} onClick={this.onClickOnDateTile}
-                                            selected={this.state.viewState.selectedDate != null && DateTime.isSameDay(this.state.viewState.selectedDate, date)}
+                                            selected={!cellDisabled && this.state.viewState.selectedDate != null && DateTime.isSameDay(this.state.viewState.selectedDate, date)}
                                             dateTime={date} key={index}>
                                             <span style={{float: "right", visibility: (!cellDisabled ? "visible" : "hidden")}}>{dateCapacity}</span>
 

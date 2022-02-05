@@ -3,13 +3,16 @@
 
 namespace TLBM\Entity;
 
+use JsonSerializable;
+use TLBM\Utilities\ExtendedDateTime;
+
 /**
  * Class Calendar
  * @package TLBM\Entity
  * @Doctrine\ORM\Mapping\Entity
  * @Doctrine\ORM\Mapping\Table(name="calendar_bookings")
  */
-class CalendarBooking
+class CalendarBooking implements JsonSerializable
 {
 
     use IndexedTable;
@@ -159,6 +162,7 @@ class CalendarBooking
         $this->fromFullDay = $fromFullDay;
     }
 
+
     /**
      * @return int
      */
@@ -178,7 +182,7 @@ class CalendarBooking
     /**
      * @return bool|null
      */
-    public function getToFullDay(): ?bool
+    public function isToFullDay(): ?bool
     {
         return $this->toFullDay;
     }
@@ -205,5 +209,46 @@ class CalendarBooking
     public function setToTimestamp(?int $toTimestamp): void
     {
         $this->toTimestamp = $toTimestamp;
+    }
+
+    /**
+     * @return ExtendedDateTime
+     */
+    public function getToDateTime(): ExtendedDateTime
+    {
+        $dateTime = new ExtendedDateTime();
+        $dateTime->setFullDay($this->isToFullDay());
+        $dateTime->setTimestamp($this->getToTimestamp());
+        return $dateTime;
+    }
+
+    /**
+     * @return ExtendedDateTime
+     */
+    public function getFromDateTime(): ExtendedDateTime
+    {
+        $dateTime = new ExtendedDateTime();
+        $dateTime->setFullDay($this->isFromFullDay());
+        $dateTime->setTimestamp($this->getFromTimestamp());
+        return $dateTime;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            "id" => $this->id,
+            "calendarId" => $this->calendar->getId(),
+            "name" => $this->nameFromForm,
+            "title" => $this->titleFromForm,
+            "fromFullDay" => $this->fromFullDay,
+            "fromTimestamp" => $this->fromTimestamp,
+            "toFullDay" => $this->toFullDay,
+            "toTimestamp" => $this->toTimestamp,
+            "slots" => $this->slots
+        ];
     }
 }

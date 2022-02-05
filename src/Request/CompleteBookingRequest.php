@@ -3,12 +3,14 @@
 
 namespace TLBM\Request;
 
-use TLBM\Booking\BookingManager;
-use TLBM\Booking\BookingProcessing;
-use TLBM\Booking\MainValues;
+use Throwable;
+use TLBM\Admin\Settings\SingleSettings\Emails\EmailBookingConfirmation;
+use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
+use TLBM\Booking\Semantic\BookingValueSemantic;
 use TLBM\Email\Contracts\MailSenderInterface;
-use TLBM\Form\Contracts\FormManagerInterface;
-use TLBM\Output\FrontendMessenger;
+use TLBM\MainFactory;
+use TLBM\Output\Contracts\FrontendMessengerInterface;
+use TLBM\Repository\Contracts\BookingRepositoryInterface;
 
 if ( !defined('ABSPATH')) {
     return;
@@ -17,25 +19,37 @@ if ( !defined('ABSPATH')) {
 
 class CompleteBookingRequest extends RequestBase
 {
-    public bool $booking_successed = false;
+    public bool $bookingSuccessed = false;
     public bool $error = false;
 
     /**
-     * @var FormManagerInterface
+     * @var BookingRepositoryInterface
      */
-    private FormManagerInterface $formManager;
+    private BookingRepositoryInterface $bookingManager;
 
     /**
      * @var MailSenderInterface
      */
     private MailSenderInterface $mailSender;
 
-    public function __construct(FormManagerInterface $formManager, MailSenderInterface $mailSender)
+    /**
+     * @var CalendarBookingManagerInterface
+     */
+    private CalendarBookingManagerInterface $calendarBookingManager;
+
+    /**
+     * @var FrontendMessengerInterface
+     */
+    private FrontendMessengerInterface $frontendMessenger;
+
+    public function __construct(FrontendMessengerInterface $frontendMessenger, CalendarBookingManagerInterface $calendarBookingManager, BookingRepositoryInterface $bookingManager, MailSenderInterface $mailSender)
     {
         parent::__construct();
 
+        $this->calendarBookingManager = $calendarBookingManager;
         $this->mailSender  = $mailSender;
-        $this->formManager = $formManager;
+        $this->bookingManager = $bookingManager;
+        $this->frontendMessenger = $frontendMessenger;
         $this->action      = "dobooking";
         $this->hasContent  = true;
     }
@@ -44,46 +58,43 @@ class CompleteBookingRequest extends RequestBase
     {
         $vars = $this->getVars();
         $verifyed = wp_verify_nonce($vars['_wpnonce'], "dobooking_action");
-        if (isset($vars['form']) && intval($vars['form']) > 0 && $verifyed) {
-            $form_id = $vars['form'];
-            $form    = $this->formManager->getForm($form_id);
-            if ($form) {
-                $booking_processing = new BookingProcessing($vars, $form);
-                $not_filled_dps     = $booking_processing->Validate();
-                if (sizeof($not_filled_dps) == 0) {
-                    $booking        = $booking_processing->GetProcessedBooking();
-                    $mainvals       = new MainValues($booking);
-                    $booking->title = $mainvals->getBookingTitle();
-                    BookingManager::SetBooking($booking);
+        if (isset($vars['pending_booking']) && intval($vars['pending_booking']) > 0 && $verifyed) {
+            $pendingBookingId = intval($vars['pending_booking']);
+            $pendingBooking = $this->bookingManager->getBooking($pendingBookingId);
+            if($pendingBooking) {
+                try {
+                    if(count($this->calendarBookingManager->areValidCalendarBookings($pendingBooking->getCalendarBookings()->toArray())) == 0) {
+                        $pendingBooking->setInternalState(TLBM_BOOKING_INTERNAL_STATE_COMPLETED);
+                        $this->bookingManager->saveBooking($pendingBooking);
 
-                    if ($booking->booking_values['contact_email']) {
-                        $vars = array();
-                        foreach ($booking->booking_values as $value) {
-                            $vars[$value->key] = $value->value;
-                        }
-                        $this->mailSender->sendTemplate(
-                            $booking->booking_values['contact_email']->value, "email_booking_confirmation", $vars
-                        );
+                        $semantic = MainFactory::create(BookingValueSemantic::class);
+                        $semantic->setValuesFromBooking($pendingBooking);
+
+                        $this->mailSender->sendTemplate($semantic->getContactEmail(), EmailBookingConfirmation::class);
+                        $this->bookingSuccessed = true;
+                    } else {
+                        $this->hasContent = false;
+                        $this->frontendMessenger->addMessage(__("Booking could not be completed. Some booking times are no longer available ", TLBM_TEXT_DOMAIN));
                     }
 
-                    $this->booking_successed = true;
-                } else {
-                    FrontendMessenger::addMessage(__("Not all required fields were filled out", TLBM_TEXT_DOMAIN));
-                    $this->hasContent = false;
+                    return;
+                } catch (Throwable $exception) {
+                    if(WP_DEBUG) {
+                        echo $exception->getMessage();
+                    }
                 }
             }
-        } else {
-            $this->error = true;
         }
+
+        $this->error = true;
     }
 
     public function getContent(): string
     {
-        $vars = $this->getVars();
-        if ($this->booking_successed === true) {
-            return "<h2>Die Buchung ist erfolgreich eingegangen.</h2><p>Sie erhalten in kürze eine Bestätigungsmail</p>";
+        if ($this->bookingSuccessed === true) {
+            return "<h2>Die Buchung ist erfolgreich eingegangen.</h2><p>Sie erhalten in Kürze eine Bestätigungsmail</p>";
         } elseif ($this->error) {
-            return "<h2>Es ist ein Fehler aufgetreten</h2><p>Ihre Buchung konnte nicht bearbeitet werden, da ein unbekannter Fehler aufgetreten ist</p>" . "<p>" . $this->booking_successed . "</p>";
+            return "<h2>Es ist ein Fehler aufgetreten</h2><p>Ihre Buchung konnte nicht bearbeitet werden, da ein unbekannter Fehler aufgetreten ist</p>";
         } else {
             return "";
         }

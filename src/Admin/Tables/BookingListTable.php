@@ -4,38 +4,34 @@
 namespace TLBM\Admin\Tables;
 
 
-use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
-use TLBM\Admin\Settings\SingleSettings\BookingProcess\DefaultBookingState;
-use TLBM\Booking\BookingManager;
-use TLBM\Booking\Contracts\BookingManagerInterface;
-use TLBM\Calendar\Contracts\CalendarManagerInterface;
-use TLBM\Model\Booking;
+use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
+use TLBM\Admin\Pages\SinglePages\BookingEditPage;
+use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
+use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
+use TLBM\Entity\Booking;
+use TLBM\MainFactory;
+use TLBM\Repository\Contracts\BookingRepositoryInterface;
+use TLBM\Repository\Query\BookingsQuery;
 use TLBM\Utilities\Colors;
 use TLBM\Utilities\Contracts\ColorsInterface;
-use TLBM\Utilities\Contracts\DateTimeToolsInterface;
+use TLBM\Utilities\ExtendedDateTime;
 
 class BookingListTable extends TableBase
 {
+    /**
+     * @var CalendarRepositoryInterface
+     */
+    private CalendarRepositoryInterface $calendarManager;
 
     /**
-     * @var bool
+     * @var BookingRepositoryInterface
      */
-    public bool $slim = false;
+    private BookingRepositoryInterface $bookingManager;
 
     /**
-     * @var CalendarManagerInterface
+     * @var AdminPageManagerInterface
      */
-    private CalendarManagerInterface $calendarManager;
-
-    /**
-     * @var DateTimeToolsInterface
-     */
-    private DateTimeToolsInterface $dateTimeTools;
-
-    /**
-     * @var BookingManagerInterface
-     */
-    private BookingManagerInterface $bookingManager;
+    private AdminPageManagerInterface $adminPageManager;
 
     /**
      * @var ColorsInterface
@@ -43,13 +39,13 @@ class BookingListTable extends TableBase
     private ColorsInterface $colors;
 
     public function __construct(
-        CalendarManagerInterface $calendarManager,
-        DateTimeToolsInterface $dateTimeTools,
-        BookingManagerInterface $bookingManager
+        CalendarRepositoryInterface $calendarManager,
+        BookingRepositoryInterface $bookingManager,
+        AdminPageManagerInterface $adminPageManager
     ) {
         $this->calendarManager = $calendarManager;
-        $this->dateTimeTools   = $dateTimeTools;
         $this->bookingManager = $bookingManager;
+        $this->adminPageManager = $adminPageManager;
         $this->colors          = new Colors();
 
         parent::__construct(
@@ -59,11 +55,11 @@ class BookingListTable extends TableBase
 
     /**
      * @SuppressWarnings(PHPMD)
-     * @param $which
+     * @param string $which
      *
      * @return void
      */
-    public function extra_tablenav($which)
+    public function tableNav(string $which): void
     {
         if ($which == "top" && !$this->slim) {
             $calendars = $this->calendarManager->getAllCalendars();
@@ -87,105 +83,13 @@ class BookingListTable extends TableBase
         }
     }
 
-    /**
-     * @param $which
-     * @SuppressWarnings(PHPMD)
-     * @return void
-     */
-    public function display_tablenav($which)
-    {
-        if ( !$this->slim) {
-            parent::display_tablenav($which);
-        }
-    }
-
-    /**
-     * @SuppressWarnings(PHPMD)
-     * @param Booking|object $item
-     */
-    public function column_id($item)
-    {
-        $link = get_edit_post_link($item->wp_post_id);
-        echo "<strong><a href ='" . $link . "'># " . $item->wp_post_id . "</a></strong>";
-    }
-
-    /**
-     * @SuppressWarnings(PHPMD)
-     * @param Booking|object $item
-     */
-    public function column_datetime($item)
-    {
-        $post = get_post($item->wp_post_id);
-        echo $this->dateTimeTools->formatWithTime(strtotime($post->post_date));
-    }
-
-    /**
-     * @SuppressWarnings(PHPMD)
-     * @param Booking|object $item
-     */
-    public function column_calendar($item)
-    {
-        $calslots = $item->calendar_slots;
-        foreach ($calslots as $calendar_slot) {
-            $calendar = $this->calendarManager->getCalendar($calendar_slot->booked_calendar_id);
-            $link     = get_edit_post_link($calendar_slot->booked_calendar_id);
-            $prefix   = "";
-            if (sizeof($calslots) > 1) {
-                $prefix = $calendar_slot->title . "&nbsp;&nbsp;&nbsp;";
-            }
-
-            if ($calendar) {
-                echo $prefix . "<a href='" . $link . "'>" . $calendar->getTitle() . "</a>&nbsp;&nbsp;&nbsp;" . $this->dateTimeTools->formatWithTime(
-                        $calendar_slot->timestamp
-                    ) . "<br>";
-            } else {
-                echo $prefix . "<strong>" . __(
-                        "Calendar deleted", TLBM_TEXT_DOMAIN
-                    ) . "</strong>&nbsp;&nbsp;&nbsp;" . $this->dateTimeTools->formatWithTime(
-                        $calendar_slot->timestamp
-                    ) . "<br>";
-            }
-        }
-
-        if (sizeof($calslots) == 0) {
-            echo "-";
-        }
-    }
-
-    /**
-     * @SuppressWarnings(PHPMD)
-     * @param Booking $item
-     */
-    public function column_state($item)
-    {
-        $state = BookingStates::getStateByName($item->state);
-        $rgb   = $this->colors->getRgbFromHex($state['color']);
-
-        ?>
-        <div class='tlbm-table-list-state' style="background-color: rgba(<?php
-        echo $rgb[0] . "," . $rgb[1] . "," . $rgb[2] ?>, 0.4)">
-            <strong><?php
-                echo $state['title'] ?></strong>
-        </div>
-        <?php
-    }
-
-    /**
-     * @SuppressWarnings(PHPMD)
-     * @param Booking $item
-     *
-     * @return string
-     */
-    public function column_cb($item): string
-    {
-        return '<input type="checkbox" name="wp_post_ids[]" value="' . $item->wp_post_id . '" />';
-    }
 
     /**
      * @return void
      */
     protected function processBuldActions()
     {
+        //TODO: Bulk Actions für Bookings Tabelle implementieren
 
     }
 
@@ -198,12 +102,28 @@ class BookingListTable extends TableBase
      * @SuppressWarnings(PHPMD)
      * @param string $orderby
      * @param string $order
+     * @param int $page
      *
      * @return array
      */
-    protected function getItems(string $orderby, string $order): array
+    protected function getItems(string $orderby, string $order, int $page): array
     {
-        return $this->bookingManager->getAllBookings(array(), $orderby, $order);
+        $bookingsQuery = MainFactory::create(BookingsQuery::class);
+
+        if($orderby == "date") {
+            $bookingsQuery->setOrderBy([[TLBM_BOOKING_QUERY_ALIAS . ".tstampCreated", $order]]);
+
+        } elseif ($orderby == "id") {
+            $bookingsQuery->setOrderBy([[TLBM_BOOKING_QUERY_ALIAS . ".id", $order]]);
+
+        } elseif($orderby == "state") {
+            $bookingsQuery->setOrderBy([[TLBM_BOOKING_QUERY_ALIAS . ".state", $order]]);
+
+        } else {
+            $bookingsQuery->setOrderBy([[TLBM_BOOKING_QUERY_ALIAS . ".tstampCreated", "desc"]]);
+        }
+
+        return iterator_to_array($bookingsQuery->getResult());
     }
 
     protected function getViews(): array
@@ -221,34 +141,81 @@ class BookingListTable extends TableBase
 
     protected function getColumns(): array
     {
+        $columns = [];
         if ( !$this->slim) {
-            return array(
-                "cb"       => "<input type='checkbox' />",
-                "id"       => __('ID', TLBM_TEXT_DOMAIN),
-                "calendar" => __('Calendar', TLBM_TEXT_DOMAIN),
-                "state"    => __('State', TLBM_TEXT_DOMAIN),
-                "datetime" => __('Date', TLBM_TEXT_DOMAIN)
-            );
+            $columns[] = $this->getCheckboxColumn(function ($item) {
+                return $item->getId();
+            });
         }
 
-        return array(
-            "id"       => __('ID', TLBM_TEXT_DOMAIN),
-            "calendar" => __('Calendar', TLBM_TEXT_DOMAIN),
-            "state"    => __('State', TLBM_TEXT_DOMAIN),
-            "datetime" => __('Date', TLBM_TEXT_DOMAIN)
-        );
+        $columns[] = new Column("id", __("ID", TLBM_TEXT_DOMAIN), true, array($this, "columnDisplayId"));
+        $columns[] = new Column("calendar", __("Calendar", TLBM_TEXT_DOMAIN), false, array($this, "columnDisplayCalendar"));
+        $columns[] = new Column("state", __("State", TLBM_TEXT_DOMAIN), true, array($this, "columnDisplayState"));
+        $columns[] = new Column("date", __("Date", TLBM_TEXT_DOMAIN), true, array($this, "columnDisplayDate"));
+
+        return $columns;
     }
 
-    protected function getSortableColumns(): array
-    {
-        if ( !$this->slim) {
-            return array(
-                'id'       => array('id', true),
-                'datetime' => array('datetime', true)
-            );
+    /**
+     * @param Booking $item
+     *
+     * @return void
+     */
+    protected function columnDisplayId(Booking $item) {
+        $editPage = $this->adminPageManager->getPage(BookingEditPage::class);
+        if ($editPage) {
+            $link = $editPage->getEditLink($item->getId());
+            echo "<strong><a href ='" . $link . "'># " . $item->getId() . "</a></strong>";
         }
+    }
 
-        return array();
+    /**
+     * @param Booking $item
+     *
+     * @return void
+     */
+    protected function columnDisplayCalendar(Booking $item) {
+        $calslots = $item->getCalendarBookings();
+        $calendarEditPage = $this->adminPageManager->getPage(CalendarEditPage::class);
+        if($calendarEditPage) {
+            foreach ($calslots as $calendarBooking) {
+                $calendar = $calendarBooking->getCalendar();
+                $link     = $calendarEditPage->getEditLink($calendar->getId());
+                $prefix   = "";
+                if (sizeof($calslots) > 1) {
+                    $prefix = $calendarBooking->getTitleFromForm() . "&nbsp;&nbsp;&nbsp;";
+                }
+
+                //TODO: Es wird derzeit nur "From" in der Tabelle angezeigt.
+                if ($calendar) {
+                    echo $prefix . "<a href='" . $link . "'>" . $calendar->getTitle() . "</a>&nbsp;&nbsp;&nbsp;" . new ExtendedDateTime($calendarBooking->getFromTimestamp()) . "<br>";
+                } else {
+                    echo $prefix . "<strong>" . __("Calendar deleted", TLBM_TEXT_DOMAIN) . "</strong>&nbsp;&nbsp;&nbsp;" .  new ExtendedDateTime($calendarBooking->getFromTimestamp()) . "<br>";
+                }
+            }
+
+            if (sizeof($calslots) == 0) {
+                echo "-";
+            }
+        }
+    }
+
+    protected function columnDisplayState(Booking $item) {
+        //TODO Buchungsstatus in Booking Tabelle anzeigen
+        /*
+        $rgb   = $this->colors->getRgbFromHex($state['color']);
+
+         ?>
+         <div class='tlbm-table-list-state' style="background-color: rgba(<?php
+         echo $rgb[0] . "," . $rgb[1] . "," . $rgb[2] ?>, 0.4)">
+             <strong><?php
+                 echo $state['title'] ?></strong>
+         </div>
+         <?php*/
+    }
+
+    protected function columnDisplayDate(Booking $item) {
+        echo new ExtendedDateTime($item->getTstampCreated());
     }
 
     /**
@@ -272,15 +239,4 @@ class BookingListTable extends TableBase
 
         return array();
     }
-
-    /**
-     * @param Booking $item
-     *
-     * @return int
-     */
-    protected function getItemId($item): int
-    {
-        return $item->wp_post_id;
-    }
-
 }

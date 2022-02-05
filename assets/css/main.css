@@ -1090,11 +1090,12 @@ button.tlbm-form-submit-button {
   display: flex;
   justify-content: stretch;
 }
-.tlbm-booking-overview-box h3.tlbm-overview-section-title {
-  margin-top: 2em;
-  margin-bottom: 1em;
+.tlbm-booking-overview-box .tlbm-overview-section-title {
+  margin-top: 1.5em;
+  margin-bottom: 0.7rem;
+  font-size: 1.3em;
 }
-.tlbm-booking-overview-box h3.tlbm-overview-section-title:first-child {
+.tlbm-booking-overview-box .tlbm-overview-section-title:first-child {
   margin-top: 0;
 }
 .tlbm-booking-overview-box .tlbm-formular-booked-calendar {

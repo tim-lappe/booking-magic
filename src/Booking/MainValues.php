@@ -4,7 +4,7 @@
 namespace TLBM\Booking;
 
 use TLBM\Admin\FormEditor\Contracts\FormElementsCollectionInterface;
-use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Model\Booking;
 use TLBM\Model\BookingValue;
@@ -23,9 +23,9 @@ class MainValues
     private array $calendars = array();
 
     /**
-     * @var CalendarManagerInterface
+     * @var CalendarRepositoryInterface
      */
-    private CalendarManagerInterface $calendarManager;
+    private CalendarRepositoryInterface $calendarManager;
 
     /**
      * @var FormElementsCollectionInterface
@@ -38,7 +38,7 @@ class MainValues
     private DateTimeToolsInterface $dateTimeTools;
 
     public function __construct(
-        CalendarManagerInterface $calendarManager,
+        CalendarRepositoryInterface $calendarManager,
         FormElementsCollectionInterface $elementsCollection,
         DateTimeToolsInterface $dateTimeTools,
         Booking $booking

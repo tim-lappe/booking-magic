@@ -3,11 +3,13 @@
 namespace TLBM\Booking;
 
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
-use TLBM\Database\Contracts\ORMInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarBooking;
+use TLBM\MainFactory;
+use TLBM\Repository\Query\CalendarBookingsQuery;
 use TLBM\Rules\Contracts\RulesCapacityManagerInterface;
 use TLBM\Utilities\ExtendedDateTime;
+use Traversable;
 
 class CalendarBookingManager implements CalendarBookingManagerInterface
 {
@@ -16,14 +18,8 @@ class CalendarBookingManager implements CalendarBookingManagerInterface
      */
     private RulesCapacityManagerInterface $capacityManager;
 
-    /**
-     * @var ORMInterface
-     */
-    private ORMInterface $repository;
-
-    public function __construct(RulesCapacityManagerInterface $capacityManager, ORMInterface $repository)
+    public function __construct(RulesCapacityManagerInterface $capacityManager)
     {
-        $this->repository = $repository;
         $this->capacityManager = $capacityManager;
     }
 
@@ -33,68 +29,78 @@ class CalendarBookingManager implements CalendarBookingManagerInterface
      *
      * @return int
      */
-    public function getFreeCapacitiesForCalendar(Calendar $calendar, ExtendedDateTime $extendedDateTime): int
+    public function getRemainingSlots(Calendar $calendar, ExtendedDateTime $extendedDateTime): int
     {
-        $capacity = $this->capacityManager->getCapacitiesForCalendar($calendar, $extendedDateTime);
+        $capacity = $this->capacityManager->getOriginalCapacity($calendar, $extendedDateTime);
+        $calendarBookings = $this->getCalendarBookings($calendar, $extendedDateTime);
         $bookedSlots = 0;
-        $calendarBookings = $this->getCalendarBookingsForCalendar($calendar, $extendedDateTime);
+
+        /**
+         * @var CalendarBooking $calendarBooking
+         */
         foreach ($calendarBookings as $calendarBooking) {
             $bookedSlots += $calendarBooking->getSlots();
         }
 
-        return max(0,$capacity - $bookedSlots);
+        return max(0,($capacity - $bookedSlots));
     }
 
     /**
-     * @param Calendar $calendar
+     * @param ?Calendar $calendar
      * @param ExtendedDateTime|null $dateTime
      *
-     * @return CalendarBooking[]
+     * @return Traversable
      */
-    public function getCalendarBookingsForCalendar(Calendar $calendar, ?ExtendedDateTime $dateTime = null): array
+    public function getCalendarBookings(?Calendar $calendar = null, ?ExtendedDateTime $dateTime = null): Traversable
     {
-        $mgr = $this->repository->getEntityManager();
-        $queryBuilder  = $mgr->createQueryBuilder();
-        $expr = $queryBuilder->expr();
-        $queryBuilder
-            ->select("cb")
-            ->from("\TLBM\Entity\CalendarBooking", "cb")
-            ->where($expr->eq("cb.calendar", $calendar->getId()));
+        $query = MainFactory::create(CalendarBookingsQuery::class);
 
-        if($dateTime != null) {
-            $timestampBeginOfDay = $dateTime->getTimestampBeginOfDay();
-            $timestampEndOfDay = $dateTime->getTimestampEndOfDay();
-
-            $timestampFrom = $dateTime->isFullDay() ? $timestampEndOfDay : $dateTime->getTimestamp();
-            $timestampTo = $dateTime->isFullDay() ? $timestampBeginOfDay : $dateTime->getTimestamp();
-
-            $expr = $queryBuilder->expr();
-            $periodsWhere = $expr->orX();
-            $periodsNotEmpty = $expr->andX();
-
-            $periodsFromOr = $expr->orX();
-            $periodsFromOr->add("cb.fromTimestamp <= '" . $timestampFrom . "'");
-
-            $periodsFromNoTimeset = $expr->andX();
-            $periodsFromNoTimeset->add("cb.fromTimestamp <= '" . $timestampEndOfDay . "'");
-            $periodsFromNoTimeset->add("cb.fromFullDay = true");
-            $periodsFromOr->add($periodsFromNoTimeset);
-
-            $periodsToOr = $expr->orX();
-            $periodsToOr->add($expr->isNull("cb.toTimestamp"));
-            $periodsToOr->add("cb.toTimestamp >= '" . $timestampTo . "'");
-
-            $periodsToNoTimeset = $expr->andX();
-            $periodsToNoTimeset->add("cb.toTimestamp >= '" . $timestampBeginOfDay . "'");
-            $periodsToNoTimeset->add("cb.toFullDay = true");
-            $periodsToOr->add($periodsToNoTimeset);
-
-            $periodsNotEmpty->add($periodsFromOr);
-            $periodsNotEmpty->add($periodsToOr);
-            $periodsWhere->add($periodsNotEmpty);
+        if($calendar != null) {
+            $query->setCalendar($calendar);
         }
 
-        $query  = $queryBuilder->getQuery();
-        return $query->getResult();
+        if($dateTime != null) {
+            $query->setDateTime($dateTime);
+        }
+
+
+        foreach ($query->getResult() as $item) {
+            $result = $item->getQueryResult();
+            foreach($result as $calendarBooking) {
+                if ($calendarBooking instanceof CalendarBooking) {
+                    /** @var CalendarBooking $calendarBooking */
+                    yield $calendarBooking;
+                }
+            }
+        }
+    }
+
+    /**
+     * @param array $calendarBookings
+     *
+     * @return array returns failing calendarBookings
+     */
+    public function areValidCalendarBookings(array $calendarBookings): array
+    {
+        $failing = [];
+        foreach ($calendarBookings as $calendarBooking) {
+            if(!$this->isValidCalendarBooking($calendarBooking)) {
+                $failing[] = $calendarBooking;
+            }
+        }
+
+        return $failing;
+    }
+
+    /**
+     * @param CalendarBooking $calendarBooking
+     *
+     * @return bool
+     */
+    public function isValidCalendarBooking(CalendarBooking $calendarBooking): bool
+    {
+        //TODO: Wird nur auf "From" DateTime geprüft, muss also noch angepasst werden
+        $remaining = $this->getRemainingSlots($calendarBooking->getCalendar(), $calendarBooking->getFromDateTime());
+        return $remaining >= $calendarBooking->getSlots();
     }
 }

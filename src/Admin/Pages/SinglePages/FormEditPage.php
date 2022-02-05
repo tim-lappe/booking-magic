@@ -7,16 +7,16 @@ use Throwable;
 use TLBM\Admin\FormEditor\Contracts\FormElementsCollectionInterface;
 use TLBM\Admin\WpForm\FormEditorField;
 use TLBM\Entity\Form;
-use TLBM\Form\Contracts\FormManagerInterface;
+use TLBM\Repository\Contracts\FormRepositoryInterface;
 use TLBM\Validation\FormEntityValidator;
 
 class FormEditPage extends FormPageBase
 {
 
     /**
-     * @var FormManagerInterface
+     * @var FormRepositoryInterface
      */
-    private FormManagerInterface $formManager;
+    private FormRepositoryInterface $formManager;
 
     /**
      * @var FormElementsCollectionInterface
@@ -30,7 +30,7 @@ class FormEditPage extends FormPageBase
 
 
     public function __construct(
-        FormManagerInterface $formManager,
+        FormRepositoryInterface $formManager,
         FormElementsCollectionInterface $elementsCollection
     ) {
         parent::__construct(

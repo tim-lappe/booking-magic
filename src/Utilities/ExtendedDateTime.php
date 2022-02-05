@@ -9,8 +9,6 @@ use Iterator;
 use JsonSerializable;
 use TLBM\Utilities\Contracts\DateTimeToolsInterface;
 
-const EXTDATETIME_INTERVAL_DAY = 0;
-
 class ExtendedDateTime implements JsonSerializable
 {
 
@@ -37,6 +35,11 @@ class ExtendedDateTime implements JsonSerializable
         }
 
         $this->internalDateTime->setTimezone(wp_timezone());
+    }
+
+    public function __toString()
+    {
+        return $this->format();
     }
 
     /**
@@ -311,12 +314,12 @@ class ExtendedDateTime implements JsonSerializable
     }
 
     /**
-     * @param int $dateInterval
+     * @param string $dateInterval
      * @param ExtendedDateTime $target
      *
      * @return Iterator
      */
-    public function getDateTimesBetween(int $dateInterval, ExtendedDateTime $target): Iterator
+    public function getDateTimesBetween(string $dateInterval, ExtendedDateTime $target): Iterator
     {
         $start = $target;
         $end = $this;
@@ -327,7 +330,7 @@ class ExtendedDateTime implements JsonSerializable
 
         $iteratingDateTime = $start->copy();
 
-        if($dateInterval == EXTDATETIME_INTERVAL_DAY) {
+        if($dateInterval == TLBM_EXTDATETIME_INTERVAL_DAY) {
             while ($iteratingDateTime->isEarlierThan($end)) {
                 $copy = $iteratingDateTime->copy();
                 $iteratingDateTime->setDay($iteratingDateTime->getDay() + 1);

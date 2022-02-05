@@ -20,14 +20,15 @@ class AdminPageManager implements AdminPageManagerInterface
     }
 
     /**
-     * @param string $class_name
+     * @template T
+     * @param class-string<T> $class
      *
-     * @return PageBase|null
+     * @return ?T
      */
-    public function getPage(string $class_name): ?PageBase
+    public function getPage(string $class)
     {
         foreach ($this->pages as $page) {
-            if ($page instanceof $class_name) {
+            if ($page instanceof $class) {
                 return $page;
             }
         }

@@ -3,13 +3,15 @@
 
 namespace TLBM\Entity;
 
+use JsonSerializable;
+
 /**
  * Class Calendar
  * @package TLBM\Entity
  * @Doctrine\ORM\Mapping\Entity
  * @Doctrine\ORM\Mapping\Table(name="booking_values")
  */
-class BookingValue
+class BookingValue implements JsonSerializable
 {
 
     use IndexedTable;
@@ -97,5 +99,18 @@ class BookingValue
     public function setBooking(Booking $booking)
     {
         $this->booking = $booking;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            "id" => $this->id,
+            "name" => $this->name,
+            "value" => $this->value,
+            "title" => $this->title,
+        ];
     }
 }

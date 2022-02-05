@@ -1,7 +1,7 @@
 <?php
 
 
-namespace TLBM\Database;
+namespace TLBM\Repository;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Configuration;
@@ -9,10 +9,9 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\Tools\ToolsException;
 use Throwable;
-use TLBM\Database\Contracts\ORMInterface;
-use TLBM\Database\Functions\Date;
+use TLBM\Repository\Contracts\ORMInterface;
+use TLBM\Repository\Functions\Date;
 
 class ORMManager implements ORMInterface
 {
@@ -26,7 +25,6 @@ class ORMManager implements ORMInterface
      * @var EventManager|null
      */
     private ?EventManager $eventManager;
-
 
     /**
      *

@@ -22,14 +22,14 @@ class MailSender implements MailSenderInterface
 
     /**
      * @param string $to
-     * @param string $email_option_name
+     * @param string $emailSetting
      * @param array $vars
      *
      * @return mixed
      */
-    public function sendTemplate(string $to, string $email_option_name, array $vars = array())
+    public function sendTemplate(string $to, string $emailSetting, array $vars = array())
     {
-        $opt = $this->settingsManager->getValue($email_option_name);
+        $opt = $this->settingsManager->getValue($emailSetting);
         if ($opt) {
             $subject = $opt['subject'];
             $content = $opt['message'];
@@ -40,7 +40,7 @@ class MailSender implements MailSenderInterface
             $message    .= $content;
 
             $message .= "</body></html>";
-            $vars    = $vars + self::getDefaultTemplateVars();
+            $vars    = $vars + $this->getDefaultTemplateVars();
             foreach ($vars as $key => $value) {
                 $message = str_replace("{{" . $key . "}}", $value, $message);
             }
