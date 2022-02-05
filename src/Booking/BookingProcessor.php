@@ -6,26 +6,25 @@ use Exception;
 use TLBM\Admin\FormEditor\Elements\CalendarElem;
 use TLBM\Admin\FormEditor\FormDataWalker;
 use TLBM\Admin\FormEditor\LinkedFormData;
-use TLBM\Booking\Contracts\BookingManagerInterface;
+use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
 use TLBM\Booking\Semantic\BookingValueSemantic;
-use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\Entity\Booking;
 use TLBM\Entity\BookingValue;
 use TLBM\Entity\CalendarBooking;
 use TLBM\Entity\Form;
-use TLBM\Form\Contracts\FormManagerInterface;
 use TLBM\MainFactory;
+use TLBM\Repository\Contracts\BookingRepositoryInterface;
+use TLBM\Repository\Contracts\FormRepositoryInterface;
 use TLBM\Utilities\ExtendedDateTime;
 
-use const TLBM\Entity\BOOKING_INTERNAL_STATE_COMPLETED;
-use const TLBM\Entity\BOOKING_INTERNAL_STATE_RESERVED;
 
 class BookingProcessor
 {
     /**
-     * @var FormManagerInterface
+     * @var FormRepositoryInterface
      */
-    private FormManagerInterface $formManager;
+    private FormRepositoryInterface $formManager;
 
     /**
      * @var mixed
@@ -43,14 +42,14 @@ class BookingProcessor
     private BookingValueSemantic $semantic;
 
     /**
-     * @var BookingManagerInterface
+     * @var BookingRepositoryInterface
      */
-    private BookingManagerInterface $bookingManager;
+    private BookingRepositoryInterface $bookingManager;
 
     /**
-     * @var CalendarManagerInterface
+     * @var CalendarRepositoryInterface
      */
-    private CalendarManagerInterface $calendarManager;
+    private CalendarRepositoryInterface $calendarManager;
 
 
     /**
@@ -59,20 +58,27 @@ class BookingProcessor
     private array $linkedFormDataFields;
 
     /**
+     * @var CalendarBookingManagerInterface
+     */
+    private CalendarBookingManagerInterface $calendarBookingManager;
+
+    /**
      * @var ?Booking
      */
-    private ?Booking $reservedBooking;
+    private ?Booking $pendingBooking;
 
     public function __construct
     (
-        FormManagerInterface $formManager,
-        BookingManagerInterface $bookingManager,
-        CalendarManagerInterface $calendarManager
+        FormRepositoryInterface $formManager,
+        BookingRepositoryInterface $bookingManager,
+        CalendarRepositoryInterface $calendarManager,
+        CalendarBookingManagerInterface $calendarBookingManager
     )
     {
         $this->formManager = $formManager;
         $this->bookingManager = $bookingManager;
         $this->calendarManager = $calendarManager;
+        $this->calendarBookingManager = $calendarBookingManager;
     }
 
     /**
@@ -146,21 +152,29 @@ class BookingProcessor
     public function reserveBooking(): ?Booking
     {
         $booking = new Booking();
-        $booking->setInternalState(BOOKING_INTERNAL_STATE_RESERVED);
+        $booking->setInternalState(TLBM_BOOKING_INTERNAL_STATE_PENDING);
         $booking->setForm($this->getForm());
         $bookingValues = $this->createBookingValues();
         $calendarBookings = $this->createCalendarBookings();
 
         foreach ($calendarBookings as $calendarBooking) {
-            $booking->addCalendarBooking($calendarBooking);
+
+            //TODO: Wird derzeit nur auf "FromTimestamp" geprüft. Muss noch genauer geprüft werden für Zeitspannen
+            $remaining = $this->calendarBookingManager->getRemainingSlots($calendarBooking->getCalendar(), $calendarBooking->getFromDateTime());
+            if($remaining >= $calendarBooking->getSlots()) {
+                $booking->addCalendarBooking($calendarBooking);
+            } else {
+                return null;
+            }
         }
+
         foreach ($bookingValues as $value) {
             $booking->addBookingValue($value);
         }
 
         try {
             $this->bookingManager->saveBooking($booking);
-            $this->reservedBooking = $booking;
+            $this->pendingBooking = $booking;
             return $booking;
         } catch (Exception $e) {
             if(WP_DEBUG) {
@@ -176,15 +190,15 @@ class BookingProcessor
      */
     public function completeBooking(): bool
     {
-        if(!$this->reservedBooking) {
+        if(!$this->pendingBooking) {
             $this->reserveBooking();
         }
 
-        if($this->reservedBooking) {
-            $this->reservedBooking->setInternalState(BOOKING_INTERNAL_STATE_COMPLETED);
+        if($this->pendingBooking) {
+            $this->pendingBooking->setInternalState(TLBM_BOOKING_INTERNAL_STATE_COMPLETED);
 
             try {
-                $this->bookingManager->saveBooking($this->reservedBooking);
+                $this->bookingManager->saveBooking($this->pendingBooking);
                 return true;
             } catch (Exception $e) {
                 if(WP_DEBUG) {
@@ -197,7 +211,7 @@ class BookingProcessor
     }
 
     /**
-     * @return array
+     * @return CalendarBooking[]
      */
     public function createCalendarBookings(): array
     {
@@ -292,8 +306,8 @@ class BookingProcessor
     /**
      * @return Booking|null
      */
-    public function getReservedBooking(): ?Booking
+    public function getPendingBooking(): ?Booking
     {
-        return $this->reservedBooking;
+        return $this->pendingBooking;
     }
 }

@@ -2,6 +2,9 @@
 
 namespace TLBM\Booking\Semantic;
 
+use TLBM\Entity\Booking;
+use TLBM\Entity\BookingValue;
+
 class BookingValueSemantic
 {
 
@@ -108,5 +111,22 @@ class BookingValueSemantic
     public function setValues(array $values): void
     {
         $this->values = $values;
+    }
+
+    /**
+     * @param Booking $booking
+     *
+     * @return void
+     */
+    public function setValuesFromBooking(Booking $booking)
+    {
+        $this->values = [];
+
+        /**
+         * @var BookingValue $bookingValue
+         */
+        foreach($booking->getBookingValues() as $bookingValue) {
+            $this->values[$bookingValue->getName()] = $bookingValue->getTitle();
+        }
     }
 }

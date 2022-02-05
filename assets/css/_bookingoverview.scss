@@ -3,9 +3,10 @@
   display: flex;
   justify-content: stretch;
 
-  h3.tlbm-overview-section-title {
-    margin-top: 2em;
-    margin-bottom: 1em;
+  .tlbm-overview-section-title {
+    margin-top: 1.5em;
+    margin-bottom: 0.7rem;
+    font-size: 1.3em;
 
     &:first-child {
       margin-top: 0;

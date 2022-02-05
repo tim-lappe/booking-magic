@@ -7,16 +7,17 @@ namespace TLBM\Admin\Pages\SinglePages;
 use TLBM\Admin\Tables\CalendarGroupTable;
 use TLBM\Admin\Tables\CalendarListTable;
 use TLBM\Calendar\Contracts\CalendarGroupManagerInterface;
-use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
+use TLBM\MainFactory;
 use TLBM\Utilities\Contracts\DateTimeToolsInterface;
 
 class CalendarPage extends PageBase
 {
 
     /**
-     * @var CalendarManagerInterface
+     * @var CalendarRepositoryInterface
      */
-    private CalendarManagerInterface $calendarManager;
+    private CalendarRepositoryInterface $calendarManager;
 
     /**
      * @var DateTimeToolsInterface
@@ -30,7 +31,7 @@ class CalendarPage extends PageBase
 
     public function __construct(
         CalendarGroupManagerInterface $calendarGroupManager,
-        CalendarManagerInterface $calendarManager,
+        CalendarRepositoryInterface $calendarManager,
         DateTimeToolsInterface $dateTimeTools
     ) {
         parent::__construct(__("Calendars", TLBM_TEXT_DOMAIN), "booking-magic-calendar");
@@ -67,7 +68,7 @@ class CalendarPage extends PageBase
                     <input type="hidden" name="page" value="<?php
                     echo $_REQUEST['page'] ?>"/>
                     <?php
-                    $post_list_table = new CalendarListTable($this->calendarManager, $this->dateTimeTools);
+                    $post_list_table = MainFactory::create(CalendarListTable::class);
                     $post_list_table->views();
                     $post_list_table->prepare_items();
                     $post_list_table->display();

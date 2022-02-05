@@ -3,29 +3,34 @@
 
 namespace TLBM\Admin\Tables;
 
-
-use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
+use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
+use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\Entity\Calendar;
-use TLBM\Utilities\Contracts\DateTimeToolsInterface;
+use TLBM\MainFactory;
+use TLBM\Repository\Query\CalendarQuery;
+use TLBM\Utilities\ExtendedDateTime;
 
-
+/**
+ * @extends TableBase<Calendar>
+ */
 class CalendarListTable extends TableBase
 {
 
     /**
-     * @var CalendarManagerInterface
+     * @var CalendarRepositoryInterface
      */
-    private CalendarManagerInterface $calendarManager;
+    private CalendarRepositoryInterface $calendarManager;
 
     /**
-     * @var DateTimeToolsInterface
+     * @var AdminPageManagerInterface
      */
-    private DateTimeToolsInterface $dateTimeTools;
+    private AdminPageManagerInterface $adminPageManager;
 
-    public function __construct(CalendarManagerInterface $calendarManager, DateTimeToolsInterface $dateTimeTools)
+    public function __construct(CalendarRepositoryInterface $calendarManager, AdminPageManagerInterface $adminPageManager)
     {
+        $this->adminPageManager = $adminPageManager;
         $this->calendarManager = $calendarManager;
-        $this->dateTimeTools   = $dateTimeTools;
 
         parent::__construct(
             __("Calendars", TLBM_TEXT_DOMAIN), __("Calendar", TLBM_TEXT_DOMAIN), 10, __("You haven't created any calendars yet", TLBM_TEXT_DOMAIN)
@@ -33,52 +38,38 @@ class CalendarListTable extends TableBase
     }
 
     /**
-     * @SuppressWarnings(PHPMD)
-     * @param Calendar $item
-     */
-    public function column_title(Calendar $item)
-    {
-        $link = admin_url("admin.php?page=booking-calendar-edit&calendar_id=" . $item->getId());
-
-        if ( !empty($item->getTitle())) {
-            echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
-        } else {
-            echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
-        }
-    }
-
-    /**
-     * @SuppressWarnings(PHPMD)
-     * @param Calendar $item
-     */
-    public function column_datetime(Calendar $item)
-    {
-        $p = get_post($item->getId());
-        echo $this->dateTimeTools->formatWithTime(strtotime($p->post_date));
-    }
-
-    /**
      * @return void
      */
     protected function processBuldActions()
     {
+        //TODO: Bulk Actions für Calendar Tabelle implementieren
 
     }
 
     /**
      * @param string $orderby
      * @param string $order
-     * @SuppressWarnings(PHPMD)
+     * @param int $page
+     *
      * @return array
+     * @SuppressWarnings(PHPMD)
      */
-    protected function getItems(string $orderby, string $order): array
+    protected function getItems(string $orderby, string $order, int $page): array
     {
-        $pt_args = array();
-        if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
-            $pt_args = array("post_status" => "trash");
+        $calendarQuery = MainFactory::create(CalendarQuery::class);
+
+        if($orderby == "date") {
+            $calendarQuery->setOrderBy([[TLBM_CALENDAR_QUERY_ALIAS . ".tstampCreated", $order]]);
+
+        } elseif($orderby == "title") {
+            $calendarQuery->setOrderBy([[TLBM_CALENDAR_QUERY_ALIAS . ".title", $order]]);
+
+        } else {
+            $calendarQuery->setOrderBy([[TLBM_CALENDAR_QUERY_ALIAS . ".tstampCreated", "desc"]]);
         }
 
-        return $this->calendarManager->getAllCalendars($pt_args, $orderby, $order);
+
+        return iterator_to_array($calendarQuery->getResult());
     }
 
     /**
@@ -95,19 +86,32 @@ class CalendarListTable extends TableBase
     protected function getColumns(): array
     {
         return array(
-            "cb"       => "<input type='checkbox' />",
-            "title"    => __('Title', TLBM_TEXT_DOMAIN),
-            "datetime" => __('Date', TLBM_TEXT_DOMAIN)
+            $this->getCheckboxColumn(function ($item) {
+                return $item->getId();
+            }),
+
+            new Column("title", __('Title', TLBM_TEXT_DOMAIN), true, function ($item) {
+                $calendarEditPage = $this->adminPageManager->getPage(CalendarEditPage::class);
+                if($calendarEditPage != null) {
+                    $link = $calendarEditPage->getEditLink($item->getId());
+                    if ( !empty($item->getTitle())) {
+                        echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
+                    } else {
+                        echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
+                    }
+                }
+            }),
+
+            new Column("date", __('Date created', TLBM_TEXT_DOMAIN), true, function ($item) {
+
+                /**
+                 * @var Calendar $item
+                 */
+                echo new ExtendedDateTime($item->getTstampCreated());
+            })
         );
     }
 
-    protected function getSortableColumns(): array
-    {
-        return array(
-            'title'    => array('title', true),
-            'datetime' => array('datetime', true)
-        );
-    }
 
     /**
      * @SuppressWarnings(PHPMD)
@@ -128,20 +132,20 @@ class CalendarListTable extends TableBase
     }
 
     /**
-     * @param Calendar $item
-     *
-     * @return int
-     */
-    protected function getItemId($item): int
-    {
-        return $item->getId();
-    }
-
-    /**
      * @return int
      */
     protected function getTotalItemsCount(): int
     {
         return $this->calendarManager->getAllCalendarsCount();
+    }
+
+    /**
+     * @param string $which
+     *
+     * @return void
+     */
+    protected function tableNav(string $which): void
+    {
+
     }
 }

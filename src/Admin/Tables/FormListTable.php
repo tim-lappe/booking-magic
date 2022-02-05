@@ -7,23 +7,24 @@ namespace TLBM\Admin\Tables;
 use Exception;
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\FormEditPage;
-use TLBM\Entity\Form;
-use TLBM\Form\Contracts\FormManagerInterface;
+use TLBM\MainFactory;
+use TLBM\Repository\Contracts\FormRepositoryInterface;
+use TLBM\Repository\Query\FormQuery;
 
 class FormListTable extends TableBase
 {
 
     /**
-     * @var FormManagerInterface
+     * @var FormRepositoryInterface
      */
-    private FormManagerInterface $formManager;
+    private FormRepositoryInterface $formManager;
 
     /**
      * @var AdminPageManagerInterface
      */
     private AdminPageManagerInterface $adminPageManager;
 
-    public function __construct(FormManagerInterface $formManager, AdminPageManagerInterface $adminPageManager)
+    public function __construct(FormRepositoryInterface $formManager, AdminPageManagerInterface $adminPageManager)
     {
         $this->formManager      = $formManager;
         $this->adminPageManager = $adminPageManager;
@@ -33,42 +34,28 @@ class FormListTable extends TableBase
         );
     }
 
-    /**
-     * @param Form $item
-     * @SuppressWarnings(PHPMD)
-     */
-    public function column_title(Form $item)
-    {
-        $page = $this->adminPageManager->getPage(FormEditPage::class);
-        if ($page instanceof FormEditPage) {
-            $link = $page->getEditLink($item->getId());
-            if ( !empty($item->getTitle())) {
-                echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
-            } else {
-                echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
-            }
-        }
-    }
-
     protected function processBuldActions()
     {
-
+        //TODO: Bulk Actions für Form Tabelle implementieren
     }
 
     /**
      * @param string $orderby
      * @param string $order
-     * @SuppressWarnings(PHPMD)
+     * @param int $page
+     *
      * @return array
+     * @SuppressWarnings(PHPMD)
      */
-    protected function getItems(string $orderby, string $order): array
+    protected function getItems(string $orderby, string $order, int $page): array
     {
-        $pt_args = array();
-        if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
-            $pt_args = array("post_status" => "trash");
+        $formQuery = MainFactory::create(FormQuery::class);
+
+        if($orderby == "title") {
+            $formQuery->setOrderBy([[TLBM_FORM_QUERY_ALIAS . ".title", $order]]);
         }
 
-        return $this->formManager->getAllForms($pt_args, $orderby, $order);
+        return iterator_to_array($formQuery->getResult());
     }
 
     /**
@@ -87,20 +74,23 @@ class FormListTable extends TableBase
      */
     protected function getColumns(): array
     {
-        return array(
-            "cb"    => "<input type='checkbox' />",
-            "title" => __('Title', TLBM_TEXT_DOMAIN)
-        );
-    }
+        return [
+            $this->getCheckboxColumn(function ($item) {
+                return $item->getId();
+            }),
 
-    /**
-     * @return array[]
-     */
-    protected function getSortableColumns(): array
-    {
-        return array(
-            'title' => array('title', true)
-        );
+            new Column("title", __("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
+                $page = $this->adminPageManager->getPage(FormEditPage::class);
+                if ($page instanceof FormEditPage) {
+                    $link = $page->getEditLink($item->getId());
+                    if ( !empty($item->getTitle())) {
+                        echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
+                    } else {
+                        echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
+                    }
+                }
+            })
+        ];
     }
 
     /**
@@ -122,16 +112,6 @@ class FormListTable extends TableBase
     }
 
     /**
-     * @param Form $item
-     *
-     * @return int
-     */
-    protected function getItemId($item): int
-    {
-        return $item->getId();
-    }
-
-    /**
      * @return int
      * @throws Exception
      */
@@ -139,5 +119,15 @@ class FormListTable extends TableBase
     protected function getTotalItemsCount(): int
     {
         return $this->formManager->getAllFormsCount();
+    }
+
+    /**
+     * @param string $which
+     *
+     * @return void
+     */
+    protected function tableNav(string $which): void
+    {
+        // TODO: Implement tableNav() method.
     }
 }

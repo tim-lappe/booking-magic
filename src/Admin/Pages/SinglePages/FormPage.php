@@ -5,17 +5,17 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 
 use TLBM\Admin\Tables\FormListTable;
-use TLBM\Form\Contracts\FormManagerInterface;
+use TLBM\Repository\Contracts\FormRepositoryInterface;
 
 class FormPage extends PageBase
 {
 
     /**
-     * @var FormManagerInterface
+     * @var FormRepositoryInterface
      */
-    private FormManagerInterface $formManager;
+    private FormRepositoryInterface $formManager;
 
-    public function __construct(FormManagerInterface $formManager)
+    public function __construct(FormRepositoryInterface $formManager)
     {
         parent::__construct(__("Form", TLBM_TEXT_DOMAIN), "booking-magic-form");
         $this->formManager = $formManager;

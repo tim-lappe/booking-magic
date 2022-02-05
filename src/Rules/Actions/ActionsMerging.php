@@ -4,18 +4,18 @@ namespace TLBM\Rules\Actions;
 
 use Iterator;
 use TLBM\Entity\RuleAction;
+use TLBM\Repository\Query\Contracts\FullRuleActionQueryInterface;
+use TLBM\Repository\Query\FullRuleActionQuery;
 use TLBM\Rules\Actions\Merging\Merger\Merger;
 use TLBM\Rules\Contracts\RuleActionsManagerInterface;
-use TLBM\Rules\Contracts\RulesQueryInterface;
-use TLBM\Rules\RulesQuery;
 
 class ActionsMerging
 {
 
     /**
-     * @var RulesQuery
+     * @var FullRuleActionQuery
      */
-    private RulesQueryInterface $rulesQuery;
+    private FullRuleActionQueryInterface $rulesQuery;
 
     /**
      * @var RuleActionsManagerInterface
@@ -24,9 +24,9 @@ class ActionsMerging
 
     /**
      * @param RuleActionsManagerInterface $ruleActionsManager
-     * @param RulesQuery $query
+     * @param FullRuleActionQuery $query
      */
-    public function __construct(RuleActionsManagerInterface $ruleActionsManager, RulesQueryInterface $query)
+    public function __construct(RuleActionsManagerInterface $ruleActionsManager, FullRuleActionQueryInterface $query)
     {
         $this->rulesQuery         = $query;
         $this->ruleActionsManager = $ruleActionsManager;
@@ -74,14 +74,14 @@ class ActionsMerging
      */
     public function getRuleActions(): Iterator
     {
-        $timedRules = $this->rulesQuery->getResult();
+        $timedRules = $this->rulesQuery->getTimedRulesResult();
         foreach ($timedRules as $timedRule) {
             yield $timedRule->getTimedActions();
         }
     }
 
     /**
-     * @return RulesQuery
+     * @return FullRuleActionQuery
      */
     public function getRulesQuery()
     {
@@ -89,9 +89,9 @@ class ActionsMerging
     }
 
     /**
-     * @param RulesQuery $rulesQuery
+     * @param FullRuleActionQuery $rulesQuery
      */
-    public function setRulesQuery(RulesQuery $rulesQuery): void
+    public function setRulesQuery(FullRuleActionQuery $rulesQuery): void
     {
         $this->rulesQuery = $rulesQuery;
     }

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace TLBM\Rules;
+namespace TLBM\Repository;
 
 
 use DateTime;
@@ -9,16 +9,16 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Exception;
 use TLBM\Calendar\Contracts\CalendarSelectionHandlerInterface;
-use TLBM\Database\Contracts\ORMInterface;
 use TLBM\Entity\Rule;
-use TLBM\Rules\Contracts\RulesManagerInterface;
+use TLBM\Repository\Contracts\ORMInterface;
+use TLBM\Repository\Contracts\RulesRepositoryInterface;
 use TLBM\Utilities\Contracts\PeriodsToolsInterface;
 
 if ( !defined('ABSPATH')) {
     return;
 }
 
-class RulesManager implements RulesManagerInterface
+class RulesRepository implements RulesRepositoryInterface
 {
 
     /**

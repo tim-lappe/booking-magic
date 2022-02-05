@@ -11,7 +11,7 @@ use TLBM\Admin\FormEditor\ItemSettingsElements\Select;
 use TLBM\Admin\FormEditor\LinkedFormData;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Calendar\Contracts\CalendarGroupManagerInterface;
-use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\Output\Calendar\CalendarOutput;
 use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
 use TLBM\Utilities\ExtendedDateTime;
@@ -25,12 +25,12 @@ class CalendarElem extends FormInputElem
     private SettingsManagerInterface $settingsManager;
 
     /**
-     * @param CalendarManagerInterface $calendarManager
+     * @param CalendarRepositoryInterface $calendarManager
      * @param CalendarGroupManagerInterface $calendarGroupManager
      * @param SettingsManagerInterface $settingsManager
      */
     public function __construct(
-        CalendarManagerInterface $calendarManager,
+        CalendarRepositoryInterface $calendarManager,
         CalendarGroupManagerInterface $calendarGroupManager,
         SettingsManagerInterface $settingsManager
     ) {

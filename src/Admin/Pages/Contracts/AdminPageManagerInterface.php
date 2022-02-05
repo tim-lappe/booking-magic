@@ -2,16 +2,15 @@
 
 namespace TLBM\Admin\Pages\Contracts;
 
-use TLBM\Admin\Pages\SinglePages\PageBase;
-
 interface AdminPageManagerInterface
 {
     /**
-     * @param string $class_name
+     * @template T
+     * @param class-string<T> $class
      *
-     * @return PageBase|null
+     * @return ?T
      */
-    public function getPage(string $class_name): ?PageBase;
+    public function getPage(string $class);
 
     /**
      * @return void

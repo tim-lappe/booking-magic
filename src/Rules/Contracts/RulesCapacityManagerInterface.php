@@ -13,5 +13,5 @@ interface RulesCapacityManagerInterface
      *
      * @return int
      */
-    public function getCapacitiesForCalendar(Calendar $calendar, ExtendedDateTime $dateTime): int;
+    public function getOriginalCapacity(Calendar $calendar, ExtendedDateTime $dateTime): int;
 }

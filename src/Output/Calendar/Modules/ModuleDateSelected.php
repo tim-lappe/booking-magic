@@ -4,7 +4,7 @@
 namespace TLBM\Output\Calendar\Modules;
 
 
-use TLBM\Calendar\CalendarManager;
+use TLBM\Repository\CalendarRepository;
 use TLBM\Utilities\DateTimeTools;
 
 class ModuleDateSelected implements ICalendarPrintModule
@@ -15,7 +15,7 @@ class ModuleDateSelected implements ICalendarPrintModule
      */
     public function GetOutput($data): string
     {
-        $calendar = CalendarManager::GetCalendar($data['id']);
+        $calendar = CalendarRepository::GetCalendar($data['id']);
 
         $html = "<div class='tlbm-selected-date-finished-container'>";
         $html .= "<p>" . __("Selected date: ", TLBM_TEXT_DOMAIN) . "</p>";

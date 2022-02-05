@@ -74,7 +74,7 @@ class PeriodEditorField extends FormFieldBase implements FormFieldReadVarsInterf
                             $periodObj->fromDateTime->seconds);
 
                         $period->setFromTimestamp($fromDateTime->getTimestamp());
-                        $period->setFromTimeset((bool) $periodObj->fromTimeset);
+                        $period->setFromFullDay(!(bool) $periodObj->fromTimeset);
 
                     } catch (Throwable $exception) {
                         continue;
@@ -92,13 +92,13 @@ class PeriodEditorField extends FormFieldBase implements FormFieldReadVarsInterf
                             );
 
                             if(isset($periodObj->toTimeset)) {
-                                $period->setToTimeset((bool) $periodObj->toTimeset);
+                                $period->setToFullDay(!(bool) $periodObj->toTimeset);
                             }
 
                             $period->setToTimestamp($toDateTime->getTimestamp());
                         } catch (Throwable $exception) {
                             $period->setToTimestamp(null);
-                            $period->setToTimeset(false);
+                            $period->setToFullDay(true);
                         }
                     }
 

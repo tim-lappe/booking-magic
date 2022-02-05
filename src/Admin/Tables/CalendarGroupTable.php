@@ -4,10 +4,9 @@
 namespace TLBM\Admin\Tables;
 
 
+use TLBM\Admin\Tables\DisplayHelper\DisplayCalendarSelection;
 use TLBM\Calendar\Contracts\CalendarGroupManagerInterface;
-use TLBM\Calendar\Contracts\CalendarManagerInterface;
-use TLBM\Entity\CalendarGroup;
-use TLBM\Utilities\Contracts\DateTimeToolsInterface;
+use TLBM\MainFactory;
 
 class CalendarGroupTable extends TableBase
 {
@@ -17,111 +16,33 @@ class CalendarGroupTable extends TableBase
      */
     private CalendarGroupManagerInterface $calendarGroupManager;
 
-    /**
-     * @var CalendarManagerInterface
-     */
-    private CalendarManagerInterface $calendarManager;
-
-    /**
-     * @var DateTimeToolsInterface
-     */
-    private DateTimeToolsInterface $dateTimeTools;
 
     public function __construct(
-        CalendarGroupManagerInterface $calendarGroupManager,
-        CalendarManagerInterface $calendarManager,
-        DateTimeToolsInterface $dateTimeTools
+        CalendarGroupManagerInterface $calendarGroupManager
     ) {
         $this->calendarGroupManager = $calendarGroupManager;
-        $this->calendarManager      = $calendarManager;
-        $this->dateTimeTools        = $dateTimeTools;
 
         parent::__construct(
             __("Groups", TLBM_TEXT_DOMAIN), __("Group", TLBM_TEXT_DOMAIN), 10, __("You haven't created any groups yet", TLBM_TEXT_DOMAIN)
         );
     }
 
-    /**
-     * @SuppressWarnings(PHPMD)
-     * @param CalendarGroup $item
-     */
-    public function column_booking_distribution(CalendarGroup $item)
-    {
-        if ($item->getBookingDisitribution() == TLBM_BOOKING_DISTRIBUTION_EVENLY) {
-            echo "Evenly";
-        } elseif ($item->getBookingDisitribution() == TLBM_BOOKING_DISTRIBUTION_FILL_ONE) {
-            echo "Fill One First";
-        }
-    }
-
-    /**
-     * @SuppressWarnings(PHPMD)
-     * @param CalendarGroup $item
-     */
-    public function column_selected_calendars(CalendarGroup $item)
-    {
-        $selection = $item->getCalendarSelection();
-        if ($selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
-            echo __("All", TLBM_TEXT_DOMAIN);
-        } elseif ($selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
-            foreach ($selection->getCalendarIds() as $key => $id) {
-                $cal  = $this->calendarManager->getCalendar($id);
-                $link = get_edit_post_link($id);
-                if ($key > 0) {
-                    echo ", ";
-                }
-                echo "<a href='" . $link . "'>" . $cal->getTitle() . "</a>";
-            }
-        } elseif ($selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
-            echo __("All but ", TLBM_TEXT_DOMAIN);
-            foreach ($selection->getCalendarIds() as $key => $id) {
-                $cal  = $this->calendarManager->getCalendar($id);
-                $link = get_edit_post_link($id);
-                if ($key > 0) {
-                    echo ", ";
-                }
-                echo "<a href='" . $link . "'><s>" . $cal->getTitle() . "</s></a>";
-            }
-        }
-    }
-
-    /**
-     * @SuppressWarnings(PHPMD)
-     * @param CalendarGroup $item
-     */
-    public function column_title(CalendarGroup $item)
-    {
-        $link = get_edit_post_link($item->getId());
-        if ( !empty($item->getTitle())) {
-            echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
-        } else {
-            echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
-        }
-    }
-
-    /**
-     * @SuppressWarnings(PHPMD)
-     * @param CalendarGroup $item
-     */
-    public function column_datetime(CalendarGroup $item)
-    {
-        $p = get_post($item->getId());
-        echo $this->dateTimeTools->formatWithTime(strtotime($p->post_date));
-    }
-
     protected function processBuldActions()
     {
+        //TODO: Bulk Actions für Calendar Group Tabelle implementieren
 
     }
 
     /**
      * @param string $orderby
      * @param string $order
-     * @SuppressWarnings(PHPMD)
+     * @param int $page
      *
      * @return array
+     * @SuppressWarnings(PHPMD)
+     *
      */
-    protected function getItems(string $orderby, string $order): array
+    protected function getItems(string $orderby, string $order, int $page): array
     {
         $pt_args = array();
         if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
@@ -147,13 +68,36 @@ class CalendarGroupTable extends TableBase
      */
     protected function getColumns(): array
     {
-        return array(
-            "cb"                   => "<input type='checkbox' />",
-            "title"                => __('Title', TLBM_TEXT_DOMAIN),
-            "selected_calendars"   => __('Selected Calendars', TLBM_TEXT_DOMAIN),
-            "booking_distribution" => __('Booking Distribution', TLBM_TEXT_DOMAIN),
-            "datetime"             => __('Date', TLBM_TEXT_DOMAIN)
-        );
+        return [
+            $this->getCheckboxColumn(function ($item) {
+                return $item->getId();
+            }),
+            new Column("title", __("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
+
+                $link = get_edit_post_link($item->getId());
+                if ( !empty($item->getTitle())) {
+                    echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
+                } else {
+                    echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
+                }
+
+            }),
+            new Column("selected_calendars", __('Selected Calendars', TLBM_TEXT_DOMAIN), true, function ($item) {
+
+                $selection = $item->getCalendarSelection();
+                $selectionDisplay = MainFactory::create(DisplayCalendarSelection::class);
+                $selectionDisplay->setCalendarSelection($selection);
+                $selectionDisplay->display();
+
+            }),
+            new Column("booking_distribution", __('Booking Distribution', TLBM_TEXT_DOMAIN), true, function ($item) {
+                if ($item->getBookingDisitribution() == TLBM_BOOKING_DISTRIBUTION_EVENLY) {
+                    echo __("Evenly", TLBM_TEXT_DOMAIN);
+                } elseif ($item->getBookingDisitribution() == TLBM_BOOKING_DISTRIBUTION_FILL_ONE) {
+                    echo __("Fill One First", TLBM_TEXT_DOMAIN);
+                }
+            })
+        ];
     }
 
     /**
@@ -185,20 +129,20 @@ class CalendarGroupTable extends TableBase
     }
 
     /**
-     * @param $item
-     *
-     * @return int
-     */
-    protected function getItemId($item): int
-    {
-        return $item->wp_post_id;
-    }
-
-    /**
      * @return int
      */
     protected function getTotalItemsCount(): int
     {
         return $this->calendarGroupManager->getAllGroupsCount();
+    }
+
+    /**
+     * @param string $which
+     *
+     * @return void
+     */
+    protected function tableNav(string $which): void
+    {
+
     }
 }

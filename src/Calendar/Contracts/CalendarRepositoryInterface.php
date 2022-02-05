@@ -5,7 +5,7 @@ namespace TLBM\Calendar\Contracts;
 use Exception;
 use TLBM\Entity\Calendar;
 
-interface CalendarManagerInterface
+interface CalendarRepositoryInterface
 {
 
     /**

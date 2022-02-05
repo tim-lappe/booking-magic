@@ -1,19 +1,19 @@
 <?php
 
-namespace TLBM\Form\Contracts;
+namespace TLBM\Repository\Contracts;
 
 use Exception;
 use TLBM\Entity\Form;
 
-interface FormManagerInterface
+interface FormRepositoryInterface
 {
 
     /**
-     * @param $id
+     * @param int $id
      *
      * @return Form
      */
-    public function getForm($id): ?Form;
+    public function getForm(int $id): ?Form;
 
     /**
      * @param Form $form

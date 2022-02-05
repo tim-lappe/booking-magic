@@ -8,21 +8,21 @@ if ( !defined('ABSPATH')) {
 }
 
 use TLBM\Admin\WpForm\Contracts\FormFieldReadVarsInterface;
-use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\Entity\CalendarSelection;
 
 class CalendarPickerField extends FormFieldBase implements FormFieldReadVarsInterface
 {
 
-    private CalendarManagerInterface $calendarManager;
+    private CalendarRepositoryInterface $calendarManager;
 
     /**
-     * @param CalendarManagerInterface $calendarManager
+     * @param CalendarRepositoryInterface $calendarManager
      * @param string $name
      * @param string $title
      */
     public function __construct(
-        CalendarManagerInterface $calendarManager,
+        CalendarRepositoryInterface $calendarManager,
         string $name,
         string $title
     ) {

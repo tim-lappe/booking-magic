@@ -4,24 +4,24 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 
-use TLBM\Admin\Tables\AllRulesListTable;
-use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\Admin\Tables\RulesListTable;
+use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\MainFactory;
-use TLBM\Rules\Contracts\RulesManagerInterface;
+use TLBM\Repository\Contracts\RulesRepositoryInterface;
 
 class RulesPage extends PageBase
 {
     /**
-     * @var RulesManagerInterface
+     * @var RulesRepositoryInterface
      */
-    private RulesManagerInterface $rulesManager;
+    private RulesRepositoryInterface $rulesManager;
 
     /**
-     * @var CalendarManagerInterface
+     * @var CalendarRepositoryInterface
      */
-    private CalendarManagerInterface $calendarManager;
+    private CalendarRepositoryInterface $calendarManager;
 
-    public function __construct(RulesManagerInterface $rulesManager, CalendarManagerInterface $calendarManager)
+    public function __construct(RulesRepositoryInterface $rulesManager, CalendarRepositoryInterface $calendarManager)
     {
         parent::__construct(__("Rules", TLBM_TEXT_DOMAIN), "booking-magic-rules");
         $this->rulesManager    = $rulesManager;
@@ -53,7 +53,7 @@ class RulesPage extends PageBase
                     <input type="hidden" name="page" value="<?php
                     echo $_REQUEST['page'] ?>"/>
                     <?php
-                    $post_list_table = MainFactory::create(AllRulesListTable::class);
+                    $post_list_table = MainFactory::create(RulesListTable::class);
                     $post_list_table->views();
                     $post_list_table->prepare_items();
                     $post_list_table->display();

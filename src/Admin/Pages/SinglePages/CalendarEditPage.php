@@ -3,10 +3,9 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 use DI\DependencyException;
-use DI\FactoryInterface;
 use DI\NotFoundException;
 use Exception;
-use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\Entity\Calendar;
 use TLBM\MainFactory;
 use TLBM\Output\Calendar\CalendarOutput;
@@ -17,25 +16,21 @@ class CalendarEditPage extends FormPageBase
 {
 
     /**
-     * @var CalendarManagerInterface
+     * @var CalendarRepositoryInterface
      */
-    private CalendarManagerInterface $calendarManager;
+    private CalendarRepositoryInterface $calendarManager;
 
     /**
      * @var Calendar|null
      */
     private ?Calendar $editingCalendar = null;
 
-    public function __construct(CalendarManagerInterface $calendarManager)
+    public function __construct(CalendarRepositoryInterface $calendarManager)
     {
         $this->calendarManager = $calendarManager;
         parent::__construct("calendar-edit", "booking-calendar-edit", false);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     */
     public function showFormPageContent()
     {
         $calendar = $this->getEditingCalendar();

@@ -5,9 +5,8 @@ namespace TLBM\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use JsonSerializable;
 
-const BOOKING_INTERNAL_STATE_RESERVED = "RESERVED";
-const BOOKING_INTERNAL_STATE_COMPLETED = "COMPLETED";
 
 /**
  * Class Calendar
@@ -15,7 +14,7 @@ const BOOKING_INTERNAL_STATE_COMPLETED = "COMPLETED";
  * @Doctrine\ORM\Mapping\Entity
  * @Doctrine\ORM\Mapping\Table(name="bookings")
  */
-class Booking
+class Booking implements JsonSerializable
 {
 
     use IndexedTable;
@@ -48,7 +47,7 @@ class Booking
      * @var string
      * @Doctrine\ORM\Mapping\Column(type="string", nullable=false)
      */
-    protected string $internalState = BOOKING_INTERNAL_STATE_RESERVED;
+    protected string $internalState = TLBM_BOOKING_INTERNAL_STATE_PENDING;
 
     /**
      * @var string
@@ -93,9 +92,9 @@ class Booking
     }
 
     /**
-     * @return ArrayCollection|CalendarBooking[]
+     * @return Collection|CalendarBooking[]
      */
-    public function getCalendarBookings(): ArrayCollection
+    public function getCalendarBookings(): Collection
     {
         return $this->calendarBookings;
     }
@@ -130,11 +129,11 @@ class Booking
     }
 
     /**
-     * @return mixed
+     * @return Collection<BookingValue>
      */
-    public function getBookingValues()
+    public function getBookingValues(): Collection
     {
-        return $this->getBookingValues();
+        return $this->bookingValues;
     }
 
     /**
@@ -183,5 +182,27 @@ class Booking
     public function setForm(?Form $form): void
     {
         $this->form = $form;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTstampCreated(): int
+    {
+        return $this->tstampCreated;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            "bookingValues" => $this->bookingValues->toArray(),
+            "calendarBookings" => $this->calendarBookings->toArray(),
+            "tstampCreated" => $this->tstampCreated,
+            "id" => $this->id,
+            "formId" => $this->form->getId()
+        ];
     }
 }

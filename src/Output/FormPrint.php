@@ -8,27 +8,26 @@ if ( !defined('ABSPATH')) {
 }
 
 use TLBM\Admin\FormEditor\FormDataWalker;
-use TLBM\Admin\FormEditor\LinkedFormData;
 use TLBM\Admin\FormEditor\RecursiveFormContentWalker;
 use TLBM\Entity\Form;
-use TLBM\Form\Contracts\FormManagerInterface;
 use TLBM\Output\Contracts\FormPrintInterface;
 use TLBM\Output\Contracts\FrontendMessengerInterface;
+use TLBM\Repository\Contracts\FormRepositoryInterface;
 
 class FormPrint implements FormPrintInterface
 {
 
     /**
-     * @var FormManagerInterface
+     * @var FormRepositoryInterface
      */
-    private FormManagerInterface $formManager;
+    private FormRepositoryInterface $formManager;
 
     /**
      * @var FrontendMessengerInterface
      */
     private FrontendMessengerInterface $frontendMessenger;
 
-    public function __construct(FormManagerInterface $formManager, FrontendMessengerInterface $frontendMessenger)
+    public function __construct(FormRepositoryInterface $formManager, FrontendMessengerInterface $frontendMessenger)
     {
         $this->formManager = $formManager;
         $this->frontendMessenger = $frontendMessenger;

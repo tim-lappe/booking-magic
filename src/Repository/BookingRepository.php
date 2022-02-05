@@ -1,7 +1,7 @@
 <?php
 
 
-namespace TLBM\Booking;
+namespace TLBM\Repository;
 
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -9,17 +9,20 @@ use Exception;
 use Throwable;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\ExpiryTime;
-use TLBM\Booking\Contracts\BookingManagerInterface;
-use TLBM\Database\Contracts\ORMInterface;
 use TLBM\Entity\Booking;
+use TLBM\Repository\Contracts\BookingRepositoryInterface;
+use TLBM\Repository\Contracts\ORMInterface;
 use TLBM\Utilities\ExtendedDateTime;
+
+use const TLBM\Booking\WP_DEBUG;
+use const TLBM_BOOKING_INTERNAL_STATE_PENDING;
 
 
 if ( !defined('ABSPATH')) {
     return;
 }
 
-class BookingManager implements BookingManagerInterface
+class BookingRepository implements BookingRepositoryInterface
 {
 
     /**
@@ -36,8 +39,6 @@ class BookingManager implements BookingManagerInterface
     {
         $this->repository = $repository;
         $this->settingsManager = $settingsManager;
-
-        $this->cleanExpiredReservedBookings();
     }
 
     /**
@@ -123,7 +124,7 @@ class BookingManager implements BookingManagerInterface
 
             $mgr          = $this->repository->getEntityManager();
             $queryBuilder = $mgr->createQueryBuilder();
-            $queryBuilder->select("b")->from("\TLBM\Entity\Booking", "b")->where("b.tstampCreated < :tstamp AND b.internalState = :state")->setParameter("tstamp", $thresholdTsamp)->setParameter("state", TLBM_BOOKING_INTERNAL_STATE_RESERVED);
+            $queryBuilder->select("b")->from("\TLBM\Entity\Booking", "b")->where("b.tstampCreated < :tstamp AND b.internalState = :state")->setParameter("tstamp", $thresholdTsamp)->setParameter("state", TLBM_BOOKING_INTERNAL_STATE_PENDING);
 
             $result = $queryBuilder->getQuery()->getResult();
             foreach ($result as $r) {

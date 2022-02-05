@@ -7,8 +7,8 @@ if ( !defined('ABSPATH')) {
     return;
 }
 
-
 use TLBM\Output\Contracts\FormPrintInterface;
+use TLBM\Repository\Contracts\BookingRepositoryInterface;
 use TLBM\Request\Contracts\RequestManagerInterface;
 
 class RegisterShortcodes
@@ -47,6 +47,9 @@ class RegisterShortcodes
      */
     public function formShortcode(array $args): string
     {
+        $bookingManager = MainFactory::get(BookingRepositoryInterface::class);
+        $bookingManager->cleanExpiredReservedBookings();
+
         if (sizeof($args) > 0) {
             if (isset($args['id'])) {
                 if ($this->requestManager->hasContent()) {

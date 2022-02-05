@@ -7,17 +7,17 @@ namespace TLBM\Admin\Pages\SinglePages\Dashboard;
 use DateInterval;
 use DateTime;
 use TLBM\Calendar\CalendarStatistics;
-use TLBM\Calendar\Contracts\CalendarManagerInterface;
+use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 
 class BestSellingCalendarsTile extends DashboardTile
 {
 
     /**
-     * @var CalendarManagerInterface
+     * @var CalendarRepositoryInterface
      */
-    private CalendarManagerInterface $calendarManager;
+    private CalendarRepositoryInterface $calendarManager;
 
-    public function __construct(CalendarManagerInterface $calendarManager)
+    public function __construct(CalendarRepositoryInterface $calendarManager)
     {
         $this->calendarManager = $calendarManager;
 

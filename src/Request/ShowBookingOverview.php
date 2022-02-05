@@ -3,27 +3,13 @@
 
 namespace TLBM\Request;
 
-
-use phpDocumentor\Reflection\Types\This;
-use TLBM\Booking\BookingProcessing;
 use TLBM\Booking\BookingProcessor;
-use TLBM\Form\Contracts\FormManagerInterface;
 use TLBM\MainFactory;
 use TLBM\Output\Contracts\FrontendMessengerInterface;
-use TLBM\Utilities\Contracts\DateTimeToolsInterface;
 
 class ShowBookingOverview extends RequestBase
 {
 
-    /**
-     * @var FormManagerInterface
-     */
-    private FormManagerInterface $formManager;
-
-    /**
-     * @var DateTimeToolsInterface
-     */
-    private DateTimeToolsInterface $dateTimeTools;
 
     /**
      * @var FrontendMessengerInterface
@@ -35,12 +21,10 @@ class ShowBookingOverview extends RequestBase
      */
     private ?BookingProcessor $bookingProcessor;
 
-    public function __construct(FormManagerInterface $formManager, DateTimeToolsInterface $dateTimeTools, FrontendMessengerInterface $frontendMessenger)
+    public function __construct(FrontendMessengerInterface $frontendMessenger)
     {
         parent::__construct();
         $this->action        = "showbookingoverview";
-        $this->formManager   = $formManager;
-        $this->dateTimeTools = $dateTimeTools;
         $this->frontendMessenger = $frontendMessenger;
     }
 
@@ -63,10 +47,14 @@ class ShowBookingOverview extends RequestBase
 
                 $this->frontendMessenger->addMessage(__("Not all required fields were filled out: <br>" . implode("<br>", $errors), TLBM_TEXT_DOMAIN));
                 $this->hasContent = false;
-            } else {
-                $bookingProcessor->reserveBooking();
+
+            } elseif ($bookingProcessor->reserveBooking() != null) {
                 $this->bookingProcessor = $bookingProcessor;
-                $this->hasContent = true;
+                $this->hasContent       = true;
+
+            } else {
+                $this->hasContent = false;
+                $this->frontendMessenger->addMessage(__("Booking could not be completed. Some booking times are no longer available ", TLBM_TEXT_DOMAIN));
             }
         }
     }
@@ -84,52 +72,50 @@ class ShowBookingOverview extends RequestBase
             $html .= "<div class='tlbm-booking-overview-box'><div class='tlbm-formular-content'>";
 
             if ($semantic->hasFullName()) {
-                $html .= "<h3 class='tlbm-overview-section-title'>" . __("Name", TLBM_TEXT_DOMAIN) . "</h3>";
+                $html .= "<div class='tlbm-overview-section-title'>" . __("Name", TLBM_TEXT_DOMAIN) . "</div>";
                 $html .= "<span>" . $semantic->getFirstName() . "</span>&nbsp;<span>" . $semantic->getLastName() . "</span>";
 
             } elseif ($semantic->hasFirstName()) {
-                $html .= "<h3 class='tlbm-overview-section-title'>" . __("Name", TLBM_TEXT_DOMAIN) . "</h3>";
+                $html .= "<div class='tlbm-overview-section-title'>" . __("Name", TLBM_TEXT_DOMAIN) . "</div>";
                 $html .= "<span>" . $semantic->getFirstName() . "</span>";
 
             } elseif ($semantic->hasLastName()) {
-                $html .= "<h3 class='tlbm-overview-section-title'>" . __("Name", TLBM_TEXT_DOMAIN) . "</h3>";
+                $html .= "<div class='tlbm-overview-section-title'>" . __("Name", TLBM_TEXT_DOMAIN) . "</div>";
                 $html .= "<span>" . $semantic->getLastName() . "</span>";
             }
 
             if ($semantic->hasFullAddress()) {
-                $html .= "<h3 class='tlbm-overview-section-title'>" . __("Address", TLBM_TEXT_DOMAIN) . "</h3>";
+                $html .= "<div class='tlbm-overview-section-title'>" . __("Address", TLBM_TEXT_DOMAIN) . "</div>";
                 $html .= "<span>" . $semantic->getAddress() . "</span><br>";
                 $html .= "<span>" . $semantic->getZip() . "</span>&nbsp;<span>" . $semantic->getCity() . "</span>";
             } elseif ($semantic->hasZipAndCity()) {
-                $html .= "<h3 class='tlbm-overview-section-title'>" . __("City", TLBM_TEXT_DOMAIN) . "</h3>";
+                $html .= "<div class='tlbm-overview-section-title'>" . __("City", TLBM_TEXT_DOMAIN) . "</div>";
                 $html .= "<span>" . $semantic->getZip() . "</span>&nbsp;<span>" . $semantic->getCity() . "</span>";
             } elseif ($semantic->hasCity()) {
-                $html .= "<h3 class='tlbm-overview-section-title'>" . __("City", TLBM_TEXT_DOMAIN) . "</h3>";
+                $html .= "<div class='tlbm-overview-section-title'>" . __("City", TLBM_TEXT_DOMAIN) . "</div>";
                 $html .= "<span>" . $semantic->getCity() . "</span>";
             }
 
 
             if ($semantic->hasContactEmail()) {
-                $html .= "<h3 class='tlbm-overview-section-title'>" . __("E-Mail", TLBM_TEXT_DOMAIN) . "</h3>";
+                $html .= "<div class='tlbm-overview-section-title'>" . __("E-Mail", TLBM_TEXT_DOMAIN) . "</div>";
                 $html .= "<span>" . $semantic->getContactEmail() . "</span>";
             }
 
             $html .= "</div><div class='tlbm-formular-booked-calendar'>";
+            $calendarBookings = $this->bookingProcessor->getPendingBooking()->getCalendarBookings();
 
-            if (sizeof($booking->calendar_slots) >= 1) {
-                $html .= "<h3 class='tlbm-overview-section-title'>" . __("Booked time", TLBM_TEXT_DOMAIN) . "</h3>";
-                $html .= $this->dateTimeTools->formatWithTime($booking->calendar_slots[0]->timestamp);
+            if(sizeof($calendarBookings) > 0) {
+                //TODO: Hier müssen auch mehrere Buchungszeiten berücksichtigt werden und nicht nur "From"
+                $html .= "<div class='tlbm-overview-section-title'>" . __("Selected time", TLBM_TEXT_DOMAIN) . "</div>";
+                foreach ($calendarBookings as $calendarBooking) {
+                    $html .= $calendarBooking->getFromDateTime() . "<br>";
+                }
             }
 
             $html .= "</div></div>";
-
-            $echovars = array_diff_key($vars, array("_wpnonce" => 0, "form" => 0));
-            foreach ($echovars as $key => $value) {
-                $html .= "<input type='hidden' name='" . $key . "' value='" . $value . "'>";
-            }
-
-            $html .= "<input type='hidden' name='action' value='dobooking'>";
-            $html .= "<input type='hidden' name='form' value='" . $form_id . "'>";
+            $html .= "<input type='hidden' name='tlbm_action' value='dobooking'>";
+            $html .= "<input type='hidden' name='pending_booking' value='" . $this->bookingProcessor->getPendingBooking()->getId() . "'>";
             $html .= wp_nonce_field("dobooking_action", "_wpnonce", true, false);
             $html .= "<button class='tlbm-book-now-btn'>" . __("Book Now", TLBM_TEXT_DOMAIN) . "</button>";
             $html .= "</form>";

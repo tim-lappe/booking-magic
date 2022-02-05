@@ -1,7 +1,7 @@
 <?php
 
 
-namespace TLBM\Database;
+namespace TLBM\Repository;
 
 
 use Doctrine\Common\EventSubscriber;
