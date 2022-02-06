@@ -6,6 +6,7 @@ namespace TLBM\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use JsonSerializable;
+use TLBM\Entity\Traits\IndexedEntity;
 use TLBM\Utilities\ExtendedDateTime;
 
 /**
@@ -17,7 +18,7 @@ use TLBM\Utilities\ExtendedDateTime;
 class RulePeriod implements JsonSerializable
 {
 
-    use IndexedTable;
+    use IndexedEntity;
 
     /**
      * @var ?Rule

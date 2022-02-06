@@ -123,7 +123,7 @@ class BookingRepository implements BookingRepositoryInterface
 
             $mgr          = $this->repository->getEntityManager();
             $queryBuilder = $mgr->createQueryBuilder();
-            $queryBuilder->select("b")->from("\TLBM\Entity\Booking", "b")->where("b.tstampCreated < :tstamp AND b.internalState = :state")->setParameter("tstamp", $thresholdTsamp)->setParameter("state", TLBM_BOOKING_INTERNAL_STATE_PENDING);
+            $queryBuilder->select("b")->from("\TLBM\Entity\Booking", "b")->where("b.timestampCreated < :tstamp AND b.internalState = :state")->setParameter("tstamp", $thresholdTsamp)->setParameter("state", TLBM_BOOKING_INTERNAL_STATE_PENDING);
 
             $result = $queryBuilder->getQuery()->getResult();
             foreach ($result as $r) {

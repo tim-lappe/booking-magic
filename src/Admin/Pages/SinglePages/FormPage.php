@@ -5,20 +5,14 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 
 use TLBM\Admin\Tables\FormListTable;
-use TLBM\Repository\Contracts\FormRepositoryInterface;
+use TLBM\MainFactory;
 
 class FormPage extends PageBase
 {
 
-    /**
-     * @var FormRepositoryInterface
-     */
-    private FormRepositoryInterface $formManager;
-
-    public function __construct(FormRepositoryInterface $formManager)
+    public function __construct()
     {
         parent::__construct(__("Form", TLBM_TEXT_DOMAIN), "booking-magic-form");
-        $this->formManager = $formManager;
         $this->parent_slug = "booking-magic";
     }
 
@@ -44,10 +38,10 @@ class FormPage extends PageBase
                     <input type="hidden" name="page" value="<?php
                     echo $_REQUEST['page'] ?>"/>
                     <?php
-                    $post_list_table = new FormListTable($this->formManager, $this->adminPageManager);
-                    $post_list_table->views();
-                    $post_list_table->prepare_items();
-                    $post_list_table->display();
+                    $formListTable = MainFactory::create(FormListTable::class);
+                    $formListTable->views();
+                    $formListTable->prepare_items();
+                    $formListTable->display();
                     ?>
                 </form>
             </div>

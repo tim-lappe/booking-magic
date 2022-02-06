@@ -7,11 +7,11 @@ namespace TLBM\Admin\Tables;
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\BookingEditPage;
 use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
-use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\Entity\Booking;
 use TLBM\MainFactory;
-use TLBM\Repository\Contracts\BookingRepositoryInterface;
+use TLBM\Repository\Contracts\EntityRepositoryInterface;
 use TLBM\Repository\Query\BookingsQuery;
+use TLBM\Repository\Query\CalendarQuery;
 use TLBM\Utilities\Colors;
 use TLBM\Utilities\Contracts\ColorsInterface;
 use TLBM\Utilities\ExtendedDateTime;
@@ -19,14 +19,9 @@ use TLBM\Utilities\ExtendedDateTime;
 class BookingListTable extends TableBase
 {
     /**
-     * @var CalendarRepositoryInterface
+     * @var EntityRepositoryInterface
      */
-    private CalendarRepositoryInterface $calendarManager;
-
-    /**
-     * @var BookingRepositoryInterface
-     */
-    private BookingRepositoryInterface $bookingManager;
+    private EntityRepositoryInterface $entityRepository;
 
     /**
      * @var AdminPageManagerInterface
@@ -39,12 +34,10 @@ class BookingListTable extends TableBase
     private ColorsInterface $colors;
 
     public function __construct(
-        CalendarRepositoryInterface $calendarManager,
-        BookingRepositoryInterface $bookingManager,
+        EntityRepositoryInterface $entityRepository,
         AdminPageManagerInterface $adminPageManager
     ) {
-        $this->calendarManager = $calendarManager;
-        $this->bookingManager = $bookingManager;
+        $this->entityRepository = $entityRepository;
         $this->adminPageManager = $adminPageManager;
         $this->colors          = new Colors();
 
@@ -62,7 +55,8 @@ class BookingListTable extends TableBase
     public function tableNav(string $which): void
     {
         if ($which == "top" && !$this->slim) {
-            $calendars = $this->calendarManager->getAllCalendars();
+            $entityQuery = MainFactory::get(CalendarQuery::class);
+            $calendars = $entityQuery->getResult();
             ?>
             <div class="alignleft actions bulkactions">
                 <select name="calendar-filter">
@@ -95,7 +89,7 @@ class BookingListTable extends TableBase
 
     protected function getTotalItemsCount(): int
     {
-        return $this->bookingManager->getAllBookingsCount();
+        return $this->entityRepository->getEntityCount(Booking::class);
     }
 
     /**
@@ -111,7 +105,7 @@ class BookingListTable extends TableBase
         $bookingsQuery = MainFactory::create(BookingsQuery::class);
 
         if($orderby == "date") {
-            $bookingsQuery->setOrderBy([[TLBM_BOOKING_QUERY_ALIAS . ".tstampCreated", $order]]);
+            $bookingsQuery->setOrderBy([[TLBM_BOOKING_QUERY_ALIAS . ".timestampCreated", $order]]);
 
         } elseif ($orderby == "id") {
             $bookingsQuery->setOrderBy([[TLBM_BOOKING_QUERY_ALIAS . ".id", $order]]);
@@ -120,7 +114,7 @@ class BookingListTable extends TableBase
             $bookingsQuery->setOrderBy([[TLBM_BOOKING_QUERY_ALIAS . ".state", $order]]);
 
         } else {
-            $bookingsQuery->setOrderBy([[TLBM_BOOKING_QUERY_ALIAS . ".tstampCreated", "desc"]]);
+            $bookingsQuery->setOrderBy([[TLBM_BOOKING_QUERY_ALIAS . ".timestampCreated", "desc"]]);
         }
 
         return iterator_to_array($bookingsQuery->getResult());
@@ -187,7 +181,7 @@ class BookingListTable extends TableBase
                 }
 
                 //TODO: Es wird derzeit nur "From" in der Tabelle angezeigt.
-                if ($calendar) {
+                if ($calendar != null) {
                     echo $prefix . "<a href='" . $link . "'>" . $calendar->getTitle() . "</a>&nbsp;&nbsp;&nbsp;" . new ExtendedDateTime($calendarBooking->getFromTimestamp()) . "<br>";
                 } else {
                     echo $prefix . "<strong>" . __("Calendar deleted", TLBM_TEXT_DOMAIN) . "</strong>&nbsp;&nbsp;&nbsp;" .  new ExtendedDateTime($calendarBooking->getFromTimestamp()) . "<br>";
@@ -215,7 +209,7 @@ class BookingListTable extends TableBase
     }
 
     protected function columnDisplayDate(Booking $item) {
-        echo new ExtendedDateTime($item->getTstampCreated());
+        echo new ExtendedDateTime($item->getTimestampCreated());
     }
 
     /**

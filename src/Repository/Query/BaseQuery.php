@@ -3,6 +3,7 @@
 namespace TLBM\Repository\Query;
 
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 use Iterator;
 use TLBM\Repository\Contracts\ORMInterface;
 
@@ -47,6 +48,26 @@ abstract class BaseQuery
         foreach($queryBuilder->getQuery()->getResult() as $resultObj) {
             yield $resultObj;
         }
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getResultCount(): int
+    {
+        try {
+            $queryBuilder = $this->createQueryBuilder();
+            $this->buildQuery($queryBuilder, true);
+
+            return intval($queryBuilder->getQuery()->getSingleScalarResult());
+        } catch (Exception $exception) {
+            if(WP_DEBUG) {
+                echo $exception->getMessage();
+            }
+        }
+
+        return 0;
     }
 
     /**
@@ -134,8 +155,9 @@ abstract class BaseQuery
 
     /**
      * @param QueryBuilder $queryBuilder
+     * @param bool $onlyCount
      *
      * @return void
      */
-    abstract protected function buildQuery(QueryBuilder $queryBuilder): void;
+    abstract protected function buildQuery(QueryBuilder $queryBuilder, bool $onlyCount = false): void;
 }

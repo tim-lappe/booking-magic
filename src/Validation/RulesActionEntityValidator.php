@@ -4,7 +4,6 @@ namespace TLBM\Validation;
 
 use TLBM\Entity\RuleAction;
 use TLBM\Localization\Contracts\LabelsInterface;
-use TLBM\MainFactory;
 use TLBM\Rules\Contracts\RuleActionsManagerInterface;
 use TLBM\Validation\Contracts\RulesActionEntityValidatorInterface;
 

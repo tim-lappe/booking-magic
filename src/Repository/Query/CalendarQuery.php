@@ -10,11 +10,16 @@ class CalendarQuery extends BaseQuery
 {
     /**
      * @param QueryBuilder $queryBuilder
+     * @param bool $onlyCount
      *
      * @return void
      */
-    protected function buildQuery(QueryBuilder $queryBuilder): void
+    protected function buildQuery(QueryBuilder $queryBuilder, bool $onlyCount = false): void
     {
-        $queryBuilder->select(TLBM_CALENDAR_QUERY_ALIAS)->from("\TLBM\Entity\Calendar", TLBM_CALENDAR_QUERY_ALIAS);
+        if($onlyCount) {
+            $queryBuilder->select("count(".TLBM_CALENDAR_QUERY_ALIAS.".id)")->from("\TLBM\Entity\Calendar", TLBM_CALENDAR_QUERY_ALIAS);
+        } else {
+            $queryBuilder->select(TLBM_CALENDAR_QUERY_ALIAS)->from("\TLBM\Entity\Calendar", TLBM_CALENDAR_QUERY_ALIAS);
+        }
     }
 }

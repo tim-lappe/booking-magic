@@ -4,6 +4,7 @@
 namespace TLBM\Entity;
 
 use JsonSerializable;
+use TLBM\Entity\Traits\IndexedEntity;
 use TLBM\Utilities\ExtendedDateTime;
 
 /**
@@ -15,7 +16,7 @@ use TLBM\Utilities\ExtendedDateTime;
 class CalendarBooking implements JsonSerializable
 {
 
-    use IndexedTable;
+    use IndexedEntity;
 
     /**
      * @var Booking
@@ -24,10 +25,10 @@ class CalendarBooking implements JsonSerializable
     protected Booking $booking;
 
     /**
-     * @var Calendar
+     * @var ?Calendar
      * @Doctrine\ORM\Mapping\ManyToOne (targetEntity=Calendar::class)
      */
-    protected Calendar $calendar;
+    protected ?Calendar $calendar;
 
     /**
      * @var string
@@ -83,17 +84,17 @@ class CalendarBooking implements JsonSerializable
     }
 
     /**
-     * @return Calendar
+     * @return ?Calendar
      */
-    public function getCalendar(): Calendar
+    public function getCalendar(): ?Calendar
     {
         return $this->calendar;
     }
 
     /**
-     * @param Calendar $calendar
+     * @param ?Calendar $calendar
      */
-    public function setCalendar(Calendar $calendar): void
+    public function setCalendar(?Calendar $calendar): void
     {
         $this->calendar = $calendar;
     }

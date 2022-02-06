@@ -7,19 +7,20 @@ namespace TLBM\Admin\Pages\SinglePages\Dashboard;
 use DateInterval;
 use DateTime;
 use TLBM\Calendar\CalendarStatistics;
-use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
+use TLBM\Entity\Calendar;
+use TLBM\Repository\Contracts\EntityRepositoryInterface;
 
 class BestSellingCalendarsTile extends DashboardTile
 {
 
     /**
-     * @var CalendarRepositoryInterface
+     * @var EntityRepositoryInterface
      */
-    private CalendarRepositoryInterface $calendarManager;
+    private EntityRepositoryInterface $entityRepository;
 
-    public function __construct(CalendarRepositoryInterface $calendarManager)
+    public function __construct(EntityRepositoryInterface $entityRepository)
     {
-        $this->calendarManager = $calendarManager;
+        $this->entityRepository = $entityRepository;
 
         parent::__construct(__("Top Calendars in last 30 days", TLBM_TEXT_DOMAIN));
     }
@@ -35,7 +36,7 @@ class BestSellingCalendarsTile extends DashboardTile
             echo "<ul class='tlbm-dashboard-tile-best-selling-list'>";
             $c = 0;
             foreach ($bestselling as $id => $num) {
-                $cal = $this->calendarManager->getCalendar($id);
+                $cal = $this->entityRepository->getEntity(Calendar::class, $id);
                 echo "<li>";
                 echo "<a href='" . get_edit_post_link($id) . "'>" . $cal->getTitle() . "</a><br>";
                 echo $num . __(" Booking", TLBM_TEXT_DOMAIN);

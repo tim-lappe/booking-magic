@@ -3,13 +3,14 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 use TLBM\Entity\Booking;
+use TLBM\Entity\ManageableEntity;
 use TLBM\Repository\Contracts\BookingRepositoryInterface;
 
-class BookingEditPage extends FormPageBase
+/**
+ * @extends EntityEditPage<Booking>
+ */
+class BookingEditPage extends EntityEditPage
 {
-
-    private ?Booking $editingBooking;
-
     /**
      * @var BookingRepositoryInterface
      */
@@ -17,52 +18,37 @@ class BookingEditPage extends FormPageBase
 
     public function __construct(BookingRepositoryInterface $bookingManager)
     {
-        parent::__construct("booking-edit", "booking-edit", false);
+        parent::__construct(__("Booking", TLBM_TEXT_DOMAIN), "booking-edit", "booking-edit", false);
         $this->bookingManager = $bookingManager;
     }
 
-    public function showFormPageContent()
+    /**
+     * @return void
+     */
+    public function displayEntityEditForm(): void
     {
-        //TODO: Implement Booking Edit Seite
-    }
 
-    public function onSave($vars): array
-    {
-        //TODO Implement OnSave von Booking Edit Seite
-        return [];
     }
 
     /**
-     * @param int $bookingId
+     * @param int $id
      *
-     * @return string
+     * @return ManageableEntity|null
      */
-    public function getEditLink(int $bookingId = -1): string
+    protected function getEntityById(int $id): ?ManageableEntity
     {
-        if ($bookingId >= 0) {
-            return admin_url() . "admin.php?page=" . urlencode($this->menu_slug) . "&booking_id=" . urlencode($bookingId);
-        }
-
-        return admin_url() . "admin.php?page=" . urlencode($this->menu_slug);
+        return $this->bookingManager->getBooking($id);
     }
 
-    protected function getHeadTitle(): string
+    /**
+     * @param mixed $vars
+     * @param ManageableEntity|null $savedEntity
+     *
+     * @return array
+     */
+    protected function onSaveEntity($vars, ?ManageableEntity &$savedEntity): array
     {
-        return $this->getEditingBooking() == null ? __("Add New Booking", TLBM_TEXT_DOMAIN) : __(
-            "Edit Booking", TLBM_TEXT_DOMAIN
-        );
-    }
-
-    private function getEditingBooking(): ?Booking
-    {
-        if($this->editingBooking) {
-            return $this->editingBooking;
-        }
-
-        if (isset($_REQUEST['booking_id'])) {
-            return $this->bookingManager->getBooking($_REQUEST['calendar_id']);
-        }
-
-        return null;
+        // TODO: Implement onSaveEntity() method.
+        return [];
     }
 }

@@ -6,6 +6,7 @@ namespace TLBM\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use JsonSerializable;
+use TLBM\Entity\Traits\IndexedEntity;
 
 define("TLBM_CALENDAR_SELECTION_TYPE_ALL", "all");
 define("TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT", "all_but");
@@ -21,7 +22,7 @@ define("TLBM_CALENDAR_SELECTION_TYPE_ONLY", "only");
 class CalendarSelection implements JsonSerializable
 {
 
-    use IndexedTable;
+    use IndexedEntity;
 
     /**
      * @Doctrine\ORM\Mapping\ManyToMany(targetEntity=Calendar::class)

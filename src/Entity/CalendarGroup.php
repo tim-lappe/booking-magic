@@ -3,7 +3,6 @@
 
 namespace TLBM\Entity;
 
-const TLBM_BOOKING_DISTRIBUTION_EVENLY = "evenly";
 
 /**
  * Class Calendar
@@ -11,10 +10,8 @@ const TLBM_BOOKING_DISTRIBUTION_EVENLY = "evenly";
  * @Doctrine\ORM\Mapping\Entity
  * @Doctrine\ORM\Mapping\Table(name="calendar_groups")
  */
-class CalendarGroup
+class CalendarGroup extends ManageableEntity
 {
-
-    use IndexedTable;
 
     /**
      * @var string
@@ -30,23 +27,28 @@ class CalendarGroup
 
 
     /**
-     * @var CalendarSelection
+     * @var ?CalendarSelection
      * @Doctrine\ORM\Mapping\OneToOne(targetEntity=CalendarSelection::class, orphanRemoval=true, cascade={"all"})
      */
-    protected CalendarSelection $calendarSelection;
+    protected ?CalendarSelection $calendarSelection;
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     /**
-     * @return CalendarSelection
+     * @return ?CalendarSelection
      */
-    public function getCalendarSelection(): CalendarSelection
+    public function getCalendarSelection(): ?CalendarSelection
     {
         return $this->calendarSelection;
     }
 
     /**
-     * @param CalendarSelection $calendarSelection
+     * @param ?CalendarSelection $calendarSelection
      */
-    public function setCalendarSelection(CalendarSelection $calendarSelection): void
+    public function setCalendarSelection(?CalendarSelection $calendarSelection): void
     {
         $this->calendarSelection = $calendarSelection;
     }

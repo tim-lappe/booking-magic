@@ -9,7 +9,6 @@ if ( !defined('ABSPATH')) {
 
 
 use TLBM\Admin\FormEditor\Contracts\FrontendElementInterface;
-use TLBM\Admin\FormEditor\FormInputGenerator;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Input;
 use TLBM\Admin\FormEditor\LinkedFormData;
 

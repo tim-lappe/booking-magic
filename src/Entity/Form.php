@@ -11,32 +11,24 @@ use JsonSerializable;
  * @Doctrine\ORM\Mapping\Entity
  * @Doctrine\ORM\Mapping\Table(name="forms")
  */
-class Form implements JsonSerializable
+class Form extends ManageableEntity implements JsonSerializable
 {
-
-    use IndexedTable;
 
     /**
      * @var string
      * @Doctrine\ORM\Mapping\Column (type="string", nullable=false, unique=true)
      */
-    protected string $title;
-
-    /**
-     * @var int
-     * @Doctrine\ORM\Mapping\Column(type="bigint", nullable=false)
-     */
-    protected int $tstampCreated;
+    protected string $title = "";
 
     /**
      * @var mixed
      * @Doctrine\ORM\Mapping\Column (type="json", nullable=false)
      */
-    protected $form_data;
+    protected $formData = null;
 
     public function __construct()
     {
-        $this->tstampCreated = time();
+        parent::__construct();
     }
 
     public function jsonSerialize(): array
@@ -65,14 +57,14 @@ class Form implements JsonSerializable
 
     public function getFormData()
     {
-        return $this->form_data;
+        return $this->formData;
     }
 
     /**
-     * @param mixed $form_data
+     * @param mixed $formData
      */
-    public function setFormData($form_data): void
+    public function setFormData($formData): void
     {
-        $this->form_data = $form_data;
+        $this->formData = $formData;
     }
 }

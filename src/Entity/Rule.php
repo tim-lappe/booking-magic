@@ -6,6 +6,7 @@ namespace TLBM\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use JsonSerializable;
+use TLBM\Entity\Traits\IndexedEntity;
 
 
 /**
@@ -14,22 +15,16 @@ use JsonSerializable;
  * @Doctrine\ORM\Mapping\Entity
  * @Doctrine\ORM\Mapping\Table(name="rules")
  */
-class Rule implements JsonSerializable
+class Rule extends ManageableEntity implements JsonSerializable
 {
 
-    use IndexedTable;
+    use IndexedEntity;
 
     /**
      * @var string
      * @Doctrine\ORM\Mapping\Column (type="string", nullable=false)
      */
     public string $title = "";
-
-    /**
-     * @var int
-     * @Doctrine\ORM\Mapping\Column(type="bigint", nullable=false)
-     */
-    protected int $tstampCreated = 0;
 
     /**
      * @var CalendarSelection
@@ -57,9 +52,10 @@ class Rule implements JsonSerializable
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->actions            = new ArrayCollection();
         $this->periods            = new ArrayCollection();
-        $this->tstampCreated  = time();
         $this->calendarSelection = new CalendarSelection();
     }
 
@@ -205,7 +201,7 @@ class Rule implements JsonSerializable
         return array(
             "id"                 => $this->id,
             "title"              => $this->title,
-            "timestamp_created"  => $this->tstampCreated,
+            "timestamp_created"  => $this->timestampCreated,
             "calendar_selection" => $this->calendarSelection,
             "priority"           => $this->priority,
             "actions"            => $this->actions->toArray(),

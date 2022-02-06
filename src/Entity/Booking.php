@@ -14,10 +14,8 @@ use JsonSerializable;
  * @Doctrine\ORM\Mapping\Entity
  * @Doctrine\ORM\Mapping\Table(name="bookings")
  */
-class Booking implements JsonSerializable
+class Booking extends ManageableEntity implements JsonSerializable
 {
-
-    use IndexedTable;
 
     /**
      * @var ArrayCollection
@@ -37,11 +35,6 @@ class Booking implements JsonSerializable
      */
     protected ?Form $form;
 
-    /**
-     * @var int
-     * @Doctrine\ORM\Mapping\Column(type="bigint", nullable=false)
-     */
-    protected int $tstampCreated;
 
     /**
      * @var string
@@ -57,9 +50,9 @@ class Booking implements JsonSerializable
 
     public function __construct()
     {
+        parent::__construct();
         $this->bookingValues    = new ArrayCollection();
         $this->calendarBookings = new ArrayCollection();
-        $this->tstampCreated = time();
     }
 
     /**
@@ -185,14 +178,6 @@ class Booking implements JsonSerializable
     }
 
     /**
-     * @return int
-     */
-    public function getTstampCreated(): int
-    {
-        return $this->tstampCreated;
-    }
-
-    /**
      * @return array
      */
     public function jsonSerialize(): array
@@ -200,7 +185,7 @@ class Booking implements JsonSerializable
         return [
             "bookingValues" => $this->bookingValues->toArray(),
             "calendarBookings" => $this->calendarBookings->toArray(),
-            "tstampCreated" => $this->tstampCreated,
+            "timestampCreated" => $this->timestampCreated,
             "id" => $this->id,
             "formId" => $this->form->getId()
         ];

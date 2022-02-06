@@ -11,17 +11,18 @@ use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\Rules\PriorityLevels;
 use TLBM\Admin\Tables\DisplayHelper\DisplayCalendarSelection;
 use TLBM\Admin\Tables\DisplayHelper\DisplayPeriods;
+use TLBM\Entity\Rule;
 use TLBM\MainFactory;
-use TLBM\Repository\Contracts\RulesRepositoryInterface;
+use TLBM\Repository\Contracts\EntityRepositoryInterface;
 use TLBM\Repository\Query\RulesQuery;
 
 class RulesListTable extends TableBase
 {
 
     /**
-     * @var RulesRepositoryInterface
+     * @var EntityRepositoryInterface
      */
-    private RulesRepositoryInterface $rulesManager;
+    private EntityRepositoryInterface $entityRepository;
 
     /**
      * @var AdminPageManagerInterface
@@ -33,9 +34,9 @@ class RulesListTable extends TableBase
      */
     private SettingsManagerInterface $settingsManager;
 
-    public function __construct(RulesRepositoryInterface $rulesManager, AdminPageManagerInterface $adminPageManager, SettingsManagerInterface $settingsManager)
+    public function __construct(EntityRepositoryInterface $entityRepository, AdminPageManagerInterface $adminPageManager, SettingsManagerInterface $settingsManager)
     {
-        $this->rulesManager     = $rulesManager;
+        $this->entityRepository     = $entityRepository;
         $this->adminPageManager = $adminPageManager;
         $this->settingsManager = $settingsManager;
 
@@ -152,7 +153,7 @@ class RulesListTable extends TableBase
      */
     protected function getTotalItemsCount(): int
     {
-        return $this->rulesManager->getAllRulesCount();
+        return $this->entityRepository->getEntityCount(Rule::class);
     }
 
     /**

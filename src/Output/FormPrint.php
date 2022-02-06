@@ -12,24 +12,25 @@ use TLBM\Admin\FormEditor\RecursiveFormContentWalker;
 use TLBM\Entity\Form;
 use TLBM\Output\Contracts\FormPrintInterface;
 use TLBM\Output\Contracts\FrontendMessengerInterface;
-use TLBM\Repository\Contracts\FormRepositoryInterface;
+use TLBM\Repository\Contracts\EntityRepositoryInterface;
+
 
 class FormPrint implements FormPrintInterface
 {
 
     /**
-     * @var FormRepositoryInterface
+     * @var EntityRepositoryInterface
      */
-    private FormRepositoryInterface $formManager;
+    private EntityRepositoryInterface $entityRepository;
 
     /**
      * @var FrontendMessengerInterface
      */
     private FrontendMessengerInterface $frontendMessenger;
 
-    public function __construct(FormRepositoryInterface $formManager, FrontendMessengerInterface $frontendMessenger)
+    public function __construct(EntityRepositoryInterface $entityRepository, FrontendMessengerInterface $frontendMessenger)
     {
-        $this->formManager = $formManager;
+        $this->entityRepository = $entityRepository;
         $this->frontendMessenger = $frontendMessenger;
     }
 
@@ -41,7 +42,7 @@ class FormPrint implements FormPrintInterface
      */
     public function printForm(int $formId, $inputVars = null): string
     {
-        $form = $this->formManager->getForm($formId);
+        $form = $this->entityRepository->getEntity( Form::class, $formId);
         if($form != null) {
             $html = $this->frontendMessenger->getContent();
 

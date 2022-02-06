@@ -10,10 +10,11 @@ if ( !defined('ABSPATH')) {
 use TLBM\Admin\FormEditor\ItemSettingsElements\Select;
 use TLBM\Admin\FormEditor\LinkedFormData;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
-use TLBM\Calendar\Contracts\CalendarGroupManagerInterface;
-use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
+use TLBM\MainFactory;
 use TLBM\Output\Calendar\CalendarOutput;
 use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
+use TLBM\Repository\Query\CalendarGroupQuery;
+use TLBM\Repository\Query\CalendarQuery;
 use TLBM\Utilities\ExtendedDateTime;
 
 class CalendarElem extends FormInputElem
@@ -25,15 +26,9 @@ class CalendarElem extends FormInputElem
     private SettingsManagerInterface $settingsManager;
 
     /**
-     * @param CalendarRepositoryInterface $calendarManager
-     * @param CalendarGroupManagerInterface $calendarGroupManager
      * @param SettingsManagerInterface $settingsManager
      */
-    public function __construct(
-        CalendarRepositoryInterface $calendarManager,
-        CalendarGroupManagerInterface $calendarGroupManager,
-        SettingsManagerInterface $settingsManager
-    ) {
+    public function __construct(SettingsManagerInterface $settingsManager) {
         parent::__construct("calendar", __("Calendar", TLBM_TEXT_DOMAIN));
 
         $this->settingsManager = $settingsManager;
@@ -43,14 +38,17 @@ class CalendarElem extends FormInputElem
             "Allows the user to choose from a calendar or a group of calendars", TLBM_TEXT_DOMAIN
         );
 
-        $calendars   = $calendarManager->getAllCalendars();
+        $calendarsQuery = MainFactory::create(CalendarQuery::class);
+        $calendarGroupQuery = MainFactory::create(CalendarGroupQuery::class);
+
+        $calendars   = iterator_to_array($calendarsQuery->getResult());
         $calendar_kv = [];
         foreach ($calendars as $calendar) {
             $calendar_kv[$calendar->getId()] = $calendar->getTitle();
         }
 
         $groups_kv       = [];
-        $calendar_groups = $calendarGroupManager->GetAllGroups();
+        $calendar_groups = iterator_to_array($calendarGroupQuery->getResult());
         foreach ($calendar_groups as $group) {
             $groups_kv[$group->getId()] = $group->getTitle();
         }

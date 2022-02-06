@@ -4,7 +4,6 @@
 namespace TLBM\Admin\FormEditor\Elements;
 
 use TLBM\Admin\FormEditor\Contracts\FrontendElementInterface;
-use TLBM\Admin\FormEditor\FormInputGenerator;
 use TLBM\Admin\FormEditor\LinkedFormData;
 
 if ( !defined('ABSPATH')) {

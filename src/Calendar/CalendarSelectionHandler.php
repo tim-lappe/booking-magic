@@ -3,10 +3,12 @@
 
 namespace TLBM\Calendar;
 
-use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\Calendar\Contracts\CalendarSelectionHandlerInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarSelection;
+use TLBM\MainFactory;
+use TLBM\Repository\Contracts\EntityRepositoryInterface;
+use TLBM\Repository\Query\CalendarQuery;
 
 if ( !defined('ABSPATH')) {
     return;
@@ -16,13 +18,13 @@ class CalendarSelectionHandler implements CalendarSelectionHandlerInterface
 {
 
     /**
-     * @var CalendarRepositoryInterface
+     * @var EntityRepositoryInterface
      */
-    private CalendarRepositoryInterface $calendarManager;
+    private EntityRepositoryInterface $entityRepository;
 
-    public function __construct(CalendarRepositoryInterface $calendarManager)
+    public function __construct(EntityRepositoryInterface $entityRepository)
     {
-        $this->calendarManager = $calendarManager;
+        $this->entityRepository = $entityRepository;
     }
 
     /**
@@ -51,18 +53,21 @@ class CalendarSelectionHandler implements CalendarSelectionHandlerInterface
      */
     public function getSelectedCalendarList(CalendarSelection $calendarSelection): array
     {
+        $calendarQuery = MainFactory::create(CalendarQuery::class);
+        $allCalendars = iterator_to_array($calendarQuery->getResult());
+
         if ($calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
-            return $this->calendarManager->getAllCalendars();
+            return $allCalendars;
         } elseif ($calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
             $list = array();
             foreach ($calendarSelection->getCalendarIds() as $id) {
-                $cal    = $this->calendarManager->getCalendar($id);
+                $cal    = $this->entityRepository->getEntity(Calendar::class, $id);
                 $list[] = $cal;
             }
 
             return $list;
         } elseif ($calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
-            $allcals = $this->calendarManager->getAllCalendars();
+            $allcals = $allCalendars;
             $list    = array();
             foreach ($allcals as $cal) {
                 if ( !in_array($cal->getId(), $calendarSelection->getCalendarIds())) {

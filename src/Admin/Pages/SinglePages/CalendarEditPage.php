@@ -2,45 +2,42 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
-use DI\DependencyException;
-use DI\NotFoundException;
-use Exception;
-use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\Entity\Calendar;
+use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;
 use TLBM\Output\Calendar\CalendarOutput;
 use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
+use TLBM\Repository\Contracts\EntityRepositoryInterface;
 use TLBM\Validation\ValidatorFactory;
 
-class CalendarEditPage extends FormPageBase
+/**
+ * @extends EntityEditPage<Calendar>
+ */
+class CalendarEditPage extends EntityEditPage
 {
 
     /**
-     * @var CalendarRepositoryInterface
+     * @var EntityRepositoryInterface
      */
-    private CalendarRepositoryInterface $calendarManager;
+    private EntityRepositoryInterface $entityRepository;
 
-    /**
-     * @var Calendar|null
-     */
-    private ?Calendar $editingCalendar = null;
 
-    public function __construct(CalendarRepositoryInterface $calendarManager)
+    public function __construct(EntityRepositoryInterface $entityRepository)
     {
-        $this->calendarManager = $calendarManager;
-        parent::__construct("calendar-edit", "booking-calendar-edit", false);
+        $this->entityRepository = $entityRepository;
+        parent::__construct(__("Calendar", TLBM_TEXT_DOMAIN), "calendar-edit", "booking-calendar-edit", false);
     }
 
-    public function showFormPageContent()
+    /**
+     * @return void
+     */
+    public function displayEntityEditForm(): void
     {
-        $calendar = $this->getEditingCalendar();
-        if ($calendar) {
-            ?>
-            <input type="hidden" name="calendar_id" value="<?php echo $calendar->getId() ?>">
-            <?php
-        } else {
+        $calendar = $this->getEditingEntity();
+        if (!$calendar) {
             $calendar = new Calendar();
         }
+
         ?>
 
         <div class="tlbm-admin-page-tile">
@@ -62,33 +59,33 @@ class CalendarEditPage extends FormPageBase
 
     /**
      * @param mixed $vars
+     * @param ManageableEntity|null $savedEntity
      *
      * @return array
      */
-    public function onSave($vars): array
+    public function onSaveEntity($vars, ?ManageableEntity &$savedEntity): array
     {
-        $calendar = $this->getEditingCalendar();
+        $calendar = $this->getEditingEntity();
         if (!$calendar) {
             $calendar = new Calendar();
         }
 
         $calendarValidator = ValidatorFactory::createCalendarValidator($calendar);
-        $calendar->setTstampCreated(time());
+        $calendar->setTimestampCreated(time());
         $calendar->setTitle($vars['title']);
 
         $validationResult = $calendarValidator->getValidationErrors();
 
         if(count($validationResult) == 0) {
-            try {
-                $this->calendarManager->saveCalendar($calendar);
-                $this->editingCalendar = $calendar;
+            if($this->entityRepository->saveEntity($calendar)) {
+                $savedEntity = $calendar;
                 return array(
                     "success" => __("Calendar has been saved", TLBM_TEXT_DOMAIN)
                 );
 
-            } catch (Exception $e) {
+            } else {
                 return array(
-                    "error" => __("An internal error occured: " . $e->getMessage(), TLBM_TEXT_DOMAIN)
+                    "error" => __("An internal error occured. ", TLBM_TEXT_DOMAIN)
                 );
             }
         }
@@ -97,36 +94,12 @@ class CalendarEditPage extends FormPageBase
     }
 
     /**
-     * @param int $calendar_id
+     * @param int $id
      *
-     * @return string
+     * @return ManageableEntity|null
      */
-    public function getEditLink(int $calendar_id = -1): string
+    protected function getEntityById(int $id): ?ManageableEntity
     {
-        if ($calendar_id >= 0) {
-            return admin_url() . "admin.php?page=" . urlencode($this->menu_slug) . "&calendar_id=" . urlencode($calendar_id);
-        }
-
-        return admin_url() . "admin.php?page=" . urlencode($this->menu_slug);
-    }
-
-    protected function getHeadTitle(): string
-    {
-        return $this->getEditingCalendar() == null ? __("Add New Calendar", TLBM_TEXT_DOMAIN) : __(
-            "Edit Calendar", TLBM_TEXT_DOMAIN
-        );
-    }
-
-    private function getEditingCalendar(): ?Calendar
-    {
-        if($this->editingCalendar) {
-            return $this->editingCalendar;
-        }
-
-        if (isset($_REQUEST['calendar_id'])) {
-            return $this->calendarManager->getCalendar($_REQUEST['calendar_id']);
-        }
-
-        return null;
+        return $this->entityRepository->getEntity(Calendar::class, $id);
     }
 }

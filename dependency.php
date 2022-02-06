@@ -24,6 +24,7 @@ use TLBM\Admin\Pages\SinglePages\BookingEditPage;
 use TLBM\Admin\Pages\SinglePages\BookingMagicRoot;
 use TLBM\Admin\Pages\SinglePages\BookingsPage;
 use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
+use TLBM\Admin\Pages\SinglePages\CalendarGroupEditPage;
 use TLBM\Admin\Pages\SinglePages\CalendarPage;
 use TLBM\Admin\Pages\SinglePages\Dashboard\BestSellingCalendarsTile;
 use TLBM\Admin\Pages\SinglePages\Dashboard\Contracts\DashboardInterface;
@@ -55,10 +56,7 @@ use TLBM\Ajax\GetMergedActions;
 use TLBM\Ajax\PingPong;
 use TLBM\Booking\CalendarBookingManager;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
-use TLBM\Calendar\CalendarGroupManager;
 use TLBM\Calendar\CalendarSelectionHandler;
-use TLBM\Calendar\Contracts\CalendarGroupManagerInterface;
-use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\Calendar\Contracts\CalendarSelectionHandlerInterface;
 use TLBM\Email\Contracts\MailSenderInterface;
 use TLBM\Email\MailSender;
@@ -71,16 +69,13 @@ use TLBM\Output\Contracts\FrontendMessengerInterface;
 use TLBM\Output\FormPrint;
 use TLBM\Output\FrontendMessenger;
 use TLBM\Repository\BookingRepository;
-use TLBM\Repository\CalendarRepository;
 use TLBM\Repository\Contracts\BookingRepositoryInterface;
-use TLBM\Repository\Contracts\FormRepositoryInterface;
 use TLBM\Repository\Contracts\ORMInterface;
-use TLBM\Repository\Contracts\RulesRepositoryInterface;
-use TLBM\Repository\FormRepository;
+use TLBM\Repository\Contracts\EntityRepositoryInterface;
+use TLBM\Repository\EntityRepository;
 use TLBM\Repository\ORMManager;
 use TLBM\Repository\Query\Contracts\FullRuleActionQueryInterface;
 use TLBM\Repository\Query\FullRuleActionQuery;
-use TLBM\Repository\RulesRepository;
 use TLBM\Request\CompleteBookingRequest;
 use TLBM\Request\Contracts\RequestManagerInterface;
 use TLBM\Request\RequestManager;
@@ -116,15 +111,11 @@ use function DI\factory;
 return [
     "config"                                 => __DIR__ . "/config.php",
     ORMInterface::class                      => autowire(ORMManager::class),
-    CalendarRepositoryInterface::class       => autowire(CalendarRepository::class),
-    CalendarGroupManagerInterface::class     => autowire(CalendarGroupManager::class),
     BookingRepositoryInterface::class        => autowire(BookingRepository::class),
     MailSenderInterface::class               => autowire(MailSender::class),
-    FormRepositoryInterface::class           => autowire(FormRepository::class),
     LabelsInterface::class                   => autowire(Labels::class),
     ScriptLocalizationInterface::class       => autowire(ScriptLocalization::class),
     CalendarSelectionHandlerInterface::class => autowire(CalendarSelectionHandler::class),
-    RulesRepositoryInterface::class          => autowire(RulesRepository::class),
     DateTimeToolsInterface::class            => autowire(DateTimeTools::class),
     PeriodsToolsInterface::class             => autowire(PeriodsTools::class),
     ColorsInterface::class                   => autowire(Colors::class),
@@ -135,6 +126,7 @@ return [
     FrontendMessengerInterface::class        => autowire(FrontendMessenger::class),
     RulesCapacityManagerInterface::class     => autowire(RulesCapacityManager::class),
     CalendarBookingManagerInterface::class   => autowire(CalendarBookingManager::class),
+    EntityRepositoryInterface::class => autowire(EntityRepository::class),
 
     CalendarEntityValidatorInterface::class    => autowire(CalendarEntityValidator::class),
     RulesActionEntityValidatorInterface::class => autowire(RulesActionEntityValidator::class),
@@ -243,6 +235,7 @@ return [
             $adminPageManager->registerPage($container->get(FormEditPage::class));
             $adminPageManager->registerPage($container->get(SettingsPage::class));
             $adminPageManager->registerPage($container->get(BookingEditPage::class));
+            $adminPageManager->registerPage($container->get(CalendarGroupEditPage::class));
         }
 
         return $adminPageManager;
