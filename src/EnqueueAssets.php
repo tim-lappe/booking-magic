@@ -2,7 +2,6 @@
 
 namespace TLBM;
 
-use DateTime;
 use Exception;
 use TLBM\Localization\Contracts\ScriptLocalizationInterface;
 

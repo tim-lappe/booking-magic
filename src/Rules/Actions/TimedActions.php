@@ -4,7 +4,6 @@ namespace TLBM\Rules\Actions;
 
 use TLBM\Entity\RuleAction;
 use TLBM\Utilities\ExtendedDateTime;
-use Traversable;
 
 class TimedActions
 {

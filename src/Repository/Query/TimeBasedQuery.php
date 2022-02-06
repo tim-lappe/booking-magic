@@ -6,9 +6,8 @@ use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\QueryBuilder;
 use Iterator;
 use Throwable;
-use TLBM\Repository\Contracts\TimeBasedQueryInterface;
+use TLBM\Repository\Query\Contracts\TimeBasedQueryInterface;
 use TLBM\Utilities\ExtendedDateTime;
-use Traversable;
 
 abstract class TimeBasedQuery extends BaseQuery implements TimeBasedQueryInterface
 {
@@ -40,7 +39,7 @@ abstract class TimeBasedQuery extends BaseQuery implements TimeBasedQueryInterfa
             if ($this->dateTime) {
 
                 $queryBuilder = $this->createQueryBuilder();
-                $this->buildQuery($queryBuilder, $this->dateTime);
+                $this->buildQuery($queryBuilder, false, $this->dateTime);
 
                 yield new TimeBasedQueryResult($this->dateTime, $queryBuilder->getQuery()->getResult());
 
@@ -49,7 +48,7 @@ abstract class TimeBasedQuery extends BaseQuery implements TimeBasedQueryInterfa
                 foreach ($period as $dt) {
 
                     $queryBuilder = $this->createQueryBuilder();
-                    $this->buildQuery($queryBuilder, $dt);
+                    $this->buildQuery($queryBuilder, false, $dt);
 
                     yield new TimeBasedQueryResult($dt, $queryBuilder->getQuery()->getResult());
                 }
@@ -63,11 +62,12 @@ abstract class TimeBasedQuery extends BaseQuery implements TimeBasedQueryInterfa
 
     /**
      * @param QueryBuilder $queryBuilder
+     * @param bool $onlyCount
      * @param ExtendedDateTime|null $dateTime
      *
      * @return void
      */
-    abstract protected function buildQuery(QueryBuilder $queryBuilder, ?ExtendedDateTime $dateTime = null): void;
+    abstract protected function buildQuery(QueryBuilder $queryBuilder, bool $onlyCount = false, ?ExtendedDateTime $dateTime = null): void;
 
     /**
      * @param QueryBuilder $queryBuilder

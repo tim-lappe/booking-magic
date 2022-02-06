@@ -2,7 +2,6 @@
 
 namespace TLBM\Repository\Query\Contracts;
 
-use TLBM\Repository\Contracts\TimeBasedQueryInterface;
 use TLBM\Rules\TimedRules;
 
 interface FullRuleActionQueryInterface extends TimeBasedQueryInterface

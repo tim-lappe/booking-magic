@@ -8,25 +8,28 @@ if ( !defined('ABSPATH')) {
 }
 
 use TLBM\Admin\WpForm\Contracts\FormFieldReadVarsInterface;
-use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
+use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarSelection;
+use TLBM\MainFactory;
+use TLBM\Repository\Contracts\EntityRepositoryInterface;
+use TLBM\Repository\Query\CalendarQuery;
 
 class CalendarPickerField extends FormFieldBase implements FormFieldReadVarsInterface
 {
 
-    private CalendarRepositoryInterface $calendarManager;
+    private EntityRepositoryInterface $entityRepository;
 
     /**
-     * @param CalendarRepositoryInterface $calendarManager
+     * @param EntityRepositoryInterface $entityRepository
      * @param string $name
      * @param string $title
      */
     public function __construct(
-        CalendarRepositoryInterface $calendarManager,
+        EntityRepositoryInterface $entityRepository,
         string $name,
         string $title
     ) {
-        $this->calendarManager = $calendarManager;
+        $this->entityRepository = $entityRepository;
 
         parent::__construct($name, $title);
     }
@@ -42,7 +45,8 @@ class CalendarPickerField extends FormFieldBase implements FormFieldReadVarsInte
             $value = new CalendarSelection();
         }
 
-        $cals      = $this->calendarManager->getAllCalendars();
+        $calendarQuery = MainFactory::create(CalendarQuery::class);
+        $cals      = $calendarQuery->getResult();
         $calendars = array();
         foreach ($cals as $cal) {
             $calendars[$cal->getId()] = empty($cal->getTitle()) ? $cal->getId() : $cal->getTitle();
@@ -83,7 +87,7 @@ class CalendarPickerField extends FormFieldBase implements FormFieldReadVarsInte
                     $selection = new CalendarSelection();
                     if ($selection->setSelectionMode($json->selection_mode)) {
                         foreach ($json->calendar_ids as $calendar_id) {
-                            $calendar = $this->calendarManager->getCalendar(intval($calendar_id));
+                            $calendar = $this->entityRepository->getEntity(Calendar::class,intval($calendar_id));
                             if ($calendar) {
                                 $selection->addCalendar($calendar);
                             }

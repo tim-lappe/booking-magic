@@ -3,8 +3,6 @@
 namespace TLBM;
 
 use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
 
 class MainFactory

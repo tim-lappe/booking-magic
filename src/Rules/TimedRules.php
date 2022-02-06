@@ -2,12 +2,9 @@
 
 namespace TLBM\Rules;
 
-use AppendIterator;
-use ArrayIterator;
 use TLBM\Entity\Rule;
 use TLBM\Rules\Actions\TimedActions;
 use TLBM\Utilities\ExtendedDateTime;
-use Traversable;
 
 class TimedRules
 {

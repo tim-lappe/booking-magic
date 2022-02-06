@@ -7,26 +7,27 @@ namespace TLBM\Admin\Tables;
 use Exception;
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\FormEditPage;
+use TLBM\Entity\Form;
 use TLBM\MainFactory;
-use TLBM\Repository\Contracts\FormRepositoryInterface;
+use TLBM\Repository\Contracts\EntityRepositoryInterface;
 use TLBM\Repository\Query\FormQuery;
 
 class FormListTable extends TableBase
 {
 
     /**
-     * @var FormRepositoryInterface
+     * @var EntityRepositoryInterface
      */
-    private FormRepositoryInterface $formManager;
+    private EntityRepositoryInterface $entityRepository;
 
     /**
      * @var AdminPageManagerInterface
      */
     private AdminPageManagerInterface $adminPageManager;
 
-    public function __construct(FormRepositoryInterface $formManager, AdminPageManagerInterface $adminPageManager)
+    public function __construct(EntityRepositoryInterface $entityRepository, AdminPageManagerInterface $adminPageManager)
     {
-        $this->formManager      = $formManager;
+        $this->entityRepository      = $entityRepository;
         $this->adminPageManager = $adminPageManager;
 
         parent::__construct(
@@ -118,7 +119,7 @@ class FormListTable extends TableBase
 
     protected function getTotalItemsCount(): int
     {
-        return $this->formManager->getAllFormsCount();
+        return $this->entityRepository->getEntityCount(Form::class);
     }
 
     /**

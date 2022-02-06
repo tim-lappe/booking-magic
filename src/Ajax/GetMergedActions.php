@@ -4,8 +4,9 @@ namespace TLBM\Ajax;
 
 use TLBM\Ajax\Contracts\AjaxFunctionInterface;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
-use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
+use TLBM\Entity\Calendar;
 use TLBM\MainFactory;
+use TLBM\Repository\Contracts\EntityRepositoryInterface;
 use TLBM\Repository\Query\Contracts\FullRuleActionQueryInterface;
 use TLBM\Rules\Actions\ActionsMerging;
 use TLBM\Rules\Contracts\RuleActionsManagerInterface;
@@ -25,20 +26,20 @@ class GetMergedActions implements AjaxFunctionInterface
     private CalendarBookingManagerInterface $calendarBookingManager;
 
     /**
-     * @var CalendarRepositoryInterface
+     * @var EntityRepositoryInterface $entityRepository;
      */
-    private CalendarRepositoryInterface $calendarManager;
+    private EntityRepositoryInterface $entityRepository;
 
     public function __construct
     (
-        CalendarRepositoryInterface $calendarManager,
+        EntityRepositoryInterface $entityRepository,
         CalendarBookingManagerInterface $calendarBookingManager,
         RuleActionsManagerInterface $ruleActionsManager
     )
     {
         $this->calendarBookingManager = $calendarBookingManager;
         $this->ruleActionsManager = $ruleActionsManager;
-        $this->calendarManager = $calendarManager;
+        $this->entityRepository = $entityRepository;
     }
 
     /**
@@ -64,7 +65,7 @@ class GetMergedActions implements AjaxFunctionInterface
         if(isset($assocData['options']['dataSourceId']) && isset($assocData['options']['dataSourceType'])) {
             if($assocData['options']['dataSourceType'] == "calendar") {
                 $query->setTypeCalendar($assocData['options']['dataSourceId']);
-                $calendar = $this->calendarManager->getCalendar($assocData['options']['dataSourceId']);
+                $calendar = $this->entityRepository->getEntity(Calendar::class, $assocData['options']['dataSourceId']);
             }
         }
 

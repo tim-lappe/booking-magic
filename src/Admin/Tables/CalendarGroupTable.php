@@ -4,23 +4,24 @@
 namespace TLBM\Admin\Tables;
 
 
+use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
+use TLBM\Admin\Pages\SinglePages\CalendarGroupEditPage;
 use TLBM\Admin\Tables\DisplayHelper\DisplayCalendarSelection;
-use TLBM\Calendar\Contracts\CalendarGroupManagerInterface;
 use TLBM\MainFactory;
+use TLBM\Repository\Query\CalendarGroupQuery;
 
 class CalendarGroupTable extends TableBase
 {
 
     /**
-     * @var CalendarGroupManagerInterface
+     * @var AdminPageManagerInterface
      */
-    private CalendarGroupManagerInterface $calendarGroupManager;
-
+    private AdminPageManagerInterface $adminPageManager;
 
     public function __construct(
-        CalendarGroupManagerInterface $calendarGroupManager
+        AdminPageManagerInterface $adminPageManager
     ) {
-        $this->calendarGroupManager = $calendarGroupManager;
+        $this->adminPageManager = $adminPageManager;
 
         parent::__construct(
             __("Groups", TLBM_TEXT_DOMAIN), __("Group", TLBM_TEXT_DOMAIN), 10, __("You haven't created any groups yet", TLBM_TEXT_DOMAIN)
@@ -44,12 +45,17 @@ class CalendarGroupTable extends TableBase
      */
     protected function getItems(string $orderby, string $order, int $page): array
     {
-        $pt_args = array();
-        if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
-            $pt_args = array("post_status" => "trash");
+        $calendarGroupQuery = MainFactory::create(CalendarGroupQuery::class);
+
+        //TODO: Sortierung und filter für Calendar Groups einbauen
+
+        if($orderby == "title") {
+            $calendarGroupQuery->setOrderBy([[TLBM_CALENDAR_GROUP_QUERY_ALIAS . ".title", $order]]);
+        } elseif ($orderby == "booking_distribution") {
+            $calendarGroupQuery->setOrderBy([[TLBM_CALENDAR_GROUP_QUERY_ALIAS . ".bookingDisitribution", $order]]);
         }
 
-        return $this->calendarGroupManager->getAllGroups($pt_args, $orderby, $order);
+        return iterator_to_array($calendarGroupQuery->getResult());
     }
 
     /**
@@ -73,8 +79,9 @@ class CalendarGroupTable extends TableBase
                 return $item->getId();
             }),
             new Column("title", __("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
+                $groupEditPage = $this->adminPageManager->getPage(CalendarGroupEditPage::class);
+                $link = $groupEditPage->getEditLink($item->getId());
 
-                $link = get_edit_post_link($item->getId());
                 if ( !empty($item->getTitle())) {
                     echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
                 } else {
@@ -82,8 +89,7 @@ class CalendarGroupTable extends TableBase
                 }
 
             }),
-            new Column("selected_calendars", __('Selected Calendars', TLBM_TEXT_DOMAIN), true, function ($item) {
-
+            new Column("selected_calendars", __('Selected Calendars', TLBM_TEXT_DOMAIN), false, function ($item) {
                 $selection = $item->getCalendarSelection();
                 $selectionDisplay = MainFactory::create(DisplayCalendarSelection::class);
                 $selectionDisplay->setCalendarSelection($selection);
@@ -133,7 +139,8 @@ class CalendarGroupTable extends TableBase
      */
     protected function getTotalItemsCount(): int
     {
-        return $this->calendarGroupManager->getAllGroupsCount();
+        $calendarGroupQuery = MainFactory::create(CalendarGroupQuery::class);
+        return $calendarGroupQuery->getResultCount();
     }
 
     /**

@@ -1,10 +1,10 @@
 <?php
 
 
-namespace TLBM\Entity;
+namespace TLBM\Entity\Traits;
 
 
-trait IndexedTable
+trait IndexedEntity
 {
 
     /**

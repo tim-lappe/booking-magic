@@ -5,6 +5,7 @@ namespace TLBM\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use JsonSerializable;
 
 /**
  * Class Calendar
@@ -12,22 +13,13 @@ use Doctrine\Common\Collections\Collection;
  * @Doctrine\ORM\Mapping\Entity
  * @Doctrine\ORM\Mapping\Table(name="calendars")
  */
-class Calendar
+class Calendar extends ManageableEntity implements JsonSerializable
 {
-
-    use IndexedTable;
-
     /**
      * @var string
      * @Doctrine\ORM\Mapping\Column(type="string", nullable=false, unique=true)
      */
     protected string $title = "";
-
-    /**
-     * @var int
-     * @Doctrine\ORM\Mapping\Column(type="bigint", nullable=false)
-     */
-    protected int $tstampCreated = 0;
 
     /**
      * @var Collection|CalendarSelection[]
@@ -37,23 +29,8 @@ class Calendar
 
     public function __construct()
     {
+        parent::__construct();
         $this->calendarSelections = new ArrayCollection();
-    }
-
-    /**
-     * @return int
-     */
-    public function getTstampCreated(): int
-    {
-        return $this->tstampCreated;
-    }
-
-    /**
-     * @param int $tstampCreated
-     */
-    public function setTstampCreated(int $tstampCreated): void
-    {
-        $this->tstampCreated = $tstampCreated;
     }
 
     /**
@@ -100,5 +77,15 @@ class Calendar
         }
 
         return $calendar_selection;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+
+        ];
     }
 }

@@ -2,29 +2,27 @@
 
 namespace TLBM\Booking;
 
-use Exception;
 use TLBM\Admin\FormEditor\Elements\CalendarElem;
 use TLBM\Admin\FormEditor\FormDataWalker;
 use TLBM\Admin\FormEditor\LinkedFormData;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
 use TLBM\Booking\Semantic\BookingValueSemantic;
-use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\Entity\Booking;
 use TLBM\Entity\BookingValue;
+use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarBooking;
 use TLBM\Entity\Form;
 use TLBM\MainFactory;
-use TLBM\Repository\Contracts\BookingRepositoryInterface;
-use TLBM\Repository\Contracts\FormRepositoryInterface;
+use TLBM\Repository\Contracts\EntityRepositoryInterface;
 use TLBM\Utilities\ExtendedDateTime;
 
 
 class BookingProcessor
 {
     /**
-     * @var FormRepositoryInterface
+     * @var EntityRepositoryInterface
      */
-    private FormRepositoryInterface $formManager;
+    private EntityRepositoryInterface $entityRepository;
 
     /**
      * @var mixed
@@ -40,17 +38,6 @@ class BookingProcessor
      * @var BookingValueSemantic
      */
     private BookingValueSemantic $semantic;
-
-    /**
-     * @var BookingRepositoryInterface
-     */
-    private BookingRepositoryInterface $bookingManager;
-
-    /**
-     * @var CalendarRepositoryInterface
-     */
-    private CalendarRepositoryInterface $calendarManager;
-
 
     /**
      * @var LinkedFormData[]
@@ -69,15 +56,11 @@ class BookingProcessor
 
     public function __construct
     (
-        FormRepositoryInterface $formManager,
-        BookingRepositoryInterface $bookingManager,
-        CalendarRepositoryInterface $calendarManager,
+        EntityRepositoryInterface $entityRepository,
         CalendarBookingManagerInterface $calendarBookingManager
     )
     {
-        $this->formManager = $formManager;
-        $this->bookingManager = $bookingManager;
-        $this->calendarManager = $calendarManager;
+        $this->entityRepository = $entityRepository;
         $this->calendarBookingManager = $calendarBookingManager;
     }
 
@@ -109,7 +92,7 @@ class BookingProcessor
     public function setVars($vars)
     {
         if(isset($vars['form'])) {
-            $form = $this->formManager->getForm($vars['form']);
+            $form = $this->entityRepository->getEntity(Form::class, $vars['form']);
             if($form) {
                 $this->vars = $this->escapeVars($vars);
                 $this->form = $form;
@@ -172,17 +155,12 @@ class BookingProcessor
             $booking->addBookingValue($value);
         }
 
-        try {
-            $this->bookingManager->saveBooking($booking);
+        if($this->entityRepository->saveEntity($booking)) {
             $this->pendingBooking = $booking;
             return $booking;
-        } catch (Exception $e) {
-            if(WP_DEBUG) {
-                var_dump($e->getMessage());
-            }
-
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -196,15 +174,7 @@ class BookingProcessor
 
         if($this->pendingBooking) {
             $this->pendingBooking->setInternalState(TLBM_BOOKING_INTERNAL_STATE_COMPLETED);
-
-            try {
-                $this->bookingManager->saveBooking($this->pendingBooking);
-                return true;
-            } catch (Exception $e) {
-                if(WP_DEBUG) {
-                    var_dump($e->getMessage());
-                }
-            }
+            return $this->entityRepository->saveEntity($this->pendingBooking);
         }
 
         return false;
@@ -220,7 +190,7 @@ class BookingProcessor
             if ($linkedFormData->getFormElement() instanceof CalendarElem) {
                 $lsettings    = $linkedFormData->getLinkedSettings();
                 $calendarId   = $lsettings->getValue("selected_calendar");
-                $calendar     = $this->calendarManager->getCalendar($calendarId);
+                $calendar     = $this->entityRepository->getEntity(Calendar::class, $calendarId);
                 if($calendar != null) {
                     $calendarBooking = new CalendarBooking();
                     $title           = $lsettings->getValue("title");

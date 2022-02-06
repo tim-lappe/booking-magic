@@ -7,37 +7,35 @@ use Throwable;
 use TLBM\Admin\FormEditor\Contracts\FormElementsCollectionInterface;
 use TLBM\Admin\WpForm\FormEditorField;
 use TLBM\Entity\Form;
-use TLBM\Repository\Contracts\FormRepositoryInterface;
+use TLBM\Entity\ManageableEntity;
+use TLBM\Repository\Contracts\EntityRepositoryInterface;
 use TLBM\Validation\FormEntityValidator;
 
-class FormEditPage extends FormPageBase
+/**
+ * @extends EntityEditPage<Form>
+ */
+class FormEditPage extends EntityEditPage
 {
 
     /**
-     * @var FormRepositoryInterface
+     * @var EntityRepositoryInterface
      */
-    private FormRepositoryInterface $formManager;
+    private EntityRepositoryInterface $entityRepository;
 
     /**
      * @var FormElementsCollectionInterface
      */
     private FormElementsCollectionInterface $elementsCollection;
 
-    /**
-     * @var Form|null
-     */
-    private ?Form $editingForm = null;
-
-
     public function __construct(
-        FormRepositoryInterface $formManager,
+        EntityRepositoryInterface $entityRepository,
         FormElementsCollectionInterface $elementsCollection
     ) {
         parent::__construct(
-             __("Form Edit", TLBM_TEXT_DOMAIN), "booking-magic-form-edit", false
+             __("Form", TLBM_TEXT_DOMAIN), "form-edit", "booking-magic-form-edit", false
         );
 
-        $this->formManager        = $formManager;
+        $this->entityRepository   = $entityRepository;
         $this->elementsCollection = $elementsCollection;
         $this->parent_slug        = "booking-magic-form";
 
@@ -51,57 +49,27 @@ class FormEditPage extends FormPageBase
         );
     }
 
-    public function getEditLink(int $form_id = -1): string
-    {
-        if ($form_id >= 0) {
-            return admin_url() . "admin.php?page=" . urlencode($this->menu_slug) . "&form_id=" . urlencode($form_id);
-        }
-
-        return admin_url() . "admin.php?page=" . urlencode($this->menu_slug);
-    }
-
-    public function getHeadTitle(): string
-    {
-        return $this->getEditingForm() == null ? __("Add New Form", TLBM_TEXT_DOMAIN) : __(
-            "Edit Form", TLBM_TEXT_DOMAIN
-        );
-    }
-
     /**
-     * @return Form|null
+     * @return void
      */
-    private function getEditingForm(): ?Form
+    public function displayEntityEditForm(): void
     {
-        if($this->editingForm != null) {
-            return $this->editingForm;
+        $form = $this->getEditingEntity();
+        if(!$form) {
+            $form = new Form();
         }
-
-        $form = null;
-        if (isset($_REQUEST['form_id'])) {
-            $form = $this->formManager->getForm($_REQUEST['form_id']);
-        }
-
-        return $form;
-    }
-
-    public function showFormPageContent()
-    {
-        $form      = $this->getEditingForm();
-        $form_data = $form ? $form->getFormData() : null;
-        $title     = $form ? $form->getTitle() : "";
-        $form_data = $form ? $form->getFormData() : null;
 
         ?>
         <?php if($form != null): ?>
             <input type="hidden" name="form_id" value="<?php echo $form->getId() ?>" />
         <?php endif; ?>
         <div class="tlbm-admin-page-tile">
-            <input value="<?php echo $title ?>" placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
+            <input value="<?php echo $form->getTitle() ?>" placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
         </div>
         <div class="tlbm-admin-page-tile">
             <?php
             $this->formBuilder->displayFormHead();
-            $this->formBuilder->displayFormField("form", $form_data);
+            $this->formBuilder->displayFormField("form", $form->getFormData());
             $this->formBuilder->displayFormFooter();
             ?>
         </div>
@@ -111,14 +79,13 @@ class FormEditPage extends FormPageBase
     /**
      * @throws Exception
      */
-    public function onSave($vars): array
+    public function onSaveEntity($vars, ?ManageableEntity &$savedEntity): array
     {
-        $form = $this->getEditingForm();
+        $form = $this->getEditingEntity();
         if ($form == null) {
             $form = new Form();
         }
 
-        $this->editingForm = $form;
         $formValidator = new FormEntityValidator($form);
         $form->setTitle($vars['title']);
 
@@ -139,12 +106,25 @@ class FormEditPage extends FormPageBase
 
         $validationResult = $formValidator->getValidationErrors();
         if(count($validationResult) == 0) {
-            $this->formManager->saveForm($form);
-            return array(
-                "success" => __("Form has been saved", TLBM_TEXT_DOMAIN)
-            );
+            if($this->entityRepository->saveEntity($form)) {
+                $savedEntity = $form;
+
+                return ["success" => __("Form has been saved", TLBM_TEXT_DOMAIN)];
+            } else {
+                return ["error" => __("An internal error occurred.", TLBM_TEXT_DOMAIN)];
+            }
         }
 
         return $validationResult;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return ManageableEntity|null
+     */
+    protected function getEntityById(int $id): ?ManageableEntity
+    {
+        return $this->entityRepository->getEntity(Form::class, $id);
     }
 }

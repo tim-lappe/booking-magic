@@ -5,9 +5,9 @@ namespace TLBM\Admin\Tables;
 
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
-use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
 use TLBM\Entity\Calendar;
 use TLBM\MainFactory;
+use TLBM\Repository\Contracts\EntityRepositoryInterface;
 use TLBM\Repository\Query\CalendarQuery;
 use TLBM\Utilities\ExtendedDateTime;
 
@@ -18,19 +18,19 @@ class CalendarListTable extends TableBase
 {
 
     /**
-     * @var CalendarRepositoryInterface
+     * @var EntityRepositoryInterface
      */
-    private CalendarRepositoryInterface $calendarManager;
+    private EntityRepositoryInterface $entityRepository;
 
     /**
      * @var AdminPageManagerInterface
      */
     private AdminPageManagerInterface $adminPageManager;
 
-    public function __construct(CalendarRepositoryInterface $calendarManager, AdminPageManagerInterface $adminPageManager)
+    public function __construct(EntityRepositoryInterface $entityRepository, AdminPageManagerInterface $adminPageManager)
     {
         $this->adminPageManager = $adminPageManager;
-        $this->calendarManager = $calendarManager;
+        $this->entityRepository = $entityRepository;
 
         parent::__construct(
             __("Calendars", TLBM_TEXT_DOMAIN), __("Calendar", TLBM_TEXT_DOMAIN), 10, __("You haven't created any calendars yet", TLBM_TEXT_DOMAIN)
@@ -59,13 +59,13 @@ class CalendarListTable extends TableBase
         $calendarQuery = MainFactory::create(CalendarQuery::class);
 
         if($orderby == "date") {
-            $calendarQuery->setOrderBy([[TLBM_CALENDAR_QUERY_ALIAS . ".tstampCreated", $order]]);
+            $calendarQuery->setOrderBy([[TLBM_CALENDAR_QUERY_ALIAS . ".timestampCreated", $order]]);
 
         } elseif($orderby == "title") {
             $calendarQuery->setOrderBy([[TLBM_CALENDAR_QUERY_ALIAS . ".title", $order]]);
 
         } else {
-            $calendarQuery->setOrderBy([[TLBM_CALENDAR_QUERY_ALIAS . ".tstampCreated", "desc"]]);
+            $calendarQuery->setOrderBy([[TLBM_CALENDAR_QUERY_ALIAS . ".timestampCreated", "desc"]]);
         }
 
 
@@ -107,7 +107,7 @@ class CalendarListTable extends TableBase
                 /**
                  * @var Calendar $item
                  */
-                echo new ExtendedDateTime($item->getTstampCreated());
+                echo new ExtendedDateTime($item->getTimestampCreated());
             })
         );
     }
@@ -136,7 +136,7 @@ class CalendarListTable extends TableBase
      */
     protected function getTotalItemsCount(): int
     {
-        return $this->calendarManager->getAllCalendarsCount();
+        return $this->entityRepository->getEntityCount(Calendar::class);
     }
 
     /**

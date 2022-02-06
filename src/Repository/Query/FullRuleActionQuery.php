@@ -77,12 +77,18 @@ class FullRuleActionQuery extends TimeBasedQuery implements FullRuleActionQueryI
 
     /**
      * @param QueryBuilder $queryBuilder
+     * @param bool $onlyCount
      * @param ExtendedDateTime|null $dateTime
      */
-    protected function buildQuery(QueryBuilder $queryBuilder, ?ExtendedDateTime $dateTime = null): void
+    protected function buildQuery(QueryBuilder $queryBuilder, bool $onlyCount = false, ?ExtendedDateTime $dateTime = null): void
     {
-        $queryBuilder->select("rule,actions,periods,calendarSelection,calendarSelectionCalendars")
-                     ->from(Rule::class, "rule")
+        if($onlyCount) {
+            $queryBuilder->select("count(rule.id)");
+        } else {
+            $queryBuilder->select("rule,actions,periods,calendarSelection,calendarSelectionCalendars");
+        }
+
+        $queryBuilder->from(Rule::class, "rule")
                      ->distinct(true)
                      ->leftJoin('rule.calendarSelection', 'calendarSelection')
                      ->leftJoin("calendarSelection.calendars", "calendarSelectionCalendars")

@@ -43,14 +43,21 @@ class CalendarBookingsQuery extends TimeBasedQuery
 
     /**
      * @param QueryBuilder $queryBuilder
+     * @param bool $onlyCount
      * @param ExtendedDateTime|null $dateTime
      */
-    protected function buildQuery(QueryBuilder $queryBuilder, ?ExtendedDateTime $dateTime = null): void
+    protected function buildQuery(QueryBuilder $queryBuilder, bool $onlyCount = false, ?ExtendedDateTime $dateTime = null): void
     {
         $expr = $queryBuilder->expr();
-        $queryBuilder->select("calendarBooking")
-                     ->from(CalendarBooking::class, "calendarBooking")
-                     ->join("calendarBooking.calendar", "calendar");
+
+        if($onlyCount) {
+            $queryBuilder->select("count(calendarBooking.id)");
+        } else {
+            $queryBuilder->select("calendarBooking");
+        }
+
+        $queryBuilder->from(CalendarBooking::class, "calendarBooking");
+        $queryBuilder->join("calendarBooking.calendar", "calendar");
 
         $where = $queryBuilder->expr()->andX();
 

@@ -4,6 +4,7 @@
 namespace TLBM\Entity;
 
 use JsonSerializable;
+use TLBM\Entity\Traits\IndexedEntity;
 
 /**
  * Class RuleAction
@@ -14,7 +15,7 @@ use JsonSerializable;
 class RuleAction implements JsonSerializable
 {
 
-    use IndexedTable;
+    use IndexedEntity;
 
     /**
      * @var ?Rule

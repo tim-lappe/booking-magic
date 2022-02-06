@@ -2,8 +2,6 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use TLBM\Admin\WpForm\Contracts\FormBuilderInterface;
 use TLBM\MainFactory;
 
@@ -22,8 +20,6 @@ abstract class FormPageBase extends PageBase
      * @param bool $displayDefaultHead
      * @param string $defaultHeadTitle
      *
-     * @throws DependencyException
-     * @throws NotFoundException
      */
     public function __construct(
         string $menuTitle,
@@ -92,7 +88,7 @@ abstract class FormPageBase extends PageBase
                 <?php
                 $this->displayNotices(); ?>
                 <?php
-                $this->showFormPageContent(); ?>
+                $this->displayFormPageContent(); ?>
             </div>
         </div>
         </form>
@@ -112,5 +108,5 @@ abstract class FormPageBase extends PageBase
         }
     }
 
-    abstract public function showFormPageContent();
+    abstract public function displayFormPageContent();
 }

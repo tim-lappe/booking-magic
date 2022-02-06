@@ -1,9 +1,11 @@
 <?php
 
-namespace TLBM\Repository\Contracts;
+namespace TLBM\Repository\Query\Contracts;
 
 use TLBM\Utilities\ExtendedDateTime;
 use Traversable;
+
+use const TLBM_EXTDATETIME_INTERVAL_DAY;
 
 interface TimeBasedQueryInterface
 {

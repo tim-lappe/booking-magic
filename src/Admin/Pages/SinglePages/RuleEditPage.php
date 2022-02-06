@@ -10,44 +10,36 @@ use TLBM\Admin\WpForm\CalendarPickerField;
 use TLBM\Admin\WpForm\PeriodEditorField;
 use TLBM\Admin\WpForm\RuleActionsField;
 use TLBM\Admin\WpForm\SelectField;
-use TLBM\Calendar\Contracts\CalendarRepositoryInterface;
+use TLBM\Entity\ManageableEntity;
 use TLBM\Entity\Rule;
-use TLBM\Repository\Contracts\RulesRepositoryInterface;
+use TLBM\Repository\Contracts\EntityRepositoryInterface;
 use TLBM\Validation\ValidatorFactory;
 
-class RuleEditPage extends FormPageBase
+/**
+ * @extends EntityEditPage<Rule>
+ */
+class RuleEditPage extends EntityEditPage
 {
 
     /**
-     * @var RulesRepositoryInterface
+     * @var EntityRepositoryInterface
      */
-    private RulesRepositoryInterface $rulesManager;
-
-    /**
-     * @var CalendarRepositoryInterface
-     */
-    private CalendarRepositoryInterface $calendarManager;
+    private EntityRepositoryInterface $entityRepository;
 
     /**
      * @var SettingsManagerInterface
      */
     private SettingsManagerInterface $settingsManager;
 
-    /**
-     * @var Rule|null
-     */
-    private ?Rule $editingRule = null;
 
     public function __construct(
-        RulesRepositoryInterface $rulesManager,
-        SettingsManagerInterface $settingsManager,
-        CalendarRepositoryInterface $calendarManager
+        EntityRepositoryInterface $entityRepository,
+        SettingsManagerInterface $settingsManager
     ) {
-        parent::__construct("rule-edit", "booking-magic-rule-edit", false);
+        parent::__construct(__("Rule", TLBM_TEXT_DOMAIN), "rule-edit", "booking-magic-rule-edit", false);
 
-        $this->rulesManager    = $rulesManager;
+        $this->entityRepository    = $entityRepository;
         $this->settingsManager = $settingsManager;
-        $this->calendarManager = $calendarManager;
         $this->parent_slug     = "booking-magic-rules";
 
         $this->defineFormFields();
@@ -56,7 +48,7 @@ class RuleEditPage extends FormPageBase
     public function defineFormFields()
     {
         $this->formBuilder->defineFormField(
-            new CalendarPickerField($this->calendarManager, "calendars", __("Calendars", TLBM_TEXT_DOMAIN))
+            new CalendarPickerField($this->entityRepository, "calendars", __("Calendars", TLBM_TEXT_DOMAIN))
         );
         $this->formBuilder->defineFormField(
             new RuleActionsField("rule_actions", __("Actions", TLBM_TEXT_DOMAIN))
@@ -69,53 +61,10 @@ class RuleEditPage extends FormPageBase
         );
     }
 
-    public function getHeadTitle(): string
+    protected function displayEntityEditForm(): void
     {
-        return $this->getEditingRule() == null ? __("Add New Rule", TLBM_TEXT_DOMAIN) : __(
-            "Edit Rule", TLBM_TEXT_DOMAIN
-        );
-    }
-
-    /**
-     * @return Rule|null
-     */
-    private function getEditingRule(): ?Rule
-    {
-        if($this->editingRule) {
-            return $this->editingRule;
-        }
-
-        $rule = null;
-        if (isset($_REQUEST['rule_id'])) {
-            $rule = $this->rulesManager->getRule($_REQUEST['rule_id']);
-        }
-
-        return $rule;
-    }
-
-    /**
-     * @param int $ruleId
-     *
-     * @return string
-     */
-    public function getEditLink(int $ruleId = -1): string
-    {
-        $page = $this->adminPageManager->getPage(RuleEditPage::class);
-        if ($ruleId >= 0) {
-            return admin_url() . "admin.php?page=" . urlencode($page->menu_slug) . "&rule_id=" . urlencode($ruleId);
-        }
-
-        return admin_url() . "admin.php?page=" . urlencode($page->menu_slug);
-    }
-
-    public function showFormPageContent()
-    {
-        $rule = $this->getEditingRule();
-        if ($rule) {
-            ?>
-            <input type="hidden" name="rule_id" value="<?php echo $rule->getId() ?>">
-            <?php
-        } else {
+        $rule = $this->getEditingEntity();
+        if (!$rule) {
             $rule = new Rule();
         }
         ?>
@@ -154,9 +103,9 @@ class RuleEditPage extends FormPageBase
     /**
      * @throws Exception
      */
-    public function onSave($vars): array
+    protected function onSaveEntity($vars, ?ManageableEntity &$savedEntity): array
     {
-        $rule = $this->getEditingRule();
+        $rule = $this->getEditingEntity();
         if ($rule == null) {
             $rule = new Rule();
         }
@@ -185,8 +134,8 @@ class RuleEditPage extends FormPageBase
 
         if(count($validationResult) == 0) {
             try {
-                $this->rulesManager->saveRule($rule);
-                $this->editingRule = $rule;
+                $this->entityRepository->saveEntity($rule);
+                $savedEntity = $rule;
             } catch (Throwable $exception) {
                 return array(
                     "error" => __("An internal error occured: " . $exception->getMessage(), TLBM_TEXT_DOMAIN)
@@ -199,5 +148,15 @@ class RuleEditPage extends FormPageBase
         return array(
             "success" => __("Rule has been saved", TLBM_TEXT_DOMAIN)
         );
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return ManageableEntity|null
+     */
+    protected function getEntityById(int $id): ?ManageableEntity
+    {
+        return $this->entityRepository->getEntity(Rule::class, $id);
     }
 }

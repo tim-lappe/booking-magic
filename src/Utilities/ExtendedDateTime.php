@@ -2,12 +2,9 @@
 
 namespace TLBM\Utilities;
 
-use DateInterval;
-use DatePeriod;
 use DateTime;
 use Iterator;
 use JsonSerializable;
-use TLBM\Utilities\Contracts\DateTimeToolsInterface;
 
 class ExtendedDateTime implements JsonSerializable
 {
