@@ -8,6 +8,7 @@ use TLBM\Admin\FormEditor\FormDataWalker;
 use TLBM\Admin\FormEditor\LinkedFormData;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
 use TLBM\Booking\Semantic\BookingValueSemantic;
+use TLBM\Calendar\CalendarSelectionHandler;
 use TLBM\Entity\Booking;
 use TLBM\Entity\BookingValue;
 use TLBM\Entity\Calendar;
@@ -199,9 +200,7 @@ class BookingProcessor
                 $nextCalendarBooking = null;
                 if($selectedEntity instanceof Calendar) {
                     $nextCalendarBooking = $this->createSingleCalendarBooking($selectedEntity, $name, $title, $value);
-
                 } elseif ($selectedEntity instanceof CalendarGroup) {
-
                     $nextCalendarBooking = $this->createNextCalendarBookingInGroup($selectedEntity, $name, $title, $value);
                 }
 
@@ -226,7 +225,9 @@ class BookingProcessor
      */
     public function createNextCalendarBookingInGroup(CalendarGroup $calendarGroup, string $name, string $title, $value): ?CalendarBooking
     {
-        $calendars = $calendarGroup->getCalendarSelection()->getCalendars();
+        $selectionHandler = MainFactory::create(CalendarSelectionHandler::class);
+        $calendars = $selectionHandler->getSelectedCalendarList($calendarGroup->getCalendarSelection());
+
         $dateTime = new ExtendedDateTime();
         $dateTime->setFromObject($value);
 
