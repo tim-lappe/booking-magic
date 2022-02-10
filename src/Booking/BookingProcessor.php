@@ -2,6 +2,7 @@
 
 namespace TLBM\Booking;
 
+use TLBM\Admin\FormEditor\CalendarElementSettingHelper;
 use TLBM\Admin\FormEditor\Elements\CalendarElem;
 use TLBM\Admin\FormEditor\FormDataWalker;
 use TLBM\Admin\FormEditor\LinkedFormData;
@@ -11,6 +12,7 @@ use TLBM\Entity\Booking;
 use TLBM\Entity\BookingValue;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarBooking;
+use TLBM\Entity\CalendarGroup;
 use TLBM\Entity\Form;
 use TLBM\MainFactory;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
@@ -140,24 +142,20 @@ class BookingProcessor
         $bookingValues = $this->createBookingValues();
         $calendarBookings = $this->createCalendarBookings();
 
-        foreach ($calendarBookings as $calendarBooking) {
-
-            //TODO: Wird derzeit nur auf "FromTimestamp" geprüft. Muss noch genauer geprüft werden für Zeitspannen
-            $remaining = $this->calendarBookingManager->getRemainingSlots($calendarBooking->getCalendar(), $calendarBooking->getFromDateTime());
-            if($remaining >= $calendarBooking->getSlots()) {
+        if($calendarBookings != null) {
+            foreach ($calendarBookings as $calendarBooking) {
                 $booking->addCalendarBooking($calendarBooking);
-            } else {
-                return null;
             }
-        }
 
-        foreach ($bookingValues as $value) {
-            $booking->addBookingValue($value);
-        }
+            foreach ($bookingValues as $value) {
+                $booking->addBookingValue($value);
+            }
 
-        if($this->entityRepository->saveEntity($booking)) {
-            $this->pendingBooking = $booking;
-            return $booking;
+            if ($this->entityRepository->saveEntity($booking)) {
+                $this->pendingBooking = $booking;
+
+                return $booking;
+            }
         }
 
         return null;
@@ -181,40 +179,116 @@ class BookingProcessor
     }
 
     /**
-     * @return CalendarBooking[]
+     * @return ?CalendarBooking[]
      */
-    public function createCalendarBookings(): array
+    public function createCalendarBookings(): ?array
     {
         $calendarBookings = [];
         foreach ($this->getLinkedFormDataFields() as $linkedFormData) {
             if ($linkedFormData->getFormElement() instanceof CalendarElem) {
-                $lsettings    = $linkedFormData->getLinkedSettings();
-                $calendarId   = $lsettings->getValue("selected_calendar");
-                $calendar     = $this->entityRepository->getEntity(Calendar::class, $calendarId);
-                if($calendar != null) {
-                    $calendarBooking = new CalendarBooking();
-                    $title           = $lsettings->getValue("title");
-                    $name            = $lsettings->getValue("name");
-                    $value           = $linkedFormData->getInputVarByName($name);
-                    $value           = json_decode(urldecode($value), JSON_OBJECT_AS_ARRAY);
+                $lsettings       = $linkedFormData->getLinkedSettings();
+                $title           = $lsettings->getValue("title");
+                $name            = $lsettings->getValue("name");
+                $value           = $linkedFormData->getInputVarByName($name);
+                $value           = json_decode(urldecode($value), JSON_OBJECT_AS_ARRAY);
 
-                    $dateTime = new ExtendedDateTime();
-                    $dateTime->setFromObject($value);
+                $helper = MainFactory::create(CalendarElementSettingHelper::class);
+                $helper->setSelectedCalendarSetting($lsettings->getValue("sourceId"));
+                $selectedEntity =  $helper->getSelected();
 
-                    $calendarBooking->setFromTimestamp($dateTime->getTimestamp());
-                    $calendarBooking->setToTimestamp($dateTime->getTimestamp());
-                    $calendarBooking->setFromFullDay($dateTime->isFullDay());
-                    $calendarBooking->setToFullDay($dateTime->isFullDay());
+                $nextCalendarBooking = null;
+                if($selectedEntity instanceof Calendar) {
+                    $nextCalendarBooking = $this->createSingleCalendarBooking($selectedEntity, $name, $title, $value);
 
-                    $calendarBooking->setCalendar($calendar);
-                    $calendarBooking->setNameFromForm($name);
-                    $calendarBooking->setTitleFromForm($title);
-                    $calendarBookings[] = $calendarBooking;
+                } elseif ($selectedEntity instanceof CalendarGroup) {
+
+                    $nextCalendarBooking = $this->createNextCalendarBookingInGroup($selectedEntity, $name, $title, $value);
+                }
+
+                if($nextCalendarBooking) {
+                   $calendarBookings[] = $nextCalendarBooking;
+                } else {
+                    return null;
                 }
             }
         }
 
         return $calendarBookings;
+    }
+
+    /**
+     * @param CalendarGroup $calendarGroup
+     * @param string $name
+     * @param string $title
+     * @param mixed $value
+     *
+     * @return ?CalendarBooking
+     */
+    public function createNextCalendarBookingInGroup(CalendarGroup $calendarGroup, string $name, string $title, $value): ?CalendarBooking
+    {
+        $calendars = $calendarGroup->getCalendarSelection()->getCalendars();
+        $dateTime = new ExtendedDateTime();
+        $dateTime->setFromObject($value);
+
+        $evenlySlots = 0;
+        $evenlyCalendar = null;
+        $fillOneSlots = PHP_INT_MAX;
+        $fillOneCalendar = null;
+
+        foreach ($calendars as $calendar) {
+            $slots = $this->calendarBookingManager->getRemainingSlots([ $calendar->getId() ], $dateTime);
+
+            if($slots >= $evenlySlots && $slots > 0) {
+                $evenlySlots = $slots;
+                $evenlyCalendar = $calendar;
+            }
+
+            if($slots <= $fillOneSlots && $slots > 0) {
+                $fillOneSlots = $slots;
+                $fillOneCalendar = $calendar;
+            }
+        }
+
+        if($calendarGroup->getBookingDisitribution() == TLBM_BOOKING_DISTRIBUTION_EVENLY && $evenlyCalendar != null) {
+            return $this->createSingleCalendarBooking($evenlyCalendar, $name, $title, $value);
+        } elseif ($calendarGroup->getBookingDisitribution() == TLBM_BOOKING_DISTRIBUTION_FILL_ONE && $fillOneCalendar != null) {
+            return $this->createSingleCalendarBooking($fillOneCalendar, $name, $title, $value);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param Calendar $calendar
+     * @param string $name
+     * @param string $title
+     * @param mixed $value
+     *
+     * @return ?CalendarBooking
+     */
+    private function createSingleCalendarBooking(Calendar $calendar, string $name, string $title, $value): ?CalendarBooking
+    {
+        $calendarBooking = new CalendarBooking();
+        $dateTime = new ExtendedDateTime();
+        $dateTime->setFromObject($value);
+
+        $remaining = $this->calendarBookingManager->getRemainingSlots([ $calendar->getId() ], $dateTime);
+
+        //Todo: muss noch auf Slots geprüft werden und nicht nur, ob noch mindestens ein Slot passen würde
+        if(!$dateTime->isInvalid() && $remaining > 0) {
+            $calendarBooking->setFromTimestamp($dateTime->getTimestamp());
+            $calendarBooking->setToTimestamp($dateTime->getTimestamp());
+            $calendarBooking->setFromFullDay($dateTime->isFullDay());
+            $calendarBooking->setToFullDay($dateTime->isFullDay());
+
+            $calendarBooking->setCalendar($calendar);
+            $calendarBooking->setNameFromForm($name);
+            $calendarBooking->setTitleFromForm($title);
+
+            return $calendarBooking;
+        }
+
+        return null;
     }
 
     /**

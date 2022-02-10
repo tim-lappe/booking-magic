@@ -5,8 +5,10 @@ namespace TLBM\Repository;
 use Exception;
 use Iterator;
 use TLBM\Entity\ManageableEntity;
+use TLBM\MainFactory;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
 use TLBM\Repository\Contracts\ORMInterface;
+use TLBM\Repository\Query\ManageableEntityQuery;
 
 class EntityRepository implements EntityRepositoryInterface
 {
@@ -50,6 +52,48 @@ class EntityRepository implements EntityRepositoryInterface
      *
      * @return bool
      */
+    public function deleteEntityPermanently(ManageableEntity $entity): bool
+    {
+        try {
+            $mgr  = $this->repository->getEntityManager();
+            $mgr->remove($entity);
+            $mgr->flush();
+            return true;
+        } catch (Exception $e) {
+            if(WP_DEBUG) {
+                echo $e->getMessage();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param ManageableEntity $entity
+     *
+     * @return bool
+     */
+    public function moveEntityToTrash(ManageableEntity $entity): bool
+    {
+        $entity->setAdministrationStatus(TLBM_ENTITY_ADMINSTATUS_DELETED);
+        return $this->saveEntity($entity);
+    }
+
+    /**
+     * @param ManageableEntity $entity
+     *
+     * @return bool
+     */
+    public function restoreEntity(ManageableEntity $entity): bool
+    {
+        $entity->setAdministrationStatus(TLBM_ENTITY_ADMINSTATUS_ACTIVE);
+        return $this->saveEntity($entity);
+    }
+
+    /**
+     * @param ManageableEntity $entity
+     *
+     * @return bool
+     */
     public function saveEntity(ManageableEntity $entity): bool
     {
         try {
@@ -68,26 +112,16 @@ class EntityRepository implements EntityRepositoryInterface
 
     /**
      * @param class-string $className
+     * @param bool $includeDeleted
      *
      * @return int
      */
-    public function getEntityCount(string $className): int
+    public function getEntityCount(string $className, bool $includeDeleted = false): int
     {
-        $mgr = $this->repository->getEntityManager();
-        $queryBuilder  = $mgr->createQueryBuilder();
-        $queryBuilder->select($queryBuilder->expr()->count("e"))->from($className, "e");
-
-        $query = $queryBuilder->getQuery();
-
-        try {
-            return $query->getSingleScalarResult();
-        } catch (Exception $e) {
-            if(WP_DEBUG) {
-                echo $e->getMessage();
-            }
-        }
-
-        return 0;
+        $query = MainFactory::create(ManageableEntityQuery::class);
+        $query->setEntityClass($className);
+        $query->setIncludeDeleted($includeDeleted);
+        return $query->getResultCount();
     }
 
     /**

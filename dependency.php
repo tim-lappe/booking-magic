@@ -69,7 +69,9 @@ use TLBM\Output\Contracts\FrontendMessengerInterface;
 use TLBM\Output\FormPrint;
 use TLBM\Output\FrontendMessenger;
 use TLBM\Repository\BookingRepository;
+use TLBM\Repository\CacheManager;
 use TLBM\Repository\Contracts\BookingRepositoryInterface;
+use TLBM\Repository\Contracts\CacheManagerInterface;
 use TLBM\Repository\Contracts\ORMInterface;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
 use TLBM\Repository\EntityRepository;
@@ -127,6 +129,7 @@ return [
     RulesCapacityManagerInterface::class     => autowire(RulesCapacityManager::class),
     CalendarBookingManagerInterface::class   => autowire(CalendarBookingManager::class),
     EntityRepositoryInterface::class => autowire(EntityRepository::class),
+    CacheManagerInterface::class => autowire(CacheManager::class),
 
     CalendarEntityValidatorInterface::class    => autowire(CalendarEntityValidator::class),
     RulesActionEntityValidatorInterface::class => autowire(RulesActionEntityValidator::class),

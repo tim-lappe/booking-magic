@@ -71,7 +71,7 @@ abstract class TableBase extends WP_List_Table
     {
         $orderby = $_REQUEST['orderby'] ?? "id";
         $order   = $_REQUEST['order'] ?? "desc";
-        $page    = $_REQUEST['page'] ?? 0;
+        $page    = $_REQUEST['paged'] ?? 1;
         $page    = intval($page);
 
         if(!in_array($order, ["asc", "desc"])) {
@@ -106,10 +106,15 @@ abstract class TableBase extends WP_List_Table
             }
         }
 
-        $this->processBuldActions();
+        if(isset($_REQUEST['action'])) {
+            $action = $_REQUEST['action'];
+            if ($action) {
+                $this->processBuldActions($action);
+            }
+        }
     }
 
-    abstract protected function processBuldActions();
+    abstract protected function processBuldActions(string $action);
 
     /**
      * @SuppressWarnings(PHPMD)
@@ -138,6 +143,10 @@ abstract class TableBase extends WP_List_Table
         }
     }
 
+    public function getCurrentView(): string
+    {
+        return $_REQUEST['filter'] ?? "";
+    }
 
     /**
      * @param mixed $which
@@ -239,9 +248,7 @@ abstract class TableBase extends WP_List_Table
      */
     public function views()
     {
-        if ($this->getTotalItemsCount() > 0) {
-            parent::views();
-        }
+        parent::views();
     }
 
     /**
@@ -249,15 +256,7 @@ abstract class TableBase extends WP_List_Table
      */
     public function display()
     {
-        if ($this->getTotalItemsCount() > 0) {
-            parent::display();
-        } else {
-            ?>
-            <div class="tlbm-admin-empty-table">
-                <span class="tlbm-text-big-light"><?php echo $this->noItemsDisplay ?></span>
-            </div>
-            <?php
-        }
+        parent::display();
     }
 
     /**

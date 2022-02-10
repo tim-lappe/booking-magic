@@ -2,43 +2,30 @@
 
 namespace TLBM\Rules;
 
-use TLBM\Entity\Calendar;
 use TLBM\MainFactory;
-use TLBM\Repository\Query\Contracts\FullRuleActionQueryInterface;
 use TLBM\Rules\Actions\ActionsMerging;
-use TLBM\Rules\Contracts\RulesCapacityManagerInterface;
 use TLBM\Utilities\ExtendedDateTime;
 
-class RulesCapacityManager implements RulesCapacityManagerInterface
+class RulesCapacityManager implements Contracts\RulesCapacityManagerInterface
 {
 
     /**
-     * @param ExtendedDateTime $dateTime
-     * @param Calendar $calendar
-     *
-     * @return int
+     * @inheritDoc
      */
-    public function getOriginalCapacity(Calendar $calendar, ExtendedDateTime $dateTime): int
+    public function getOriginalCapacity(array $calendarIds, ExtendedDateTime $dateTime): int
     {
-        $query = MainFactory::create(FullRuleActionQueryInterface::class);
-        $copyDateTime = $dateTime;
-        $copyDateTime->setFullDay(true);
-
-        $query->setDateTime($copyDateTime);
-        $query->setTypeCalendar($calendar->getId());
-
         $actionsMerging = MainFactory::create(ActionsMerging::class);
-        $actionsMerging->setRulesQuery($query);
+        $actionsMerging->setCalendarIds($calendarIds);
+        $actionsMerging->setDateTime($dateTime);
 
-        $timedMergedData = $actionsMerging->getRuleActionsMerged();
+        $mergedCollection = $actionsMerging->getRuleActionsMerged();
+
         $capacity = 0;
-        foreach ($timedMergedData as $mergedDatum)  {
-            $actions = $mergedDatum->getMergedActions();
-            if(isset($actions['dateCapacity'])) {
-                $capacity += intval($actions['dateCapacity']);
-            }
+        foreach ($mergedCollection as $mergeData) {
+            $actions = $mergeData->getMergedActions();
+            $capacity += $actions['dateCapacity'];
         }
-
+        
         return $capacity;
     }
 }

@@ -5,7 +5,7 @@ namespace TLBM\Admin\Pages\SinglePages;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;
-use TLBM\Output\Calendar\CalendarOutput;
+use TLBM\Output\Calendar\CalendarDisplay;
 use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
 use TLBM\Validation\ValidatorFactory;
@@ -49,9 +49,16 @@ class CalendarEditPage extends EntityEditPage
 
         <div class="tlbm-admin-page-tile">
             <?php
-            echo CalendarOutput::GetCalendarContainerShell(
-                $calendar->getId(), null, "month", MainFactory::create(MonthViewSetting::class), "calendar", true
-            ); ?>
+            $display = MainFactory::create(CalendarDisplay::class);
+            if($calendar->getId() != null) {
+                $display->setCalendarIds([$calendar->getId()]);
+            }
+            $display->setView("month");
+            $display->setViewSettings(MainFactory::create(MonthViewSetting::class));
+            $display->setReadonly(true);
+
+            echo $display->getDisplayContent();
+            ?>
         </div>
 
         <?php
@@ -71,7 +78,7 @@ class CalendarEditPage extends EntityEditPage
         }
 
         $calendarValidator = ValidatorFactory::createCalendarValidator($calendar);
-        $calendar->setTimestampCreated(time());
+        $calendar->setTimestampEdited(time());
         $calendar->setTitle($vars['title']);
 
         $validationResult = $calendarValidator->getValidationErrors();

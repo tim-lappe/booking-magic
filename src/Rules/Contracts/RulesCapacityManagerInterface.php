@@ -9,9 +9,9 @@ interface RulesCapacityManagerInterface
 {
     /**
      * @param ExtendedDateTime $dateTime
-     * @param Calendar $calendar
+     * @param array $calendarIds
      *
      * @return int
      */
-    public function getOriginalCapacity(Calendar $calendar, ExtendedDateTime $dateTime): int;
+    public function getOriginalCapacity(array $calendarIds, ExtendedDateTime $dateTime): int;
 }

@@ -1,12 +1,13 @@
 import {MergedActions} from "../Entity/MergedActions";
 import {RequestCommandBase} from "./RequestCommandBase";
 import {DateTime} from "../Adapter/DateTime";
+import {CalendarDisplay} from "../Entity/CalendarDisplay";
 
 export class MergedActionsRequest extends RequestCommandBase<MergedActions> {
 
     public fromDateTime: DateTime;
     public toDateTime: DateTime;
-    public options: any;
+    public display: CalendarDisplay;
 
     /**
      *
@@ -20,7 +21,7 @@ export class MergedActionsRequest extends RequestCommandBase<MergedActions> {
 
     public getPayload(): any {
         return {
-            "options": this.options,
+            "display": this.display,
             "fromDateTime": this.fromDateTime,
             "toDateTime": this.toDateTime,
         };

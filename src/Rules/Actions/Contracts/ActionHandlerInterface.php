@@ -4,6 +4,7 @@ namespace TLBM\Rules\Actions\Contracts;
 
 use TLBM\Entity\RuleAction;
 use TLBM\Rules\Actions\ActionData\ActionData;
+use TLBM\Rules\Actions\Merging\Contracts\MergeResultInterface;
 use TLBM\Rules\Actions\Merging\Merger\Merger;
 
 interface ActionHandlerInterface

@@ -4,31 +4,27 @@ namespace TLBM\Repository\Query;
 
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
-use TLBM\Entity\CalendarSelection;
+use Iterator;
 use TLBM\Entity\Rule;
 use TLBM\Localization\Contracts\LabelsInterface;
+use TLBM\MainFactory;
 use TLBM\Repository\Contracts\ORMInterface;
 use TLBM\Repository\Query\Contracts\FullRuleActionQueryInterface;
 use TLBM\Rules\TimedRules;
 use TLBM\Utilities\ExtendedDateTime;
 
-use const TLBM_CALENDAR_SELECTION_TYPE_ALL;
-use const TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT;
-use const TLBM_CALENDAR_SELECTION_TYPE_ONLY;
-
 class FullRuleActionQuery extends TimeBasedQuery implements FullRuleActionQueryInterface
 {
 
     /**
-     * @var int|null
+     * @var array|null
      */
-    private ?int $calendarId = null;
+    private ?array $calendarIds = null;
 
     /**
      * @var array|null
      */
     private ?array $actionTypes = null;
-
 
     /**
      * @var LabelsInterface
@@ -43,13 +39,13 @@ class FullRuleActionQuery extends TimeBasedQuery implements FullRuleActionQueryI
     }
 
     /**
-     * @param int $calendarId
+     * @param array $calendarIds
      *
      * @return void
      */
-    public function setTypeCalendar(int $calendarId): void
+    public function setCalendarIds(array $calendarIds): void
     {
-        $this->calendarId = $calendarId;
+        $this->calendarIds = $calendarIds;
     }
 
     /**
@@ -63,16 +59,13 @@ class FullRuleActionQuery extends TimeBasedQuery implements FullRuleActionQueryI
     }
 
     /**
-     * @return array
+     * @return Iterator
      */
-    public function getTimedRulesResult(): array
+    public function getTimedRulesResult(): Iterator
     {
-        $timedRules = [];
         foreach ($this->getResult() as $result) {
-            $timedRules[] = new TimedRules($result->getDateTime(), (array) $result->getQueryResult());
+            yield new TimedRules($result->getDateTime(), (array) $result->getQueryResult());
         }
-
-        return $timedRules;
     }
 
     /**
@@ -97,30 +90,10 @@ class FullRuleActionQuery extends TimeBasedQuery implements FullRuleActionQueryI
 
         $where = $queryBuilder->expr()->andX();
 
-        if ($this->calendarId) {
-            $queryBuilder->setParameter("calendarId", $this->calendarId);
-            $selectionWhere = $queryBuilder->expr()->orX();
-            $selectionWhere->add(
-                "calendarSelection.selectionMode = '" . TLBM_CALENDAR_SELECTION_TYPE_ALL . "'"
-            );
-
-            $only = $queryBuilder->expr()->andX();
-            $only->add("calendarSelection.selectionMode = '" . TLBM_CALENDAR_SELECTION_TYPE_ONLY . "'");
-            $only->add("calendarSelectionCalendars.id = :calendarId");
-
-            $allBut = $queryBuilder->expr()->andX();
-            $allBut->add("calendarSelection.selectionMode = '" . TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT . "'");
-
-            $subqAllButIds = $this->repository->getEntityManager()->createQueryBuilder();
-            $subqAllButIds->setParameter("calendarId", $this->calendarId);
-            $subqAllButIds->select("subCalendarSelection")->from(CalendarSelection::class, "subCalendarSelection")->leftJoin("subCalendarSelection.calendars", "subCalendarSeletcionCalendars")->where("subCalendarSeletcionCalendars.id = :calendarId");
-
-            $allBut->add($queryBuilder->expr()->notIn("calendarSelection", $subqAllButIds->getDQL()));
-
-            $selectionWhere->add($only);
-            $selectionWhere->add($allBut);
-
-            $where->add($selectionWhere);
+        if ($this->calendarIds) {
+            $calendarSelectionHelper = MainFactory::create(CalendarSelectionQueryHelper::class);
+            $calendarSelectionHelper->setCalendarIds($this->calendarIds);
+            $where->add($calendarSelectionHelper->getQueryExpr($queryBuilder));
         }
 
         if ($dateTime) {
@@ -135,7 +108,9 @@ class FullRuleActionQuery extends TimeBasedQuery implements FullRuleActionQueryI
             $where->add("actions.action_type IN (:actionType)");
         }
 
-        $queryBuilder->where($where);
+        if($where->count() > 0) {
+            $queryBuilder->where($where);
+        }
     }
 
     public function getDefaultOrderBy(): ?array

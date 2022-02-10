@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Utils} from "../../Utils";
 import {CalendarManager} from "./CalendarManager";
-import {CalendarOptions} from "../Entity/CalendarOptions";
+import {CalendarDisplay} from "../Entity/CalendarDisplay";
 
 
 interface CalendarContainerProps {
@@ -9,10 +9,7 @@ interface CalendarContainerProps {
 }
 
 interface CalendarContainerState {
-    view: string;
-    viewSettings: any;
-    options: CalendarOptions;
-    formName: string;
+    display: CalendarDisplay;
 }
 
 export class CalendarContainer extends React.Component<CalendarContainerProps, CalendarContainerState> {
@@ -22,21 +19,13 @@ export class CalendarContainer extends React.Component<CalendarContainerProps, C
     constructor(props) {
         super(props);
 
-        let options = this.props.dataset.json;
-        if(options) {
-            options = JSON.parse(Utils.decodeUriComponent(options));
-        }
-
-        let viewSettings = this.props.dataset.viewSettings;
-        if(viewSettings) {
-            viewSettings = JSON.parse(Utils.decodeUriComponent(viewSettings));
+        let display = this.props.dataset.json;
+        if(display) {
+            display = JSON.parse(Utils.decodeUriComponent(display));
         }
 
         this.state = {
-            view: this.props.dataset.view ?? "no-view",
-            viewSettings: viewSettings ?? {},
-            options: options ?? new CalendarOptions(),
-            formName: this.props.dataset.name ?? "calendar",
+            display: display ? new CalendarDisplay(display) : new CalendarDisplay(),
         }
     }
 
@@ -44,7 +33,7 @@ export class CalendarContainer extends React.Component<CalendarContainerProps, C
 
         return (
             <React.Fragment>
-                {this.calendarManager.createCalendarComponent(this.state.formName, this.state.view, this.state.options, this.state.viewSettings)}
+                {this.calendarManager.createCalendarComponent(this.state.display)}
             </React.Fragment>
         );
     }

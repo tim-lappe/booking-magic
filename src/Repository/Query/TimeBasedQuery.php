@@ -2,6 +2,7 @@
 
 namespace TLBM\Repository\Query;
 
+use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\QueryBuilder;
 use Iterator;
@@ -37,20 +38,12 @@ abstract class TimeBasedQuery extends BaseQuery implements TimeBasedQueryInterfa
     {
         try {
             if ($this->dateTime) {
-
-                $queryBuilder = $this->createQueryBuilder();
-                $this->buildQuery($queryBuilder, false, $this->dateTime);
-
-                yield new TimeBasedQueryResult($this->dateTime, $queryBuilder->getQuery()->getResult());
+                yield new TimeBasedQueryResult($this->dateTime, $this->getTimedQueryResult(false, $this->dateTime));
 
             } elseif ($this->fromDateTime && $this->toDateTime) {
                 $period = $this->fromDateTime->getDateTimesBetween($queryDateInterval, $this->toDateTime);
                 foreach ($period as $dt) {
-
-                    $queryBuilder = $this->createQueryBuilder();
-                    $this->buildQuery($queryBuilder, false, $dt);
-
-                    yield new TimeBasedQueryResult($dt, $queryBuilder->getQuery()->getResult());
+                    yield new TimeBasedQueryResult($dt, $this->getTimedQueryResult(false, $dt));
                 }
             }
         } catch (Throwable $exception) {
@@ -58,6 +51,28 @@ abstract class TimeBasedQuery extends BaseQuery implements TimeBasedQueryInterfa
                 var_dump($exception->getMessage());
             }
         }
+    }
+
+    /**
+     * @param bool $onlyCount
+     * @param ExtendedDateTime|null $dateTime
+     *
+     * @return mixed
+     */
+    public function getTimedQueryResult(bool $onlyCount = false, ?ExtendedDateTime $dateTime = null)
+    {
+        $queryBuilder = $this->createQueryBuilder();
+        $this->buildQuery($queryBuilder, false, $dateTime);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    public function getQuery(): ?Query
+    {
+        $queryBuilder = $this->createQueryBuilder();
+        $this->buildQuery($queryBuilder, false, $this->dateTime);
+
+        return $queryBuilder->getQuery();
     }
 
     /**

@@ -6,9 +6,9 @@ export class MergedActions {
 
     public actionsResult: any[];
 
-    constructor(from_data: any = null) {
-        if(from_data) {
-            Object.assign(this, from_data);
+    constructor(fromData: any = null) {
+        if(fromData) {
+            Object.assign(this, fromData);
         }
     }
 

@@ -2,20 +2,28 @@
 
 namespace TLBM\Booking\Contracts;
 
-use TLBM\Entity\Calendar;
+use Iterator;
 use TLBM\Entity\CalendarBooking;
 use TLBM\Utilities\ExtendedDateTime;
-use Traversable;
 
 interface CalendarBookingManagerInterface
 {
+
     /**
-     * @param Calendar $calendar
+     * @param array $calendarIds
      * @param ExtendedDateTime $extendedDateTime
      *
      * @return int
      */
-    public function getRemainingSlots(Calendar $calendar, ExtendedDateTime $extendedDateTime): int;
+    public function getRemainingSlots(array $calendarIds, ExtendedDateTime $extendedDateTime): int;
+
+    /**
+     * @param array|null $calendarIds
+     * @param ExtendedDateTime|null $dateTime
+     *
+     * @return int
+     */
+    public function getBookedSlots(?array $calendarIds = null, ?ExtendedDateTime $dateTime = null): int;
 
     /**
      * @param CalendarBooking $calendarBooking
@@ -32,10 +40,10 @@ interface CalendarBookingManagerInterface
     public function areValidCalendarBookings(array $calendarBookings): array;
 
     /**
-     * @param Calendar $calendar
+     * @param ?array $calendarIds
      * @param ExtendedDateTime|null $dateTime
      *
-     * @return Traversable
+     * @return Iterator
      */
-    public function getCalendarBookings(Calendar $calendar, ?ExtendedDateTime $dateTime = null): Traversable;
+    public function getCalendarBookings(?array $calendarIds = null, ?ExtendedDateTime $dateTime = null): Iterator;
 }

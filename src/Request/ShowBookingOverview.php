@@ -110,6 +110,7 @@ class ShowBookingOverview extends RequestBase
                 $html .= "<div class='tlbm-overview-section-title'>" . __("Selected time", TLBM_TEXT_DOMAIN) . "</div>";
                 foreach ($calendarBookings as $calendarBooking) {
                     $html .= $calendarBooking->getFromDateTime() . "<br>";
+                    $html .= $calendarBooking->getCalendar()->getTitle();
                 }
             }
 

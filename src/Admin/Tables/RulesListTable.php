@@ -14,15 +14,11 @@ use TLBM\Admin\Tables\DisplayHelper\DisplayPeriods;
 use TLBM\Entity\Rule;
 use TLBM\MainFactory;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
-use TLBM\Repository\Query\RulesQuery;
+use TLBM\Repository\Query\BaseQuery;
+use TLBM\Repository\Query\ManageableEntityQuery;
 
-class RulesListTable extends TableBase
+class RulesListTable extends ManagableEntityTable
 {
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private EntityRepositoryInterface $entityRepository;
 
     /**
      * @var AdminPageManagerInterface
@@ -41,51 +37,20 @@ class RulesListTable extends TableBase
         $this->settingsManager = $settingsManager;
 
         parent::__construct(
-            __("Rules", TLBM_TEXT_DOMAIN), __("Rule", TLBM_TEXT_DOMAIN), 10, __("You haven't created any rules yet", TLBM_TEXT_DOMAIN)
+            Rule::class, __("Rules", TLBM_TEXT_DOMAIN), __("Rule", TLBM_TEXT_DOMAIN), 10, __("You haven't created any rules yet", TLBM_TEXT_DOMAIN)
         );
     }
 
-    /**
-     * @SuppressWarnings(PHPMD)
-     * @return void
-     */
-    protected function processBuldActions()
+    protected function getQuery(string $orderby, string $order, int $page): ManageableEntityQuery
     {
-        //TODO: Bulk Actions für Rules Tabelle implementieren
-
-    }
-
-    /**
-     * @param string $orderby
-     * @param string $order
-     * @param int $page
-     *
-     * @return array
-     */
-    protected function getItems(string $orderby, string $order, int $page): array
-    {
-        $rulesQuery = MainFactory::create(RulesQuery::class);
-
+        $query = parent::getQuery($orderby, $order, $page);
         if($orderby == "title") {
-            $rulesQuery->setOrderBy([[TLBM_RULE_QUERY_ALIAS . ".title", $order]]);
+            $query->setOrderBy([[TLBM_ENTITY_QUERY_ALIAS . ".title", $order]]);
         } elseif ($orderby == "priority") {
-            $rulesQuery->setOrderBy([[TLBM_RULE_QUERY_ALIAS . ".priority", $order]]);
-        } else {
-            $rulesQuery->setOrderBy([[TLBM_RULE_QUERY_ALIAS . ".priority", "desc"]]);
+            $query->setOrderBy([[TLBM_ENTITY_QUERY_ALIAS . ".priority", $order]]);
         }
 
-        return iterator_to_array($rulesQuery->getResult());
-    }
-
-    /**
-     * @return array
-     */
-    protected function getViews(): array
-    {
-        return array(
-            "all"     => __("All", TLBM_TEXT_DOMAIN),
-            "trashed" => __("Trash", TLBM_TEXT_DOMAIN)
-        );
+        return $query;
     }
 
     /**
@@ -93,10 +58,9 @@ class RulesListTable extends TableBase
      */
     protected function getColumns(): array
     {
-        return [
-            $this->getCheckboxColumn(function ($item) {
-                return $item->getId();
-            }),
+        $columns = parent::getColumns();
+
+        array_splice($columns, 1, 0, [
             new Column("title", __("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
                 $ruleEditPage = $this->adminPageManager->getPage(RuleEditPage::class);
                 if ($ruleEditPage instanceof RuleEditPage) {
@@ -126,34 +90,10 @@ class RulesListTable extends TableBase
                 $periodsDisplay = MainFactory::create(DisplayPeriods::class);
                 $periodsDisplay->setRulePeriods($periods);
                 $periodsDisplay->display();
-            }),
-        ];
-    }
+            })
+        ]);
 
-    /**
-     * @SuppressWarnings(PHPMD)
-     * @return array
-     */
-    protected function getBulkActions(): array
-    {
-        if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
-            return array(
-                'delete_permanently' => __('Delete permanently', TLBM_TEXT_DOMAIN),
-                'restore'            => __('Restore', TLBM_TEXT_DOMAIN)
-            );
-        } else {
-            return array(
-                'delete' => __('Move to trash', TLBM_TEXT_DOMAIN)
-            );
-        }
-    }
-
-    /**
-     * @return int
-     */
-    protected function getTotalItemsCount(): int
-    {
-        return $this->entityRepository->getEntityCount(Rule::class);
+        return $columns;
     }
 
     /**

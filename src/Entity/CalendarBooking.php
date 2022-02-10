@@ -27,6 +27,7 @@ class CalendarBooking implements JsonSerializable
     /**
      * @var ?Calendar
      * @Doctrine\ORM\Mapping\ManyToOne (targetEntity=Calendar::class)
+     * @Doctrine\ORM\Mapping\JoinColumn(onDelete="SET NULL")
      */
     protected ?Calendar $calendar;
 
@@ -217,9 +218,9 @@ class CalendarBooking implements JsonSerializable
      */
     public function getToDateTime(): ExtendedDateTime
     {
-        $dateTime = new ExtendedDateTime();
+        $dateTime = new ExtendedDateTime($this->getToTimestamp());
         $dateTime->setFullDay($this->isToFullDay());
-        $dateTime->setTimestamp($this->getToTimestamp());
+
         return $dateTime;
     }
 
@@ -228,9 +229,8 @@ class CalendarBooking implements JsonSerializable
      */
     public function getFromDateTime(): ExtendedDateTime
     {
-        $dateTime = new ExtendedDateTime();
+        $dateTime = new ExtendedDateTime($this->getFromTimestamp());
         $dateTime->setFullDay($this->isFromFullDay());
-        $dateTime->setTimestamp($this->getFromTimestamp());
         return $dateTime;
     }
 

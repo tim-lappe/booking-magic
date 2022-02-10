@@ -2,14 +2,14 @@
 
 namespace TLBM\Booking;
 
+use Exception;
+use Iterator;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
-use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarBooking;
 use TLBM\MainFactory;
 use TLBM\Repository\Query\CalendarBookingsQuery;
 use TLBM\Rules\Contracts\RulesCapacityManagerInterface;
 use TLBM\Utilities\ExtendedDateTime;
-use Traversable;
 
 class CalendarBookingManager implements CalendarBookingManagerInterface
 {
@@ -24,45 +24,69 @@ class CalendarBookingManager implements CalendarBookingManagerInterface
     }
 
     /**
-     * @param Calendar $calendar
+     * @param array $calendarIds
      * @param ExtendedDateTime $extendedDateTime
+     * @param CalendarBooking|null $exclude
      *
      * @return int
      */
-    public function getRemainingSlots(Calendar $calendar, ExtendedDateTime $extendedDateTime): int
+    public function getRemainingSlots(array $calendarIds, ExtendedDateTime $extendedDateTime, ?CalendarBooking $exclude = null): int
     {
-        $capacity = $this->capacityManager->getOriginalCapacity($calendar, $extendedDateTime);
-        $calendarBookings = $this->getCalendarBookings($calendar, $extendedDateTime);
-        $bookedSlots = 0;
+        $capacity = $this->capacityManager->getOriginalCapacity($calendarIds, $extendedDateTime);
+        $bookedSlots = $this->getBookedSlots($calendarIds, $extendedDateTime);
 
-        /**
-         * @var CalendarBooking $calendarBooking
-         */
-        foreach ($calendarBookings as $calendarBooking) {
-            $bookedSlots += $calendarBooking->getSlots();
+        if($exclude != null) {
+            $bookedSlots -= $exclude->getSlots();
         }
 
         return max(0,($capacity - $bookedSlots));
     }
 
     /**
-     * @param ?Calendar $calendar
+     * @param array|null $calendarIds
      * @param ExtendedDateTime|null $dateTime
      *
-     * @return Traversable
+     * @return int
      */
-    public function getCalendarBookings(?Calendar $calendar = null, ?ExtendedDateTime $dateTime = null): Traversable
+    public function getBookedSlots(?array $calendarIds = null, ?ExtendedDateTime $dateTime = null): int
     {
         $query = MainFactory::create(CalendarBookingsQuery::class);
+        $query->setReturnSlotsScalar(true);
 
-        if($calendar != null) {
-            $query->setCalendar($calendar);
+        if($calendarIds != null) {
+            $query->setCalendarIds($calendarIds);
+        }
+        if($dateTime != null) {
+            $query->setDateTime($dateTime);
+        }
+
+        try {
+            return $query->getQuery()->getSingleScalarResult() ?? 0;
+        } catch (Exception $e) {
+            if(WP_DEBUG) {
+                echo $e->getMessage();
+            }
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param ?int[] $calendarIds
+     * @param ExtendedDateTime|null $dateTime
+     *
+     * @return Iterator
+     */
+    public function getCalendarBookings(?array $calendarIds = null, ?ExtendedDateTime $dateTime = null): Iterator
+    {
+        $query = MainFactory::create(CalendarBookingsQuery::class);
+        if($calendarIds != null) {
+            $query->setCalendarIds($calendarIds);
         }
 
         if($dateTime != null) {
             $query->setDateTime($dateTime);
         }
-
 
         foreach ($query->getResult() as $item) {
             $result = $item->getQueryResult();
@@ -100,7 +124,7 @@ class CalendarBookingManager implements CalendarBookingManagerInterface
     public function isValidCalendarBooking(CalendarBooking $calendarBooking): bool
     {
         //TODO: Wird nur auf "From" DateTime geprüft, muss also noch angepasst werden
-        $remaining = $this->getRemainingSlots($calendarBooking->getCalendar(), $calendarBooking->getFromDateTime());
+        $remaining = $this->getRemainingSlots(array($calendarBooking->getCalendar()->getId()), $calendarBooking->getFromDateTime(), $calendarBooking);
         return $remaining >= $calendarBooking->getSlots();
     }
 }
