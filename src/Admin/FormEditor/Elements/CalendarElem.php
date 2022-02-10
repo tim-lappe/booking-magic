@@ -11,7 +11,7 @@ use TLBM\Admin\FormEditor\ItemSettingsElements\Select;
 use TLBM\Admin\FormEditor\LinkedFormData;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\MainFactory;
-use TLBM\Output\Calendar\CalendarOutput;
+use TLBM\Output\Calendar\CalendarDisplay;
 use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
 use TLBM\Repository\Query\CalendarGroupQuery;
 use TLBM\Repository\Query\CalendarQuery;
@@ -44,13 +44,13 @@ class CalendarElem extends FormInputElem
         $calendars   = iterator_to_array($calendarsQuery->getResult());
         $calendar_kv = [];
         foreach ($calendars as $calendar) {
-            $calendar_kv[$calendar->getId()] = $calendar->getTitle();
+            $calendar_kv["calendar_" . $calendar->getId()] = $calendar->getTitle();
         }
 
         $groups_kv       = [];
         $calendar_groups = iterator_to_array($calendarGroupQuery->getResult());
         foreach ($calendar_groups as $group) {
-            $groups_kv[$group->getId()] = $group->getTitle();
+            $groups_kv["group_" . $group->getId()] = $group->getTitle();
         }
 
         $calendar_select = [
@@ -59,9 +59,8 @@ class CalendarElem extends FormInputElem
         ];
 
         $default_calendar = sizeof($calendar_kv) > 0 ? array_keys($calendar_kv)[0] : "";
-
         $selectedCalendar = new Select(
-            "selected_calendar", __("Calendar", TLBM_TEXT_DOMAIN), $calendar_select, $default_calendar, false, false, __("Calendar Settings", TLBM_TEXT_DOMAIN)
+            "sourceId", __("Calendar", TLBM_TEXT_DOMAIN), $calendar_select, $default_calendar, false, false, __("Calendar Settings", TLBM_TEXT_DOMAIN)
         );
 
         $weekdaysForm = new Select(
@@ -84,11 +83,27 @@ class CalendarElem extends FormInputElem
      */
     public function getFrontendContent(LinkedFormData $linkedFormData, callable $displayChildren = null): string
     {
-        $calendar = $linkedFormData->getLinkedSettings()->getValue("selected_calendar");
+        $sourceId = $linkedFormData->getLinkedSettings()->getValue("sourceId");
         $name = $linkedFormData->getLinkedSettings()->getValue("name");
 
-        if (!empty($calendar)) {
-            return CalendarOutput::GetCalendarContainerShell($calendar, new ExtendedDateTime(), "month", new MonthViewSetting($this->settingsManager), $name);
+        if (!empty($sourceId)) {
+            $calendarDisplay = MainFactory::create(CalendarDisplay::class);
+
+            if(strpos($sourceId, "group_") !== false) {
+                $id = intval(str_replace("group_", "", $sourceId));
+                $calendarDisplay->setGroupIds([ $id ]);
+            }
+
+            if(strpos($sourceId, "calendar_") !== false) {
+                $id = intval(str_replace("calendar_", "", $sourceId));
+                $calendarDisplay->setCalendarIds([ $id ]);
+            }
+
+            $calendarDisplay->setView("month");
+            $calendarDisplay->setViewSettings(MainFactory::create(MonthViewSetting::class));
+            $calendarDisplay->setInputName($name);
+
+            return $calendarDisplay->getDisplayContent();
         } else {
             return "<div class='tlbm-no-calendar-alert'>" . __(
                     "No calendar or calendargroup selected", TLBM_TEXT_DOMAIN

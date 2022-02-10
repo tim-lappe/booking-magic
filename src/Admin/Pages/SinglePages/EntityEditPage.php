@@ -3,6 +3,8 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 use TLBM\Entity\ManageableEntity;
+use TLBM\MainFactory;
+use TLBM\Repository\Contracts\CacheManagerInterface;
 
 /**
  * @template T of ManageableEntity
@@ -48,6 +50,9 @@ abstract class EntityEditPage extends FormPageBase
      */
     public function onSave($vars): array
     {
+        $cacheManager = MainFactory::get(CacheManagerInterface::class);
+        $cacheManager->clearCache();
+
         $entity = null;
         $errors = $this->onSaveEntity($vars, $entity);
         $this->editingEntity = $entity;

@@ -42,7 +42,7 @@ export class MonthViewDateCell extends React.Component<MonthViewCellProps, Month
             );
         } else {
             return (
-                <div className={"tlbm-cell"} />
+                <div className={"tlbm-cell tlbm-cell-empty"} />
             )
         }
     }

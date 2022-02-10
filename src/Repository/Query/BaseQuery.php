@@ -2,6 +2,7 @@
 
 namespace TLBM\Repository\Query;
 
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
 use Iterator;
@@ -42,12 +43,25 @@ abstract class BaseQuery
      */
     public function getResult(): Iterator
     {
-        $queryBuilder = $this->createQueryBuilder();
-        $this->buildQuery($queryBuilder);
-
-        foreach($queryBuilder->getQuery()->getResult() as $resultObj) {
+        foreach ($this->getQuery()->getResult() as $resultObj) {
             yield $resultObj;
         }
+    }
+
+    public function getQuery(): ?Query
+    {
+        try {
+            $queryBuilder = $this->createQueryBuilder();
+            $this->buildQuery($queryBuilder);
+
+            return $queryBuilder->getQuery();
+        } catch (Exception $exception) {
+            if(WP_DEBUG) {
+                echo $exception->getMessage();
+            }
+        }
+
+        return null;
     }
 
 

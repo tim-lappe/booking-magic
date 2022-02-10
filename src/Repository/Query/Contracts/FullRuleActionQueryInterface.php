@@ -2,16 +2,16 @@
 
 namespace TLBM\Repository\Query\Contracts;
 
-use TLBM\Rules\TimedRules;
+use Iterator;
 
 interface FullRuleActionQueryInterface extends TimeBasedQueryInterface
 {
     /**
-     * @param int $calendarId
+     * @param array $calendarIds
      *
      * @return void
      */
-    public function setTypeCalendar(int $calendarId): void;
+    public function setCalendarIds(array $calendarIds): void;
 
     /**
      * @param array $actionType
@@ -22,7 +22,7 @@ interface FullRuleActionQueryInterface extends TimeBasedQueryInterface
 
 
     /**
-     * @return TimedRules[]
+     * @return Iterator
      */
-    public function getTimedRulesResult(): array;
+    public function getTimedRulesResult(): Iterator;
 }

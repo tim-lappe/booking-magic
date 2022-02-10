@@ -2,97 +2,281 @@
 
 namespace TLBM\Rules\Actions;
 
+use Composer\Cache;
+use InvalidArgumentException;
 use Iterator;
-use TLBM\Entity\RuleAction;
+use TLBM\MainFactory;
+use TLBM\Repository\Contracts\CacheManagerInterface;
 use TLBM\Repository\Query\Contracts\FullRuleActionQueryInterface;
-use TLBM\Repository\Query\FullRuleActionQuery;
+use TLBM\Rules\Actions\Merging\Context\MergeContext;
 use TLBM\Rules\Actions\Merging\Merger\Merger;
 use TLBM\Rules\Contracts\RuleActionsManagerInterface;
+use TLBM\Rules\TimedRules;
+use TLBM\Utilities\ExtendedDateTime;
 
 class ActionsMerging
 {
-
-    /**
-     * @var FullRuleActionQuery
-     */
-    private FullRuleActionQueryInterface $rulesQuery;
-
     /**
      * @var RuleActionsManagerInterface
      */
     private RuleActionsManagerInterface $ruleActionsManager;
 
     /**
-     * @param RuleActionsManagerInterface $ruleActionsManager
-     * @param FullRuleActionQuery $query
+     * @var CacheManagerInterface
      */
-    public function __construct(RuleActionsManagerInterface $ruleActionsManager, FullRuleActionQueryInterface $query)
+    private CacheManagerInterface $cacheManager;
+
+    /**
+     * @var ?MergeContext
+     */
+    private ?MergeContext $mergeContext = null;
+
+    /**
+     * @var ?ExtendedDateTime
+     */
+    private ?ExtendedDateTime $dateTime = null;
+
+    /**
+     * @var ?ExtendedDateTime
+     */
+    private ?ExtendedDateTime $fromDateTime = null;
+
+    /**
+     *
+     * @var ?ExtendedDateTime
+     */
+    private ?ExtendedDateTime $toDateTime = null;
+
+    /**
+     * @var int[]
+     */
+    private array $calendarIds = array();
+
+    /**
+     * @param RuleActionsManagerInterface $ruleActionsManager
+     * @param CacheManagerInterface $cacheManager
+     */
+    public function __construct(RuleActionsManagerInterface $ruleActionsManager, CacheManagerInterface $cacheManager)
     {
-        $this->rulesQuery         = $query;
+        $this->cacheManager = $cacheManager;
         $this->ruleActionsManager = $ruleActionsManager;
     }
 
     /**
-     * @return TimedMergeData[]
+     * @param array $calendarIds
+     *
+     * @return FullRuleActionQueryInterface
      */
-    public function getRuleActionsMerged(): array
+    private function createRuleActionQuery(array $calendarIds): FullRuleActionQueryInterface
     {
-        $mergedCollection = [];
-        foreach ($this->getRuleActions() as $timedActions) {
+        $query = MainFactory::create(FullRuleActionQueryInterface::class);
+        $query->setCalendarIds($calendarIds);
 
+        if($this->fromDateTime != null && $this->toDateTime != null) {
+            $query->setDateTimeRange($this->fromDateTime, $this->toDateTime);
+        } elseif ($this->dateTime != null) {
+            $query->setDateTime($this->dateTime);
+        } else {
+            throw new InvalidArgumentException("dateTime or fromDatetime and toDatetime have to be defined");
+        }
+
+        return $query;
+    }
+
+    /**
+     * @return ?array
+     */
+    private function getHashObj(): ?array
+    {
+        if($this->dateTime != null) {
+            return [
+                "name" => "mergedActionsForCalendar",
+                "calendarIds" => $this->calendarIds,
+                "mergeContext" => $this->mergeContext,
+                "dateTime" => $this->dateTime->format()
+            ];
+        }
+        if($this->toDateTime != null && $this->fromDateTime != null) {
+             return [
+                "name" => "mergedActionsForCalendar",
+                "calendarIds" => $this->calendarIds,
+                "mergeContext" => $this->mergeContext,
+                "fromDateTime" => $this->fromDateTime->format(),
+                "toDateTime" => $this->toDateTime->format()
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * @return Iterator
+     */
+    public function getRuleActionsMerged(): Iterator
+    {
+        $summedUpMergeDataArr = [];
+        $hashObj = $this->getHashObj();
+        $cachedSum = $this->cacheManager->getData($hashObj);
+        if($cachedSum != null) {
+            $summedUpMergeDataArr = $cachedSum;
+        } else {
+            foreach ($this->calendarIds as $calendarId) {
+                $query = $this->createRuleActionQuery([$calendarId]);
+                foreach ($this->getTimedMergeDataForResult($query->getTimedRulesResult()) as $timedMergeData) {
+                    $mergedActions         = $timedMergeData->getMergedActions();
+                    $sumedUpTimedMergeData = $this->searchTimedMergeData($summedUpMergeDataArr, $timedMergeData->getDateTime());
+                    if ( !$sumedUpTimedMergeData) {
+                        $summedUpMergeDataArr[] = $timedMergeData;
+                    } else {
+                        foreach ($mergedActions as $term => $mergedActionResult) {
+                            $merger = $timedMergeData->getSingleMerger($term);
+                            if ($merger != null) {
+                                if(isset( $sumedUpTimedMergeData->getMergedActions()[$term])) {
+                                    $summedUpActionResult = $sumedUpTimedMergeData->getMergedActions()[$term];
+                                    $summedUpActionResult = $merger->sumUpResults($term, $summedUpActionResult, $mergedActionResult);
+                                    $sumedUpTimedMergeData->setSingleMergeAction($term, $summedUpActionResult);
+                                } else {
+                                    $sumedUpTimedMergeData->setSingleMergeAction($term, $mergedActionResult);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            $this->cacheManager->setData($hashObj, $summedUpMergeDataArr);
+        }
+
+
+        foreach ($summedUpMergeDataArr as $item) {
+            yield $item;
+        }
+    }
+
+    /**
+     * @param TimedMergeData[] $timedMergeDataArr
+     * @param ExtendedDateTime $dateTime
+     *
+     * @return ?TimedMergeData
+     */
+    private function searchTimedMergeData(array $timedMergeDataArr, ExtendedDateTime $dateTime): ?TimedMergeData {
+        foreach ($timedMergeDataArr as $timedMergeData) {
+            if($timedMergeData->getDateTime()->isSameDate($dateTime)) {
+                return $timedMergeData;
+            }
+        }
+
+        return null;
+    }
+
+    private function getTimedMergeDataForResult(Iterator $rulesResult): Iterator
+    {
+        /**
+         * @var TimedRules $timedRule
+         */
+        foreach ($rulesResult as $timedRule) {
             /**
              * @var Merger[] $actionMergeChains
              */
-            $actionMergeChains = array();
-
-            /**
-             * @var RuleAction $ruleAction
-             */
-            foreach ($timedActions->getRuleActions() as $ruleAction) {
+            $actionMergeChains = [];
+            foreach ($timedRule->getTimedActions()->getRuleActions() as $ruleAction) {
                 $handler = $this->ruleActionsManager->getActionHandler($ruleAction);
                 if ($handler) {
-                    $mergeTerm = $handler->getMergeTerm();
+                    $mergeTerm  = $handler->getMergeTerm();
                     $nextMerger = $actionMergeChains[$mergeTerm] ?? null;
-                    $actionMergeChains[$mergeTerm] = $handler->getMerger($nextMerger);
+                    $merger     = $handler->getMerger($nextMerger);
+                    $merger->setMergeContext($this->mergeContext);
+                    $actionMergeChains[$mergeTerm] = $merger;
                 }
             }
 
             $mergedActions = [];
+            $usedMergers = [];
             foreach ($actionMergeChains as $term => $mergeChain) {
                 $mergedActions[$term] = $mergeChain->merge()->getMergeResult();
+                $usedMergers[$term] = $mergeChain;
             }
 
-            $mergedCollection[] = new TimedMergeData($timedActions->getDateTime(), $mergedActions);
+            yield new TimedMergeData($timedRule->getTimedActions()->getDateTime(), $mergedActions, $usedMergers);
         }
-
-        return $mergedCollection;
     }
 
     /**
+     * @return MergeContext|null
+     */
+    public function getMergeContext(): ?MergeContext
+    {
+        return $this->mergeContext;
+    }
+
+    /**
+     * @param MergeContext|null $mergeContext
+     */
+    public function setMergeContext(?MergeContext $mergeContext): void
+    {
+        $this->mergeContext = $mergeContext;
+    }
+
+    /**
+     * @return ExtendedDateTime|null
+     */
+    public function getDateTime(): ?ExtendedDateTime
+    {
+        return $this->dateTime;
+    }
+
+    /**
+     * @param ExtendedDateTime|null $dateTime
+     */
+    public function setDateTime(?ExtendedDateTime $dateTime): void
+    {
+        $this->fromDateTime = null;
+        $this->toDateTime = null;
+        $this->dateTime = $dateTime;
+    }
+
+    /**
+     * @return ExtendedDateTime|null
+     */
+    public function getFromDateTime(): ?ExtendedDateTime
+    {
+        return $this->fromDateTime;
+    }
+
+    /**
+     * @return ExtendedDateTime|null
+     */
+    public function getToDateTime(): ?ExtendedDateTime
+    {
+        return $this->toDateTime;
+    }
+
+    /**
+     * @param ExtendedDateTime|null $fromDateTime
+     * @param ExtendedDateTime|null $toDateTime
      *
-     * @return Iterator
+     * @return void
      */
-    public function getRuleActions(): Iterator
+    public function setDateTimeRange(?ExtendedDateTime $fromDateTime, ?ExtendedDateTime $toDateTime)
     {
-        $timedRules = $this->rulesQuery->getTimedRulesResult();
-        foreach ($timedRules as $timedRule) {
-            yield $timedRule->getTimedActions();
-        }
+        $this->fromDateTime = $fromDateTime;
+        $this->toDateTime = $toDateTime;
+        $this->dateTime = null;
     }
 
     /**
-     * @return FullRuleActionQuery
+     * @return int[]
      */
-    public function getRulesQuery()
+    public function getCalendarIds(): array
     {
-        return $this->rulesQuery;
+        return $this->calendarIds;
     }
 
     /**
-     * @param FullRuleActionQuery $rulesQuery
+     * @param int[] $calendarIds
      */
-    public function setRulesQuery(FullRuleActionQuery $rulesQuery): void
+    public function setCalendarIds(array $calendarIds): void
     {
-        $this->rulesQuery = $rulesQuery;
+        $this->calendarIds = $calendarIds;
     }
 }

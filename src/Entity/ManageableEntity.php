@@ -51,14 +51,6 @@ abstract class ManageableEntity
     }
 
     /**
-     * @param int $tstampCreated
-     */
-    public function setTimestampCreated(int $tstampCreated): void
-    {
-        $this->timestampCreated = $tstampCreated;
-    }
-
-    /**
      * @return int
      */
     public function getTimestampEdited(): int

@@ -1,6 +1,5 @@
 import * as React from "react";
 import {CalendarBaseState, CalendarComponentBase} from "../CalendarComponentBase";
-import {CalendarMonthViewSetting} from "../../../Entity/CalendarMonthViewSetting";
 import {DateLocalization} from "../../../../DateLocalization";
 import {DateTime} from "../../../Adapter/DateTime";
 import {MonthViewDateCell} from "./MonthViewDateCell";
@@ -13,7 +12,7 @@ interface CalendarMonthViewState {
     contentReady: boolean;
 }
 
-export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSetting, CalendarMonthViewState> {
+export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewState> {
 
     private calendarDiv = React.createRef<HTMLDivElement>();
 
@@ -113,7 +112,7 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
 
     render() {
         let dayTiles = this.getDayTiles();
-        let weekdayTiles = [...this.props.viewSettings.weekday_labels];
+        let weekdayTiles = [...this.props.display.viewSettings.weekday_labels];
 
         let columnSize = (1 / weekdayTiles.length) * 100;
         let cssGridColumns = "";
@@ -146,7 +145,7 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSe
             <div ref={this.calendarDiv} className={"tlbm-calendar-month-view " + (this.state.viewState.smallVersion ? "tlbm-calendar-small" : "")}>
                 {this.state.viewState.contentReady ? (
                     <React.Fragment>
-                        <input type={"hidden"} value={this.getEncodedValue()} name={this.props.name}/>
+                        <input type={"hidden"} value={this.getEncodedValue()} name={this.props.display.inputName}/>
                         <div className={"tlbm-month-view-header"}>
                             <button onClick={this.onClickPrevMonth} className={"button button-primary tlbm-button-calendar-month-traverse"}>{labelPrevMonth}</button>
                             <span className={"tlbm-month-view-current-month"}>{labelThisMonth} {this.state.focusedDate.getYear()}</span>

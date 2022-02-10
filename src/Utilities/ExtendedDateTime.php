@@ -27,11 +27,11 @@ class ExtendedDateTime implements JsonSerializable
     public function __construct(?int $timestamp = null)
     {
         $this->internalDateTime = new DateTime();
+        $this->internalDateTime->setTimezone(wp_timezone());
+
         if($timestamp != null) {
             $this->internalDateTime->setTimestamp($timestamp);
         }
-
-        $this->internalDateTime->setTimezone(wp_timezone());
     }
 
     public function __toString()
@@ -109,11 +109,13 @@ class ExtendedDateTime implements JsonSerializable
         }
 
         $timeformat = get_option('time_format');
+        $shiftetTimestamp = $this->getTimestamp();
+        $shiftetTimestamp += date_offset_get($this->internalDateTime);
 
         if($this->isFullDay()) {
-            return date_i18n($format, $this->getTimestamp());
+            return date_i18n($format, $shiftetTimestamp);
         } else {
-            return date_i18n($format . " " . $timeformat, $this->getTimestamp());
+            return date_i18n($format . " " . $timeformat, $shiftetTimestamp);
         }
     }
 
@@ -281,6 +283,9 @@ class ExtendedDateTime implements JsonSerializable
     public function setFullDay(bool $isFullDay)
     {
         $this->fullDay = $isFullDay;
+        if($isFullDay) {
+            $this->setFullTime(0, 0, 0);
+        }
     }
 
     /**

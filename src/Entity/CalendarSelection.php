@@ -26,19 +26,8 @@ class CalendarSelection implements JsonSerializable
 
     /**
      * @Doctrine\ORM\Mapping\ManyToMany(targetEntity=Calendar::class)
-     * @Doctrine\ORM\Mapping\JoinTable(
-     *     name="calendar_selection_calendar_mapping",
-     *     joinColumns={
-     *          @Doctrine\ORM\Mapping\JoinColumn(name="calendar_selection_id", referencedColumnName="id"),
-     *     },
-     *     inverseJoinColumns={
-     *          @Doctrine\ORM\Mapping\JoinColumn(name="calendar_id", referencedColumnName="id")
-     *     }
-     * )
-     * @var Collection|Calendar[]
      */
     protected Collection $calendars;
-
 
     /**
      * @var string
@@ -82,7 +71,6 @@ class CalendarSelection implements JsonSerializable
     {
         if ($this->calendars->contains($calendar)) {
             $this->calendars->removeElement($calendar);
-            $calendar->removeCalendarSelection($this);
         }
 
         return $calendar;
@@ -97,7 +85,6 @@ class CalendarSelection implements JsonSerializable
     {
         if ( !$this->calendars->contains($calendar)) {
             $this->calendars[] = $calendar;
-            $calendar->addCalendarSelection($this);
         }
 
         return $calendar;

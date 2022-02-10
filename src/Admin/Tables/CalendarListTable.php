@@ -6,44 +6,23 @@ namespace TLBM\Admin\Tables;
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
 use TLBM\Entity\Calendar;
-use TLBM\MainFactory;
-use TLBM\Repository\Contracts\EntityRepositoryInterface;
-use TLBM\Repository\Query\CalendarQuery;
-use TLBM\Utilities\ExtendedDateTime;
+use TLBM\Repository\Query\BaseQuery;
+use TLBM\Repository\Query\ManageableEntityQuery;
 
-/**
- * @extends TableBase<Calendar>
- */
-class CalendarListTable extends TableBase
+
+class CalendarListTable extends ManagableEntityTable
 {
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private EntityRepositoryInterface $entityRepository;
-
     /**
      * @var AdminPageManagerInterface
      */
     private AdminPageManagerInterface $adminPageManager;
 
-    public function __construct(EntityRepositoryInterface $entityRepository, AdminPageManagerInterface $adminPageManager)
+    public function __construct(AdminPageManagerInterface $adminPageManager)
     {
         $this->adminPageManager = $adminPageManager;
-        $this->entityRepository = $entityRepository;
-
         parent::__construct(
-            __("Calendars", TLBM_TEXT_DOMAIN), __("Calendar", TLBM_TEXT_DOMAIN), 10, __("You haven't created any calendars yet", TLBM_TEXT_DOMAIN)
+             Calendar::class, __("Calendars", TLBM_TEXT_DOMAIN), __("Calendar", TLBM_TEXT_DOMAIN), 10, __("You haven't created any calendars yet", TLBM_TEXT_DOMAIN)
         );
-    }
-
-    /**
-     * @return void
-     */
-    protected function processBuldActions()
-    {
-        //TODO: Bulk Actions für Calendar Tabelle implementieren
-
     }
 
     /**
@@ -51,101 +30,39 @@ class CalendarListTable extends TableBase
      * @param string $order
      * @param int $page
      *
-     * @return array
+     * @return ManageableEntityQuery
      * @SuppressWarnings(PHPMD)
      */
-    protected function getItems(string $orderby, string $order, int $page): array
+    protected function getQuery(string $orderby, string $order, int $page): ManageableEntityQuery
     {
-        $calendarQuery = MainFactory::create(CalendarQuery::class);
-
-        if($orderby == "date") {
-            $calendarQuery->setOrderBy([[TLBM_CALENDAR_QUERY_ALIAS . ".timestampCreated", $order]]);
-
-        } elseif($orderby == "title") {
-            $calendarQuery->setOrderBy([[TLBM_CALENDAR_QUERY_ALIAS . ".title", $order]]);
-
-        } else {
-            $calendarQuery->setOrderBy([[TLBM_CALENDAR_QUERY_ALIAS . ".timestampCreated", "desc"]]);
+        $calendarQuery = parent::getQuery($orderby, $order, $page);
+        if ($orderby == "title") {
+            $calendarQuery->setOrderBy([[TLBM_ENTITY_QUERY_ALIAS . ".title", $order]]);
         }
 
-
-        return iterator_to_array($calendarQuery->getResult());
-    }
-
-    /**
-     * @return array
-     */
-    protected function getViews(): array
-    {
-        return array(
-            "all"     => __("All", TLBM_TEXT_DOMAIN),
-            "trashed" => __("Trash", TLBM_TEXT_DOMAIN)
-        );
+        return $calendarQuery;
     }
 
     protected function getColumns(): array
     {
-        return array(
-            $this->getCheckboxColumn(function ($item) {
-                return $item->getId();
-            }),
+        $columns = parent::getColumns();
 
-            new Column("title", __('Title', TLBM_TEXT_DOMAIN), true, function ($item) {
-                $calendarEditPage = $this->adminPageManager->getPage(CalendarEditPage::class);
-                if($calendarEditPage != null) {
-                    $link = $calendarEditPage->getEditLink($item->getId());
-                    if ( !empty($item->getTitle())) {
-                        echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
-                    } else {
-                        echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
-                    }
-                }
-            }),
-
-            new Column("date", __('Date created', TLBM_TEXT_DOMAIN), true, function ($item) {
-
-                /**
-                 * @var Calendar $item
-                 */
-                echo new ExtendedDateTime($item->getTimestampCreated());
-            })
+        array_splice(
+            $columns, 1, 0, [
+                new Column("title", __('Title', TLBM_TEXT_DOMAIN), true, function ($item) {
+                        $calendarEditPage = $this->adminPageManager->getPage(CalendarEditPage::class);
+                        if ($calendarEditPage != null) {
+                            $link = $calendarEditPage->getEditLink($item->getId());
+                            if ( !empty($item->getTitle())) {
+                                echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
+                            } else {
+                                echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
+                            }
+                        }
+                    })
+                ]
         );
-    }
 
-
-    /**
-     * @SuppressWarnings(PHPMD)
-     * @return array
-     */
-    protected function getBulkActions(): array
-    {
-        if (isset($_REQUEST['filter']) && $_REQUEST['filter'] == "trashed") {
-            return array(
-                'delete_permanently' => __('Delete permanently', TLBM_TEXT_DOMAIN),
-                'restore'            => __('Restore', TLBM_TEXT_DOMAIN)
-            );
-        } else {
-            return array(
-                'delete' => __('Move to trash', TLBM_TEXT_DOMAIN)
-            );
-        }
-    }
-
-    /**
-     * @return int
-     */
-    protected function getTotalItemsCount(): int
-    {
-        return $this->entityRepository->getEntityCount(Calendar::class);
-    }
-
-    /**
-     * @param string $which
-     *
-     * @return void
-     */
-    protected function tableNav(string $which): void
-    {
-
+        return $columns;
     }
 }

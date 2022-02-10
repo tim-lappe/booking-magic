@@ -3,7 +3,6 @@
 namespace TLBM\Repository\Query;
 
 use Doctrine\ORM\QueryBuilder;
-use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarBooking;
 use TLBM\Repository\Contracts\ORMInterface;
 use TLBM\Utilities\ExtendedDateTime;
@@ -12,10 +11,14 @@ class CalendarBookingsQuery extends TimeBasedQuery
 {
 
     /**
-     * @var ?Calendar
+     * @var ?array
      */
-    private ?Calendar $calendar = null;
+    private ?array $calendarIds = null;
 
+    /**
+     * @var bool
+     */
+    private bool $returnSlotsScalar = false;
 
     /**
      * @param ORMInterface $repository
@@ -26,20 +29,37 @@ class CalendarBookingsQuery extends TimeBasedQuery
     }
 
     /**
-     * @return ?Calendar
+     * @return bool
      */
-    public function getCalendar(): ?Calendar
+    public function isReturnSlotsScalar(): bool
     {
-        return $this->calendar;
+        return $this->returnSlotsScalar;
     }
 
     /**
-     * @param ?Calendar $calendar
+     * @param bool $returnSlotsScalar
      */
-    public function setCalendar(?Calendar $calendar): void
+    public function setReturnSlotsScalar(bool $returnSlotsScalar): void
     {
-        $this->calendar = $calendar;
+        $this->returnSlotsScalar = $returnSlotsScalar;
     }
+
+    /**
+     * @return array|null
+     */
+    public function getCalendarIds(): ?array
+    {
+        return $this->calendarIds;
+    }
+
+    /**
+     * @param array|null $calendarIds
+     */
+    public function setCalendarIds(?array $calendarIds): void
+    {
+        $this->calendarIds = $calendarIds;
+    }
+
 
     /**
      * @param QueryBuilder $queryBuilder
@@ -50,7 +70,9 @@ class CalendarBookingsQuery extends TimeBasedQuery
     {
         $expr = $queryBuilder->expr();
 
-        if($onlyCount) {
+        if($this->returnSlotsScalar) {
+            $queryBuilder->select("sum(calendarBooking.slots)");
+        } elseif ($onlyCount) {
             $queryBuilder->select("count(calendarBooking.id)");
         } else {
             $queryBuilder->select("calendarBooking");
@@ -61,9 +83,9 @@ class CalendarBookingsQuery extends TimeBasedQuery
 
         $where = $queryBuilder->expr()->andX();
 
-        if($this->getCalendar() != null) {
-            $calendar = $this->getCalendar();
-            $where->add($expr->eq("calendar.id", $calendar->getId()));
+        if($this->getCalendarIds() != null) {
+            $queryBuilder->setParameter("calendarIds", $this->getCalendarIds());
+            $where->add($expr->in("calendar.id", ":calendarIds"));
         }
 
         if($dateTime != null) {

@@ -21,16 +21,9 @@ class Calendar extends ManageableEntity implements JsonSerializable
      */
     protected string $title = "";
 
-    /**
-     * @var Collection|CalendarSelection[]
-     * @Doctrine\ORM\Mapping\ManyToMany(targetEntity=CalendarSelection::class, orphanRemoval=true, cascade={"all"})
-     */
-    protected Collection $calendarSelections;
-
     public function __construct()
     {
         parent::__construct();
-        $this->calendarSelections = new ArrayCollection();
     }
 
     /**
@@ -52,40 +45,12 @@ class Calendar extends ManageableEntity implements JsonSerializable
     }
 
     /**
-     * @return Collection|CalendarSelection[]
-     */
-    public function getCalendarSelections(): Collection
-    {
-        return $this->calendarSelections;
-    }
-
-    public function addCalendarSelection(CalendarSelection $calendar_selection): CalendarSelection
-    {
-        if ( !$this->calendarSelections->contains($calendar_selection)) {
-            $this->calendarSelections[] = $calendar_selection;
-            $calendar_selection->addCalendar($this);
-        }
-
-        return $calendar_selection;
-    }
-
-    public function removeCalendarSelection(CalendarSelection $calendar_selection): CalendarSelection
-    {
-        if ($this->calendarSelections->contains($calendar_selection)) {
-            $this->calendarSelections->removeElement($calendar_selection);
-            $calendar_selection->removeCalendar($this);
-        }
-
-        return $calendar_selection;
-    }
-
-    /**
      * @return array
      */
     public function jsonSerialize(): array
     {
         return [
-
+            "title" => $this->title
         ];
     }
 }

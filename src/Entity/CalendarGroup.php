@@ -30,7 +30,7 @@ class CalendarGroup extends ManageableEntity
      * @var ?CalendarSelection
      * @Doctrine\ORM\Mapping\OneToOne(targetEntity=CalendarSelection::class, orphanRemoval=true, cascade={"all"})
      */
-    protected ?CalendarSelection $calendarSelection;
+    protected ?CalendarSelection $calendarSelection = null;
 
     public function __construct()
     {

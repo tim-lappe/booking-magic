@@ -60,4 +60,13 @@ class DateCapacityMerger extends Merger
 
         return null;
     }
+
+    public function sumUpResults($term, $mergeResult1, $mergeResult2)
+    {
+        if($term == "dateCapacity") {
+            return $mergeResult1 + $mergeResult2;
+        } else {
+            return $mergeResult1;
+        }
+    }
 }

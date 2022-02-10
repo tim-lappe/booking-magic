@@ -61,9 +61,9 @@ class TimeBasedQueryResult implements JsonSerializable
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             "dateTime" => $this->dateTime,
