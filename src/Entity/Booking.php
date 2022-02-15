@@ -130,6 +130,23 @@ class Booking extends ManageableEntity implements JsonSerializable
     }
 
     /**
+     * @return array
+     */
+    public function getBookingKeyValuesPairs(): array
+    {
+        $values = [];
+
+        /**
+         * @var BookingValue $bookingValue
+         */
+        foreach($this->getBookingValues() as $bookingValue) {
+            $values[$bookingValue->getName()] = $bookingValue->getValue();
+        }
+
+        return $values;
+    }
+
+    /**
      * @return string
      */
     public function getInternalState(): string

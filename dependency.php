@@ -21,6 +21,7 @@ use TLBM\Admin\FormEditor\FormElementsCollection;
 use TLBM\Admin\Pages\AdminPageManager;
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\BookingEditPage;
+use TLBM\Admin\Pages\SinglePages\BookingEditValuesPage;
 use TLBM\Admin\Pages\SinglePages\BookingMagicRoot;
 use TLBM\Admin\Pages\SinglePages\BookingsPage;
 use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
@@ -239,6 +240,7 @@ return [
             $adminPageManager->registerPage($container->get(SettingsPage::class));
             $adminPageManager->registerPage($container->get(BookingEditPage::class));
             $adminPageManager->registerPage($container->get(CalendarGroupEditPage::class));
+            $adminPageManager->registerPage($container->get(BookingEditValuesPage::class));
         }
 
         return $adminPageManager;

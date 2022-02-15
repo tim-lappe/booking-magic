@@ -97,12 +97,12 @@ class LinkedFormData
     /**
      * @param string $name
      *
-     * @return string
+     * @return mixed
      */
-    public function getInputVarByName(string $name): string
+    public function getInputVarByName(string $name)
     {
         if($this->inputVars != null && isset($this->inputVars[$name])) {
-            return trim($this->inputVars[$name]);
+            return $this->inputVars[$name];
         }
 
         return "";

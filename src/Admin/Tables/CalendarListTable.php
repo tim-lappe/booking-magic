@@ -26,14 +26,14 @@ class CalendarListTable extends ManagableEntityTable
     }
 
     /**
-     * @param string $orderby
-     * @param string $order
-     * @param int $page
+     * @param string|null $orderby
+     * @param string|null $order
+     * @param int|null $page
      *
      * @return ManageableEntityQuery
      * @SuppressWarnings(PHPMD)
      */
-    protected function getQuery(string $orderby, string $order, int $page): ManageableEntityQuery
+    protected function getQuery(?string $orderby, ?string $order, ?int $page): ManageableEntityQuery
     {
         $calendarQuery = parent::getQuery($orderby, $order, $page);
         if ($orderby == "title") {

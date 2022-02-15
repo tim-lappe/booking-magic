@@ -11,19 +11,7 @@ class DefaultBookingState extends SettingsBase
 
     public function __construct()
     {
-        parent::__construct(
-            "booking_process", "booking_default_state", __("Default Booking State", TLBM_TEXT_DOMAIN), "new"
-        );
-    }
-
-    public function getDefault(): array
-    {
-        return BookingStates::getStateByName(get_option("booking_default_state", "new"));
-    }
-
-    public function getDefaultName(): string
-    {
-        return get_option("booking_default_state", "new");
+        parent::__construct("booking_process", "booking_default_state", __("Default Booking State", TLBM_TEXT_DOMAIN), "new");
     }
 
     public function display()
@@ -33,7 +21,7 @@ class DefaultBookingState extends SettingsBase
             <select name="<?php
             echo $this->optionName ?>">
                 <?php
-                $states = BookingStates::getStates();
+                $states = $this->settingsManager->getValue(BookingStates::class);
                 foreach ($states as $state): ?>
                     <option value="<?php
                     echo $state['name'] ?>" <?php

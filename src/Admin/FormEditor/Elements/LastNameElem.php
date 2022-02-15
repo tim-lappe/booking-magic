@@ -3,13 +3,15 @@
 
 namespace TLBM\Admin\FormEditor\Elements;
 
+use TLBM\Booking\Semantic\PredefinedValueFieldsCollection;
+
 if ( !defined('ABSPATH')) {
     return;
 }
 
 final class LastNameElem extends FormInputElem
 {
-    public function __construct()
+    public function __construct(PredefinedValueFieldsCollection $predefinedValueFieldsCollection)
     {
         parent::__construct("field_last_name", __("Last Name", TLBM_TEXT_DOMAIN));
 
@@ -26,5 +28,8 @@ final class LastNameElem extends FormInputElem
 
         $required                = $this->getSettingsType("required");
         $required->default_value = "yes";
+
+        $predefinedValueFieldsCollection->addField($name_setting->default_value, $title_setting->default_value, $this->description);
+
     }
 }

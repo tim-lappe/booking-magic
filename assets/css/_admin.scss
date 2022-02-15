@@ -367,9 +367,13 @@
 }
 
 .tlbm-table-list-state {
-  padding: 7px 14px;
+  padding: 0.7em 1.2em;
+  border-radius: 4px;
   color: #1c1c1c;
   display: inline-block;
+  font-size: 1.1em;
+  font-weight: 600;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
 }
 
 .tlbm-admin-textarea {
@@ -604,9 +608,8 @@
   }
 
   .tlbm-admin-page-tile-row {
-    display: grid;
-    grid-gap: 1.2rem;
-    grid-auto-flow: column;
+    display: flex;
+    gap: 1.2rem;
     justify-content: stretch;
 
     > .tlbm-admin-page-tile {
@@ -660,4 +663,96 @@
     }
   }
 
+}
+
+.tlbm-admin-booking-id {
+  display: inline-block;
+  padding: 0.7em;
+  background-color: #135e96;
+  color: white;
+  font-size: 1.5em;
+  border-radius: 10px;
+  letter-spacing: 0.1em;
+}
+
+.tlbm-admin-booking-values {
+  font-size: 1.4em;
+  line-height: 1.4em;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-column-gap: 2em;
+  grid-row-gap: 1em;
+  justify-content: flex-start;
+
+  .tlbm-booking-value-title {
+    display: block;
+    font-weight: bolder;
+    margin-bottom: 0.5em;
+  }
+}
+
+.tlbm-admin-page-booking-value-tile {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 5em;
+  min-height: 200px;
+  padding: 3em 2em !important;
+}
+
+.tlbm-admin-booking-calendars {
+  border-left: 1px solid lightgray;
+  height: 100%;
+  padding-left: 2em;
+  grid-template-columns: repeat(1, 1fr);
+}
+
+.tlbm-booking-calendar-content {
+  font-size: 1.5em;
+  font-weight: 300;
+}
+
+
+.tlbm-admin-page {
+  .tlbm-frontend-form {
+    font-size: 1.2em;
+
+    .tlbm-input-title {
+      margin-bottom: 0.3em;
+    }
+  }
+
+  .alternate, .striped > tbody > :nth-child(2n), ul.striped > :nth-child(2n) {
+    background-color: white;
+  }
+
+  .tlbm-admin-page-tile-middle-container {
+    width: 50%;
+    min-width: fit-content;
+    margin: 0 auto;
+  }
+
+  .tlbm-admin-page-tile-big-padding {
+    padding-left: 2em;
+    padding-right: 2em;
+  }
+  .tlbm-admin-page-tile-sm-form {
+    table.form-table {
+      th {
+        width: 100px;
+      }
+      td {
+        padding-right: 0;
+      }
+    }
+  }
+}
+.tlbm-select-wide {
+    width: 100%;
+}
+
+.tlbm-admin-calendar-field {
+  background-color: #f4f4f8;
+  border-radius: 5px;
+  padding: 10px;
 }

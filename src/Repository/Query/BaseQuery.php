@@ -16,7 +16,6 @@ abstract class BaseQuery
      */
     private ?array $orderBy = null;
 
-
     /**
      * @var int|null
      */
@@ -32,6 +31,10 @@ abstract class BaseQuery
      */
     protected ORMInterface $repository;
 
+    /**
+     * @var array
+     */
+    private array $additionalWhereExpressions = [];
 
     public function __construct(ORMInterface $repository)
     {
@@ -53,6 +56,9 @@ abstract class BaseQuery
         try {
             $queryBuilder = $this->createQueryBuilder();
             $this->buildQuery($queryBuilder);
+            if(count($this->additionalWhereExpressions) > 0) {
+                $queryBuilder->andWhere(implode(" AND " , $this->additionalWhereExpressions));
+            }
 
             return $queryBuilder->getQuery();
         } catch (Exception $exception) {
@@ -64,6 +70,10 @@ abstract class BaseQuery
         return null;
     }
 
+    public function addWhere(string $expr)
+    {
+        $this->additionalWhereExpressions[] = $expr;
+    }
 
     /**
      * @return int
@@ -72,12 +82,16 @@ abstract class BaseQuery
     {
         try {
             $queryBuilder = $this->createQueryBuilder();
+
             $this->buildQuery($queryBuilder, true);
+            if(count($this->additionalWhereExpressions) > 0) {
+                $queryBuilder->andWhere(implode(" AND " , $this->additionalWhereExpressions));
+            }
 
             return intval($queryBuilder->getQuery()->getSingleScalarResult());
         } catch (Exception $exception) {
             if(WP_DEBUG) {
-                echo $exception->getMessage();
+                echo $exception->getMessage() . " " . $exception->getTraceAsString();
             }
         }
 
@@ -138,6 +152,11 @@ abstract class BaseQuery
     public function getDefaultOrderBy(): ?array
     {
         return null;
+    }
+
+    public function getExpr(): Query\Expr
+    {
+        return $this->repository->getEntityManager()->getExpressionBuilder();
     }
 
     /**

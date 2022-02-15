@@ -26,7 +26,7 @@ class FormListTable extends ManagableEntityTable
     }
 
 
-    protected function getQuery(string $orderby, string $order, int $page): ManageableEntityQuery
+    protected function getQuery(?string $orderby, ?string $order, ?int $page): ManageableEntityQuery
     {
         $query = parent::getQuery($orderby, $order, $page);
         if($orderby == "title") {

@@ -60,16 +60,21 @@ abstract class ManagableEntityTable extends TableBase
         );
     }
 
+    protected function getQueryObject(): ManageableEntityQuery
+    {
+        return MainFactory::create(ManageableEntityQuery::class);
+    }
+
     /**
-     * @param string $orderby
-     * @param string $order
-     * @param int $page
+     * @param string|null $orderby
+     * @param string|null $order
+     * @param int|null $page
      *
      * @return ManageableEntityQuery
      */
-    protected function getQuery(string $orderby, string $order, int $page): ManageableEntityQuery
+    protected function getQuery(?string $orderby, ?string $order, ?int $page): ManageableEntityQuery
     {
-        $query = MainFactory::create(ManageableEntityQuery::class);
+        $query = $this->getQueryObject();
         $query->setEntityClass($this->entityClass);
 
         if($orderby == "date_edited") {
@@ -82,9 +87,11 @@ abstract class ManagableEntityTable extends TableBase
             $query->setOrderBy([[TLBM_ENTITY_QUERY_ALIAS . ".timestampEdited", "desc"]]);
         }
 
-        if($this->getTotalItemsCount() > $this->itemsPerPage) {
-            $query->setOffset($this->itemsPerPage * ($page - 1));
-            $query->setLimit($this->itemsPerPage);
+        if($page != null) {
+            if ($this->getTotalItemsCount() > $this->itemsPerPage) {
+                $query->setOffset($this->itemsPerPage * ($page - 1));
+                $query->setLimit($this->itemsPerPage);
+            }
         }
 
         return $query;
@@ -104,8 +111,7 @@ abstract class ManagableEntityTable extends TableBase
      */
     protected function getTotalItemsCount(): int
     {
-        $query = MainFactory::create(ManageableEntityQuery::class);
-        $query->setEntityClass($this->entityClass);
+        $query = $this->getQuery(null,null, null);
         return $query->getResultCount();
     }
 

@@ -152,11 +152,16 @@ export class DateTime {
     }
 
     public static fromObj(obj: any): DateTime {
-        return new DateTime(obj.year, obj.month, obj.day, obj.hour, obj.minute, obj.seconds);
+        let dt = new DateTime(obj.year, obj.month, obj.day, obj.hour, obj.minute, obj.seconds);
+        if(obj.hour == null && obj.minute == null && obj.seconds == null) {
+            dt.setFullDay(true);
+        }
+
+        return dt;
     }
 
     public static copy(dateTime: DateTime) {
-        return new DateTime(
+        let dt = new DateTime(
             dateTime.getYear(),
             dateTime.getMonth(),
             dateTime.getMonthDay(),
@@ -164,6 +169,9 @@ export class DateTime {
             dateTime.getMinute(),
             dateTime.getSeconds()
         )
+
+        dt.setFullDay(dateTime.isFullDay());
+        return dt;
     }
 
     public static isSameMinute(...dateTimes: DateTime[]) {
