@@ -2,6 +2,7 @@
 
 namespace TLBM\Admin\FormEditor;
 
+use TLBM\Admin\FormEditor\Contracts\AdminElementInterface;
 use TLBM\Admin\FormEditor\Contracts\FrontendElementInterface;
 use TLBM\Admin\FormEditor\Elements\FormElem;
 
@@ -31,9 +32,14 @@ class RecursiveFormContentWalker implements Contracts\RecursiveFormDataWalkerInt
     public function walk(array $formNode, ?FormElem $element, array $children, callable $childCallback = null)
     {
         $html = "";
-        if($element instanceof FrontendElementInterface && $formNode != null) {
+        if(is_admin() && ($element instanceof AdminElementInterface && $formNode != null)) {
+            $linkedElement = new LinkedFormData($formNode, $element, $this->inputVars);
+            $html .= $element->getAdminContent($linkedElement, $childCallback);
+
+        } elseif ($element instanceof FrontendElementInterface && $formNode != null) {
             $linkedElement = new LinkedFormData($formNode, $element, $this->inputVars);
             $html .= $element->getFrontendContent($linkedElement, $childCallback);
+
         } else {
             foreach ($children as $child) {
                 $html .= $childCallback($child);
@@ -52,17 +58,17 @@ class RecursiveFormContentWalker implements Contracts\RecursiveFormDataWalkerInt
     }
 
     /**
-     * @return LinkedFormData
+     * @return mixed
      */
-    public function getInputVars(): LinkedFormData
+    public function getInputVars()
     {
         return $this->inputVars;
     }
 
     /**
-     * @param LinkedFormData $inputVars
+     * @param mixed $inputVars
      */
-    public function setInputVars(LinkedFormData $inputVars): void
+    public function setInputVars($inputVars)
     {
         $this->inputVars = $inputVars;
     }

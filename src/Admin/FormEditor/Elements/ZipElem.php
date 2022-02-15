@@ -3,10 +3,12 @@
 
 namespace TLBM\Admin\FormEditor\Elements;
 
+use TLBM\Booking\Semantic\PredefinedValueFieldsCollection;
+
 class ZipElem extends FormInputElem
 {
 
-    public function __construct()
+    public function __construct(PredefinedValueFieldsCollection $predefinedValueFieldsCollection)
     {
         parent::__construct("field_zip_code", __("ZIP", TLBM_TEXT_DOMAIN));
 
@@ -22,5 +24,7 @@ class ZipElem extends FormInputElem
 
         $required                = $this->getSettingsType("required");
         $required->default_value = "yes";
+
+        $predefinedValueFieldsCollection->addField($name_setting->default_value, $title_setting->default_value, $this->description);
     }
 }

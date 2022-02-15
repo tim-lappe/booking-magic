@@ -4,6 +4,9 @@ import {CalendarSelect} from "./CalendarSelect";
 import {RuleActionsFields} from "./RuleActionsField/RuleActionsFields";
 import {PeriodSelect} from "./PeriodSelect";
 import {Editor} from "./FormEditor/Editor";
+import {DateRangeSelect} from "./DateRangeSelect";
+import {DateTime} from "../../Core/Adapter/DateTime";
+import {Utils} from "../../Utils";
 
 
 export default class FormFields {
@@ -23,6 +26,17 @@ export default class FormFields {
 
         document.querySelectorAll(".tlbm-form-editor-field").forEach(( htmlelement: HTMLElement) => {
             ReactDOM.render(<Editor dataset={htmlelement.dataset} />, htmlelement);
+        });
+
+        document.querySelectorAll(".tlbm-date-range-field").forEach(( htmlelement: HTMLElement) => {
+            try {
+                let fromDateTime = DateTime.fromObj(JSON.parse(Utils.decodeUriComponent(htmlelement.dataset.from)));
+                let toDateTime = DateTime.fromObj(JSON.parse(Utils.decodeUriComponent(htmlelement.dataset.to)));
+
+                ReactDOM.render(<DateRangeSelect fromDateTime={fromDateTime} toDateTime={toDateTime}/>, htmlelement);
+            } catch {
+
+            }
         });
     }
 }

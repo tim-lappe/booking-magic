@@ -7,17 +7,20 @@ if ( !defined('ABSPATH')) {
     return;
 }
 
+use TLBM\Admin\FormEditor\Contracts\AdminElementInterface;
+use TLBM\Admin\FormEditor\FormInputGenerator;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Select;
 use TLBM\Admin\FormEditor\LinkedFormData;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
+use TLBM\Entity\Calendar;
+use TLBM\Entity\CalendarBooking;
 use TLBM\MainFactory;
 use TLBM\Output\Calendar\CalendarDisplay;
 use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
 use TLBM\Repository\Query\CalendarGroupQuery;
 use TLBM\Repository\Query\CalendarQuery;
-use TLBM\Utilities\ExtendedDateTime;
 
-class CalendarElem extends FormInputElem
+class CalendarElem extends FormInputElem implements AdminElementInterface
 {
 
     /**
@@ -41,9 +44,8 @@ class CalendarElem extends FormInputElem
         $calendarsQuery = MainFactory::create(CalendarQuery::class);
         $calendarGroupQuery = MainFactory::create(CalendarGroupQuery::class);
 
-        $calendars   = iterator_to_array($calendarsQuery->getResult());
         $calendar_kv = [];
-        foreach ($calendars as $calendar) {
+        foreach ($calendarsQuery->getResult() as $calendar) {
             $calendar_kv["calendar_" . $calendar->getId()] = $calendar->getTitle();
         }
 
@@ -108,6 +110,58 @@ class CalendarElem extends FormInputElem
             return "<div class='tlbm-no-calendar-alert'>" . __(
                     "No calendar or calendargroup selected", TLBM_TEXT_DOMAIN
                 ) . "</div>";
+        }
+    }
+
+    /**
+     * @param LinkedFormData $linkedFormData
+     * @param callable|null $displayChildren
+     *
+     * @return string
+     */
+    public function getAdminContent(LinkedFormData $linkedFormData, callable $displayChildren = null): string
+    {
+        $sourceId = $linkedFormData->getLinkedSettings()->getValue("sourceId");
+        $name = $linkedFormData->getLinkedSettings()->getValue("name");
+        $title = $linkedFormData->getLinkedSettings()->getValue("title");
+        $calendarBooking = $linkedFormData->getInputVarByName($name);
+
+        if($calendarBooking instanceof CalendarBooking) {
+            $html = "<div class='tlbm-fe-form-control'>";
+            $html .= "<label>";
+            $html .= "<span class='tlbm-input-title'>" . $title . "</span>";
+
+            $calendarsQuery = MainFactory::create(CalendarQuery::class);
+
+            $html .= "<div class='tlbm-admin-calendar-field'>";
+            $html .= "<div>";
+            $html .= "<div>";
+            $html .= "<small>" . __("Calendar", TLBM_TEXT_DOMAIN) . "</small><br>";
+            $html .= "<select name='" . $name . "[calendar_id]'>";
+
+            /**
+             * @var Calendar $calendar
+             */
+            foreach ($calendarsQuery->getResult() as $calendar) {
+                $html .= "<option " . selected($calendar->getId(), $calendarBooking->getCalendar()->getId(), false) . " value='" . $calendar->getId() . "'>" . $calendar->getTitle() . "</option>";
+            }
+
+            $html .= "</select>";
+            $html .= "</div>";
+            $html .= "<div style='margin-top: 1em'>";
+            $html .= "<small>" . __("Time", TLBM_TEXT_DOMAIN) . "</small><br>";
+            $html .= "<div class='tlbm-date-range-field' data-to='" . urlencode(json_encode($calendarBooking->getToDateTime())) . "' data-from='" . urlencode(json_encode($calendarBooking->getFromDateTime())) . "'>";
+
+            $html .= "</div>";
+            $html .= "</div>";
+            $html .= "</div>";
+            $html .= "</div>";
+            $html .= "</label>";
+            $html .= "</div>";
+
+            return $html;
+        } else {
+            return "";
         }
     }
 }

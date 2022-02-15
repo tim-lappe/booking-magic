@@ -5,7 +5,6 @@ import {DateTime} from "../../Core/Adapter/DateTime";
 
 export interface DateSelectState {
     dateTime?: DateTime;
-    timeset: boolean;
 }
 
 interface DateSelectProps {
@@ -35,8 +34,7 @@ export class DateSelect extends React.Component<DateSelectProps, DateSelectState
         this.onChangeTime = this.onChangeTime.bind(this);
 
         this.state = {
-            dateTime: this.props.defaultDateTime ?? new DateTime(),
-            timeset: this.props.timeset ?? false
+            dateTime: this.props.defaultDateTime ?? new DateTime()
         }
     }
 
@@ -72,7 +70,7 @@ export class DateSelect extends React.Component<DateSelectProps, DateSelectState
 
     onAddTimeset(event: any) {
         this.setState((prevState: DateSelectState) => {
-            prevState.timeset = true;
+            prevState.dateTime.setFullDay(false);
 
             this.props.onChange(prevState);
             return prevState;
@@ -83,7 +81,7 @@ export class DateSelect extends React.Component<DateSelectProps, DateSelectState
 
     onRemoveTimeset(event: any) {
         this.setState((prevState: DateSelectState) => {
-            prevState.timeset = false;
+            prevState.dateTime.setFullDay(true);
 
             this.props.onChange(prevState);
             return prevState;
@@ -170,10 +168,10 @@ export class DateSelect extends React.Component<DateSelectProps, DateSelectState
                 <select onChange={this.onChangeYear} value={selectedDate.getYear()}>
                     {yearOptions}
                 </select>
-                {((!this.state.timeset && !this.props.forceTimeSet) && this.props.allowTimeSet) ? (
+                {((this.state.dateTime.isFullDay() && !this.props.forceTimeSet) && this.props.allowTimeSet) ? (
                     <button onClick={this.onAddTimeset} className={"button button-add-time"}>Add Time</button>
                 ) : null}
-                {((this.state.timeset  || this.props.forceTimeSet) && this.props.allowTimeSet) ?
+                {((!this.state.dateTime.isFullDay()  || this.props.forceTimeSet) && this.props.allowTimeSet) ?
                     [
                         <span key={1} className="dashicons dashicons-clock" />,
                         <TimeSelect key={2} onChange={this.onChangeTime} initState={{minute: selectedDate.getMinute(), hour: selectedDate.getHour()}} />,

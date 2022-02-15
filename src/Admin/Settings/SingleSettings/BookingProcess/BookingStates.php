@@ -13,9 +13,7 @@ class BookingStates extends SettingsBase
 
     public function __construct()
     {
-        parent::__construct(
-            "booking_process", "booking_states", __("Booking States", TLBM_TEXT_DOMAIN), self::getDefaultStates()
-        );
+        parent::__construct("booking_process", "booking_states", __("Booking States", TLBM_TEXT_DOMAIN), $this->getDefaultStates());
     }
 
     /**
@@ -77,7 +75,7 @@ class BookingStates extends SettingsBase
 
     public function getStatesKeyValue(): array
     {
-        $states       = self::getStates();
+        $states       = $this->getValue();
         $stateskeyval = array();
         foreach ($states as $state) {
             $stateskeyval[$state['name']] = $state['title'];
@@ -86,15 +84,12 @@ class BookingStates extends SettingsBase
         return $stateskeyval;
     }
 
-    public function getStates(): array
-    {
-        return get_option("booking_states", self::getDefaultStates());
-    }
-
     public function getStateByName($name): array
     {
-        $name   = empty($name) ? DefaultBookingState::getDefaultName() : $name;
-        $states = self::getStates();
+        $name   = empty($name) ? $this->settingsManager->getValue(DefaultBookingState::class) : $name;
+        $name   = strtolower($name);
+
+        $states = $this->getValue();
         foreach ($states as $state) {
             if ($state['name'] == $name) {
                 return $state;
@@ -106,7 +101,8 @@ class BookingStates extends SettingsBase
 
     public function display()
     {
-        $states = get_option("booking_states", self::getDefaultStates()); ?>
+        $states = $this->getValue();
+        ?>
         <table class="tlbm-inner-settings-table">
             <thead>
             <tr>

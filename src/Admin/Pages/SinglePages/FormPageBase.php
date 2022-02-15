@@ -11,7 +11,11 @@ abstract class FormPageBase extends PageBase
      * @var FormBuilderInterface
      */
     protected FormBuilderInterface $formBuilder;
-    private array $notices = array();
+
+    /**
+     * @var array
+     */
+    protected array $notices = array();
 
     /**
      * @param string $menuTitle

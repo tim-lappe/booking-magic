@@ -67,10 +67,13 @@ class SettingsManager implements SettingsManagerInterface
         return null;
     }
 
+
     /**
-     * @param string $name
+     * @template T of SettingsBase
      *
-     * @return ?SettingsBase
+     * @param class-string<T> $name
+     *
+     * @return ?T
      */
     public function getSetting(string $name): ?SettingsBase
     {

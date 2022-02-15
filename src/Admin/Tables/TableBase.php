@@ -171,6 +171,16 @@ abstract class TableBase extends WP_List_Table
     abstract protected function getColumns(): array;
 
     /**
+     * @param mixed $item
+     *
+     * @return string|null
+     */
+    protected function getRowClickUrl($item): ?string
+    {
+        return null;
+    }
+
+    /**
      * @SuppressWarnings(PHPMD)
      * @return array
      */

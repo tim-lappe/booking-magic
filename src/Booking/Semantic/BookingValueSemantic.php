@@ -18,6 +18,18 @@ class BookingValueSemantic
 
     }
 
+    public function getAllSemanticFieldNames()
+    {
+        return [
+            "first_name",
+            "last_name",
+            "zip",
+            "city",
+            "address",
+            "contact_email"
+        ];
+    }
+
     public function getFirstName(): string
     {
         return $this->getSingleValue("first_name");
@@ -28,14 +40,49 @@ class BookingValueSemantic
         return $this->getSingleValue("last_name");
     }
 
+    public function getFullName(): string
+    {
+        $names = [];
+        if($this->hasFirstName()) {
+            $names[] = $this->getFirstName();
+        }
+        if($this->hasLastName()) {
+            $names[] = $this->getLastName();
+        }
+
+        return implode("&nbsp;", $names);
+    }
+
     public function hasFullAddress(): bool
     {
         return $this->hasSingleValue("zip") && $this->hasSingleValue("city") && $this->hasSingleValue("address");
     }
 
+    public function getFullAddress(): string
+    {
+        $content = "";
+
+        if($this->hasAddress()) {
+            $content = $this->getAddress() . "<br>";
+        }
+
+        if($this->hasZipAndCity()) {
+            $content .= $this->getZip() . " " . $this->getCity();
+        } else {
+            $content .= $this->getZip() . $this->getCity();
+        }
+
+        return $content;
+    }
+
     public function hasZipAndCity(): bool
     {
         return $this->hasSingleValue("zip") && $this->hasSingleValue("city");
+    }
+
+    public function hasAddress(): bool
+    {
+        return $this->hasSingleValue("address");
     }
 
     public function hasCity(): bool
@@ -120,13 +167,6 @@ class BookingValueSemantic
      */
     public function setValuesFromBooking(Booking $booking)
     {
-        $this->values = [];
-
-        /**
-         * @var BookingValue $bookingValue
-         */
-        foreach($booking->getBookingValues() as $bookingValue) {
-            $this->values[$bookingValue->getName()] = $bookingValue->getTitle();
-        }
+        $this->values = $booking->getBookingKeyValuesPairs();
     }
 }

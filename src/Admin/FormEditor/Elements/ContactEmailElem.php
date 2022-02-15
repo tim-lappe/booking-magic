@@ -5,6 +5,7 @@ namespace TLBM\Admin\FormEditor\Elements;
 
 use TLBM\Admin\FormEditor\FormInputGenerator;
 use TLBM\Admin\FormEditor\LinkedFormData;
+use TLBM\Booking\Semantic\PredefinedValueFieldsCollection;
 
 if ( !defined('ABSPATH')) {
     return;
@@ -12,7 +13,7 @@ if ( !defined('ABSPATH')) {
 
 final class ContactEmailElem extends FormInputElem
 {
-    public function __construct()
+    public function __construct(PredefinedValueFieldsCollection $predefinedValueFieldsCollection)
     {
         parent::__construct("field_contact_email", __("Contact E-Mail", TLBM_TEXT_DOMAIN));
 
@@ -30,6 +31,8 @@ final class ContactEmailElem extends FormInputElem
 
         $required                = $this->getSettingsType("required");
         $required->default_value = "yes";
+
+        $predefinedValueFieldsCollection->addField($name_setting->default_value, $title_setting->default_value, $this->description);
     }
 
     /**
