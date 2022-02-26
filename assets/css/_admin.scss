@@ -290,7 +290,6 @@
 }
 
 .tlbm-gray-container {
-  background: $admin-item-bg-color;
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
@@ -722,6 +721,13 @@
     }
   }
 
+  .tlbm-calendar-edit-title {
+    font-size: 1.2em;
+    display: block;
+    margin: 0 0 1em 0;
+    font-weight: bolder;
+  }
+
   .alternate, .striped > tbody > :nth-child(2n), ul.striped > :nth-child(2n) {
     background-color: white;
   }
@@ -729,7 +735,8 @@
   .tlbm-admin-page-tile-middle-container {
     width: 50%;
     min-width: fit-content;
-    margin: 0 auto;
+    margin-left:  auto;
+    margin-right: auto;
   }
 
   .tlbm-admin-page-tile-big-padding {
@@ -752,7 +759,12 @@
 }
 
 .tlbm-admin-calendar-field {
-  background-color: #f4f4f8;
   border-radius: 5px;
   padding: 10px;
+}
+
+.tlbm-admin-content-box {
+  background-color: rgba(0,0,0,0.015);
+  box-shadow: 0 2px 2px lightgray;
+  border: 1px solid #c9c9c9;
 }

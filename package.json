@@ -4,12 +4,10 @@
   "license": "MIT",
   "version": "1.0.0",
   "scripts": {
-    "build": "webpack build",
-    "dev:start": "npm run env:start; npm run watch",
-    "env:start": "docker-compose up -d wordpress wordpress_phpmyadmin",
-    "env:stop": "docker-compose down --remove-orphans",
+    "env:start": "docker-compose up wordpress wordpress_phpmyadmin",
     "watch": "webpack --watch",
-    "test": "docker-compose run -w /var/www/html/wp-content/plugins/booking-magic wordpress_it php ./vendor/bin/phpunit"
+    "test": "docker-compose run composer test",
+    "composer": "docker-compose run composer "
   },
   "devDependencies": {
     "@types/react": "^17.0.37",

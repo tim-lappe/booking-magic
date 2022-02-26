@@ -112,14 +112,14 @@ class GetMergedActions implements AjaxFunctionInterface
         foreach ($actionsMerging->getRuleActionsMerged() as $mergeData) {
             $actions = $mergeData->getMergedActions();
             $booked = $this->calendarBookingManager->getBookedSlots($calendarIds, $mergeData->getDateTime());
-            $actions['dateCapacity'] = max(0,$actions['dateCapacity'] - $booked);
+            if(isset($actions['dateCapacity'])) {
+                $actions['dateCapacity'] = max(0, $actions['dateCapacity'] - $booked);
+            }
             $mergeData->setMergedActions($actions);
             $editedCollection[] = $mergeData;
         }
 
         $queries = $logger->end();
-
-       // echo count($queries);
 
         return array(
             "actionsResult" => $editedCollection

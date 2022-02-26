@@ -35,9 +35,15 @@ class CalendarSelection implements JsonSerializable
      */
     protected string $selectionMode = TLBM_CALENDAR_SELECTION_TYPE_ALL;
 
-    public function __construct()
+    public function __construct(string $selectionMode = TLBM_CALENDAR_SELECTION_TYPE_ALL, ?array $calendars = null)
     {
-        $this->calendars = new ArrayCollection();
+        if($calendars == null) {
+            $this->calendars = new ArrayCollection();
+        } else {
+            $this->calendars = new ArrayCollection($calendars);
+        }
+
+        $this->selectionMode = $selectionMode;
     }
 
     /**

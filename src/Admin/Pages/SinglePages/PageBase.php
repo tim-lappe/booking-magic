@@ -8,24 +8,50 @@ use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 
 abstract class PageBase
 {
+    /**
+     * @var string
+     */
+    public string $menuTitle;
 
-    public string $menu_title;
+    /**
+     * @var string
+     */
+    public string $menuSecondaryTitle;
 
-    public string $menu_secondary_title;
-
+    /**
+     * @var string
+     */
     public string $capabilities = "manage_options";
 
-    public string $menu_slug = "";
+    /**
+     * @var string
+     */
+    public string $menuSlug = "";
 
+    /**
+     * @var string
+     */
     public string $icon = "dashicons-calendar";
 
-    public string $parent_slug = "";
+    /**
+     * @var string
+     */
+    public string $parentSlug = "";
 
-    public bool $show_in_menu = true;
+    /**
+     * @var bool
+     */
+    public bool $showInMenu = true;
 
-    public bool $display_default_head = true;
+    /**
+     * @var bool
+     */
+    public bool $displayDefaultHead = true;
 
-    public string $display_default_head_title = "";
+    /**
+     * @var string
+     */
+    public string $displayDefaultHeadTitle = "";
 
     /**
      * @var AdminPageManagerInterface
@@ -47,13 +73,13 @@ abstract class PageBase
         bool $displayDefaultHead = true,
         string $defaultHeadTitle = ""
     ) {
-        $this->menu_title           = $menuTitle;
-        $this->menu_slug            = $menuSlug;
-        $this->show_in_menu         = $showInMenu;
-        $this->display_default_head = $displayDefaultHead;
+        $this->menuTitle    = $menuTitle;
+        $this->menuSlug     = $menuSlug;
+        $this->showInMenu = $showInMenu;
+        $this->displayDefaultHead = $displayDefaultHead;
 
         if (empty($defaultHeadTitle)) {
-            $this->display_default_head_title = $menuTitle;
+            $this->displayDefaultHeadTitle = $menuTitle;
         }
 
         global $plugin_page;
@@ -82,7 +108,7 @@ abstract class PageBase
 
     public function display()
     {
-        if ($this->display_default_head) {
+        if ($this->displayDefaultHead) {
             $this->displayDefaultHead();
         }
 
@@ -107,11 +133,12 @@ abstract class PageBase
 
     protected function getHeadTitle(): string
     {
-        return $this->display_default_head_title;
+        return $this->displayDefaultHeadTitle;
     }
 
     public function displayDefaultHeadBar()
     {
+
     }
 
     abstract public function displayPageBody();

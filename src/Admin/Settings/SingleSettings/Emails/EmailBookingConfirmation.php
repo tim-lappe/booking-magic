@@ -4,13 +4,15 @@
 namespace TLBM\Admin\Settings\SingleSettings\Emails;
 
 
+use TLBM\CMS\Contracts\LocalizationInterface;
+
 class EmailBookingConfirmation extends EmailSetting
 {
 
-    public function __construct()
+    public function __construct(LocalizationInterface $localization)
     {
         parent::__construct(
-            "email_booking_confirmation", __("Booking Confirmation", TLBM_TEXT_DOMAIN), __("Your Booking Confirmation")
+            "email_booking_confirmation", $localization->__("Booking Confirmation", TLBM_TEXT_DOMAIN), $localization->__("Your Booking Confirmation", TLBM_TEXT_DOMAIN)
         );
     }
 

@@ -5,15 +5,16 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 
 use TLBM\Admin\Tables\FormListTable;
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\MainFactory;
 
 class FormPage extends PageBase
 {
 
-    public function __construct()
+    public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct(__("Form", TLBM_TEXT_DOMAIN), "booking-magic-form");
-        $this->parent_slug = "booking-magic";
+        parent::__construct($localization->__("Form", TLBM_TEXT_DOMAIN), "booking-magic-form");
+        $this->parentSlug = "booking-magic";
     }
 
     public function displayDefaultHeadBar()

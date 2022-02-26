@@ -50,13 +50,36 @@ class Rule extends ManageableEntity implements JsonSerializable
      */
     protected Collection $periods;
 
-    public function __construct()
+    /**
+     * @param string $title
+     * @param int $priority
+     * @param CalendarSelection|null $calendarSelection
+     * @param array|null $actions
+     * @param array|null $periods
+     */
+    public function __construct(string $title = "", int $priority = 0, ?CalendarSelection $calendarSelection = null, ?array $actions = null, ?array $periods = null)
     {
         parent::__construct();
+        $this->title = $title;
+        $this->priority = $priority;
 
-        $this->actions            = new ArrayCollection();
-        $this->periods            = new ArrayCollection();
-        $this->calendarSelection = new CalendarSelection();
+        if($calendarSelection == null) {
+            $this->calendarSelection = new CalendarSelection();
+        } else {
+            $this->calendarSelection = $calendarSelection;
+        }
+
+        if($actions == null) {
+            $this->actions = new ArrayCollection();
+        } else {
+            $this->actions = new ArrayCollection($actions);
+        }
+
+        if($periods == null) {
+            $this->periods = new ArrayCollection();
+        } else {
+            $this->periods = new ArrayCollection($periods);
+        }
     }
 
     /**

@@ -57,10 +57,19 @@ class RulePeriod implements JsonSerializable
     protected bool $toFullDay = false;
 
     /**
-     *
+     * @param Rule|null $rule
+     * @param int $fromTimestamp
+     * @param bool $fromFullDay
+     * @param int|null $toTimestamp
+     * @param bool $toFullDay
      */
-    public function __construct()
+    public function __construct(?Rule $rule = null, int $fromTimestamp = 0, bool $fromFullDay = false, ?int $toTimestamp = null, bool $toFullDay = false)
     {
+        $this->rule = $rule;
+        $this->fromTimestamp = $fromTimestamp;
+        $this->fromFullDay = $fromFullDay;
+        $this->toTimestamp = $toTimestamp;
+        $this->toFullDay = $toFullDay;
         $this->dailyTimeRanges = new ArrayCollection();
     }
 
@@ -190,11 +199,19 @@ class RulePeriod implements JsonSerializable
 
     public function jsonSerialize(): array
     {
+        $fromDateTime = new ExtendedDateTime($this->fromTimestamp);
+        $fromDateTime->setFullDay($this->fromFullDay);
+
+        if($this->toTimestamp != null) {
+            $toDateTime = new ExtendedDateTime($this->toTimestamp);
+            $toDateTime->setFullDay($this->toFullDay);
+        } else {
+            $toDateTime = null;
+        }
+
         return [
-            "fromDateTime"    => new ExtendedDateTime($this->fromTimestamp),
-            "fromTimeset"      => !$this->fromFullDay,
-            "toDateTime"      => $this->toTimestamp ? new ExtendedDateTime($this->toTimestamp): null,
-            "toTimeset"       => !$this->toFullDay,
+            "fromDateTime"    => $fromDateTime,
+            "toDateTime"      => $toDateTime,
             "id"              => $this->id,
             "dailyTimeRanges" => $this->dailyTimeRanges->toArray()
         ];

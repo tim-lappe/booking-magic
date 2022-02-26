@@ -2,6 +2,7 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;
 use TLBM\Repository\Contracts\CacheManagerInterface;
@@ -22,9 +23,15 @@ abstract class EntityEditPage extends FormPageBase
      */
     protected string $entityTitle;
 
+    /**
+     * @var LocalizationInterface
+     */
+    protected LocalizationInterface $localization;
+
     public function __construct(string $entityTitle, string $menuTitle, string $menuSlug, bool $showInMenu = true, bool $displayDefaultHead = true, string $defaultHeadTitle = "")
     {
         $this->entityTitle = $entityTitle;
+        $this->localization = MainFactory::get(LocalizationInterface::class);
         parent::__construct($menuTitle, $menuSlug, $showInMenu, $displayDefaultHead, $defaultHeadTitle);
     }
 
@@ -85,10 +92,10 @@ abstract class EntityEditPage extends FormPageBase
     public function getEditLink(?int $entityId = null): string
     {
         if ($entityId != null) {
-            return admin_url() . "admin.php?page=" . urlencode($this->menu_slug) . "&edit_id=" . urlencode($entityId);
+            return admin_url() . "admin.php?page=" . urlencode($this->menuSlug) . "&edit_id=" . urlencode($entityId);
         }
 
-        return admin_url() . "admin.php?page=" . urlencode($this->menu_slug);
+        return admin_url() . "admin.php?page=" . urlencode($this->menuSlug);
     }
 
     /**
@@ -97,8 +104,8 @@ abstract class EntityEditPage extends FormPageBase
     protected function getHeadTitle(): string
     {
         return $this->getEditingEntity() == null ?
-            sprintf(__("Add New %s", TLBM_TEXT_DOMAIN), $this->entityTitle) :
-            sprintf(__("Edit %s", TLBM_TEXT_DOMAIN), $this->entityTitle);
+            sprintf($this->localization->__("Add New %s", TLBM_TEXT_DOMAIN), $this->entityTitle) :
+            sprintf($this->localization->__("Edit %s", TLBM_TEXT_DOMAIN), $this->entityTitle);
     }
 
     /**

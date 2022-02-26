@@ -4,6 +4,7 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 use TLBM\Admin\WpForm\CalendarPickerField;
 use TLBM\Admin\WpForm\SelectField;
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Entity\CalendarGroup;
 use TLBM\Entity\ManageableEntity;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
@@ -19,11 +20,17 @@ class CalendarGroupEditPage extends EntityEditPage
      */
     private EntityRepositoryInterface $entityRepository;
 
+    /**
+     * @var LocalizationInterface
+     */
+    protected LocalizationInterface $localization;
 
-    public function __construct(EntityRepositoryInterface $entityRepository)
+    public function __construct(EntityRepositoryInterface $entityRepository, LocalizationInterface $localization)
     {
         $this->entityRepository = $entityRepository;
-        parent::__construct( __("Group",TLBM_TEXT_DOMAIN), "calendar-group-edit", "calendar-group-edit", false);
+        $this->localization = $localization;
+
+        parent::__construct( $this->localization->__("Group",TLBM_TEXT_DOMAIN), "calendar-group-edit", "calendar-group-edit", false);
 
         $this->defineFormFields();
     }
@@ -31,12 +38,12 @@ class CalendarGroupEditPage extends EntityEditPage
     public function defineFormFields()
     {
         $this->formBuilder->defineFormField(
-            new CalendarPickerField($this->entityRepository, "calendars", __("Calendars", TLBM_TEXT_DOMAIN))
+            new CalendarPickerField($this->entityRepository, "calendars", $this->localization->__("Calendars", TLBM_TEXT_DOMAIN))
         );
         $this->formBuilder->defineFormField(
-            new SelectField("booking_distribution", __("Booking Distribution", TLBM_TEXT_DOMAIN), array(
-                TLBM_BOOKING_DISTRIBUTION_EVENLY => __("Evenly", TLBM_TEXT_DOMAIN),
-                TLBM_BOOKING_DISTRIBUTION_FILL_ONE => __("Fill One", TLBM_TEXT_DOMAIN)
+            new SelectField("booking_distribution", $this->localization->__("Booking Distribution", TLBM_TEXT_DOMAIN), array(
+                TLBM_BOOKING_DISTRIBUTION_EVENLY => $this->localization->__("Evenly", TLBM_TEXT_DOMAIN),
+                TLBM_BOOKING_DISTRIBUTION_FILL_ONE => $this->localization->__("Fill One", TLBM_TEXT_DOMAIN)
             ))
         );
     }
@@ -89,10 +96,10 @@ class CalendarGroupEditPage extends EntityEditPage
 
         if($this->entityRepository->saveEntity($calendarGroup)) {
             $savedEntity = $calendarGroup;
-            return ["success" => __("Group has been saved", TLBM_TEXT_DOMAIN)];
+            return ["success" => $this->localization->__("Group has been saved", TLBM_TEXT_DOMAIN)];
         } else {
             return array(
-                "error" => __("An internal error occured.", TLBM_TEXT_DOMAIN)
+                "error" => $this->localization->__("An internal error occured.", TLBM_TEXT_DOMAIN)
             );
         }
     }

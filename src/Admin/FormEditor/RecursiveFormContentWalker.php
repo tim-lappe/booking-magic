@@ -2,6 +2,7 @@
 
 namespace TLBM\Admin\FormEditor;
 
+use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use TLBM\Admin\FormEditor\Contracts\AdminElementInterface;
 use TLBM\Admin\FormEditor\Contracts\FrontendElementInterface;
 use TLBM\Admin\FormEditor\Elements\FormElem;
@@ -17,6 +18,11 @@ class RecursiveFormContentWalker implements Contracts\RecursiveFormDataWalkerInt
      * @var mixed
      */
     private $inputVars;
+
+    /**
+     * @var array
+     */
+    private array $excludeElementClasses = [];
 
     /**
      * @param mixed $inputVars
@@ -46,6 +52,10 @@ class RecursiveFormContentWalker implements Contracts\RecursiveFormDataWalkerInt
             }
         }
 
+        if($element != null && in_array(get_class($element), $this->excludeElementClasses)) {
+            return "";
+        }
+
         return $html;
     }
 
@@ -71,5 +81,21 @@ class RecursiveFormContentWalker implements Contracts\RecursiveFormDataWalkerInt
     public function setInputVars($inputVars)
     {
         $this->inputVars = $inputVars;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExcludeElementClasses(): array
+    {
+        return $this->excludeElementClasses;
+    }
+
+    /**
+     * @param array $excludeElementClasses
+     */
+    public function setExcludeElementClasses(array $excludeElementClasses): void
+    {
+        $this->excludeElementClasses = $excludeElementClasses;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace TLBM\Booking;
 
+use InvalidArgumentException;
 use TLBM\Admin\FormEditor\CalendarElementSettingHelper;
 use TLBM\Admin\FormEditor\Elements\CalendarElem;
 use TLBM\Admin\FormEditor\FormDataWalker;
@@ -30,12 +31,12 @@ class BookingProcessor
     /**
      * @var mixed
      */
-    private $vars;
+    private $vars = null;
 
     /**
-     * @var Form
+     * @var ?Form
      */
-    private Form $form;
+    private ?Form $form = null;
 
     /**
      * @var BookingValueSemantic
@@ -68,16 +69,18 @@ class BookingProcessor
     }
 
     /**
+     * @param class-string|null $exclude
+     *
      * @return LinkedFormData[]
      */
-    public function validateVars(): array
+    public function validateVars(string $exclude = null): array
     {
         $formData = $this->form->getFormData();
         $formWalker = FormDataWalker::createFromData($formData);
 
         $invalidFields = [];
         foreach($formWalker->walkLinkedElements($this->getVars()) as $linkedFormData) {
-            if(!$linkedFormData->validateInput()) {
+            if(!$linkedFormData->validateInput() && !($exclude == null || $linkedFormData->getFormElement() instanceof $exclude)) {
                 $invalidFields[] = $linkedFormData;
             }
 
@@ -88,23 +91,23 @@ class BookingProcessor
     }
 
     /**
-     * @param mixed $vars
+     * @param array $vars
      *
      * @return void
      */
-    public function setVars($vars)
+    public function setVars(array $vars)
     {
-        if(isset($vars['form'])) {
-            $form = $this->entityRepository->getEntity(Form::class, $vars['form']);
-            if($form) {
-                $this->vars = $this->escapeVars($vars);
-                $this->form = $form;
-                $this->semantic = MainFactory::create(BookingValueSemantic::class);
-                $this->semantic->setValues($vars);
-            }
+        $form = $this->getForm() ?? (isset($vars['form']) ? $this->entityRepository->getEntity(Form::class, $vars['form']) : null);
+
+        if($form) {
+            $this->vars = $this->escapeVars($vars);
+            $this->form = $form;
+            $this->semantic = MainFactory::create(BookingValueSemantic::class);
+            $this->semantic->setValues($vars);
+            return;
         }
 
-        $this->vars = $vars;
+        throw new InvalidArgumentException("No form assigned");
     }
 
     /**
@@ -116,8 +119,11 @@ class BookingProcessor
     {
         $escapedVars = [];
         foreach ($vars as $key => $value) {
-            $key = htmlspecialchars($key);
-            $value = htmlspecialchars($value);
+            if(is_string($value) && is_string($key)) {
+                $key   = htmlspecialchars($key);
+                $value = htmlspecialchars($value);
+            }
+
             $escapedVars[$key] = $value;
         }
 
@@ -317,9 +323,9 @@ class BookingProcessor
     }
 
     /**
-     * @return Form
+     * @return ?Form
      */
-    public function getForm(): Form
+    public function getForm(): ?Form
     {
         return $this->form;
     }
@@ -354,5 +360,13 @@ class BookingProcessor
     public function getPendingBooking(): ?Booking
     {
         return $this->pendingBooking;
+    }
+
+    /**
+     * @param Form $form
+     */
+    public function setForm(Form $form): void
+    {
+        $this->form = $form;
     }
 }

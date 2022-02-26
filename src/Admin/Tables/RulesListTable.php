@@ -37,7 +37,7 @@ class RulesListTable extends ManagableEntityTable
         $this->settingsManager = $settingsManager;
 
         parent::__construct(
-            Rule::class, __("Rules", TLBM_TEXT_DOMAIN), __("Rule", TLBM_TEXT_DOMAIN), 10, __("You haven't created any rules yet", TLBM_TEXT_DOMAIN)
+            Rule::class, $this->localization->__("Rules", TLBM_TEXT_DOMAIN), $this->localization->__("Rule", TLBM_TEXT_DOMAIN), 10, $this->localization->__("You haven't created any rules yet", TLBM_TEXT_DOMAIN)
         );
     }
 
@@ -61,7 +61,7 @@ class RulesListTable extends ManagableEntityTable
         $columns = parent::getColumns();
 
         array_splice($columns, 1, 0, [
-            new Column("title", __("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
+            new Column("title", $this->localization->__("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
                 $ruleEditPage = $this->adminPageManager->getPage(RuleEditPage::class);
                 if ($ruleEditPage instanceof RuleEditPage) {
                     $link = $ruleEditPage->getEditLink($item->getId());
@@ -72,7 +72,7 @@ class RulesListTable extends ManagableEntityTable
                     }
                 }
             }),
-            new Column("calendars", __("Calendars", TLBM_TEXT_DOMAIN), false, function ($item) {
+            new Column("calendars", $this->localization->__("Calendars", TLBM_TEXT_DOMAIN), false, function ($item) {
                 $calendarEditPage = $this->adminPageManager->getPage(CalendarEditPage::class);
                 $selection = $item->getCalendarSelection();
                 $selectionDisplay = MainFactory::create(DisplayCalendarSelection::class);
@@ -80,12 +80,12 @@ class RulesListTable extends ManagableEntityTable
                 $selectionDisplay->display();
 
             }),
-            new Column("priority", __("Priority", TLBM_TEXT_DOMAIN), true, function ($item) {
+            new Column("priority", $this->localization->__("Priority", TLBM_TEXT_DOMAIN), true, function ($item) {
                 $levels = $this->settingsManager->getValue(PriorityLevels::class);
                 echo $levels[$item->getPriority()];
 
             }),
-            new Column("periods", __("Periods", TLBM_TEXT_DOMAIN), false, function ($item) {
+            new Column("periods", $this->localization->__("Periods", TLBM_TEXT_DOMAIN), false, function ($item) {
                 $periods = $item->getPeriods();
                 $periodsDisplay = MainFactory::create(DisplayPeriods::class);
                 $periodsDisplay->setRulePeriods($periods);

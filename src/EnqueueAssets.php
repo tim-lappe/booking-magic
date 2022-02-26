@@ -3,6 +3,9 @@
 namespace TLBM;
 
 use Exception;
+use TLBM\CMS\Contracts\EnqueueAssetsInterface;
+use TLBM\CMS\Contracts\HooksInterface;
+use TLBM\CMS\Contracts\UrlUtilsInterface;
 use TLBM\Localization\Contracts\ScriptLocalizationInterface;
 
 if ( !defined('ABSPATH')) {
@@ -17,13 +20,25 @@ class EnqueueAssets
      */
     private ScriptLocalizationInterface $scriptLocalization;
 
-    public function __construct(ScriptLocalizationInterface $scriptLocalization)
+    /**
+     * @var EnqueueAssetsInterface
+     */
+    private EnqueueAssetsInterface $assets;
+
+    /**
+     * @var UrlUtilsInterface
+     */
+    private UrlUtilsInterface $urlUtils;
+
+    public function __construct(ScriptLocalizationInterface $scriptLocalization, HooksInterface $hooks, EnqueueAssetsInterface $assets, UrlUtilsInterface $urlUtils)
     {
         $this->scriptLocalization = $scriptLocalization;
+        $this->assets = $assets;
+        $this->urlUtils = $urlUtils;
 
-        add_action("wp_enqueue_scripts", array($this, "globalEnqueueScripts"));
-        add_action("admin_enqueue_scripts", array($this, "globalEnqueueScripts"));
-        add_action("admin_enqueue_scripts", array($this, "adminEnqueueScripts"));
+        $hooks->addAction("wp_enqueue_scripts", array($this, "globalEnqueueScripts"));
+        $hooks->addAction("admin_enqueue_scripts", array($this, "globalEnqueueScripts"));
+        $hooks->addAction("admin_enqueue_scripts", array($this, "adminEnqueueScripts"));
     }
 
     /**
@@ -31,7 +46,7 @@ class EnqueueAssets
      */
     public function adminEnqueueScripts()
     {
-        wp_enqueue_script(TLBM_ADMIN_JS_SLUG, plugins_url("assets/js/dist/admin.js", TLBM_PLUGIN_FILE));
+        $this->assets->enqueueScript(TLBM_ADMIN_JS_SLUG, $this->urlUtils->pluginsUrl("assets/js/dist/admin.js", TLBM_PLUGIN_FILE));
     }
 
     /**
@@ -40,13 +55,13 @@ class EnqueueAssets
      */
     public function globalEnqueueScripts()
     {
-        wp_enqueue_style(TLBM_MAIN_CSS_SLUG, plugins_url("assets/css/main.css", TLBM_PLUGIN_FILE));
-        wp_enqueue_script(TLBM_FRONTEND_JS_SLUG, plugins_url("assets/js/dist/frontend.js", TLBM_PLUGIN_FILE));
+        $this->assets->enqueueStyle(TLBM_MAIN_CSS_SLUG, $this->urlUtils->pluginsUrl("assets/css/main.css", TLBM_PLUGIN_FILE));
+        $this->assets->enqueueScript(TLBM_FRONTEND_JS_SLUG, $this->urlUtils->pluginsUrl("assets/js/dist/frontend.js", TLBM_PLUGIN_FILE));
 
-        wp_localize_script(TLBM_FRONTEND_JS_SLUG, 'ajax_information', array(
-            'url' => admin_url('admin-ajax.php') . "?action=tlbm_ajax",
+        $this->assets->localizeScript(TLBM_FRONTEND_JS_SLUG, 'ajax_information', array(
+            'url' => $this->urlUtils->adminUrl('admin-ajax.php') . "?action=tlbm_ajax",
         ));
 
-        wp_localize_script(TLBM_FRONTEND_JS_SLUG, 'tlbm_localization', $this->scriptLocalization->getLabels());
+        $this->assets->localizeScript(TLBM_FRONTEND_JS_SLUG, 'tlbm_localization', $this->scriptLocalization->getLabels());
     }
 }

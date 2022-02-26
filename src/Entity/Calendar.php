@@ -21,9 +21,13 @@ class Calendar extends ManageableEntity implements JsonSerializable
      */
     protected string $title = "";
 
-    public function __construct()
+    /**
+     * @param string $title
+     */
+    public function __construct(string $title = "")
     {
         parent::__construct();
+        $this->title = $title;
     }
 
     /**

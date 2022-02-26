@@ -2,15 +2,22 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
+use Throwable;
+use TLBM\Admin\FormEditor\Elements\CalendarElem;
 use TLBM\Admin\FormEditor\FormDataWalker;
+use TLBM\Admin\FormEditor\RecursiveFormContentWalker;
 use TLBM\Booking\BookingProcessor;
 use TLBM\Booking\Semantic\BookingValueSemantic;
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Entity\Booking;
+use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarBooking;
 use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;
 use TLBM\Output\Contracts\FormPrintInterface;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
+use TLBM\Repository\Query\CalendarQuery;
+use TLBM\Utilities\ExtendedDateTime;
 
 /**
  * @extends EntityEditPage<Booking>
@@ -24,15 +31,15 @@ class BookingEditValuesPage extends EntityEditPage
     private EntityRepositoryInterface $entityRepository;
 
     /**
-     * @var FormPrintInterface
+     * @var LocalizationInterface
      */
-    private FormPrintInterface $formPrint;
+    protected LocalizationInterface $localization;
 
-    public function __construct(EntityRepositoryInterface $entityRepository, FormPrintInterface $formPrint)
+    public function __construct(EntityRepositoryInterface $entityRepository, LocalizationInterface $localization)
     {
         $this->entityRepository = $entityRepository;
-        $this->formPrint = $formPrint;
-        parent::__construct(__("Edit booking form values", TLBM_TEXT_DOMAIN), "booking-edit-form-values", "booking-edit-form-values", false);
+        $this->localization = $localization;
+        parent::__construct($this->localization->__("Edit booking form values", TLBM_TEXT_DOMAIN), "booking-edit-form-values", "booking-edit-form-values", false);
     }
 
     /**
@@ -42,10 +49,10 @@ class BookingEditValuesPage extends EntityEditPage
     {
         $booking = $this->getEditingEntity();
         if ($booking) {
-            return __("Edit Booking", TLBM_TEXT_DOMAIN);
+            return $this->localization->__("Edit Booking", TLBM_TEXT_DOMAIN);
         }
 
-        return __("Add New Booking", TLBM_TEXT_DOMAIN);
+        return $this->localization->__("Add New Booking", TLBM_TEXT_DOMAIN);
     }
 
     /**
@@ -68,33 +75,26 @@ class BookingEditValuesPage extends EntityEditPage
             $booking = new Booking();
         }
 
-        $semantic = MainFactory::create(BookingValueSemantic::class);
-        $semantic->setValuesFromBooking($booking);
-
         $form = $booking->getForm();
         $inputVars = $booking->getBookingKeyValuesPairs();
+        $bookingValues = $booking->getBookingValues();
+
         $formWalker = MainFactory::create(FormDataWalker::class);
         $formWalker->setFormDataTree($form->getFormData());
 
         $formFieldNames = [];
-        foreach($formWalker->walkLinkedElements($inputVars) as $field) {
-            $formFieldNames[] = $field->getLinkedSettings()->getValue("name");
-        }
-
-        foreach($booking->getCalendarBookings() as $calendarBooking) {
-            if ($calendarBooking->getCalendar() != null) {
-                $inputVars[$calendarBooking->getNameFromForm()] = $calendarBooking;
-            }
-        }
-
-
         $missed = [];
-        foreach($inputVars as $name => $title) {
-            if(!in_array($name, $formFieldNames)) {
-                $missed[$name] = $title;
-            }
+
+        foreach($formWalker->walkLinkedElements($inputVars) as $field) {
+            $name = $field->getLinkedSettings()->getValue("name");
+            $formFieldNames[] = $name;
         }
 
+        foreach ($bookingValues as $value) {
+            if (!in_array($value->getName(), $formFieldNames)) {
+                $missed[$value->getTitle()] = $value->getValue();
+            }
+        }
 
         ?>
 
@@ -103,17 +103,51 @@ class BookingEditValuesPage extends EntityEditPage
                 <p><?php _e("Some fields cannot be edited because the associated form was changed after the booking was made. The following fields are affected: ", TLBM_TEXT_DOMAIN) ?></p>
                 <ul>
                     <?php foreach ($missed as $name => $value): ?>
-                        <li><b><?php echo $name ?></b></li>
+                        <li><?php echo $name ?>: <b><?php echo $value ?></b></li>
                     <?php endforeach; ?>
                 </ul>
             </div>
         <?php endif; ?>
-
-        <div class="tlbm-admin-page-tile tlbm-admin-page-tile-middle-container">
-            <div class="tlbm-frontend-form">
-                <?php
-                    echo $this->formPrint->printForm($form->getId(), $inputVars);
-                ?>
+        <div class="tlbm-admin-page-tile-row">
+            <div class="tlbm-admin-page-tile">
+                <div class="tlbm-frontend-form">
+                    <?php
+                    $formWalker    = FormDataWalker::createFromData($form->getFormData());
+                    $contentWalker = new RecursiveFormContentWalker($inputVars);
+                    $contentWalker->setExcludeElementClasses([ CalendarElem::class ]);
+                    $result        = $formWalker->walkCallback($contentWalker);
+                    echo $result;
+                    ?>
+                </div>
+            </div>
+            <div class="tlbm-admin-page-tile">
+                <?php foreach($booking->getCalendarBookings() as $calendarBooking):
+                    $calendarsQuery = MainFactory::create(CalendarQuery::class);
+                    ?>
+                    <span class='tlbm-calendar-edit-title'><?php echo $calendarBooking->getTitleFromForm() ?></span>
+                    <div class='tlbm-admin-calendar-field tlbm-admin-content-box'>
+                        <div>
+                            <div>
+                                <small><?php _e("Calendar", TLBM_TEXT_DOMAIN) ?></small><br>
+                                <select name='calendarBookings[<?php echo $calendarBooking->getNameFromForm() ?>][calendar_id]'>
+                                    <?php
+                                    /**
+                                     * @var Calendar $calendar
+                                     */
+                                    foreach ($calendarsQuery->getResult() as $calendar): ?>
+                                        <option <?php selected($calendar->getId(), $calendarBooking->getCalendar()->getId(), true) ?> value='<?php echo $calendar->getId() ?>'>
+                                            <?php echo $calendar->getTitle() ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div style='margin-top: 1em'>
+                                <small><?php _e("Time", TLBM_TEXT_DOMAIN) ?></small><br>
+                                <div class='tlbm-date-range-field' data-name='calendarBookings[<?php echo $calendarBooking->getNameFromForm() ?>][time]' data-to='<?php echo urlencode(json_encode($calendarBooking->getToDateTime())) ?>' data-from='<?php echo urlencode(json_encode($calendarBooking->getFromDateTime())) ?>'></div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </div>
         <?php
@@ -129,15 +163,74 @@ class BookingEditValuesPage extends EntityEditPage
             $booking = new Booking();
         }
 
-        $booking->setState($vars['state']);
+        $form = $booking->getForm();
+        $formWalker = MainFactory::create(FormDataWalker::class);
+        $formWalker->setFormDataTree($form->getFormData());
+
+        $bookingProcessor = MainFactory::create(BookingProcessor::class);
+        $bookingProcessor->setForm($form);
+        $bookingProcessor->setVars($vars);
+        $wrong = $bookingProcessor->validateVars(CalendarElem::class);
+
+        if(count($wrong) > 0) {
+            return [
+                    "error" => $this->localization->__("Some fields are required", TLBM_TEXT_DOMAIN)
+            ];
+        }
+
+        $bookingValues = $bookingProcessor->createBookingValues();
+        foreach ($bookingValues as $bookingValue) {
+            $keys = array_keys($booking->getBookingKeyValuesPairs());
+            if(in_array($bookingValue->getName(), $keys)) {
+                $booking->removeBookingValueByName($bookingValue->getName());
+            }
+
+            $booking->addBookingValue($bookingValue);
+        }
+
+        if($vars['calendarBookings'] && is_array($vars['calendarBookings'])) {
+            foreach ($vars['calendarBookings'] as $name => $value) {
+                $calendarBookingOriginal = $booking->getCalendarBookingByName($name);
+                if(isset($value['time'])) {
+                    try {
+                        $data = json_decode(urldecode($value['time']), JSON_OBJECT_AS_ARRAY);
+                        $fromDateTime = new ExtendedDateTime();
+                        $fromDateTime->setFromObject($data['from']);
+                        $calendarBookingOriginal->setFromFullDay($fromDateTime->isFullDay());
+                        $calendarBookingOriginal->setFromTimestamp($fromDateTime->getTimestamp());
+
+                        if(isset($data['to'])) {
+                            $toDateTime = new ExtendedDateTime();
+                            $toDateTime->setFromObject($data['to']);
+                            $calendarBookingOriginal->setToFullDay($toDateTime->isFullDay());
+                            $calendarBookingOriginal->setToTimestamp($toDateTime->getTimestamp());
+                        } else {
+                            $calendarBookingOriginal->setToTimestamp($fromDateTime->getTimestamp());
+                            $calendarBookingOriginal->setToFullDay($fromDateTime->isFullDay());
+                        }
+
+                    } catch (Throwable $exception) {
+                        return [
+                            "error" => $this->localization->__("An internal error occured. ", TLBM_TEXT_DOMAIN)
+                        ];
+                    }
+                }
+                if(isset($value['calendar_id'])) {
+                    $calendarBookingOriginal->setCalendar($this->entityRepository->getEntity(Calendar::class, $value['calendar_id']));
+                }
+            }
+        }
+
 
         if ($this->entityRepository->saveEntity($booking)) {
             $savedEntity = $booking;
 
-            return ["success" => __("Booking has been saved", TLBM_TEXT_DOMAIN)
+            return [
+                    "success" => $this->localization->__("Booking has been saved", TLBM_TEXT_DOMAIN)
             ];
         } else {
-            return ["error" => __("An internal error occured. ", TLBM_TEXT_DOMAIN)
+            return [
+                    "error" => $this->localization->__("An internal error occured. ", TLBM_TEXT_DOMAIN)
             ];
         }
     }

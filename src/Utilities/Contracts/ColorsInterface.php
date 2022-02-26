@@ -2,7 +2,16 @@
 
 namespace TLBM\Utilities\Contracts;
 
+use InvalidArgumentException;
+
 interface ColorsInterface
 {
-    public function getRgbFromHex($hex);
+    /**
+     * @param string $hex
+     *
+     * @return array
+     *
+     * @throws InvalidArgumentException
+     */
+    public function getRgbFromHex(string $hex): array;
 }

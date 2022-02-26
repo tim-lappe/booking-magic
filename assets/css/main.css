@@ -393,7 +393,6 @@
 }
 
 .tlbm-gray-container {
-  background: #f4f4f8;
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
@@ -748,13 +747,20 @@
 .tlbm-admin-page .tlbm-frontend-form .tlbm-input-title {
   margin-bottom: 0.3em;
 }
+.tlbm-admin-page .tlbm-calendar-edit-title {
+  font-size: 1.2em;
+  display: block;
+  margin: 0 0 1em 0;
+  font-weight: bolder;
+}
 .tlbm-admin-page .alternate, .tlbm-admin-page .striped > tbody > :nth-child(2n), .tlbm-admin-page ul.striped > :nth-child(2n) {
   background-color: white;
 }
 .tlbm-admin-page .tlbm-admin-page-tile-middle-container {
   width: 50%;
   min-width: fit-content;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 .tlbm-admin-page .tlbm-admin-page-tile-big-padding {
   padding-left: 2em;
@@ -772,9 +778,14 @@
 }
 
 .tlbm-admin-calendar-field {
-  background-color: #f4f4f8;
   border-radius: 5px;
   padding: 10px;
+}
+
+.tlbm-admin-content-box {
+  background-color: rgba(0, 0, 0, 0.015);
+  box-shadow: 0 2px 2px lightgray;
+  border: 1px solid #c9c9c9;
 }
 
 .tlbm-form-editor .tlbm-form-container {

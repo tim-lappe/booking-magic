@@ -5,30 +5,32 @@ namespace TLBM\Admin\Settings\SingleSettings\Text;
 
 
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
+use TLBM\CMS\Contracts\LocalizationInterface;
 
 class WeekdayLabels extends SettingsBase
 {
 
-    public function __construct()
+
+    public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("text", "weekday_labels", __("Weekdays", TLBM_TEXT_DOMAIN), array(
+        parent::__construct("text", "weekday_labels", $localization->__("Weekdays", TLBM_TEXT_DOMAIN), array(
             "long"  => array(
-                "mon" => __("Monday", TLBM_TEXT_DOMAIN),
-                "tue" => __("Tuesday", TLBM_TEXT_DOMAIN),
-                "wed" => __("Wednesday", TLBM_TEXT_DOMAIN),
-                "thu" => __("Thursday", TLBM_TEXT_DOMAIN),
-                "fri" => __("Friday", TLBM_TEXT_DOMAIN),
-                "sat" => __("Saturday", TLBM_TEXT_DOMAIN),
-                "sun" => __("Sunday", TLBM_TEXT_DOMAIN),
+                "mon" => $localization->__("Monday", TLBM_TEXT_DOMAIN),
+                "tue" => $localization->__("Tuesday", TLBM_TEXT_DOMAIN),
+                "wed" => $localization->__("Wednesday", TLBM_TEXT_DOMAIN),
+                "thu" => $localization->__("Thursday", TLBM_TEXT_DOMAIN),
+                "fri" => $localization->__("Friday", TLBM_TEXT_DOMAIN),
+                "sat" => $localization->__("Saturday", TLBM_TEXT_DOMAIN),
+                "sun" => $localization->__("Sunday", TLBM_TEXT_DOMAIN),
             ),
             "short" => array(
-                "mon" => __("Mon", TLBM_TEXT_DOMAIN),
-                "tue" => __("Tue", TLBM_TEXT_DOMAIN),
-                "wed" => __("Wed", TLBM_TEXT_DOMAIN),
-                "thu" => __("Thu", TLBM_TEXT_DOMAIN),
-                "fri" => __("Fri", TLBM_TEXT_DOMAIN),
-                "sat" => __("Sat", TLBM_TEXT_DOMAIN),
-                "sun" => __("Sun", TLBM_TEXT_DOMAIN),
+                "mon" => $localization->__("Mon", TLBM_TEXT_DOMAIN),
+                "tue" => $localization->__("Tue", TLBM_TEXT_DOMAIN),
+                "wed" => $localization->__("Wed", TLBM_TEXT_DOMAIN),
+                "thu" => $localization->__("Thu", TLBM_TEXT_DOMAIN),
+                "fri" => $localization->__("Fri", TLBM_TEXT_DOMAIN),
+                "sat" => $localization->__("Sat", TLBM_TEXT_DOMAIN),
+                "sun" => $localization->__("Sun", TLBM_TEXT_DOMAIN),
             )
         ));
     }
@@ -77,9 +79,9 @@ class WeekdayLabels extends SettingsBase
             <thead>
             <tr>
                 <th><?php
-                    echo __("Long form") ?></th>
+                    echo $this->localization->__("Long form", TLBM_TEXT_DOMAIN) ?></th>
                 <th><?php
-                    echo __("Short form") ?></th>
+                    echo $this->localization->__("Short form", TLBM_TEXT_DOMAIN) ?></th>
             </tr>
             </thead>
             <tbody>
@@ -88,14 +90,14 @@ class WeekdayLabels extends SettingsBase
                     <label>
                         <input type="text" class="regular-text" name="<?php
                         echo $this->optionName ?>[long][mon]" value="<?php
-                        echo get_option($this->optionName)["long"]["mon"]; ?>">
+                        echo $this->getValue()["long"]["mon"]; ?>">
                     </label>
                 </td>
                 <td>
                     <label>
                         <input type="text" class="regular-text" name="<?php
                         echo $this->optionName ?>[short][mon]" value="<?php
-                        echo get_option($this->optionName)["short"]["mon"]; ?>">
+                        echo $this->getValue()["short"]["mon"]; ?>">
                     </label>
                 </td>
             </tr>
@@ -104,14 +106,14 @@ class WeekdayLabels extends SettingsBase
                     <label>
                         <input type="text" class="regular-text" name="<?php
                         echo $this->optionName ?>[long][tue]" value="<?php
-                        echo get_option($this->optionName)["long"]["tue"]; ?>">
+                        echo $this->getValue()["long"]["tue"]; ?>">
                     </label>
                 </td>
                 <td>
                     <label>
                         <input type="text" class="regular-text" name="<?php
                         echo $this->optionName ?>[short][tue]" value="<?php
-                        echo get_option($this->optionName)["short"]["tue"]; ?>">
+                        echo $this->getValue()["short"]["tue"]; ?>">
                     </label>
                 </td>
             </tr>
@@ -120,14 +122,14 @@ class WeekdayLabels extends SettingsBase
                     <label>
                         <input type="text" class="regular-text" name="<?php
                         echo $this->optionName ?>[long][wed]" value="<?php
-                        echo get_option($this->optionName)["long"]["wed"]; ?>">
+                        echo $this->getValue()["long"]["wed"]; ?>">
                     </label>
                 </td>
                 <td>
                     <label>
                         <input type="text" class="regular-text" name="<?php
                         echo $this->optionName ?>[short][wed]" value="<?php
-                        echo get_option($this->optionName)["short"]["wed"]; ?>">
+                        echo $this->getValue()["short"]["wed"]; ?>">
                     </label>
                 </td>
             </tr>
@@ -136,14 +138,14 @@ class WeekdayLabels extends SettingsBase
                     <label>
                         <input type="text" class="regular-text" name="<?php
                         echo $this->optionName ?>[long][thu]" value="<?php
-                        echo get_option($this->optionName)["long"]["thu"]; ?>">
+                        echo $this->getValue()["long"]["thu"]; ?>">
                     </label>
                 </td>
                 <td>
                     <label>
                         <input type="text" class="regular-text" name="<?php
                         echo $this->optionName ?>[short][thu]" value="<?php
-                        echo get_option($this->optionName)["short"]["thu"]; ?>">
+                        echo $this->getValue()["short"]["thu"]; ?>">
                     </label>
                 </td>
             </tr>
@@ -152,14 +154,14 @@ class WeekdayLabels extends SettingsBase
                     <label>
                         <input type="text" class="regular-text" name="<?php
                         echo $this->optionName ?>[long][fri]" value="<?php
-                        echo get_option($this->optionName)["long"]["fri"]; ?>">
+                        echo $this->getValue()["long"]["fri"]; ?>">
                     </label>
                 </td>
                 <td>
                     <label>
                         <input type="text" class="regular-text" name="<?php
                         echo $this->optionName ?>[short][fri]" value="<?php
-                        echo get_option($this->optionName)["short"]["fri"]; ?>">
+                        echo $this->getValue()["short"]["fri"]; ?>">
                     </label>
                 </td>
             </tr>
@@ -168,14 +170,14 @@ class WeekdayLabels extends SettingsBase
                     <label>
                         <input type="text" class="regular-text" name="<?php
                         echo $this->optionName ?>[long][sat]" value="<?php
-                        echo get_option($this->optionName)["long"]["sat"]; ?>">
+                        echo $this->getValue()["long"]["sat"]; ?>">
                     </label>
                 </td>
                 <td>
                     <label>
                         <input type="text" class="regular-text" name="<?php
                         echo $this->optionName ?>[short][sat]" value="<?php
-                        echo get_option($this->optionName)["short"]["sat"]; ?>">
+                        echo $this->getValue()["short"]["sat"]; ?>">
                     </label>
                 </td>
             </tr>
@@ -184,14 +186,14 @@ class WeekdayLabels extends SettingsBase
                     <label>
                         <input type="text" class="regular-text" name="<?php
                         echo $this->optionName ?>[long][sun]" value="<?php
-                        echo get_option($this->optionName)["long"]["sun"]; ?>">
+                        echo $this->getValue()["long"]["sun"]; ?>">
                     </label>
                 </td>
                 <td>
                     <label>
                         <input type="text" class="regular-text" name="<?php
                         echo $this->optionName ?>[short][sun]" value="<?php
-                        echo get_option($this->optionName)["short"]["sun"]; ?>">
+                        echo $this->getValue()["short"]["sun"]; ?>">
                     </label>
                 </td>
             </tr>

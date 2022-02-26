@@ -4,6 +4,7 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 use TLBM\Admin\Pages\SinglePages\Dashboard\Contracts\DashboardInterface;
+use TLBM\CMS\Contracts\LocalizationInterface;
 
 class BookingMagicRoot extends PageBase
 {
@@ -14,13 +15,21 @@ class BookingMagicRoot extends PageBase
     private DashboardInterface $dashboard;
 
     /**
-     * @param DashboardInterface $dashboard
+     * @var LocalizationInterface
      */
-    public function __construct(DashboardInterface $dashboard)
+    private LocalizationInterface $localization;
+
+    /**
+     * @param DashboardInterface $dashboard
+     * @param LocalizationInterface $localization
+     */
+    public function __construct(DashboardInterface $dashboard, LocalizationInterface $localization)
     {
-        parent::__construct(__("Booking Magic", TLBM_TEXT_DOMAIN), "booking-magic");
-        $this->menu_secondary_title = "Dashboard";
-        $this->dashboard            = $dashboard;
+        $this->localization = $localization;
+
+        parent::__construct($this->localization->__("Booking Magic", TLBM_TEXT_DOMAIN), "booking-magic");
+        $this->menuSecondaryTitle = "Dashboard";
+        $this->dashboard          = $dashboard;
     }
 
     /**
@@ -28,7 +37,7 @@ class BookingMagicRoot extends PageBase
      */
     public function getHeadTitle(): string
     {
-        return __("Dashboard", TLBM_TEXT_DOMAIN);
+        return $this->localization->__("Dashboard", TLBM_TEXT_DOMAIN);
     }
 
     /**

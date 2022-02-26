@@ -58,9 +58,24 @@ class RuleAction implements JsonSerializable
      */
     protected ?array $data = null;
 
-    public function __construct()
+    /**
+     * @param Rule|null $rule
+     * @param string $actionType
+     * @param string $weekdays
+     * @param int $timeHour
+     * @param int $timeMin
+     * @param int $priority
+     * @param array $data
+     */
+    public function __construct(?Rule $rule = null, string $actionType = "", string $weekdays = "", int $timeHour = 0, int $timeMin = 0, int $priority = 0, array $data = [])
     {
-        $this->data = array();
+        $this->rule = $rule;
+        $this->actionType = $actionType;
+        $this->weekdays = $weekdays;
+        $this->timeHour = $timeHour;
+        $this->timeMin = $timeMin;
+        $this->priority = $priority;
+        $this->data = $data;
     }
 
     public function getData(): ?array

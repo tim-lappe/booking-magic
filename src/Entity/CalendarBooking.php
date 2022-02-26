@@ -44,10 +44,10 @@ class CalendarBooking implements JsonSerializable
     protected string $titleFromForm = "";
 
     /**
-     * @var int
-     * @Doctrine\ORM\Mapping\Column (type="bigint", nullable=false)
+     * @var ?int
+     * @Doctrine\ORM\Mapping\Column (type="bigint", nullable=true)
      */
-    protected int $toTimestamp = 0;
+    protected ?int $toTimestamp = 0;
 
     /**
      * @var bool
@@ -73,6 +73,40 @@ class CalendarBooking implements JsonSerializable
      */
     protected int $slots = 1;
 
+    /**
+     * @param Booking|null $booking
+     * @param Calendar|null $calendar
+     * @param string $nameFromForm
+     * @param string $titleFromForm
+     * @param int $fromTimestamp
+     * @param bool $fromFullDay
+     * @param int|null $toTimestamp
+     * @param bool $toFullDay
+     * @param int $slots
+     */
+    public function __construct
+    (
+        ?Booking $booking = null,
+        ?Calendar $calendar = null,
+        string $nameFromForm = "",
+        string $titleFromForm = "",
+        int $fromTimestamp = 0,
+        bool $fromFullDay = true,
+        ?int $toTimestamp = 0,
+        bool $toFullDay = true,
+        int $slots = 0
+    )
+    {
+        $this->booking = $booking;
+        $this->calendar = $calendar;
+        $this->nameFromForm = $nameFromForm;
+        $this->titleFromForm = $titleFromForm;
+        $this->fromTimestamp = $fromTimestamp;
+        $this->fromFullDay = $fromFullDay;
+        $this->toTimestamp = $toTimestamp;
+        $this->toFullDay = $toFullDay;
+        $this->slots = $slots;
+    }
 
     public function getBooking(): Booking
     {
@@ -198,9 +232,9 @@ class CalendarBooking implements JsonSerializable
     }
 
     /**
-     * @return int
+     * @return ?int
      */
-    public function getToTimestamp(): int
+    public function getToTimestamp(): ?int
     {
         return $this->toTimestamp;
     }
@@ -214,14 +248,18 @@ class CalendarBooking implements JsonSerializable
     }
 
     /**
-     * @return ExtendedDateTime
+     * @return ?ExtendedDateTime
      */
-    public function getToDateTime(): ExtendedDateTime
+    public function getToDateTime(): ?ExtendedDateTime
     {
-        $dateTime = new ExtendedDateTime($this->getToTimestamp());
-        $dateTime->setFullDay($this->isToFullDay());
+        if($this->getToTimestamp()) {
+            $dateTime = new ExtendedDateTime($this->getToTimestamp());
+            $dateTime->setFullDay($this->isToFullDay());
 
-        return $dateTime;
+            return $dateTime;
+        }
+
+        return null;
     }
 
     /**

@@ -5,14 +5,15 @@ namespace TLBM\Admin\Settings\SingleSettings\Text;
 
 
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
+use TLBM\CMS\Contracts\LocalizationInterface;
 
 class TextBookingReceived extends SettingsBase
 {
 
-    public function __construct()
+    public function __construct(LocalizationInterface $localization)
     {
         parent::__construct(
-            "text", "text_booking_received", __("Booking Received", TLBM_TEXT_DOMAIN), __(
+            "text", "text_booking_received", $localization->__("Booking Received", TLBM_TEXT_DOMAIN), $localization->__(
                       "<h2>Your booking has been received successfully</h2><p>You will receive a confirmation email soon</p>", TLBM_TEXT_DOMAIN
                   )
         );
@@ -24,7 +25,7 @@ class TextBookingReceived extends SettingsBase
         <label>
             <textarea class="regular-text tlbm-admin-textarea" name="<?php
             echo $this->optionName ?>"><?php
-                echo get_option($this->optionName) ?></textarea>
+                echo $this->getValue() ?></textarea>
         </label>
         <?php
     }

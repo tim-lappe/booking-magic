@@ -14,7 +14,7 @@ class BookingsPage extends PageBase
     public function __construct()
     {
         parent::__construct("Bookings", "booking-magic-bookings");
-        $this->parent_slug     = "booking-magic";
+        $this->parentSlug = "booking-magic";
     }
 
     public function displayDefaultHeadBar()

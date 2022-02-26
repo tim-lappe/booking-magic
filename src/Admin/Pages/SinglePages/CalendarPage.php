@@ -5,18 +5,25 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 use TLBM\Admin\Tables\CalendarGroupTable;
 use TLBM\Admin\Tables\CalendarListTable;
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\MainFactory;
 
 class CalendarPage extends PageBase
 {
-    public function __construct() {
-        parent::__construct(__("Calendars", TLBM_TEXT_DOMAIN), "booking-magic-calendar");
-        $this->parent_slug          = "booking-magic";
+    /**
+     * @var LocalizationInterface
+     */
+    private LocalizationInterface $localization;
+
+    public function __construct(LocalizationInterface $localization) {
+        parent::__construct($localization->__("Calendars", TLBM_TEXT_DOMAIN), "booking-magic-calendar");
+        $this->parentSlug   = "booking-magic";
+        $this->localization = $localization;
     }
 
     public function getHeadTitle(): string
     {
-        return __("Calendars");
+        return $this->localization->__("Calendars", TLBM_TEXT_DOMAIN);
     }
 
     public function displayDefaultHeadBar()

@@ -5,6 +5,7 @@ namespace TLBM\Admin\Settings;
 
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
+use TLBM\CMS\Contracts\OptionsInterface;
 
 class SettingsManager implements SettingsManagerInterface
 {
@@ -17,6 +18,19 @@ class SettingsManager implements SettingsManagerInterface
      * @var array
      */
     public array $groups = array();
+
+    /**
+     * @var OptionsInterface
+     */
+    private OptionsInterface $options;
+
+    /**
+     * @param OptionsInterface $options
+     */
+    public function __construct(OptionsInterface $options)
+    {
+        $this->options = $options;
+    }
 
     /**
      * @param object $setting
@@ -94,7 +108,7 @@ class SettingsManager implements SettingsManagerInterface
     {
         $setting = $this->getSetting($name);
         if ($setting) {
-            update_option($setting->optionName, $setting->defaultValue);
+            $this->options->updateOption($setting->optionName, $setting->defaultValue);
         }
     }
 
@@ -114,12 +128,12 @@ class SettingsManager implements SettingsManagerInterface
     public function loadSettings(): void
     {
         foreach ($this->groups as $key => $group) {
-            add_settings_section("tlbm_" . $key . "_section", $group, null, "tlbm_settings_" . $key);
+            $this->options->addSettingsSection("tlbm_" . $key . "_section", $group, null, "tlbm_settings_" . $key);
         }
 
         foreach ($this->settings as $setting) {
-            register_setting("tlbm_" . $setting->optionGroup, $setting->optionName, array("default" => $setting->defaultValue));
-            add_settings_field(
+            $this->options->registerSetting("tlbm_" . $setting->optionGroup, $setting->optionName, array("default" => $setting->defaultValue));
+            $this->options->addSettingsField(
                 "tlbm_" . $setting->optionGroup . "_" . $setting->optionName . "_field", $setting->title, array($setting, "display"), 'tlbm_settings_' . $setting->optionGroup, "tlbm_" . $setting->optionGroup . "_section"
             );
         }

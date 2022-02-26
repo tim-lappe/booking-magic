@@ -3,18 +3,19 @@
 namespace TLBM\Admin\Settings\SingleSettings\Rules;
 
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
+use TLBM\CMS\Contracts\LocalizationInterface;
 
 class PriorityLevels extends SettingsBase
 {
-    public function __construct()
+    public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("rules", "priority_levels", __("Priority Levels", TLBM_TEXT_DOMAIN), array(
-            __("Low", TLBM_TEXT_DOMAIN),
-            __("Between Low and Medium", TLBM_TEXT_DOMAIN),
-            __("Medium", TLBM_TEXT_DOMAIN),
-            __("Between Medium and High", TLBM_TEXT_DOMAIN),
-            __("High", TLBM_TEXT_DOMAIN),
-            __("Very High")
+        parent::__construct("rules", "priority_levels", $localization->__("Priority Levels", TLBM_TEXT_DOMAIN), array(
+            $localization->__("Low", TLBM_TEXT_DOMAIN),
+            $localization->__("Between Low and Medium", TLBM_TEXT_DOMAIN),
+            $localization->__("Medium", TLBM_TEXT_DOMAIN),
+            $localization->__("Between Medium and High", TLBM_TEXT_DOMAIN),
+            $localization->__("High", TLBM_TEXT_DOMAIN),
+            $localization->__("Very High", TLBM_TEXT_DOMAIN)
         ));
     }
 

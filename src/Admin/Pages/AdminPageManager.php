@@ -5,6 +5,7 @@ namespace TLBM\Admin\Pages;
 
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\PageBase;
+use TLBM\CMS\Contracts\AdminPagesInterface;
 
 class AdminPageManager implements AdminPageManagerInterface
 {
@@ -14,13 +15,18 @@ class AdminPageManager implements AdminPageManagerInterface
      */
     public array $pages = array();
 
+    /**
+     * @var AdminPagesInterface
+     */
+    private AdminPagesInterface $adminPages;
 
-    public function __construct()
+    public function __construct(AdminPagesInterface $adminPages)
     {
+        $this->adminPages = $adminPages;
     }
 
     /**
-     * @template T
+     * @template T of PageBase
      * @param class-string<T> $class
      *
      * @return ?T
@@ -42,26 +48,26 @@ class AdminPageManager implements AdminPageManagerInterface
     public function loadMenuPages()
     {
         foreach ($this->pages as $page) {
-            if (empty($page->parent_slug)) {
-                if ($page->show_in_menu) {
-                    add_menu_page($page->menu_title, $page->menu_title, $page->capabilities, $page->menu_slug, array(
+            if (empty($page->parentSlug)) {
+                if ($page->showInMenu) {
+                    $this->adminPages->addMenuPage($page->menuTitle, $page->menuTitle, $page->capabilities, $page->menuSlug, array(
                         $page,
                         "display"
-                    ),            $page->icon, 10);
-                    if ( !empty($page->menu_secondary_title)) {
-                        add_submenu_page($page->menu_slug, $page->menu_secondary_title, $page->menu_secondary_title, $page->capabilities, $page->menu_slug, array(
+                    ), $page->icon, 10);
+                    if ( !empty($page->menuSecondaryTitle)) {
+                        $this->adminPages->addSubmenuPage($page->menuSlug, $page->menuSecondaryTitle, $page->menuSecondaryTitle, $page->capabilities, $page->menuSlug, array(
                                                              $page,
                                                              "display"
                                                          ));
                     }
                 } else {
-                    add_submenu_page(null, $page->menu_title, $page->menu_title, $page->capabilities, $page->menu_slug, array(
+                    $this->adminPages->addSubmenuPage(null, $page->menuTitle, $page->menuTitle, $page->capabilities, $page->menuSlug, array(
                                              $page,
                                              "display"
                                          ));
                 }
             } else {
-                add_submenu_page($page->parent_slug, $page->menu_title, $page->menu_title, $page->capabilities, $page->menu_slug, array(
+                $this->adminPages->addSubmenuPage($page->parentSlug, $page->menuTitle, $page->menuTitle, $page->capabilities, $page->menuSlug, array(
                                                        $page,
                                                        "display"
                                                    ));

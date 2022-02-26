@@ -3,8 +3,12 @@
 namespace TLBM\Utilities;
 
 use DateTime;
+use InvalidArgumentException;
 use Iterator;
 use JsonSerializable;
+use TLBM\CMS\Contracts\OptionsInterface;
+use TLBM\CMS\Contracts\TimeUtilsInterface;
+use TLBM\MainFactory;
 
 class ExtendedDateTime implements JsonSerializable
 {
@@ -24,14 +28,22 @@ class ExtendedDateTime implements JsonSerializable
      */
     private DateTime $internalDateTime;
 
-    public function __construct(?int $timestamp = null)
+    /**
+     * @param int|null $timestamp
+     * @param bool $fullDay
+     */
+    public function __construct(?int $timestamp = null, bool $fullDay = false)
     {
-        $this->internalDateTime = new DateTime();
-        $this->internalDateTime->setTimezone(wp_timezone());
+        $timeutils = MainFactory::get(TimeUtilsInterface::class);
 
-        if($timestamp != null) {
+        $this->internalDateTime = new DateTime();
+        $this->internalDateTime->setTimezone($timeutils->getTimezone());
+
+        if($timestamp !== null) {
             $this->internalDateTime->setTimestamp($timestamp);
         }
+
+        $this->setFullDay($fullDay);
     }
 
     public function __toString()
@@ -80,8 +92,12 @@ class ExtendedDateTime implements JsonSerializable
      *
      * @return bool
      */
-    public function isSameDate(ExtendedDateTime $dateTime): bool
+    public function isEqualTo(ExtendedDateTime $dateTime): bool
     {
+        if($this->fullDay != $dateTime->fullDay) {
+            return false;
+        }
+
         $sameDay =
             $this->getYear() == $dateTime->getYear() &&
             $this->getMonth() == $dateTime->getMonth() &&
@@ -103,12 +119,13 @@ class ExtendedDateTime implements JsonSerializable
      */
     public function format(): string
     {
-        $format = get_option('date_format');
+        $options = MainFactory::get(OptionsInterface::class);
+        $format = $options->getOption('date_format');
         if (empty($format)) {
             $format = "d.m.Y";
         }
 
-        $timeformat = get_option('time_format');
+        $timeformat = MainFactory::get($options->getOption('time_format'));
         $shiftetTimestamp = $this->getTimestamp();
         $shiftetTimestamp += date_offset_get($this->internalDateTime);
 
@@ -192,41 +209,41 @@ class ExtendedDateTime implements JsonSerializable
     }
 
     /**
-     * @return int|null
+     * @return int
      */
     public function getHour(): ?int
     {
         if($this->isFullDay()) {
-            return null;
+            return 0;
         }
 
         return intval($this->internalDateTime->format("H"));
     }
 
     /**
-     * @param int|null $hour
+     * @param int $hour
      */
-    public function setHour(?int $hour): void
+    public function setHour(int $hour): void
     {
         $this->internalDateTime->setTime($hour, $this->getMinute(), $this->getDay());
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getMinute(): ?int
+    public function getMinute(): int
     {
         if($this->isFullDay()) {
-            return null;
+            return 0;
         }
 
         return intval($this->internalDateTime->format("i"));
     }
 
     /**
-     * @param int|null $minute
+     * @param int $minute
      */
-    public function setMinute(?int $minute): void
+    public function setMinute(int $minute): void
     {
         $this->internalDateTime->setTime($this->getHour(), $minute, $this->getDay());
     }
@@ -244,9 +261,9 @@ class ExtendedDateTime implements JsonSerializable
     }
 
     /**
-     * @param int|null $seconds
+     * @param int $seconds
      */
-    public function setSeconds(?int $seconds): void
+    public function setSeconds(int $seconds): void
     {
         $this->internalDateTime->setTime($this->getHour(), $this->getMinute(), $seconds);
     }
@@ -291,28 +308,35 @@ class ExtendedDateTime implements JsonSerializable
     /**
      * @param mixed $dateTime
      *
-     * @return void
+     * @return ?ExtendedDateTime
      */
-    public function setFromObject($dateTime)
+    public function setFromObject($dateTime): ?ExtendedDateTime
     {
         if($dateTime) {
-            if(isset($dateTime['year']) && isset($dateTime['month']) && isset($dateTime['day'])) {
-                $this->setYear($dateTime['year']);
-                $this->setMonth($dateTime['month']);
-                $this->setDay($dateTime['day']);
+            if(!is_array($dateTime)) {
+                $dateTime = (array)$dateTime;
+            }
 
-                if(isset($dateTime['hour']) && isset($dateTime['minute']) && isset($dateTime['seconds'])) {
-                    $this->setFullTime($dateTime['hour'], $dateTime['minute'], $dateTime['seconds']);
+            if(isset($dateTime['year']) && isset($dateTime['month']) && isset($dateTime['day'])) {
+                $this->setYear(intval($dateTime['year']));
+                $this->setMonth(intval($dateTime['month']));
+                $this->setDay(intval($dateTime['day']));
+
+                if(isset($dateTime['hour'])) {
+                    $min = $dateTime['minute'] ?? 0;
+                    $seconds =  $dateTime['seconds'] ?? 0;
+
+                    $this->setFullTime(intval($dateTime['hour']), intval($min), intval($seconds));
                     $this->setFullDay(false);
                 } else {
                     $this->setFullDay(true);
                 }
 
-                return;
+                return $this;
             }
         }
 
-        $this->invalid = true;
+        throw new InvalidArgumentException("Invalid date time object: " . var_export($dateTime, true));
     }
 
     /**
@@ -337,7 +361,7 @@ class ExtendedDateTime implements JsonSerializable
                 $copy = $iteratingDateTime->copy();
                 $iteratingDateTime->setDay($iteratingDateTime->getDay() + 1);
 
-                if(!$start->isSameDate($copy) && $iteratingDateTime->isEarlierThan($end)) {
+                if( !$start->isEqualTo($copy) && $iteratingDateTime->isEarlierThan($end)) {
                     $copy->setFullDay(true);
                 }
 

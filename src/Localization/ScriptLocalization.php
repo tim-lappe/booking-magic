@@ -2,6 +2,7 @@
 
 namespace TLBM\Localization;
 
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Localization\Contracts\LabelsInterface;
 use TLBM\Localization\Contracts\ScriptLocalizationInterface;
 
@@ -13,9 +14,15 @@ class ScriptLocalization implements ScriptLocalizationInterface
      */
     private LabelsInterface $labels;
 
-    public function __construct(LabelsInterface $labels)
+    /**
+     * @var LocalizationInterface
+     */
+    private LocalizationInterface $localization;
+
+    public function __construct(LabelsInterface $labels, LocalizationInterface $localization)
     {
         $this->labels = $labels;
+        $this->localization = $localization;
     }
 
     public function getLabels(): array
@@ -23,7 +30,7 @@ class ScriptLocalization implements ScriptLocalizationInterface
         $keys = $this->getLabelKeys();
         $arr  = array();
         foreach ($keys as $key) {
-            $arr[$key] = __($key, TLBM_TEXT_DOMAIN);
+            $arr[$key] = $this->localization->__($key, TLBM_TEXT_DOMAIN);
         }
 
         return $arr + $this->getLabelCollections();

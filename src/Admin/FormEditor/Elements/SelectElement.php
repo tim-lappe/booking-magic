@@ -6,17 +6,18 @@ use TLBM\Admin\FormEditor\FormInputGenerator;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Input;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Textarea;
 use TLBM\Admin\FormEditor\LinkedFormData;
+use TLBM\CMS\Contracts\LocalizationInterface;
 
 class SelectElement extends FormInputElem
 {
 
-    public function __construct()
+    public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("select", __("Select", TLBM_TEXT_DOMAIN));
-        $this->description = __("let the user select from multiple items", TLBM_TEXT_DOMAIN);
+        parent::__construct("select", $localization->__("Select", TLBM_TEXT_DOMAIN));
+        $this->description = $this->localization->__("let the user select from multiple items", TLBM_TEXT_DOMAIN);
 
-        $setting_items = new Textarea("items", __("Selectable Items (one Item per row)", TLBM_TEXT_DOMAIN), "", false, false, [], __("Select", TLBM_TEXT_DOMAIN));
-        $sDefaultSelected = new Input("default_selected", __("Default Selection", TLBM_TEXT_DOMAIN), "text", "", false, false, [], __("Select", TLBM_TEXT_DOMAIN));
+        $setting_items = new Textarea("items", $this->localization->__("Selectable Items (one Item per row)", TLBM_TEXT_DOMAIN), "", false, false, [], $this->localization->__("Select", TLBM_TEXT_DOMAIN));
+        $sDefaultSelected = new Input("default_selected", $this->localization->__("Default Selection", TLBM_TEXT_DOMAIN), "text", "", false, false, [], $this->localization->__("Select", TLBM_TEXT_DOMAIN));
         $sDefaultSelected->expand = true;
 
         $this->addSettings($setting_items, $sDefaultSelected);

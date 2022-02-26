@@ -9,6 +9,7 @@ use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
 use TLBM\Booking\Semantic\BookingValueSemantic;
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Entity\Booking;
 use TLBM\MainFactory;
 use TLBM\Repository\Query\ManageableEntityQuery;
@@ -34,13 +35,16 @@ class BookingListTable extends ManagableEntityTable
      */
     private ColorsInterface $colors;
 
-    public function __construct(AdminPageManagerInterface $adminPageManager, SettingsManagerInterface $settingsManager) {
+    protected LocalizationInterface $localization;
+
+    public function __construct(AdminPageManagerInterface $adminPageManager, SettingsManagerInterface $settingsManager, LocalizationInterface $localization) {
         $this->adminPageManager = $adminPageManager;
         $this->settingsManager = $settingsManager;
+        $this->localization = $localization;
         $this->colors          = new Colors();
 
         parent::__construct(
-            Booking::class, __("Bookings", TLBM_TEXT_DOMAIN), __("Booking", TLBM_TEXT_DOMAIN), 10, __("You don't have any bookings yet", TLBM_TEXT_DOMAIN)
+            Booking::class, $localization->__("Bookings", TLBM_TEXT_DOMAIN), $localization->__("Booking", TLBM_TEXT_DOMAIN), 10, $localization->__("You don't have any bookings yet", TLBM_TEXT_DOMAIN)
         );
     }
 
@@ -66,8 +70,8 @@ class BookingListTable extends ManagableEntityTable
         $columns = parent::getColumns();
 
         array_splice($columns, 1, 0, [
-            new Column("id", __("ID", TLBM_TEXT_DOMAIN), true, array($this, "columnDisplayId")),
-            new Column("values", __("Form values", TLBM_TEXT_DOMAIN), false, function (Booking $booking) {
+            new Column("id", $this->localization->__("ID", TLBM_TEXT_DOMAIN), true, array($this, "columnDisplayId")),
+            new Column("values", $this->localization->__("Form values", TLBM_TEXT_DOMAIN), false, function (Booking $booking) {
                 $semantic = MainFactory::create(BookingValueSemantic::class);
                 $semantic->setValuesFromBooking($booking);
 
@@ -76,8 +80,8 @@ class BookingListTable extends ManagableEntityTable
 
                 echo $content;
             }),
-            new Column("calendar", __("Calendar", TLBM_TEXT_DOMAIN), false, array($this, "columnDisplayCalendar")),
-            new Column("state", __("State", TLBM_TEXT_DOMAIN), true, array($this, "columnDisplayState")),
+            new Column("calendar", $this->localization->__("Calendar", TLBM_TEXT_DOMAIN), false, array($this, "columnDisplayCalendar")),
+            new Column("state", $this->localization->__("State", TLBM_TEXT_DOMAIN), true, array($this, "columnDisplayState")),
         ]);
 
         return $columns;
@@ -118,7 +122,7 @@ class BookingListTable extends ManagableEntityTable
 
                     echo $prefix . "<a href='" . $link . "'>" . $calendar->getTitle() . "</a>&nbsp;&nbsp;&nbsp;" . $calendarBooking->getFromDateTime() . "<br>";
                 } else {
-                    echo $prefix . "<strong>" . __("Calendar deleted", TLBM_TEXT_DOMAIN) . "</strong>&nbsp;&nbsp;&nbsp;" .  $calendarBooking->getFromDateTime() . "<br>";
+                    echo $prefix . "<strong>" . $this->localization->__("Calendar deleted", TLBM_TEXT_DOMAIN) . "</strong>&nbsp;&nbsp;&nbsp;" .  $calendarBooking->getFromDateTime() . "<br>";
                 }
             }
 

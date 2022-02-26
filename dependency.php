@@ -59,6 +59,24 @@ use TLBM\Booking\CalendarBookingManager;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
 use TLBM\Calendar\CalendarSelectionHandler;
 use TLBM\Calendar\Contracts\CalendarSelectionHandlerInterface;
+use TLBM\CMS\AdminPagesWrapper;
+use TLBM\CMS\Contracts\AdminPagesInterface;
+use TLBM\CMS\Contracts\EnqueueAssetsInterface;
+use TLBM\CMS\Contracts\HooksInterface;
+use TLBM\CMS\Contracts\LocalizationInterface as LocalizationInterfaceAlias;
+use TLBM\CMS\Contracts\OptionsInterface;
+use TLBM\CMS\Contracts\PluginActivationInterface;
+use TLBM\CMS\Contracts\ShortcodeInterface;
+use TLBM\CMS\Contracts\TimeUtilsInterface;
+use TLBM\CMS\Contracts\UrlUtilsInterface;
+use TLBM\CMS\EnqueueAssetsWrapper;
+use TLBM\CMS\HooksWrapper;
+use TLBM\CMS\LocalizationWrapper;
+use TLBM\CMS\OptionsWrapper;
+use TLBM\CMS\PluginActivationWrapper;
+use TLBM\CMS\ShortcodeWrapper;
+use TLBM\CMS\TimeUtilsWrapper;
+use TLBM\CMS\UrlUtilsWrapper;
 use TLBM\Email\Contracts\MailSenderInterface;
 use TLBM\Email\MailSender;
 use TLBM\Localization\Contracts\LabelsInterface;
@@ -91,12 +109,6 @@ use TLBM\Rules\Contracts\RulesCapacityManagerInterface;
 use TLBM\Rules\RulesCapacityManager;
 use TLBM\Utilities\Colors;
 use TLBM\Utilities\Contracts\ColorsInterface;
-use TLBM\Utilities\Contracts\DateTimeToolsInterface;
-use TLBM\Utilities\Contracts\PeriodsToolsInterface;
-use TLBM\Utilities\Contracts\WeekdayToolsInterface;
-use TLBM\Utilities\DateTimeTools;
-use TLBM\Utilities\PeriodsTools;
-use TLBM\Utilities\WeekdayTools;
 use TLBM\Validation\CalendarEntityValidator;
 use TLBM\Validation\Contracts\CalendarEntityValidatorInterface;
 use TLBM\Validation\Contracts\RulesActionEntityValidatorInterface;
@@ -119,10 +131,7 @@ return [
     LabelsInterface::class                   => autowire(Labels::class),
     ScriptLocalizationInterface::class       => autowire(ScriptLocalization::class),
     CalendarSelectionHandlerInterface::class => autowire(CalendarSelectionHandler::class),
-    DateTimeToolsInterface::class            => autowire(DateTimeTools::class),
-    PeriodsToolsInterface::class             => autowire(PeriodsTools::class),
     ColorsInterface::class                   => autowire(Colors::class),
-    WeekdayToolsInterface::class             => autowire(WeekdayTools::class),
     FormPrintInterface::class                => autowire(FormPrint::class),
     FormBuilderInterface::class              => autowire(FormBuilder::class),
     FullRuleActionQueryInterface::class      => autowire(FullRuleActionQuery::class),
@@ -137,6 +146,16 @@ return [
     RulesPeriodEntityValidatorInterface::class => autowire(RulesPeriodEntityValidator::class),
     TimeSlotEntityValidatorInterface::class    => autowire(TimeSlotEntityValidator::class),
     RulesEntityValidatorInterface::class       => autowire(RulesEntityValidator::class),
+
+    PluginActivationInterface::class => autowire(PluginActivationWrapper::class),
+    HooksInterface::class => autowire(HooksWrapper::class),
+    LocalizationInterfaceAlias::class => autowire(LocalizationWrapper::class),
+    OptionsInterface::class => autowire(OptionsWrapper::class),
+    AdminPagesInterface::class => autowire(AdminPagesWrapper::class),
+    ShortcodeInterface::class => autowire(ShortcodeWrapper::class),
+    EnqueueAssetsInterface::class => autowire(EnqueueAssetsWrapper::class),
+    UrlUtilsInterface::class => autowire(UrlUtilsWrapper::class),
+    TimeUtilsInterface::class => autowire(TimeUtilsWrapper::class),
 
     /**
      * Register Rule Actions
@@ -252,17 +271,18 @@ return [
     SettingsManagerInterface::class            => factory(function (FactoryInterface $factory, ContainerInterface $container) {
         $settingsManager = $container->get(SettingsManager::class);
         if ($settingsManager instanceof SettingsManagerInterface) {
+            $localization = $container->get(LocalizationInterfaceAlias::class);
             /**
              * General
              */
-            $settingsManager->registerSettingsGroup("general", __("General", TLBM_TEXT_DOMAIN));
+            $settingsManager->registerSettingsGroup("general", $localization->__("General", TLBM_TEXT_DOMAIN));
             $settingsManager->registerSetting($container->get(AdminMail::class));
 
             /**
              * Booking Process,
              */
             $settingsManager->registerSettingsGroup(
-                "booking_process", __("Booking Process", TLBM_TEXT_DOMAIN)
+                "booking_process", $localization->__("Booking Process", TLBM_TEXT_DOMAIN)
             );
             $settingsManager->registerSetting($container->get(SinglePageBooking::class));
             $settingsManager->registerSetting($container->get(BookingStates::class));
@@ -272,26 +292,26 @@ return [
             /**
              * E-Mails
              */
-            $settingsManager->registerSettingsGroup("emails", __("E-Mails", TLBM_TEXT_DOMAIN));
+            $settingsManager->registerSettingsGroup("emails", $localization->__("E-Mails", TLBM_TEXT_DOMAIN));
             $settingsManager->registerSetting($container->get(EmailBookingConfirmation::class));
 
             /**
              * Text
              */
-            $settingsManager->registerSettingsGroup("text", __("Text", TLBM_TEXT_DOMAIN));
+            $settingsManager->registerSettingsGroup("text", $localization->__("Text", TLBM_TEXT_DOMAIN));
             $settingsManager->registerSetting($container->get(WeekdayLabels::class));
             $settingsManager->registerSetting($container->get(TextBookingReceived::class));
             $settingsManager->registerSetting($container->get(TextBookNow::class));
             /**
              * Rules
              */
-            $settingsManager->registerSettingsGroup("rules", __("Rules", TLBM_TEXT_DOMAIN));
+            $settingsManager->registerSettingsGroup("rules", $localization->__("Rules", TLBM_TEXT_DOMAIN));
             $settingsManager->registerSetting($container->get(PriorityLevels::class));
 
             /**
              * Advanced
              */
-            $settingsManager->registerSettingsGroup("advanced", __("Advanced", TLBM_TEXT_DOMAIN));
+            $settingsManager->registerSettingsGroup("advanced", $localization->__("Advanced", TLBM_TEXT_DOMAIN));
         }
 
         return $settingsManager;

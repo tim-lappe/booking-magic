@@ -18,7 +18,7 @@ class BookingValueSemantic
 
     }
 
-    public function getAllSemanticFieldNames()
+    public function getAllSemanticFieldNames(): array
     {
         return [
             "first_name",
