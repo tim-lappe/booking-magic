@@ -9,6 +9,7 @@ use Throwable;
 use TLBM\Admin\WpForm\Contracts\FormFieldReadVarsInterface;
 use TLBM\Entity\RulePeriod;
 use TLBM\Entity\TimeSlot;
+use TLBM\Utilities\ExtendedDateTime;
 
 if ( !defined('ABSPATH')) {
     return;
@@ -62,39 +63,21 @@ class PeriodEditorField extends FormFieldBase implements FormFieldReadVarsInterf
                 foreach ($json as $periodObj) {
                     $period = new RulePeriod();
                     try {
-                        $fromDateTime = new DateTime();
-                        $fromDateTime->setTimezone(wp_timezone());
-                        $fromDateTime->setDate(
-                                $periodObj->fromDateTime->year,
-                                $periodObj->fromDateTime->month,
-                                $periodObj->fromDateTime->day);
-                        $fromDateTime->setTime(
-                            $periodObj->fromDateTime->hour,
-                            $periodObj->fromDateTime->minute,
-                            $periodObj->fromDateTime->seconds);
+                        $fromDateTime = new ExtendedDateTime();
+                        $fromDateTime->setFromObject($periodObj->fromDateTime);
 
+                        $period->setFromFullDay($fromDateTime->isFullDay());
                         $period->setFromTimestamp($fromDateTime->getTimestamp());
-                        $period->setFromFullDay(!(bool) $periodObj->fromTimeset);
-
                     } catch (Throwable $exception) {
                         continue;
                     }
 
                     if(isset($periodObj->toDateTime)) {
                         try {
-                            $toDateTime = new DateTime();
-                            $toDateTime->setTimezone(wp_timezone());
-                            $toDateTime->setDate(
-                                $periodObj->toDateTime->year, $periodObj->toDateTime->month, $periodObj->toDateTime->day
-                            );
-                            $toDateTime->setTime(
-                                $periodObj->toDateTime->hour, $periodObj->toDateTime->minute, $periodObj->toDateTime->seconds
-                            );
+                            $toDateTime = new ExtendedDateTime();
+                            $toDateTime->setFromObject($periodObj->toDateTime);
 
-                            if(isset($periodObj->toTimeset)) {
-                                $period->setToFullDay(!(bool) $periodObj->toTimeset);
-                            }
-
+                            $period->setToFullDay($toDateTime->isFullDay());
                             $period->setToTimestamp($toDateTime->getTimestamp());
                         } catch (Throwable $exception) {
                             $period->setToTimestamp(null);

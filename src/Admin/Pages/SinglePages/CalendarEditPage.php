@@ -2,6 +2,7 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;
@@ -21,11 +22,16 @@ class CalendarEditPage extends EntityEditPage
      */
     private EntityRepositoryInterface $entityRepository;
 
+    /**
+     * @var LocalizationInterface
+     */
+    protected LocalizationInterface $localization;
 
-    public function __construct(EntityRepositoryInterface $entityRepository)
+    public function __construct(EntityRepositoryInterface $entityRepository, LocalizationInterface $localization)
     {
+        $this->localization = $localization;
         $this->entityRepository = $entityRepository;
-        parent::__construct(__("Calendar", TLBM_TEXT_DOMAIN), "calendar-edit", "booking-calendar-edit", false);
+        parent::__construct($this->localization->__("Calendar", TLBM_TEXT_DOMAIN), "calendar-edit", "booking-calendar-edit", false);
     }
 
     /**
@@ -87,12 +93,12 @@ class CalendarEditPage extends EntityEditPage
             if($this->entityRepository->saveEntity($calendar)) {
                 $savedEntity = $calendar;
                 return array(
-                    "success" => __("Calendar has been saved", TLBM_TEXT_DOMAIN)
+                    "success" => $this->localization->__("Calendar has been saved", TLBM_TEXT_DOMAIN)
                 );
 
             } else {
                 return array(
-                    "error" => __("An internal error occured. ", TLBM_TEXT_DOMAIN)
+                    "error" => $this->localization->__("An internal error occured. ", TLBM_TEXT_DOMAIN)
                 );
             }
         }

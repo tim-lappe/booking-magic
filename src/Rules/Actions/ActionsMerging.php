@@ -161,7 +161,7 @@ class ActionsMerging
      */
     private function searchTimedMergeData(array $timedMergeDataArr, ExtendedDateTime $dateTime): ?TimedMergeData {
         foreach ($timedMergeDataArr as $timedMergeData) {
-            if($timedMergeData->getDateTime()->isSameDate($dateTime)) {
+            if($timedMergeData->getDateTime()->isEqualTo($dateTime)) {
                 return $timedMergeData;
             }
         }

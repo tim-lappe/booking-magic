@@ -7,6 +7,7 @@ namespace TLBM\Admin\Tables;
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\CalendarGroupEditPage;
 use TLBM\Admin\Tables\DisplayHelper\DisplayCalendarSelection;
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Entity\CalendarGroup;
 use TLBM\MainFactory;
 use TLBM\Repository\Query\BaseQuery;
@@ -21,11 +22,17 @@ class CalendarGroupTable extends ManagableEntityTable
      */
     private AdminPageManagerInterface $adminPageManager;
 
-    public function __construct(AdminPageManagerInterface $adminPageManager) {
+    /**
+     * @var LocalizationInterface
+     */
+    protected LocalizationInterface $localization;
+
+    public function __construct(AdminPageManagerInterface $adminPageManager, LocalizationInterface $localization) {
         $this->adminPageManager = $adminPageManager;
+        $this->localization = $localization;
 
         parent::__construct(
-            CalendarGroup::class, __("Groups", TLBM_TEXT_DOMAIN), __("Group", TLBM_TEXT_DOMAIN), 10, __("You haven't created any groups yet", TLBM_TEXT_DOMAIN)
+            CalendarGroup::class, $this->localization->__("Groups", TLBM_TEXT_DOMAIN), $this->localization->__("Group", TLBM_TEXT_DOMAIN), 10, $this->localization->__("You haven't created any groups yet", TLBM_TEXT_DOMAIN)
         );
     }
 
@@ -51,7 +58,7 @@ class CalendarGroupTable extends ManagableEntityTable
         $columns = parent::getColumns();
 
         array_splice($columns, 1, 0, [
-            new Column("title", __("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
+            new Column("title", $this->localization->__("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
                 $groupEditPage = $this->adminPageManager->getPage(CalendarGroupEditPage::class);
                 $link = $groupEditPage->getEditLink($item->getId());
 
@@ -62,18 +69,18 @@ class CalendarGroupTable extends ManagableEntityTable
                 }
 
             }),
-            new Column("selected_calendars", __('Selected Calendars', TLBM_TEXT_DOMAIN), false, function ($item) {
+            new Column("selected_calendars", $this->localization->__('Selected Calendars', TLBM_TEXT_DOMAIN), false, function ($item) {
                 $selection = $item->getCalendarSelection();
                 $selectionDisplay = MainFactory::create(DisplayCalendarSelection::class);
                 $selectionDisplay->setCalendarSelection($selection);
                 $selectionDisplay->display();
 
             }),
-            new Column("booking_distribution", __('Booking Distribution', TLBM_TEXT_DOMAIN), true, function ($item) {
+            new Column("booking_distribution", $this->localization->__('Booking Distribution', TLBM_TEXT_DOMAIN), true, function ($item) {
                 if ($item->getBookingDisitribution() == TLBM_BOOKING_DISTRIBUTION_EVENLY) {
-                    echo __("Evenly", TLBM_TEXT_DOMAIN);
+                    echo $this->localization->__("Evenly", TLBM_TEXT_DOMAIN);
                 } elseif ($item->getBookingDisitribution() == TLBM_BOOKING_DISTRIBUTION_FILL_ONE) {
-                    echo __("Fill One First", TLBM_TEXT_DOMAIN);
+                    echo $this->localization->__("Fill One First", TLBM_TEXT_DOMAIN);
                 }
             })
         ]);

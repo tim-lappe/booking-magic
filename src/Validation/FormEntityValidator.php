@@ -2,7 +2,9 @@
 
 namespace TLBM\Validation;
 
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Entity\Form;
+use TLBM\MainFactory;
 
 class FormEntityValidator
 {
@@ -25,8 +27,9 @@ class FormEntityValidator
     public function isTitleValid(): array
     {
         $errors = array();
+        $localization = MainFactory::get(LocalizationInterface::class);
         if(empty($this->form->getTitle())) {
-            $errors[] = __("The title is too short", TLBM_TEXT_DOMAIN);
+            $errors[] = $localization->__("The title is too short", TLBM_TEXT_DOMAIN);
         }
 
         return $errors;

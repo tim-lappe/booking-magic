@@ -10,6 +10,7 @@ use TLBM\Admin\WpForm\CalendarPickerField;
 use TLBM\Admin\WpForm\PeriodEditorField;
 use TLBM\Admin\WpForm\RuleActionsField;
 use TLBM\Admin\WpForm\SelectField;
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Entity\ManageableEntity;
 use TLBM\Entity\Rule;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
@@ -31,16 +32,22 @@ class RuleEditPage extends EntityEditPage
      */
     private SettingsManagerInterface $settingsManager;
 
+    /**
+     * @var LocalizationInterface
+     */
+    protected LocalizationInterface $localization;
 
     public function __construct(
         EntityRepositoryInterface $entityRepository,
-        SettingsManagerInterface $settingsManager
+        SettingsManagerInterface $settingsManager,
+        LocalizationInterface $localization
     ) {
-        parent::__construct(__("Rule", TLBM_TEXT_DOMAIN), "rule-edit", "booking-magic-rule-edit", false);
+        parent::__construct($localization->__("Rule", TLBM_TEXT_DOMAIN), "rule-edit", "booking-magic-rule-edit", false);
 
+        $this->localization = $localization;
         $this->entityRepository    = $entityRepository;
         $this->settingsManager = $settingsManager;
-        $this->parent_slug     = "booking-magic-rules";
+        $this->parentSlug     = "booking-magic-rules";
 
         $this->defineFormFields();
     }
@@ -48,16 +55,16 @@ class RuleEditPage extends EntityEditPage
     public function defineFormFields()
     {
         $this->formBuilder->defineFormField(
-            new CalendarPickerField($this->entityRepository, "calendars", __("Calendars", TLBM_TEXT_DOMAIN))
+            new CalendarPickerField($this->entityRepository, "calendars", $this->localization->__("Calendars", TLBM_TEXT_DOMAIN))
         );
         $this->formBuilder->defineFormField(
-            new RuleActionsField("rule_actions", __("Actions", TLBM_TEXT_DOMAIN))
+            new RuleActionsField("rule_actions", $this->localization->__("Actions", TLBM_TEXT_DOMAIN))
         );
         $this->formBuilder->defineFormField(
-            new PeriodEditorField("rule_periods", __("Periods", TLBM_TEXT_DOMAIN))
+            new PeriodEditorField("rule_periods", $this->localization->__("Periods", TLBM_TEXT_DOMAIN))
         );
         $this->formBuilder->defineFormField(
-            new SelectField("rule_priority", __("Priority", TLBM_TEXT_DOMAIN), $this->settingsManager->getValue(PriorityLevels::class))
+            new SelectField("rule_priority", $this->localization->__("Priority", TLBM_TEXT_DOMAIN), $this->settingsManager->getValue(PriorityLevels::class))
         );
     }
 
@@ -138,7 +145,7 @@ class RuleEditPage extends EntityEditPage
                 $savedEntity = $rule;
             } catch (Throwable $exception) {
                 return array(
-                    "error" => __("An internal error occured: " . $exception->getMessage(), TLBM_TEXT_DOMAIN)
+                    "error" => $this->localization->__("An internal error occured: " . $exception->getMessage(), TLBM_TEXT_DOMAIN)
                 );
             }
         } else {
@@ -146,7 +153,7 @@ class RuleEditPage extends EntityEditPage
         }
 
         return array(
-            "success" => __("Rule has been saved", TLBM_TEXT_DOMAIN)
+            "success" => $this->localization->__("Rule has been saved", TLBM_TEXT_DOMAIN)
         );
     }
 

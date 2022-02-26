@@ -5,6 +5,9 @@ namespace TLBM\Admin\Settings\SingleSettings;
 
 
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
+use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\CMS\Contracts\OptionsInterface;
+use TLBM\MainFactory;
 
 abstract class SettingsBase
 {
@@ -39,6 +42,11 @@ abstract class SettingsBase
     protected SettingsManagerInterface $settingsManager;
 
     /**
+     * @var LocalizationInterface
+     */
+    protected LocalizationInterface $localization;
+
+    /**
      * @param string $optionGroup
      * @param string $optionName
      * @param string $title
@@ -57,6 +65,8 @@ abstract class SettingsBase
         $this->title       = $title;
         $this->defaultValue = $defaultValue;
         $this->description   = $description;
+
+        $this->localization = MainFactory::get(LocalizationInterface::class);
     }
 
     public function getSettingsManager(): SettingsManagerInterface
@@ -74,7 +84,8 @@ abstract class SettingsBase
      */
     public function getValue()
     {
-        return get_option($this->optionName, $this->defaultValue);
+        $options = MainFactory::get(OptionsInterface::class);
+        return $options->getOption($this->optionName, $this->defaultValue);
     }
 
     public function display()

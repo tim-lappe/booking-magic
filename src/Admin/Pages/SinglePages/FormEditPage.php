@@ -6,6 +6,7 @@ use Exception;
 use Throwable;
 use TLBM\Admin\FormEditor\Contracts\FormElementsCollectionInterface;
 use TLBM\Admin\WpForm\FormEditorField;
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Entity\Form;
 use TLBM\Entity\ManageableEntity;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
@@ -27,17 +28,24 @@ class FormEditPage extends EntityEditPage
      */
     private FormElementsCollectionInterface $elementsCollection;
 
+    /**
+     * @var LocalizationInterface
+     */
+    protected LocalizationInterface $localization;
+
     public function __construct(
         EntityRepositoryInterface $entityRepository,
-        FormElementsCollectionInterface $elementsCollection
+        FormElementsCollectionInterface $elementsCollection,
+        LocalizationInterface $localization
     ) {
         parent::__construct(
-             __("Form", TLBM_TEXT_DOMAIN), "form-edit", "booking-magic-form-edit", false
+             $localization->__("Form", TLBM_TEXT_DOMAIN), "form-edit", "booking-magic-form-edit", false
         );
 
+        $this->localization = $localization;
         $this->entityRepository   = $entityRepository;
         $this->elementsCollection = $elementsCollection;
-        $this->parent_slug        = "booking-magic-form";
+        $this->parentSlug        = "booking-magic-form";
 
         $this->defineFormFields();
     }
@@ -45,7 +53,7 @@ class FormEditPage extends EntityEditPage
     private function defineFormFields()
     {
         $this->formBuilder->defineFormField(
-            new FormEditorField($this->elementsCollection, "form", __("Form", TLBM_TEXT_DOMAIN))
+            new FormEditorField($this->elementsCollection, "form", $this->localization->__("Form", TLBM_TEXT_DOMAIN))
         );
     }
 
@@ -95,12 +103,12 @@ class FormEditPage extends EntityEditPage
                 $form->setFormData($form_node_tree);
             } else {
                 return array(
-                    "error" => __("Unknown Error occured.", TLBM_TEXT_DOMAIN)
+                    "error" => $this->localization->__("Unknown Error occured.", TLBM_TEXT_DOMAIN)
                 );
             }
         } catch (Throwable $exception) {
             return array(
-                "error" => __("Unknown Error occured: " . $exception->getMessage(), TLBM_TEXT_DOMAIN)
+                "error" => $this->localization->__("Unknown Error occured: " . $exception->getMessage(), TLBM_TEXT_DOMAIN)
             );
         }
 
@@ -109,9 +117,9 @@ class FormEditPage extends EntityEditPage
             if($this->entityRepository->saveEntity($form)) {
                 $savedEntity = $form;
 
-                return ["success" => __("Form has been saved", TLBM_TEXT_DOMAIN)];
+                return ["success" => $this->localization->__("Form has been saved", TLBM_TEXT_DOMAIN)];
             } else {
-                return ["error" => __("An internal error occurred.", TLBM_TEXT_DOMAIN)];
+                return ["error" => $this->localization->__("An internal error occurred.", TLBM_TEXT_DOMAIN)];
             }
         }
 

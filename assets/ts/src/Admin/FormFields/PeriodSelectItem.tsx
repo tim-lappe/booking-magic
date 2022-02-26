@@ -39,8 +39,6 @@ export class PeriodSelectItem extends React.Component<PeriodSelectItemProps, Per
     onChangeStartDate(dateSelect: DateSelectState) {
         this.setState((prevState: PeriodSelectItemState) => {
             prevState.item.fromDateTime = dateSelect.dateTime;
-            prevState.item.fromTimeset = dateSelect.timeset;
-
             this.props.onChange(prevState.item);
             return prevState;
         });
@@ -49,8 +47,6 @@ export class PeriodSelectItem extends React.Component<PeriodSelectItemProps, Per
     onChangeEndDate(dateSelect: DateSelectState) {
         this.setState((prevState: PeriodSelectItemState) => {
             prevState.item.toDateTime = dateSelect.dateTime;
-            prevState.item.toTimeset = dateSelect.timeset;
-
             this.props.onChange(prevState.item);
             return prevState;
         });
@@ -150,17 +146,17 @@ export class PeriodSelectItem extends React.Component<PeriodSelectItemProps, Per
         let currentDate = new Date();
 
         return (
-            <div className={"tlbm-period-item tlbm-gray-container"}>
+            <div className={"tlbm-period-item tlbm-gray-container tlbm-admin-content-box"}>
                 <div className={"tlbm-period-panel"}>
                     <div>
                         <small>{Localization.__("Start")}</small>
-                        <DateSelect defaultDateTime={this.state.item.fromDateTime} timeset={this.state.item.fromTimeset} allowTimeSet={true} onChange={this.onChangeStartDate} minYear={currentDate.getFullYear()} />
+                        <DateSelect defaultDateTime={this.state.item.fromDateTime} allowTimeSet={true} onChange={this.onChangeStartDate} minYear={currentDate.getFullYear()} />
                     </div>
 
                     {this.hasEndDate() ? (
                         <div>
                             <small>{Localization.__("End")}</small>
-                            <DateSelect defaultDateTime={this.state.item.toDateTime} timeset={this.state.item.toTimeset} allowTimeSet={true} onChange={this.onChangeEndDate} minYear={currentDate.getFullYear()} />
+                            <DateSelect defaultDateTime={this.state.item.toDateTime} allowTimeSet={true} onChange={this.onChangeEndDate} minYear={currentDate.getFullYear()} />
                         </div>
                     ): null }
 

@@ -7,6 +7,7 @@ use Throwable;
 use TLBM\Admin\Settings\SingleSettings\Emails\EmailBookingConfirmation;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
 use TLBM\Booking\Semantic\BookingValueSemantic;
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Email\Contracts\MailSenderInterface;
 use TLBM\MainFactory;
 use TLBM\Output\Contracts\FrontendMessengerInterface;
@@ -42,10 +43,16 @@ class CompleteBookingRequest extends RequestBase
      */
     private FrontendMessengerInterface $frontendMessenger;
 
-    public function __construct(FrontendMessengerInterface $frontendMessenger, CalendarBookingManagerInterface $calendarBookingManager, BookingRepositoryInterface $bookingManager, MailSenderInterface $mailSender)
-    {
-        parent::__construct();
+    /**
+     * @var LocalizationInterface
+     */
+    protected LocalizationInterface $localization;
 
+    public function __construct(LocalizationInterface $localization, FrontendMessengerInterface $frontendMessenger, CalendarBookingManagerInterface $calendarBookingManager, BookingRepositoryInterface $bookingManager, MailSenderInterface $mailSender)
+    {
+        parent::__construct($localization);
+
+        $this->localization = $localization;
         $this->calendarBookingManager = $calendarBookingManager;
         $this->mailSender  = $mailSender;
         $this->bookingManager = $bookingManager;
@@ -74,7 +81,7 @@ class CompleteBookingRequest extends RequestBase
                         $this->bookingSuccessed = true;
                     } else {
                         $this->hasContent = false;
-                        $this->frontendMessenger->addMessage(__("Booking could not be completed. Some booking times are no longer available ", TLBM_TEXT_DOMAIN));
+                        $this->frontendMessenger->addMessage($this->localization->__("Booking could not be completed. Some booking times are no longer available ", TLBM_TEXT_DOMAIN));
                     }
 
                     return;

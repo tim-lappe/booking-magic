@@ -32,9 +32,18 @@ class CalendarGroup extends ManageableEntity
      */
     protected ?CalendarSelection $calendarSelection = null;
 
-    public function __construct()
+    /**
+     * @param string $title
+     * @param string $bookingDisitribution
+     * @param CalendarSelection|null $selection
+     */
+    public function __construct(string $title = "", string $bookingDisitribution = TLBM_BOOKING_DISTRIBUTION_EVENLY, ?CalendarSelection $selection = null)
     {
         parent::__construct();
+
+        $this->title = $title;
+        $this->bookingDisitribution = $bookingDisitribution;
+        $this->calendarSelection = $selection;
     }
 
     /**

@@ -25,11 +25,11 @@ abstract class FormInputElem extends FormElem implements FormElementValidatorInt
     {
         parent::__construct($name, $title);
 
-        $settingTitle = new Input("title", __("Title", TLBM_TEXT_DOMAIN), "text", $this->title);
-        $settingName = new Input("name", __("Name", TLBM_TEXT_DOMAIN), "text", str_replace(" ", "_", strtolower($this->title)), false, true, Input::GetForbiddenNameValues());
-        $settingRequired = new Select("required", __("Required", TLBM_TEXT_DOMAIN), [
-                "yes" => __("Yes", TLBM_TEXT_DOMAIN),
-                "no"  => __("No", TLBM_TEXT_DOMAIN)
+        $settingTitle = new Input("title", $this->localization->__("Title", TLBM_TEXT_DOMAIN), "text", $this->title);
+        $settingName = new Input("name", $this->localization->__("Name", TLBM_TEXT_DOMAIN), "text", str_replace(" ", "_", strtolower($this->title)), false, true, Input::GetForbiddenNameValues());
+        $settingRequired = new Select("required", $this->localization->__("Required", TLBM_TEXT_DOMAIN), [
+                "yes" => $this->localization->__("Yes", TLBM_TEXT_DOMAIN),
+                "no"  => $this->localization->__("No", TLBM_TEXT_DOMAIN)
             ],  "yes"
         );
 

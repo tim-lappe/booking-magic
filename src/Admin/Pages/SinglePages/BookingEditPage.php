@@ -6,6 +6,7 @@ use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
 use TLBM\Admin\WpForm\SelectField;
 use TLBM\Booking\Semantic\BookingValueSemantic;
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Entity\Booking;
 use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;
@@ -32,13 +33,19 @@ class BookingEditPage extends EntityEditPage
      */
     private EntityRepositoryInterface $entityRepository;
 
-    public function __construct(EntityRepositoryInterface $entityRepository, BookingRepositoryInterface $bookingManager, SettingsManagerInterface $settingsManager)
+    /**
+     * @var LocalizationInterface
+     */
+    protected LocalizationInterface $localization;
+
+    public function __construct(EntityRepositoryInterface $entityRepository, BookingRepositoryInterface $bookingManager, SettingsManagerInterface $settingsManager, LocalizationInterface $localization)
     {
         $this->settingsManager = $settingsManager;
         $this->bookingManager = $bookingManager;
         $this->entityRepository = $entityRepository;
+        $this->localization = $localization;
 
-        parent::__construct(__("Booking", TLBM_TEXT_DOMAIN), "booking-edit", "booking-edit", false);
+        parent::__construct($this->localization->__("Booking", TLBM_TEXT_DOMAIN), "booking-edit", "booking-edit", false);
 
         $this->defineFormFields();
     }
@@ -51,12 +58,12 @@ class BookingEditPage extends EntityEditPage
             $states = $settings->getStatesKeyValue();
         }
 
-        $this->formBuilder->defineFormField(new SelectField("state", __("State", TLBM_TEXT_DOMAIN), $states, true));
+        $this->formBuilder->defineFormField(new SelectField("state", $this->localization->__("State", TLBM_TEXT_DOMAIN), $states, true));
     }
 
     protected function getHeadTitle(): string
     {
-        return __("View Booking", TLBM_TEXT_DOMAIN);
+        return $this->localization->__("View Booking", TLBM_TEXT_DOMAIN);
     }
 
     /**
@@ -75,7 +82,7 @@ class BookingEditPage extends EntityEditPage
 
         <div class="tlbm-admin-page-tile-row">
             <div class="tlbm-admin-page-tile tlbm-admin-page-tile-grow-3 tlbm-admin-page-booking-value-tile">
-                <div class="tlbm-admin-booking-id"> <?php echo sprintf(__("#%s", TLBM_TEXT_DOMAIN), $booking->getId()) ?></div>
+                <div class="tlbm-admin-booking-id"> <?php echo sprintf($this->localization->__("#%s", TLBM_TEXT_DOMAIN), $booking->getId()) ?></div>
                 <div class="tlbm-admin-booking-values">
                     <?php if($semantic->hasFullName()): ?>
                         <div class="tlbm-admin-booking-block">
@@ -125,7 +132,7 @@ class BookingEditPage extends EntityEditPage
                             ?>
                             <span class="tlbm-booking-value-title"><?php echo $calendarBooking->getTitleFromForm(); ?></span>
                             <span class="tlbm-booking-calendar-content">
-                                <?php if($fromDt->isSameDate($toDt)): ?>
+                                <?php if($toDt == null || $fromDt->isEqualTo($toDt)): ?>
                                     <?php echo $calendarBooking->getFromDateTime(); ?>
                                 <?php else: ?>
                                     <?php echo $calendarBooking->getFromDateTime(); ?> - <?php echo $calendarBooking->getToDateTime(); ?>
@@ -190,12 +197,12 @@ class BookingEditPage extends EntityEditPage
         if($this->entityRepository->saveEntity($booking)) {
             $savedEntity = $booking;
             return array(
-                "success" => __("Booking has been saved", TLBM_TEXT_DOMAIN)
+                "success" => $this->localization->__("Booking has been saved", TLBM_TEXT_DOMAIN)
             );
 
         } else {
             return array(
-                "error" => __("An internal error occured. ", TLBM_TEXT_DOMAIN)
+                "error" => $this->localization->__("An internal error occured. ", TLBM_TEXT_DOMAIN)
             );
         }
     }

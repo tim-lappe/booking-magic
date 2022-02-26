@@ -19,7 +19,7 @@ class BookingValue implements JsonSerializable
 
     /**
      * @var Booking
-     * @Doctrine\ORM\Mapping\ManyToOne(targetEntity=Booking::class, cascade={"all"})
+     * @Doctrine\ORM\Mapping\ManyToOne(targetEntity=Booking::class)
      */
     protected Booking $booking;
 
@@ -40,6 +40,20 @@ class BookingValue implements JsonSerializable
      * @Doctrine\ORM\Mapping\Column (type="string", nullable=false)
      */
     protected string $title;
+
+    /**
+     * @param string $name
+     * @param string $title
+     * @param string $value
+     * @param Booking|null $booking
+     */
+    public function __construct(string $name = "", string $title = "", string $value = "", ?Booking $booking = null)
+    {
+        $this->name = $name;
+        $this->title = $title;
+        $this->value = $value;
+        $this->booking = $booking;
+    }
 
     /**
      * @return string

@@ -30,8 +30,8 @@ export class DateRangeSelect extends React.Component<DateRangeSelectProps, DateR
 
         this.state = {
             fromDateTime: this.props.fromDateTime ?? new DateTime(),
-            toDateTime: this.props.toDateTime ?? null,
-            hasDateRange: this.props.toDateTime != null && !DateTime.isSameMinute(this.props.toDateTime, this.props.fromDateTime)
+            toDateTime: this.props.toDateTime,
+            hasDateRange: this.props.toDateTime != null && !DateTime.isEqual(this.props.fromDateTime, this.props.toDateTime)
         }
     }
 
@@ -73,7 +73,7 @@ export class DateRangeSelect extends React.Component<DateRangeSelectProps, DateR
     render() {
         let input = encodeURIComponent(JSON.stringify({
             "from": this.state.fromDateTime,
-            "to": this.state.toDateTime
+            "to": this.state.hasDateRange ? this.state.toDateTime : null
         }));
 
         return (
@@ -86,12 +86,12 @@ export class DateRangeSelect extends React.Component<DateRangeSelectProps, DateR
                     </React.Fragment>
                 ): null}
 
-                <DateSelect defaultDateTime={this.state.fromDateTime} timeset={!this.state.fromDateTime.fullDay} allowTimeSet={true} onChange={this.onChangeFromDate} />
+                <DateSelect defaultDateTime={this.state.fromDateTime} allowTimeSet={true} onChange={this.onChangeFromDate} />
                     {this.state.hasDateRange ? (
                         <React.Fragment>
                             <div style={{marginTop: "0.5em"}}>
                                 <small>{Localization.__("To")}</small><br />
-                                <DateSelect defaultDateTime={this.state.toDateTime} timeset={!this.state.toDateTime.fullDay} allowTimeSet={true} onChange={this.onChangeToDate} />
+                                <DateSelect defaultDateTime={this.state.toDateTime} allowTimeSet={true} onChange={this.onChangeToDate} />
                                 <div style={{marginTop: "0.5em"}}>
                                     <button onClick={this.onRemoveRange} className={"button"}>{Localization.__("Remove Range")}</button>
                                 </div>

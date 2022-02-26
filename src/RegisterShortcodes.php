@@ -7,6 +7,8 @@ if ( !defined('ABSPATH')) {
     return;
 }
 
+use TLBM\CMS\Contracts\HooksInterface;
+use TLBM\CMS\Contracts\ShortcodeInterface;
 use TLBM\Output\Contracts\FormPrintInterface;
 use TLBM\Repository\Contracts\BookingRepositoryInterface;
 use TLBM\Request\Contracts\RequestManagerInterface;
@@ -24,12 +26,18 @@ class RegisterShortcodes
      */
     private RequestManagerInterface $requestManager;
 
-    public function __construct(FormPrintInterface $formPrint, RequestManagerInterface $requestManager)
-    {
-        add_action("init", array($this, "addShortcodes"));
+    /**
+     * @var ShortcodeInterface
+     */
+    private ShortcodeInterface $shortcode;
 
+    public function __construct(FormPrintInterface $formPrint, RequestManagerInterface $requestManager, HooksInterface $hooks, ShortcodeInterface $shortcode)
+    {
         $this->formPrint = $formPrint;
+        $this->shortcode = $shortcode;
         $this->requestManager = $requestManager;
+
+        $hooks->addAction("init", array($this, "addShortcodes"));
     }
 
     /**
@@ -37,7 +45,7 @@ class RegisterShortcodes
      */
     public function addShortcodes()
     {
-        add_shortcode(TLBM_SHORTCODETAG_FORM, array($this, "formShortcode"));
+        $this->shortcode->addShortcode(TLBM_SHORTCODETAG_FORM, array($this, "formShortcode"));
     }
 
     /**

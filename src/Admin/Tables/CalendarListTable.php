@@ -5,6 +5,7 @@ namespace TLBM\Admin\Tables;
 
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Repository\Query\BaseQuery;
 use TLBM\Repository\Query\ManageableEntityQuery;
@@ -17,11 +18,17 @@ class CalendarListTable extends ManagableEntityTable
      */
     private AdminPageManagerInterface $adminPageManager;
 
-    public function __construct(AdminPageManagerInterface $adminPageManager)
+    /**
+     * @var LocalizationInterface
+     */
+    protected LocalizationInterface $localization;
+
+    public function __construct(AdminPageManagerInterface $adminPageManager, LocalizationInterface $localization)
     {
+        $this->localization = $localization;
         $this->adminPageManager = $adminPageManager;
         parent::__construct(
-             Calendar::class, __("Calendars", TLBM_TEXT_DOMAIN), __("Calendar", TLBM_TEXT_DOMAIN), 10, __("You haven't created any calendars yet", TLBM_TEXT_DOMAIN)
+             Calendar::class, $this->localization->__("Calendars", TLBM_TEXT_DOMAIN), $this->localization->__("Calendar", TLBM_TEXT_DOMAIN), 10, $this->localization->__("You haven't created any calendars yet", TLBM_TEXT_DOMAIN)
         );
     }
 
@@ -49,7 +56,7 @@ class CalendarListTable extends ManagableEntityTable
 
         array_splice(
             $columns, 1, 0, [
-                new Column("title", __('Title', TLBM_TEXT_DOMAIN), true, function ($item) {
+                new Column("title", $this->localization->__('Title', TLBM_TEXT_DOMAIN), true, function ($item) {
                         $calendarEditPage = $this->adminPageManager->getPage(CalendarEditPage::class);
                         if ($calendarEditPage != null) {
                             $link = $calendarEditPage->getEditLink($item->getId());

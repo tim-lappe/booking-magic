@@ -17,7 +17,7 @@ class SettingsPage extends PageBase
     {
         parent::__construct("Settings", "booking-magic-settings");
         $this->settingsManager = $settingsManager;
-        $this->parent_slug     = "booking-magic";
+        $this->parentSlug      = "booking-magic";
     }
 
     public function displayPageBody()
@@ -29,7 +29,7 @@ class SettingsPage extends PageBase
                 <?php
                 foreach ($this->settingsManager->getAllSettingsGroups() as $key => $group): ?>
                     <a href="?page=<?php
-                    echo $this->menu_slug ?>&tab=<?php
+                    echo $this->menuSlug ?>&tab=<?php
                     echo $key ?>" class="nav-tab <?php
                     if ($tab == $key): ?>nav-tab-active<?php
                     endif; ?>"><?php

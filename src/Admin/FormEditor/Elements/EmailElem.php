@@ -10,17 +10,18 @@ if ( !defined('ABSPATH')) {
 
 use TLBM\Admin\FormEditor\FormInputGenerator;
 use TLBM\Admin\FormEditor\LinkedFormData;
+use TLBM\CMS\Contracts\LocalizationInterface;
 
 final class EmailElem extends FormInputElem
 {
-    public function __construct()
+    public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("field_email", __("E-Mail", TLBM_TEXT_DOMAIN));
+        parent::__construct("field_email", $localization->__("E-Mail", TLBM_TEXT_DOMAIN));
 
-        $this->description = __("A field in which the user can enter an e-mail", TLBM_TEXT_DOMAIN);
+        $this->description = $localization->__("A field in which the user can enter an e-mail", TLBM_TEXT_DOMAIN);
 
         $this->getSettingsType("name")->default_value  = "email";
-        $this->getSettingsType("title")->default_value = __("E-Mail", TLBM_TEXT_DOMAIN);
+        $this->getSettingsType("title")->default_value = $localization->__("E-Mail", TLBM_TEXT_DOMAIN);
     }
 
 

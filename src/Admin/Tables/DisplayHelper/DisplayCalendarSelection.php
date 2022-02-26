@@ -4,6 +4,7 @@ namespace TLBM\Admin\Tables\DisplayHelper;
 
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarSelection;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
@@ -26,13 +27,20 @@ class DisplayCalendarSelection
     private AdminPageManagerInterface $adminPageManager;
 
     /**
+     * @var LocalizationInterface
+     */
+    private LocalizationInterface $localization;
+
+    /**
      * @param EntityRepositoryInterface $entityRepository
      * @param AdminPageManagerInterface $adminPageManager
+     * @param LocalizationInterface $localization
      */
-    public function __construct(EntityRepositoryInterface $entityRepository, AdminPageManagerInterface $adminPageManager)
+    public function __construct(EntityRepositoryInterface $entityRepository, AdminPageManagerInterface $adminPageManager, LocalizationInterface $localization)
     {
         $this->adminPageManager = $adminPageManager;
         $this->entityRepository = $entityRepository;
+        $this->localization = $localization;
     }
 
     public function display() {
@@ -41,7 +49,7 @@ class DisplayCalendarSelection
 
         if($this->calendarSelection) {
             if ($this->calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
-                echo __("All", TLBM_TEXT_DOMAIN);
+                echo $this->localization->__("All", TLBM_TEXT_DOMAIN);
             } elseif ($this->calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
                 foreach ($this->calendarSelection->getCalendarIds() as $key => $id) {
                     $cal  = $this->entityRepository->getEntity(Calendar::class, $id);
@@ -53,7 +61,7 @@ class DisplayCalendarSelection
                     echo "<a href='" . $link . "'>" . $cal->getTitle() . "</a>";
                 }
             } elseif ($this->calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
-                echo __("All but ", TLBM_TEXT_DOMAIN);
+                echo $this->localization->__("All but ", TLBM_TEXT_DOMAIN);
                 foreach ($this->calendarSelection->getCalendarIds() as $key => $id) {
                     $cal  = $this->entityRepository->getEntity(Calendar::class, $id);
                     $link = $calendarEditPage->getEditLink($id);
@@ -65,7 +73,7 @@ class DisplayCalendarSelection
                 }
             }
         } else {
-            echo __("All", TLBM_TEXT_DOMAIN);
+            echo $this->localization->__("All", TLBM_TEXT_DOMAIN);
         }
     }
 

@@ -2,7 +2,9 @@
 
 namespace TLBM\Validation;
 
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Entity\Calendar;
+use TLBM\MainFactory;
 use TLBM\Validation\Contracts\CalendarEntityValidatorInterface;
 
 class CalendarEntityValidator implements CalendarEntityValidatorInterface
@@ -13,6 +15,9 @@ class CalendarEntityValidator implements CalendarEntityValidatorInterface
      */
     private Calendar $calendar;
 
+    /**
+     * @param Calendar $calendar
+     */
     public function __construct(Calendar $calendar)
     {
         $this->calendar = $calendar;
@@ -24,8 +29,10 @@ class CalendarEntityValidator implements CalendarEntityValidatorInterface
     public function isTitleValid(): array
     {
         $errors = array();
+        $localization = MainFactory::get(LocalizationInterface::class);
+
         if(empty($this->calendar->getTitle())) {
-            $errors[] = __("The title is too short", TLBM_TEXT_DOMAIN);
+            $errors[] = $localization->__("The title is too short", TLBM_TEXT_DOMAIN);
         }
 
         return $errors;

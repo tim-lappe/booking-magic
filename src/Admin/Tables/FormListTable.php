@@ -21,7 +21,7 @@ class FormListTable extends ManagableEntityTable
     {
         $this->adminPageManager = $adminPageManager;
         parent::__construct(
-            Form::class, __("Forms", TLBM_TEXT_DOMAIN), __("Form", TLBM_TEXT_DOMAIN), 10, __("You haven't created any forms yet", TLBM_TEXT_DOMAIN)
+            Form::class, $this->localization->__("Forms", TLBM_TEXT_DOMAIN), $this->localization->__("Form", TLBM_TEXT_DOMAIN), 10, $this->localization->__("You haven't created any forms yet", TLBM_TEXT_DOMAIN)
         );
     }
 
@@ -43,7 +43,7 @@ class FormListTable extends ManagableEntityTable
     {
         $columns = parent::getColumns();
         array_splice($columns, 1, 0, [
-            new Column("title", __("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
+            new Column("title", $this->localization->__("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
                 $page = $this->adminPageManager->getPage(FormEditPage::class);
                 if ($page instanceof FormEditPage) {
                     $link = $page->getEditLink($item->getId());

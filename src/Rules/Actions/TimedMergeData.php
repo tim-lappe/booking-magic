@@ -27,7 +27,7 @@ class TimedMergeData implements JsonSerializable
     /**
      * @param ExtendedDateTime $dateTime
      * @param mixed $mergedActions
-     * @param Merger|null $usedMergers
+     * @param array|null $usedMergers
      */
     public function __construct(ExtendedDateTime $dateTime, $mergedActions, ?array $usedMergers = null)
     {

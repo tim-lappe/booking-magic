@@ -2,9 +2,11 @@
 
 namespace TLBM\Validation;
 
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Entity\Rule;
 use TLBM\Entity\RuleAction;
 use TLBM\Entity\RulePeriod;
+use TLBM\MainFactory;
 use TLBM\Validation\Contracts\RulesEntityValidatorInterface;
 
 class RulesEntityValidator implements RulesEntityValidatorInterface
@@ -26,8 +28,9 @@ class RulesEntityValidator implements RulesEntityValidatorInterface
     public function isTitleValid(): array
     {
         $errors = array();
+        $localization = MainFactory::get(LocalizationInterface::class);
         if(empty($this->rule->getTitle())) {
-            $errors[] = __("The title is too short", TLBM_TEXT_DOMAIN);
+            $errors[] = $localization->__("The title is too short", TLBM_TEXT_DOMAIN);
         }
 
         return $errors;

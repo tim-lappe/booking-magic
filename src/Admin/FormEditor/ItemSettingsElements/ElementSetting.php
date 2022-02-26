@@ -3,6 +3,9 @@
 
 namespace TLBM\Admin\FormEditor\ItemSettingsElements;
 
+use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\MainFactory;
+
 if ( !defined('ABSPATH')) {
     return;
 }
@@ -56,6 +59,10 @@ abstract class ElementSetting
      */
     public bool $expand = false;
 
+    /**
+     * @var LocalizationInterface
+     */
+    protected LocalizationInterface $localization;
 
     /**
      * SettingsType constructor.
@@ -85,8 +92,10 @@ abstract class ElementSetting
         $this->must_unique      = $must_unique;
         $this->forbidden_values = $forbidden_values;
 
+        $this->localization = MainFactory::get(LocalizationInterface::class);
+
         if ($category_title == "General") {
-            $category_title = __("General", TLBM_TEXT_DOMAIN);
+            $category_title = $this->localization->__("General", TLBM_TEXT_DOMAIN);
         }
 
         $this->category_title = $category_title;

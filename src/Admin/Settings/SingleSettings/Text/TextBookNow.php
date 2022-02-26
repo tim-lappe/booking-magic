@@ -3,13 +3,14 @@
 namespace TLBM\Admin\Settings\SingleSettings\Text;
 
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
+use TLBM\CMS\Contracts\LocalizationInterface;
 
 class TextBookNow extends SettingsBase
 {
 
-    public function __construct()
+    public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("text", "text_book_now", __("Button 'Book Now'", TLBM_TEXT_DOMAIN), __("Book Now", TLBM_TEXT_DOMAIN));
+        parent::__construct("text", "text_book_now", $localization->__("Button 'Book Now'", TLBM_TEXT_DOMAIN), $localization->__("Book Now", TLBM_TEXT_DOMAIN));
     }
 
     public function display()

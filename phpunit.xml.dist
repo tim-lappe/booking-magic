@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <phpunit
-	bootstrap="tests/bootstrap.php"
+	bootstrap="tests/php/bootstrap.php"
 	backupGlobals="false"
 	colors="true"
 	convertErrorsToExceptions="true"
@@ -8,13 +8,12 @@
 	convertWarningsToExceptions="true"
 	>
 	<php>
-		<ini name="display_errors" value="true"/>
-		<ini name="display_startup_errors" value="true"/>
+		<ini name="display_errors" value="On" />
+		<ini name="display_startup_errors" value="On" />
 	</php>
-
 	<testsuites>
-		<testsuite name="tlbmtests">
-			<directory suffix=".php">./tests/</directory>
+		<testsuite name="tests">
+			<directory suffix=".php">./tests/php/tests/</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

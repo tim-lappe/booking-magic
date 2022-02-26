@@ -1,7 +1,8 @@
 {
   "autoload": {
     "psr-4": {
-      "TLBM\\": "src/"
+      "TLBM\\": "src/",
+      "TLBMTEST\\": "tests/php/src"
     }
   },
   "config": {
@@ -27,6 +28,7 @@
     "szepeviktor/phpstan-wordpress": "^1.0"
   },
   "scripts": {
-    "phpstan": "vendor/bin/phpstan -c phpstan.neon"
+    "phpstan": "vendor/bin/phpstan -c phpstan.neon",
+    "test": "vendor/bin/phpunit"
   }
 }

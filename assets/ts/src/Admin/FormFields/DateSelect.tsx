@@ -17,7 +17,6 @@ interface DateSelectProps {
     allowTimeSet?: boolean;
     forceTimeSet?: boolean;
     defaultDateTime?: DateTime;
-    timeset?: boolean;
     onChange: (dateSelectState: DateSelectState) => void;
 }
 

@@ -3,6 +3,8 @@
 
 namespace TLBM\Admin\Tables;
 
+use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\MainFactory;
 use WP_List_Table;
 
 /**
@@ -32,8 +34,15 @@ abstract class TableBase extends WP_List_Table
      */
     protected array $columns = [];
 
+    /**
+     * @var LocalizationInterface
+     */
+    protected LocalizationInterface $localization;
+
     public function __construct($titlePlural, $titleSingular, $itemsPerPage = 10, $noItemsDisplay = "")
     {
+        $this->localization = MainFactory::get(LocalizationInterface::class);
+
         parent::__construct(array(
                                 "plural" => $titlePlural,
                                 "singular" => $titleSingular,
@@ -42,7 +51,7 @@ abstract class TableBase extends WP_List_Table
         );
 
         if (empty($noItemsDisplay)) {
-            $noItemsDisplay = __("Nothing to show", TLBM_TEXT_DOMAIN);
+            $noItemsDisplay = $this->localization->__("Nothing to show", TLBM_TEXT_DOMAIN);
         }
 
         $this->noItemsDisplay = $noItemsDisplay;

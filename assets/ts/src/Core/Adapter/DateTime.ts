@@ -152,12 +152,18 @@ export class DateTime {
     }
 
     public static fromObj(obj: any): DateTime {
-        let dt = new DateTime(obj.year, obj.month, obj.day, obj.hour, obj.minute, obj.seconds);
-        if(obj.hour == null && obj.minute == null && obj.seconds == null) {
-            dt.setFullDay(true);
+        if(obj.year != null && obj.month != null && obj.day != null) {
+            let dt = new DateTime(obj.year, obj.month, obj.day, obj.hour, obj.minute, obj.seconds);
+            if (obj.hour == null && obj.minute == null && obj.seconds == null) {
+                dt.setFullDay(true);
+            } else {
+                dt.setFullDay(false);
+            }
+
+            return dt;
         }
 
-        return dt;
+        return null;
     }
 
     public static copy(dateTime: DateTime) {
@@ -174,6 +180,35 @@ export class DateTime {
         return dt;
     }
 
+    public static isEqual(...dateTimes: DateTime[]) {
+        if(dateTimes.length >= 2) {
+            let prev: DateTime = dateTimes[0];
+            dateTimes.splice(0, 1);
+            for (let dateTime of dateTimes) {
+                if (prev.getMonthDay() == dateTime.getMonthDay() &&
+                    prev.getMonth() == dateTime.getMonth() &&
+                    prev.getYear() == dateTime.getYear() &&
+                    prev.isFullDay() && dateTime.isFullDay()) {
+                    prev = dateTime;
+                    continue;
+                }
+
+                if (prev.getMonthDay() == dateTime.getMonthDay() &&
+                    prev.getMonth() == dateTime.getMonth() &&
+                    prev.getYear() == dateTime.getYear() &&
+                    prev.getMinute() == dateTime.getMinute() &&
+                    prev.getHour() == dateTime.getHour() &&
+                    !prev.isFullDay() && !dateTime.isFullDay()) {
+                    prev = dateTime;
+                    continue;
+                }
+
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static isSameMinute(...dateTimes: DateTime[]) {
         if(dateTimes.length >= 2) {
             let prev: DateTime = dateTimes[0];
@@ -183,7 +218,8 @@ export class DateTime {
                     prev.getMonth() != dateTime.getMonth() ||
                     prev.getYear() != dateTime.getYear() ||
                     prev.getHour() != dateTime.getHour() ||
-                    prev.getMinute() != dateTime.getMinute()) {
+                    prev.getMinute() != dateTime.getMinute() ||
+                    dateTime.isFullDay()) {
 
                     return false;
                 }

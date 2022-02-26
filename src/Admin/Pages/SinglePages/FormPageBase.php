@@ -50,7 +50,7 @@ abstract class FormPageBase extends PageBase
         <?php
         parent::displayDefaultHead();
 
-        wp_nonce_field("tlbm-save-form-nonce-" . $this->menu_slug, "tlbm-save-form-nonce");
+        wp_nonce_field("tlbm-save-form-nonce-" . $this->menuSlug, "tlbm-save-form-nonce");
         ?>
         <?php
     }
@@ -70,7 +70,7 @@ abstract class FormPageBase extends PageBase
     final public function display()
     {
         if (isset($_POST['tlbm-save-form-nonce'])) {
-            if (wp_verify_nonce($_POST['tlbm-save-form-nonce'], "tlbm-save-form-nonce-" . $this->menu_slug)) {
+            if (wp_verify_nonce($_POST['tlbm-save-form-nonce'], "tlbm-save-form-nonce-" . $this->menuSlug)) {
                 $this->notices = $this->onSave($_POST);
             }
         }

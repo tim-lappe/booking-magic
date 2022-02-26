@@ -5,6 +5,7 @@ namespace TLBM\Admin\FormEditor\Elements;
 
 use TLBM\Admin\FormEditor\Contracts\FrontendElementInterface;
 use TLBM\Admin\FormEditor\LinkedFormData;
+use TLBM\CMS\Contracts\LocalizationInterface;
 
 if ( !defined('ABSPATH')) {
     return;
@@ -14,12 +15,12 @@ if ( !defined('ABSPATH')) {
 final class HrElem extends FormElem implements FrontendElementInterface
 {
 
-    public function __construct()
+    public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("hr", __("Horizontal Line", TLBM_TEXT_DOMAIN));
+        parent::__construct("hr", $localization->__("Horizontal Line", TLBM_TEXT_DOMAIN));
 
-        $this->description   = __("Inserts a horizontal dividing line to visually separate areas from each other", TLBM_TEXT_DOMAIN);
-        $this->menu_category = __("Layout", TLBM_TEXT_DOMAIN);
+        $this->description   = $this->localization->__("Inserts a horizontal dividing line to visually separate areas from each other", TLBM_TEXT_DOMAIN);
+        $this->menu_category = $this->localization->__("Layout", TLBM_TEXT_DOMAIN);
     }
 
     /**

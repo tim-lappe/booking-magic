@@ -5,6 +5,7 @@ use TLBM\Admin\FormEditor\Contracts\FormElementsCollectionInterface;
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Ajax\Contracts\AjaxManagerInterface;
+use TLBM\CMS\Contracts\HooksInterface;
 use TLBM\EnqueueAssets;
 use TLBM\MainFactory;
 use TLBM\PluginActivation;
@@ -34,7 +35,7 @@ try {
 
     $tlbmContainer = $tlbmContainerBuilder->build ();
     $GLOBALS['TLBM_DICONTAINER'] = $tlbmContainer;
-
+    $hooks = $tlbmContainer->get(HooksInterface::class);
 
     $tlbmContainer->get ( PluginActivation::class );
 
@@ -42,7 +43,7 @@ try {
      * Check if plugin is already acitvated
      */
     if(in_array(plugin_basename(TLBM_PLUGIN_FILE), apply_filters('active_plugins', get_option('active_plugins')))) {
-        add_action("init", function () {
+        $hooks->addAction("init", function () {
             $requestManager = MainFactory::get(RequestManagerInterface::class);
             $requestManager->init();
 
@@ -50,12 +51,12 @@ try {
             $ajaxManager->initMainAjaxFunction();
         });
 
-        add_action("admin_init", function () {
+        $hooks->addAction("admin_init", function () {
             $settingsManager = MainFactory::get(SettingsManagerInterface::class);
             $settingsManager->loadSettings();
         });
 
-        add_action("admin_menu", function () {
+        $hooks->addAction("admin_menu", function () {
             $adminPageManager = MainFactory::get(AdminPageManagerInterface::class);
             $adminPageManager->loadMenuPages();
         });

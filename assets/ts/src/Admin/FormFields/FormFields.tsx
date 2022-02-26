@@ -31,9 +31,13 @@ export default class FormFields {
         document.querySelectorAll(".tlbm-date-range-field").forEach(( htmlelement: HTMLElement) => {
             try {
                 let fromDateTime = DateTime.fromObj(JSON.parse(Utils.decodeUriComponent(htmlelement.dataset.from)));
-                let toDateTime = DateTime.fromObj(JSON.parse(Utils.decodeUriComponent(htmlelement.dataset.to)));
+                try {
+                    let toDateTime = DateTime.fromObj(JSON.parse(Utils.decodeUriComponent(htmlelement.dataset.to)));
+                    ReactDOM.render(<DateRangeSelect formName={htmlelement.dataset.name} fromDateTime={fromDateTime} toDateTime={toDateTime}/>, htmlelement);
+                } catch {
+                    ReactDOM.render(<DateRangeSelect formName={htmlelement.dataset.name} fromDateTime={fromDateTime} toDateTime={null}/>, htmlelement);
+                }
 
-                ReactDOM.render(<DateRangeSelect fromDateTime={fromDateTime} toDateTime={toDateTime}/>, htmlelement);
             } catch {
 
             }

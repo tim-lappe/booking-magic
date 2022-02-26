@@ -9,6 +9,8 @@ if ( !defined('ABSPATH')) {
 
 use TLBM\Admin\FormEditor\ItemSettingsElements\ElementSetting;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Input;
+use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\MainFactory;
 
 abstract class FormElem
 {
@@ -53,15 +55,21 @@ abstract class FormElem
      */
     public bool $has_user_input = false;
 
+    /**
+     * @var LocalizationInterface
+     */
+    protected LocalizationInterface $localization;
+
     public function __construct($name, $title)
     {
+        $this->localization = MainFactory::get(LocalizationInterface::class);
         $this->title         = $title;
         $this->unique_name   = $name;
-        $this->menu_category = __("General", TLBM_TEXT_DOMAIN);
+        $this->menu_category = $this->localization->__("General", TLBM_TEXT_DOMAIN);
         $this->description   = "";
         $this->type          = $name;
 
-        $setting_css_class = new Input("css_classes", __("Custom CSS Classes (seperate with whitespace)"), "text", "", false, false, [], __("Advanced", TLBM_TEXT_DOMAIN));
+        $setting_css_class = new Input("css_classes", $this->localization->__("Custom CSS Classes (seperate with whitespace)", TLBM_TEXT_DOMAIN), "text", "", false, false, [], $this->localization->__("Advanced", TLBM_TEXT_DOMAIN));
 
         $this->addSettings($setting_css_class);
     }

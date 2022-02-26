@@ -3,6 +3,7 @@
 namespace TLBM\Admin\Tables\DisplayHelper;
 
 use Doctrine\Common\Collections\Collection;
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Entity\RulePeriod;
 use TLBM\Utilities\ExtendedDateTime;
 
@@ -12,6 +13,16 @@ class DisplayPeriods
      * @var Collection
      */
     private Collection $rulePeriods;
+
+    private LocalizationInterface $localization;
+
+    /**
+     * @param LocalizationInterface $localization
+     */
+    public function __construct(LocalizationInterface $localization)
+    {
+        $this->localization = $localization;
+    }
 
     /**
      * @return void
@@ -33,20 +44,20 @@ class DisplayPeriods
                 $toDt = new ExtendedDateTime($period->getToTimestamp());
                 $toDt->setFullDay($period->isToFullDay());
 
-                if($fromDt->isSameDate($toDt)) {
-                    $html .= sprintf(__("Only on <b>%s</b>", TLBM_TEXT_DOMAIN), $fromDt->format());
+                if($fromDt->isEqualTo($toDt)) {
+                    $html .= sprintf($this->localization->__("Only on <b>%s</b>", TLBM_TEXT_DOMAIN), $fromDt->format());
                 } else {
-                    $html .= sprintf(__("From <b>%s</b><br />Until <b>%s</b>", TLBM_TEXT_DOMAIN), $fromDt->format(), $toDt->format());
+                    $html .= sprintf($this->localization->__("From <b>%s</b><br />Until <b>%s</b>", TLBM_TEXT_DOMAIN), $fromDt->format(), $toDt->format());
                 }
             } else {
-                $html .= sprintf(__("From <b>%s</b>", TLBM_TEXT_DOMAIN), $fromDt->format());
+                $html .= sprintf($this->localization->__("From <b>%s</b>", TLBM_TEXT_DOMAIN), $fromDt->format());
             }
 
             $htmlarr[] = $html;
         }
 
         if(count($htmlarr) == 0) {
-            $htmlarr[] = __("Always", TLBM_TEXT_DOMAIN);
+            $htmlarr[] = $this->localization->__("Always", TLBM_TEXT_DOMAIN);
         }
 
         echo implode("<br /><br />", $htmlarr);

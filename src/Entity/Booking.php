@@ -48,11 +48,29 @@ class Booking extends ManageableEntity implements JsonSerializable
      */
     protected string $state = "New";
 
-    public function __construct()
+    /**
+     * @param string $state
+     * @param Form|null $form
+     * @param array|null $bookingValues
+     * @param array|null $calendarBookings
+     */
+    public function __construct(string $state = "New", ?Form $form = null, ?array $bookingValues = null, ?array $calendarBookings = null)
     {
         parent::__construct();
-        $this->bookingValues    = new ArrayCollection();
-        $this->calendarBookings = new ArrayCollection();
+        $this->state = $state;
+        $this->form = $form;
+
+        if($bookingValues == null) {
+            $this->bookingValues = new ArrayCollection();
+        } else {
+            $this->bookingValues = new ArrayCollection($bookingValues);
+        }
+
+        if($calendarBookings == null) {
+            $this->calendarBookings = new ArrayCollection();
+        } else {
+            $this->calendarBookings = new ArrayCollection($calendarBookings);
+        }
     }
 
     /**
@@ -93,32 +111,60 @@ class Booking extends ManageableEntity implements JsonSerializable
     }
 
     /**
-     * @param BookingValue $booking_value
+     * @param string $name
      *
-     * @return BookingValue
+     * @return ?CalendarBooking
      */
-    public function addBookingValue(BookingValue $booking_value): BookingValue
+    public function getCalendarBookingByName(string $name): ?CalendarBooking
     {
-        if ( !$this->bookingValues->contains($booking_value)) {
-            $this->bookingValues[] = $booking_value;
-            $booking_value->setBooking($this);
+        foreach ($this->getCalendarBookings() as $calendarBooking) {
+            if($calendarBooking->getNameFromForm() == $name) {
+                return $calendarBooking;
+            }
         }
 
-        return $booking_value;
+        return null;
     }
 
     /**
-     * @param BookingValue $booking_value
+     * @param BookingValue $bookingValue
      *
      * @return BookingValue
      */
-    public function removeBookingValue(BookingValue $booking_value): BookingValue
+    public function addBookingValue(BookingValue $bookingValue): BookingValue
     {
-        if ($this->bookingValues->contains($booking_value)) {
-            $this->bookingValues->removeElement($booking_value);
+        if ( !$this->bookingValues->contains($bookingValue)) {
+            $this->bookingValues[] = $bookingValue;
+            $bookingValue->setBooking($this);
         }
 
-        return $booking_value;
+        return $bookingValue;
+    }
+
+    /**
+     * @param BookingValue $bookingValue
+     *
+     * @return BookingValue
+     */
+    public function removeBookingValue(BookingValue $bookingValue): BookingValue
+    {
+        if ($this->bookingValues->contains($bookingValue)) {
+            $this->bookingValues->removeElement($bookingValue);
+        }
+
+        return $bookingValue;
+    }
+
+    public function removeBookingValueByName($name) {
+
+        /**
+         * @var BookingValue $value
+         */
+        foreach ($this->bookingValues as $value) {
+            if($value->getName() == $name) {
+                $this->removeBookingValue($value);
+            }
+        }
     }
 
     /**

@@ -167,7 +167,7 @@ export class RuleActionsItem extends React.Component<RuleActionsItemProps, RuleA
         }
 
         return (
-            <div className={'tlbm-action-rule-item tlbm-gray-container'}>
+            <div className={'tlbm-action-rule-item tlbm-gray-container tlbm-admin-content-box'}>
                 <div className={'tlbm-action-item-form'}>
                     {formcontent}
                 </div>

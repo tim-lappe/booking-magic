@@ -28,7 +28,7 @@ class EntityRepository implements EntityRepositoryInterface
      * @param class-string<T> $className
      * @param int $id
      *
-     * @return T|null
+     * @return ?T
      */
     public function getEntity(string $className, int $id)
     {

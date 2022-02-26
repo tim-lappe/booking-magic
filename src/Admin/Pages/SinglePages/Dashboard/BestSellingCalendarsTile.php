@@ -7,6 +7,7 @@ namespace TLBM\Admin\Pages\SinglePages\Dashboard;
 use DateInterval;
 use DateTime;
 use TLBM\Calendar\CalendarStatistics;
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
 
@@ -18,11 +19,17 @@ class BestSellingCalendarsTile extends DashboardTile
      */
     private EntityRepositoryInterface $entityRepository;
 
-    public function __construct(EntityRepositoryInterface $entityRepository)
+    /**
+     * @var LocalizationInterface
+     */
+    private LocalizationInterface $localization;
+
+    public function __construct(EntityRepositoryInterface $entityRepository, LocalizationInterface $localization)
     {
         $this->entityRepository = $entityRepository;
+        $this->localization = $localization;
 
-        parent::__construct(__("Top Calendars in last 30 days", TLBM_TEXT_DOMAIN));
+        parent::__construct($this->localization->__("Top Calendars in last 30 days", TLBM_TEXT_DOMAIN));
     }
 
     public function displayBody(): void
@@ -39,7 +46,7 @@ class BestSellingCalendarsTile extends DashboardTile
                 $cal = $this->entityRepository->getEntity(Calendar::class, $id);
                 echo "<li>";
                 echo "<a href='" . get_edit_post_link($id) . "'>" . $cal->getTitle() . "</a><br>";
-                echo $num . __(" Booking", TLBM_TEXT_DOMAIN);
+                echo $num . $this->localization->__(" Booking", TLBM_TEXT_DOMAIN);
                 echo "</li>";
                 $c++;
 

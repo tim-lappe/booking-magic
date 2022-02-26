@@ -11,17 +11,18 @@ if ( !defined('ABSPATH')) {
 use TLBM\Admin\FormEditor\Contracts\FrontendElementInterface;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Input;
 use TLBM\Admin\FormEditor\LinkedFormData;
+use TLBM\CMS\Contracts\LocalizationInterface;
 
 final class SpacingElem extends FormElem implements FrontendElementInterface
 {
 
-    public function __construct()
+    public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("spacing", __("Spacing", TLBM_TEXT_DOMAIN));
-        $this->description   = __("Useful to leave space within the form", TLBM_TEXT_DOMAIN);
-        $this->menu_category = __("Layout", TLBM_TEXT_DOMAIN);
+        parent::__construct("spacing", $localization->__("Spacing", TLBM_TEXT_DOMAIN));
+        $this->description   = $this->localization->__("Useful to leave space within the form", TLBM_TEXT_DOMAIN);
+        $this->menu_category = $this->localization->__("Layout", TLBM_TEXT_DOMAIN);
 
-        $this->addSettings(new Input("spacing", __("Spacing (in px)", TLBM_TEXT_DOMAIN), "number", 100));
+        $this->addSettings(new Input("spacing", $this->localization->__("Spacing (in px)", TLBM_TEXT_DOMAIN), "number", 100));
     }
 
     /**

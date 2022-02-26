@@ -5,13 +5,14 @@ namespace TLBM\Admin\Settings\SingleSettings\BookingProcess;
 
 
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
+use TLBM\CMS\Contracts\LocalizationInterface;
 
 class DefaultBookingState extends SettingsBase
 {
 
-    public function __construct()
+    public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("booking_process", "booking_default_state", __("Default Booking State", TLBM_TEXT_DOMAIN), "new");
+        parent::__construct("booking_process", "booking_default_state", $localization->__("Default Booking State", TLBM_TEXT_DOMAIN), "new");
     }
 
     public function display()
@@ -25,7 +26,7 @@ class DefaultBookingState extends SettingsBase
                 foreach ($states as $state): ?>
                     <option value="<?php
                     echo $state['name'] ?>" <?php
-                    selected($state['name'] == get_option($this->optionName, $this->defaultValue)) ?>><?php
+                    selected($state['name'] == $this->getValue()) ?>><?php
                         echo $state['title'] ?></option>
                 <?php
                 endforeach; ?>

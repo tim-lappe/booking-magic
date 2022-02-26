@@ -3,6 +3,7 @@
 
 namespace TLBM;
 
+use TLBM\CMS\Contracts\PluginActivationInterface;
 use TLBM\Repository\Contracts\ORMInterface;
 
 class PluginActivation
@@ -13,12 +14,12 @@ class PluginActivation
      */
     private ORMInterface $repository;
 
-    public function __construct(ORMInterface $repository)
+    public function __construct(ORMInterface $repository, PluginActivationInterface $pluginActivation)
     {
         $this->repository = $repository;
 
-        register_activation_hook(TLBM_PLUGIN_FILE, array($this, "onActivation"));
-        register_deactivation_hook(TLBM_PLUGIN_FILE, array($this, "onDeactivation"));
+        $pluginActivation->registerActivationHook(TLBM_PLUGIN_FILE, array($this, "onActivation"));
+        $pluginActivation->registerDeactivationHook(TLBM_PLUGIN_FILE, array($this, "onDeactivation"));
     }
 
     public function onActivation() {

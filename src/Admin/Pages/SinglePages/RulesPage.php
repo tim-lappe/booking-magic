@@ -5,14 +5,15 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 
 use TLBM\Admin\Tables\RulesListTable;
+use TLBM\CMS\Contracts\LocalizationInterface;
 use TLBM\MainFactory;
 
 class RulesPage extends PageBase
 {
-    public function __construct()
+    public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct(__("Rules", TLBM_TEXT_DOMAIN), "booking-magic-rules");
-        $this->parent_slug     = "booking-magic";
+        parent::__construct($localization->__("Rules", TLBM_TEXT_DOMAIN), "booking-magic-rules");
+        $this->parentSlug = "booking-magic";
     }
 
     public function displayDefaultHeadBar()
@@ -34,10 +35,10 @@ class RulesPage extends PageBase
                     <input type="hidden" name="page" value="<?php
                     echo $_REQUEST['page'] ?>"/>
                     <?php
-                    $post_list_table = MainFactory::create(RulesListTable::class);
-                    $post_list_table->views();
-                    $post_list_table->prepare_items();
-                    $post_list_table->display();
+                    $rulesListTable = MainFactory::create(RulesListTable::class);
+                    $rulesListTable->views();
+                    $rulesListTable->prepare_items();
+                    $rulesListTable->display();
                     ?>
                 </form>
             </div>

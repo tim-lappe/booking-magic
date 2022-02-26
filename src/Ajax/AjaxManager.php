@@ -4,6 +4,8 @@ namespace TLBM\Ajax;
 
 use TLBM\Ajax\Contracts\AjaxFunctionInterface;
 use TLBM\Ajax\Contracts\AjaxManagerInterface;
+use TLBM\CMS\Contracts\HooksInterface;
+use TLBM\CMS\Contracts\OptionsInterface;
 
 class AjaxManager implements AjaxManagerInterface
 {
@@ -11,6 +13,19 @@ class AjaxManager implements AjaxManagerInterface
      * @var AjaxFunctionInterface[]
      */
     private array $ajaxFunctions = array();
+
+    /**
+     * @var HooksInterface
+     */
+    private HooksInterface $hooks;
+
+    /**
+     *
+     */
+    public function __construct(HooksInterface $hooks)
+    {
+        $this->hooks = $hooks;
+    }
 
     /**
      * @param AjaxFunctionInterface $ajaxFunction
@@ -56,8 +71,8 @@ class AjaxManager implements AjaxManagerInterface
      */
     public function initMainAjaxFunction()
     {
-        add_action("wp_ajax_tlbm_ajax", [$this, "executeMainAjaxFunction"]);
-        add_action("wp_ajax_nopriv_tlbm_ajax", [$this, "executeMainAjaxFunction"]);
+        $this->hooks->addAction("wp_ajax_tlbm_ajax", [$this, "executeMainAjaxFunction"]);
+        $this->hooks->addAction("wp_ajax_nopriv_tlbm_ajax", [$this, "executeMainAjaxFunction"]);
     }
 
     /**

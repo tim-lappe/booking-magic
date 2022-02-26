@@ -10,6 +10,8 @@ if ( !defined('ABSPATH')) {
 use TLBM\Admin\FormEditor\Contracts\FrontendElementInterface;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Select;
 use TLBM\Admin\FormEditor\LinkedFormData;
+use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\MainFactory;
 
 
 class ColumnsElem extends FormElem implements FrontendElementInterface
@@ -20,21 +22,28 @@ class ColumnsElem extends FormElem implements FrontendElementInterface
      */
     public int $columns = 0;
 
+    /**
+     * @var LocalizationInterface
+     */
+    protected LocalizationInterface $localization;
+
     public function __construct($name, $columns)
     {
-        parent::__construct($name, __($columns . " Columns", TLBM_TEXT_DOMAIN));
+        $this->localization = MainFactory::get(LocalizationInterface::class);
+
+        parent::__construct($name, $this->localization->__($columns . " Columns", TLBM_TEXT_DOMAIN));
         $this->menu_category = "Layout";
         $this->columns       = $columns;
         $this->type          = "columns";
         $this->only_in_root  = $columns > 3;
         $this->description   = sprintf(
-            __("Adds a section in which form fields can be displayed in a %s-column layout", TLBM_TEXT_DOMAIN), $columns
+            $this->localization->__("Adds a section in which form fields can be displayed in a %s-column layout", TLBM_TEXT_DOMAIN), $columns
         );
 
         $settings = [];
         for ($i = 1; $i <= $columns; $i++) {
             $settings[] = new Select(
-                "split_" . $i, sprintf(__("Size Column %s", TLBM_TEXT_DOMAIN), $i), [
+                "split_" . $i, sprintf($this->localization->__("Size Column %s", TLBM_TEXT_DOMAIN), $i), [
                 "1"  => "1",
                 "2"  => "2",
                 "3"  => "3",
@@ -47,7 +56,7 @@ class ColumnsElem extends FormElem implements FrontendElementInterface
                 "10" => "10",
                 "11" => "11",
                 "12" => "12"
-            ],  1, false, false, __("Column Sizes")
+            ],  1, false, false, $this->localization->__("Column Sizes", TLBM_TEXT_DOMAIN)
             );
         }
 

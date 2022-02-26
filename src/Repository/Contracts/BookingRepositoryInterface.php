@@ -2,8 +2,6 @@
 
 namespace TLBM\Repository\Contracts;
 
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use TLBM\Entity\Booking;
 
 interface BookingRepositoryInterface
@@ -12,8 +10,6 @@ interface BookingRepositoryInterface
      * @param Booking $booking
      *
      * @return int
-     * @throws ORMException
-     * @throws OptimisticLockException
      */
     public function saveBooking(Booking $booking): int;
 

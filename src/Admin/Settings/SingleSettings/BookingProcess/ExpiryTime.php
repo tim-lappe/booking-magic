@@ -3,15 +3,16 @@
 namespace TLBM\Admin\Settings\SingleSettings\BookingProcess;
 
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
+use TLBM\CMS\Contracts\LocalizationInterface;
 
 class ExpiryTime extends SettingsBase
 {
     /**
      *
      */
-    public function __construct()
+    public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("booking_process", "expiry_time", __("Expiry Time (in Minutes)", TLBM_TEXT_DOMAIN), 10);
+        parent::__construct("booking_process", "expiry_time", $localization->__("Expiry Time (in Minutes)", TLBM_TEXT_DOMAIN), 10);
     }
 
     /**

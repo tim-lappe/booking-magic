@@ -3,6 +3,8 @@
 
 namespace TLBM\Request;
 
+use TLBM\CMS\Contracts\LocalizationInterface;
+
 if ( !defined('ABSPATH')) {
     return;
 }
@@ -26,9 +28,14 @@ abstract class RequestBase
      */
     protected $vars;
 
-    public function __construct()
-    {
+    /**
+     * @var LocalizationInterface
+     */
+    protected LocalizationInterface $localization;
 
+    public function __construct(LocalizationInterface $localization)
+    {
+        $this->localization = $localization;
     }
 
     /**

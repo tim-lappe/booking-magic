@@ -26,9 +26,16 @@ class Form extends ManageableEntity implements JsonSerializable
      */
     protected $formData = null;
 
-    public function __construct()
+    /**
+     * @param string $title
+     * @param mixed $formData
+     */
+    public function __construct(string $title = "", $formData = null)
     {
         parent::__construct();
+
+        $this->title = $title;
+        $this->formData = $formData;
     }
 
     public function jsonSerialize(): array
