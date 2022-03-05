@@ -4,7 +4,7 @@
 namespace TLBM\Admin\Settings\SingleSettings\Emails;
 
 
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 
 class EmailBookingConfirmation extends EmailSetting
 {

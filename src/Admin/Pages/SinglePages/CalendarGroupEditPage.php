@@ -4,7 +4,7 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 use TLBM\Admin\WpForm\CalendarPickerField;
 use TLBM\Admin\WpForm\SelectField;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\CalendarGroup;
 use TLBM\Entity\ManageableEntity;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;

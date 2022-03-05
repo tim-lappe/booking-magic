@@ -9,7 +9,7 @@ use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
 use TLBM\Booking\Semantic\BookingValueSemantic;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Booking;
 use TLBM\MainFactory;
 use TLBM\Repository\Query\ManageableEntityQuery;
@@ -35,6 +35,9 @@ class BookingListTable extends ManagableEntityTable
      */
     private ColorsInterface $colors;
 
+    /**
+     * @var LocalizationInterface
+     */
     protected LocalizationInterface $localization;
 
     public function __construct(AdminPageManagerInterface $adminPageManager, SettingsManagerInterface $settingsManager, LocalizationInterface $localization) {
@@ -46,6 +49,39 @@ class BookingListTable extends ManagableEntityTable
         parent::__construct(
             Booking::class, $localization->__("Bookings", TLBM_TEXT_DOMAIN), $localization->__("Booking", TLBM_TEXT_DOMAIN), 10, $localization->__("You don't have any bookings yet", TLBM_TEXT_DOMAIN)
         );
+    }
+
+    protected function processBuldActions(string $action, array $ids)
+    {
+        parent::processBuldActions($action, $ids);
+
+        $settingsStates = $this->settingsManager->getSetting(BookingStates::class);
+        $states = $settingsStates->getStatesKeyValue();
+
+        foreach ($states as $key => $title) {
+            if($action == "set_state_" . $key) {
+                foreach ($ids as $id) {
+                    $booking = $this->entityRepository->getEntity(Booking::class, $id);
+                    $booking->setState($key);
+
+                    $this->entityRepository->saveEntity($booking);
+                }
+            }
+        }
+    }
+
+    protected function getBulkActions(): array
+    {
+        $bulkActions = parent::getBulkActions();
+        $settingsStates = $this->settingsManager->getSetting(BookingStates::class);
+        $states = $settingsStates->getStatesKeyValue();
+
+        $cstatelabel = $this->localization->__("Set state", TLBM_TEXT_DOMAIN);
+        $bulkActions[$cstatelabel] = [];
+        foreach ($states as $key => $title) {
+            $bulkActions[$cstatelabel]["set_state_" . $key] =  $title;
+        }
+        return $bulkActions;
     }
 
 

@@ -25,11 +25,11 @@ class CapacityMergeHelper
     public function mergeWithAction(CapacityActionData $capacityActionData): CapacityMergeResultInterface
     {
         if ($capacityActionData->getCapacityMode() == "set") {
-            $this->capacityMerge->setCapacity($capacityActionData->getCapacityAmount());
+            $this->capacityMerge->setCapacityOriginal($capacityActionData->getCapacityAmount());
         } elseif ($capacityActionData->getCapacityMode() == "add") {
-            $this->capacityMerge->setCapacity($this->capacityMerge->getCapacity() + $capacityActionData->getCapacityAmount());
+            $this->capacityMerge->setCapacityOriginal($this->capacityMerge->getCapacityOriginal() + $capacityActionData->getCapacityAmount());
         } elseif ($capacityActionData->getCapacityMode() == "subtract") {
-            $this->capacityMerge->setCapacity($this->capacityMerge->getCapacity() - $capacityActionData->getCapacityAmount());
+            $this->capacityMerge->setCapacityOriginal($this->capacityMerge->getCapacityOriginal() - $capacityActionData->getCapacityAmount());
         }
 
         return $this->capacityMerge;

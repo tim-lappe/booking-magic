@@ -8,12 +8,24 @@ interface CapacityMergeResultInterface extends MergeResultInterface
     /**
      * @return int
      */
-    public function getCapacity(): int;
+    public function getCapacityRemaining(): int;
 
     /**
      * @param int $capacity
      *
      * @return mixed
      */
-    public function setCapacity(int $capacity);
+    public function setCapacityRemaining(int $capacity);
+
+    /**
+     * @return int
+     */
+    public function getCapacityOriginal(): int;
+
+    /**
+     * @param int $capacityOriginal
+     *
+     * @return void
+     */
+    public function setCapacityOriginal(int $capacityOriginal): void;
 }

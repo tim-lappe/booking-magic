@@ -11,6 +11,7 @@ use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\Rules\PriorityLevels;
 use TLBM\Admin\Tables\DisplayHelper\DisplayCalendarSelection;
 use TLBM\Admin\Tables\DisplayHelper\DisplayPeriods;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Rule;
 use TLBM\MainFactory;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
@@ -30,14 +31,14 @@ class RulesListTable extends ManagableEntityTable
      */
     private SettingsManagerInterface $settingsManager;
 
-    public function __construct(EntityRepositoryInterface $entityRepository, AdminPageManagerInterface $adminPageManager, SettingsManagerInterface $settingsManager)
+    public function __construct(EntityRepositoryInterface $entityRepository, AdminPageManagerInterface $adminPageManager, SettingsManagerInterface $settingsManager, LocalizationInterface $localization)
     {
         $this->entityRepository     = $entityRepository;
         $this->adminPageManager = $adminPageManager;
         $this->settingsManager = $settingsManager;
 
         parent::__construct(
-            Rule::class, $this->localization->__("Rules", TLBM_TEXT_DOMAIN), $this->localization->__("Rule", TLBM_TEXT_DOMAIN), 10, $this->localization->__("You haven't created any rules yet", TLBM_TEXT_DOMAIN)
+            Rule::class, $localization->__("Rules", TLBM_TEXT_DOMAIN), $localization->__("Rule", TLBM_TEXT_DOMAIN), 10, $localization->__("You haven't created any rules yet", TLBM_TEXT_DOMAIN)
         );
     }
 

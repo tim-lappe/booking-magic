@@ -4,6 +4,7 @@ import {DateLocalization} from "../../../../DateLocalization";
 import {DateTime} from "../../../Adapter/DateTime";
 import {MonthViewDateCell} from "./MonthViewDateCell";
 import {MergedActionsRequest} from "../../../Ajax/MergedActionsRequest";
+import {MonthViewTimePanel} from "./MonthViewTimePanel";
 
 
 interface CalendarMonthViewState {
@@ -21,6 +22,7 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSt
 
         this.onClickNextMonth = this.onClickNextMonth.bind(this);
         this.onClickPrevMonth = this.onClickPrevMonth.bind(this);
+        this.onClickOnTimeTile = this.onClickOnTimeTile.bind(this);
         this.onClickOnDateTile = this.onClickOnDateTile.bind(this);
 
         this.state = {
@@ -86,8 +88,16 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSt
             prevState.viewState.selectedDate = date;
             prevState.formValue = date;
             return prevState;
-        }, () => {
-            this.updateBookingOptions();
+        });
+    }
+
+    onClickOnTimeTile(time: {hour: number, minute: number, capacityOriginal: number, capacityRemaining: number}) {
+        this.setState((prevState) => {
+            if(prevState.viewState.selectedDate != null) {
+                prevState.viewState.selectedDate.setFullDay(false);
+                prevState.viewState.selectedDate.setHourMin(time.hour, time.minute, 0);
+                return prevState;
+            }
         });
     }
 
@@ -138,6 +148,14 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSt
             }
         }
 
+        let timeCapacities = [];
+        if(this.state.viewState.selectedDate && this.state.bookingOptions != null) {
+            let timeCapsSelected = this.state.bookingOptions?.getMergedActionsForDay(this.state.viewState.selectedDate).getActionResultValue("timeCapacities")?.timeSlotsCapacities;
+            if(Array.isArray(timeCapsSelected)) {
+                timeCapacities = timeCapsSelected;
+            }
+        }
+
         let today = DateTime.create();
         today.setHourMin(0, 0);
 
@@ -159,8 +177,9 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSt
                             })}
                             {dayTiles.map((date: any, index) => {
                                 if(date instanceof DateTime && this.state.bookingOptions != null) {
-                                    let dateCapacity = this.state.bookingOptions?.getMergedActionsForDay(date).getActionResultValue("dateCapacity");
-                                    let cellDisabled = dateCapacity == null || dateCapacity == 0;
+                                    let dateCapacity = this.state.bookingOptions?.getMergedActionsForDay(date).getActionResultValue("dateCapacity")?.capacityRemaining;
+                                    let timeCapacities = this.state.bookingOptions?.getMergedActionsForDay(date).getActionResultValue("timeCapacities")?.timeSlotCapacities;
+                                    let cellDisabled = (dateCapacity == null || dateCapacity == 0) && (timeCapacities == null || timeCapacities.length == 0);
 
                                     return (
                                         <MonthViewDateCell
@@ -169,7 +188,6 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSt
                                             selected={!cellDisabled && this.state.viewState.selectedDate != null && DateTime.isSameDay(this.state.viewState.selectedDate, date)}
                                             dateTime={date} key={index}>
                                             <span style={{float: "right", visibility: (!cellDisabled ? "visible" : "hidden")}}>{dateCapacity}</span>
-
                                         </MonthViewDateCell>
                                     )
                                 } else {
@@ -178,6 +196,8 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSt
                                     )
                                 }
                             })}
+
+                            <MonthViewTimePanel onSelect={this.onClickOnTimeTile} times={timeCapacities} />
                         </div>
                     </React.Fragment>
                 ): null}

@@ -5,7 +5,7 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 use TLBM\Admin\Tables\CalendarGroupTable;
 use TLBM\Admin\Tables\CalendarListTable;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\MainFactory;
 
 class CalendarPage extends PageBase

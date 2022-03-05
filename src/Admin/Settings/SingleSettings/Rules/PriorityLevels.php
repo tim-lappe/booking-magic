@@ -3,7 +3,7 @@
 namespace TLBM\Admin\Settings\SingleSettings\Rules;
 
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 
 class PriorityLevels extends SettingsBase
 {

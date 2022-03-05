@@ -2,7 +2,7 @@
 
 namespace TLBMTEST\CMS;
 
-use TLBM\CMS\Contracts\UrlUtilsInterface;
+use TLBM\ApiUtils\Contracts\UrlUtilsInterface;
 
 class UrlUtilsTestWrapper implements UrlUtilsInterface
 {

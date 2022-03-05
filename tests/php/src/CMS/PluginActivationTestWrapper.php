@@ -2,7 +2,7 @@
 
 namespace TLBMTEST\CMS;
 
-use TLBM\CMS\Contracts\PluginActivationInterface;
+use TLBM\ApiUtils\Contracts\PluginActivationInterface;
 
 class PluginActivationTestWrapper implements PluginActivationInterface
 {

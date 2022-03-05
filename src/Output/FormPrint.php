@@ -11,7 +11,7 @@ use TLBM\Admin\FormEditor\FormDataWalker;
 use TLBM\Admin\FormEditor\RecursiveFormContentWalker;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\SinglePageBooking;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Form;
 use TLBM\Output\Contracts\FormPrintInterface;
 use TLBM\Output\Contracts\FrontendMessengerInterface;

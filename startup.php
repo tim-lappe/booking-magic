@@ -5,7 +5,7 @@ use TLBM\Admin\FormEditor\Contracts\FormElementsCollectionInterface;
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Ajax\Contracts\AjaxManagerInterface;
-use TLBM\CMS\Contracts\HooksInterface;
+use TLBM\ApiUtils\Contracts\HooksInterface;
 use TLBM\EnqueueAssets;
 use TLBM\MainFactory;
 use TLBM\PluginActivation;

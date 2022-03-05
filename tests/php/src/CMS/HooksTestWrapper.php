@@ -2,7 +2,7 @@
 
 namespace TLBMTEST\CMS;
 
-use TLBM\CMS\Contracts\HooksInterface;
+use TLBM\ApiUtils\Contracts\HooksInterface;
 
 class HooksTestWrapper implements HooksInterface
 {

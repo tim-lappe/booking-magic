@@ -5,8 +5,8 @@ namespace TLBM\Admin\Settings\SingleSettings;
 
 
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
-use TLBM\CMS\Contracts\LocalizationInterface;
-use TLBM\CMS\Contracts\OptionsInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\OptionsInterface;
 use TLBM\MainFactory;
 
 abstract class SettingsBase

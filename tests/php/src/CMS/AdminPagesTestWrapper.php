@@ -2,7 +2,7 @@
 
 namespace TLBMTEST\CMS;
 
-use TLBM\CMS\Contracts\AdminPagesInterface;
+use TLBM\ApiUtils\Contracts\AdminPagesInterface;
 
 class AdminPagesTestWrapper implements AdminPagesInterface
 {

@@ -50,12 +50,12 @@ class BookingsQuery extends BaseQuery
         $whereAndExpr = $queryBuilder->expr()->andX();
         if($this->filterFromDateTime != null) {
             $queryBuilder->setParameter("filterFromTstamp", $this->filterFromDateTime->getTimestamp());
-            $whereAndExpr->add(TLBM_BOOKING_QUERY_ALIAS . ".tstampCreated >= :filterFromTstamp");
+            $whereAndExpr->add(TLBM_BOOKING_QUERY_ALIAS . ".timestampCreated >= :filterFromTstamp");
         }
 
         if($this->filterToDateTime != null) {
-            $queryBuilder->setParameter("filterToTimestamp", $this->filterFromDateTime->getTimestamp());
-            $whereAndExpr->add(TLBM_BOOKING_QUERY_ALIAS . ".tstampCreated >= :filterToTimestamp");
+            $queryBuilder->setParameter("filterToTimestamp", $this->filterToDateTime->getTimestamp());
+            $whereAndExpr->add(TLBM_BOOKING_QUERY_ALIAS . ".timestampCreated <= :filterToTimestamp");
         }
 
         if($this->filterCalendars != null) {
@@ -71,7 +71,7 @@ class BookingsQuery extends BaseQuery
         if($this->filterStates != null) {
             $statesOrExpr = $queryBuilder->expr()->orX();
             foreach ($this->filterStates as $state) {
-                $statesOrExpr->add($queryBuilder->expr()->eq(TLBM_BOOKING_QUERY_ALIAS . ".state", $state));
+                $statesOrExpr->add($queryBuilder->expr()->eq(TLBM_BOOKING_QUERY_ALIAS . ".state", "'" . $state. "'"));
             }
 
             $whereAndExpr->add($statesOrExpr);

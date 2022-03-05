@@ -4,29 +4,34 @@
 namespace TLBM\Request;
 
 use TLBM\Booking\BookingProcessor;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\MainFactory;
 use TLBM\Output\Contracts\FrontendMessengerInterface;
+use TLBM\Output\SemanticFrontendMessenger;
 
 class ShowBookingOverview extends RequestBase
 {
 
 
     /**
-     * @var FrontendMessengerInterface
+     * @var SemanticFrontendMessenger
      */
-    private FrontendMessengerInterface $frontendMessenger;
+    private SemanticFrontendMessenger $semanticFrontendMessenger;
 
     /**
      * @var ?BookingProcessor
      */
     private ?BookingProcessor $bookingProcessor;
 
-    public function __construct(FrontendMessengerInterface $frontendMessenger, LocalizationInterface $localization)
+    /**
+     * @param SemanticFrontendMessenger $frontendMessenger
+     * @param LocalizationInterface $localization
+     */
+    public function __construct(SemanticFrontendMessenger $frontendMessenger, LocalizationInterface $localization)
     {
         parent::__construct($localization);
-        $this->action        = "showbookingoverview";
-        $this->frontendMessenger = $frontendMessenger;
+        $this->action                    = "showbookingoverview";
+        $this->semanticFrontendMessenger = $frontendMessenger;
     }
 
     public function onAction()
@@ -37,16 +42,9 @@ class ShowBookingOverview extends RequestBase
             $bookingProcessor = MainFactory::create(BookingProcessor::class);
             $bookingProcessor->setVars($vars);
             $invalidFields   = $bookingProcessor->validateVars();
-            if(count($invalidFields) > 0) {
-                $errors = [];
-                foreach($invalidFields as $field) {
-                    $title = $field->getLinkedSettings()->getValue("title");
-                    if(!empty($title)) {
-                        $errors[] = $title;
-                    }
-                }
 
-                $this->frontendMessenger->addMessage($this->localization->__("Not all required fields were filled out: <br>" . implode("<br>", $errors), TLBM_TEXT_DOMAIN));
+            if(count($invalidFields) > 0) {
+                $this->semanticFrontendMessenger->addMissingRequiredFieldsMessage($invalidFields);
                 $this->hasContent = false;
 
             } elseif ($bookingProcessor->reserveBooking() != null) {
@@ -55,7 +53,7 @@ class ShowBookingOverview extends RequestBase
 
             } else {
                 $this->hasContent = false;
-                $this->frontendMessenger->addMessage($this->localization->__("Booking could not be completed. Some booking times are no longer available ", TLBM_TEXT_DOMAIN));
+                $this->semanticFrontendMessenger->addMessage($this->localization->__("Booking could not be completed. Some booking times are no longer available ", TLBM_TEXT_DOMAIN));
             }
         }
     }

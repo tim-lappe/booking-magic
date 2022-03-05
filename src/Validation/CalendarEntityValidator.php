@@ -2,7 +2,7 @@
 
 namespace TLBM\Validation;
 
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Calendar;
 use TLBM\MainFactory;
 use TLBM\Validation\Contracts\CalendarEntityValidatorInterface;

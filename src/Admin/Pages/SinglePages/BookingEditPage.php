@@ -6,7 +6,7 @@ use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
 use TLBM\Admin\WpForm\SelectField;
 use TLBM\Booking\Semantic\BookingValueSemantic;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Booking;
 use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;

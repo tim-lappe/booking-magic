@@ -5,6 +5,7 @@ import {CalendarDisplay} from "../../Entity/CalendarDisplay";
 import {MergedActionsRequest} from "../../Ajax/MergedActionsRequest";
 import {RequestSet} from "../../Ajax/RequestSet";
 import {RequestCommandBase} from "../../Ajax/RequestCommandBase";
+import {func} from "prop-types";
 
 export interface CalendarBaseProps {
     display: CalendarDisplay;
@@ -44,14 +45,21 @@ export abstract class CalendarComponentBase<S> extends React.Component<CalendarB
 
         let requestSet = new RequestSet(calendarRequest);
 
-        requestSet.send().then((results: { [p: string]: RequestCommandBase<any> }) => {
-            this.setState((prevState: CalendarBaseState<S>) => {
-                for(const [, value] of Object.entries(results)) {
-                    if(value.getResult() instanceof MergedActions) {
-                        prevState.bookingOptions = value.getResult();
+        this.setState((prevState: CalendarBaseState<S>) => {
+            prevState.bookingOptions = null;
+            return prevState;
+        }, () => {
+            requestSet.send().then((results: { [p: string]: RequestCommandBase<any> }) => {
+                this.setState((prevState: CalendarBaseState<S>) => {
+                    for(const [, value] of Object.entries(results)) {
+                        if(value.getResult() instanceof MergedActions) {
+                            prevState.bookingOptions = value.getResult();
+                        }
                     }
-                }
-                return prevState;
+                    return prevState;
+                });
+            }).catch(e => {
+                console.log(e);
             });
         });
     }

@@ -6,7 +6,7 @@ use TLBM\Admin\FormEditor\FormInputGenerator;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Input;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Textarea;
 use TLBM\Admin\FormEditor\LinkedFormData;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 
 class SelectElement extends FormInputElem
 {

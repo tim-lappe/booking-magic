@@ -13,14 +13,6 @@ class MessageResult implements MergeResultInterface
     public array $messages = array();
 
     /**
-     * @return string[]
-     */
-    public function getMergeResult(): array
-    {
-        return $this->messages;
-    }
-
-    /**
      * @param string $message
      *
      * @return void
@@ -28,5 +20,34 @@ class MessageResult implements MergeResultInterface
     public function addMessage(string $message)
     {
         $this->messages[] = $message;
+    }
+
+    /**
+     * @param MergeResultInterface ...$mergeResults
+     *
+     */
+    public function sumResults(MergeResultInterface ...$mergeResults)
+    {
+        foreach ($mergeResults as $result) {
+            if($result instanceof MessageResult) {
+                $this->setMessages(array_diff($result->getMessages(), $this->getMessages()));
+            }
+        }
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getMessages(): array
+    {
+        return $this->messages;
+    }
+
+    /**
+     * @param string[] $messages
+     */
+    public function setMessages(array $messages): void
+    {
+        $this->messages = $messages;
     }
 }

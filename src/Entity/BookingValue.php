@@ -18,10 +18,10 @@ class BookingValue implements JsonSerializable
     use IndexedEntity;
 
     /**
-     * @var Booking
+     * @var ?Booking
      * @Doctrine\ORM\Mapping\ManyToOne(targetEntity=Booking::class)
      */
-    protected Booking $booking;
+    protected ?Booking $booking;
 
     /**
      * @var string

@@ -11,7 +11,7 @@ if ( !defined('ABSPATH')) {
 use TLBM\Admin\FormEditor\Contracts\FrontendElementInterface;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Input;
 use TLBM\Admin\FormEditor\LinkedFormData;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 
 final class SpacingElem extends FormElem implements FrontendElementInterface
 {

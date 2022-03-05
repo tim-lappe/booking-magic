@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\Tables;
 
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\MainFactory;
 use WP_List_Table;
 
@@ -17,17 +17,17 @@ abstract class TableBase extends WP_List_Table
     /**
      * @var bool
      */
-    public bool $slim = false;
+    protected bool $slim = false;
 
     /**
      * @var int
      */
-    public int $itemsPerPage = 10;
+    protected int $itemsPerPage = 10;
 
     /**
-     * @var string
+     * @var array
      */
-    public string $noItemsDisplay = "";
+    protected array $fixedItems = [];
 
     /**
      * @var Column[]
@@ -39,7 +39,7 @@ abstract class TableBase extends WP_List_Table
      */
     protected LocalizationInterface $localization;
 
-    public function __construct($titlePlural, $titleSingular, $itemsPerPage = 10, $noItemsDisplay = "")
+    public function __construct($titlePlural, $titleSingular, $itemsPerPage = 10)
     {
         $this->localization = MainFactory::get(LocalizationInterface::class);
 
@@ -50,14 +50,59 @@ abstract class TableBase extends WP_List_Table
                             )
         );
 
-        if (empty($noItemsDisplay)) {
-            $noItemsDisplay = $this->localization->__("Nothing to show", TLBM_TEXT_DOMAIN);
-        }
 
-        $this->noItemsDisplay = $noItemsDisplay;
         $this->itemsPerPage   = $itemsPerPage;
-
         $this->columns = $this->getColumns();
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isSlim(): bool
+    {
+        return $this->slim;
+    }
+
+    /**
+     * @param bool $slim
+     */
+    public function setSlim(bool $slim): void
+    {
+        $this->slim = $slim;
+        $this->columns = $this->getColumns();
+    }
+
+    /**
+     * @return int
+     */
+    public function getItemsPerPage(): int
+    {
+        return $this->itemsPerPage;
+    }
+
+    /**
+     * @param int $itemsPerPage
+     */
+    public function setItemsPerPage(int $itemsPerPage): void
+    {
+        $this->itemsPerPage = $itemsPerPage;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFixedItems(): array
+    {
+        return $this->fixedItems;
+    }
+
+    /**
+     * @param array $fixedItems
+     */
+    public function setFixedItems(array $fixedItems): void
+    {
+        $this->fixedItems = $fixedItems;
     }
 
     /**
@@ -90,7 +135,7 @@ abstract class TableBase extends WP_List_Table
         $this->process_bulk_action();
 
         $this->_column_headers = array($this->get_columns(), array(), $this->get_sortable_columns());
-        $this->items           = $this->getItems($orderby, $order, $page);
+        $this->items           = $this->getFinalItems($orderby, $order, $page);
         $total                 = $this->getTotalItemsCount();
 
         $this->set_pagination_args(array(
@@ -98,6 +143,36 @@ abstract class TableBase extends WP_List_Table
                                        'per_page' => $this->itemsPerPage,
                                        'total_pages' => ceil($total / $this->itemsPerPage)
                                    ));
+    }
+
+    /**
+     * @param string $orderby
+     * @param string $order
+     * @param int $page
+     *
+     * @return array
+     */
+    protected function getFinalItems(string $orderby, string $order, int $page = 1): array
+    {
+        if(count($this->fixedItems) > 0) {
+            usort($this->fixedItems, function ($a, $b) use ($orderby, $order) {
+                if(isset($a->{$orderby}) && isset($b->{$orderby})) {
+                    if($order == "ASC") {
+                        return is_numeric($a) && is_numeric($b) ?
+                            (intval($a) > intval($b) ? 1 : -1) : strcmp($a->{$orderby}, $b->{$orderby});
+                    } elseif ($orderby == "DESC") {
+                        return is_numeric($a) && is_numeric($b) ?
+                            (intval($a) < intval($b) ? 1 : -1) : strcmp($b->{$orderby}, $a->{$orderby});
+                    }
+                }
+
+                return 0;
+            });
+
+            return array_splice($this->fixedItems, ($page - 1) * $this->itemsPerPage, $this->itemsPerPage);
+        } else {
+            return $this->getItems($orderby, $order, $page);
+        }
     }
 
 
@@ -117,13 +192,18 @@ abstract class TableBase extends WP_List_Table
 
         if(isset($_REQUEST['action'])) {
             $action = $_REQUEST['action'];
-            if ($action) {
-                $this->processBuldActions($action);
+            if(isset($_REQUEST['ids'])) {
+                $ids = $_REQUEST['ids'];
+                if (is_array($ids)) {
+                    if ($action) {
+                        $this->processBuldActions($action, $ids);
+                    }
+                }
             }
         }
     }
 
-    abstract protected function processBuldActions(string $action);
+    abstract protected function processBuldActions(string $action, array $ids);
 
     /**
      * @SuppressWarnings(PHPMD)

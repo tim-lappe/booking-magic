@@ -3,7 +3,7 @@
 
 namespace TLBM;
 
-use TLBM\CMS\Contracts\PluginActivationInterface;
+use TLBM\ApiUtils\Contracts\PluginActivationInterface;
 use TLBM\Repository\Contracts\ORMInterface;
 
 class PluginActivation

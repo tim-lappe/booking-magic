@@ -2,6 +2,8 @@
 
 namespace TLBM\Admin\Pages\Contracts;
 
+use TLBM\Admin\Pages\SinglePages\PageBase;
+
 interface AdminPageManagerInterface
 {
     /**
@@ -18,9 +20,9 @@ interface AdminPageManagerInterface
     public function loadMenuPages();
 
     /**
-     * @param object $page
+     * @param class-string<PageBase> $page
      *
      * @return void
      */
-    public function registerPage(object $page);
+    public function registerPage(string $page);
 }

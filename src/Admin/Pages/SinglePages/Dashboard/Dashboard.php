@@ -15,6 +15,7 @@ class Dashboard implements DashboardInterface
 
     public function __construct()
     {
+
     }
 
     /**
@@ -48,19 +49,21 @@ class Dashboard implements DashboardInterface
     public function display(): void
     {
         ?>
-        <div class="tlbm-dashboard">
-            <?php
-            foreach ($this->tiles as $tile_arr): ?>
-                <div class="tlbm-dashboard-tile-row">
-                    <?php
-                    foreach ($tile_arr as $tile): ?>
+        <div class="tlbm-admin-page">
+            <div class="tlbm-dashboard">
+                <?php
+                foreach ($this->tiles as $tile_arr): ?>
+                    <div class="tlbm-admin-page-tile-row">
                         <?php
-                        $tile->display(); ?>
-                    <?php
-                    endforeach; ?>
-                </div>
-            <?php
-            endforeach; ?>
+                        foreach ($tile_arr as $tile): ?>
+                            <?php
+                            $tile->display(); ?>
+                        <?php
+                        endforeach; ?>
+                    </div>
+                <?php
+                endforeach; ?>
+            </div>
         </div>
         <?php
     }

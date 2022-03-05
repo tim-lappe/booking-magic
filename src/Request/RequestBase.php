@@ -3,7 +3,7 @@
 
 namespace TLBM\Request;
 
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 
 if ( !defined('ABSPATH')) {
     return;

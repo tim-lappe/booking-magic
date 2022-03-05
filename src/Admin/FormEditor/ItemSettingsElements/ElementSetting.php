@@ -3,7 +3,7 @@
 
 namespace TLBM\Admin\FormEditor\ItemSettingsElements;
 
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\MainFactory;
 
 if ( !defined('ABSPATH')) {

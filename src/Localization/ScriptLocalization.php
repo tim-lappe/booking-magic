@@ -2,7 +2,7 @@
 
 namespace TLBM\Localization;
 
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Localization\Contracts\LabelsInterface;
 use TLBM\Localization\Contracts\ScriptLocalizationInterface;
 

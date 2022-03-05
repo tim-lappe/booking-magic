@@ -39,6 +39,10 @@ abstract class ManagableEntityTable extends TableBase
      */
     protected function getColumns(): array
     {
+        if($this->slim) {
+            return array();
+        }
+
         return array(
             $this->getCheckboxColumn(function ($item) {
                 return $item->getId();
@@ -115,18 +119,13 @@ abstract class ManagableEntityTable extends TableBase
         return $query->getResultCount();
     }
 
-    protected function processBuldActions(string $action)
+    protected function processBuldActions(string $action, array $ids)
     {
-        if(isset($_REQUEST['ids'])) {
-            $ids = $_REQUEST['ids'];
-            if (is_array($ids)) {
-                if ($action == "delete") {
-                    foreach ($ids as $id) {
-                        $entity = $this->entityRepository->getEntity($this->entityClass, $id);
-                        if ($entity) {
-                            $this->entityRepository->deleteEntityPermanently($entity);
-                        }
-                    }
+        if ($action == "delete") {
+            foreach ($ids as $id) {
+                $entity = $this->entityRepository->getEntity($this->entityClass, $id);
+                if ($entity) {
+                    $this->entityRepository->deleteEntityPermanently($entity);
                 }
             }
         }

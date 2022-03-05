@@ -1,6 +1,6 @@
 <?php
 
-namespace TLBM\CMS;
+namespace TLBM\ApiUtils;
 
 class EnqueueAssetsWrapper implements Contracts\EnqueueAssetsInterface
 {

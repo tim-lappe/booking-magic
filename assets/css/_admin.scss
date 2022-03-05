@@ -609,6 +609,7 @@
   .tlbm-admin-page-tile-row {
     display: flex;
     gap: 1.2rem;
+    margin: 1.2rem 0;
     justify-content: stretch;
 
     > .tlbm-admin-page-tile {
@@ -713,6 +714,23 @@
 
 
 .tlbm-admin-page {
+  .wp-list-table {
+    border: 1px solid rgb(0, 0, 0, 0.15);
+    border-radius: 4px;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15);
+
+  }
+
+  .tablenav .actions select {
+    max-width: unset;
+  }
+
+  .tlbm-admin-plain-table {
+    th {
+      padding: 0.7rem;
+    }
+  }
+
   .tlbm-frontend-form {
     font-size: 1.2em;
 

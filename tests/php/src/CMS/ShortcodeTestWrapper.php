@@ -2,7 +2,7 @@
 
 namespace TLBMTEST\CMS;
 
-use TLBM\CMS\Contracts\ShortcodeInterface;
+use TLBM\ApiUtils\Contracts\ShortcodeInterface;
 
 class ShortcodeTestWrapper implements ShortcodeInterface
 {

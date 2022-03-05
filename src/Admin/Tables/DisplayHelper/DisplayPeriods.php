@@ -3,7 +3,7 @@
 namespace TLBM\Admin\Tables\DisplayHelper;
 
 use Doctrine\Common\Collections\Collection;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\RulePeriod;
 use TLBM\Utilities\ExtendedDateTime;
 
