@@ -8,7 +8,7 @@ use TLBM\Admin\FormEditor\FormDataWalker;
 use TLBM\Admin\FormEditor\RecursiveFormContentWalker;
 use TLBM\Booking\BookingProcessor;
 use TLBM\Booking\Semantic\BookingValueSemantic;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Booking;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarBooking;
@@ -131,11 +131,17 @@ class BookingEditValuesPage extends EntityEditPage
                                 <small><?php _e("Calendar", TLBM_TEXT_DOMAIN) ?></small><br>
                                 <select name='calendarBookings[<?php echo $calendarBooking->getNameFromForm() ?>][calendar_id]'>
                                     <?php
+
+                                    $currentId = -1;
+                                    if($calendarBooking->getCalendar() != null) {
+                                        $currentId = $calendarBooking->getCalendar()->getId();
+                                    }
+
                                     /**
                                      * @var Calendar $calendar
                                      */
                                     foreach ($calendarsQuery->getResult() as $calendar): ?>
-                                        <option <?php selected($calendar->getId(), $calendarBooking->getCalendar()->getId(), true) ?> value='<?php echo $calendar->getId() ?>'>
+                                        <option <?php selected($calendar->getId(), $currentId, true); ?> value='<?php echo $calendar->getId() ?>'>
                                             <?php echo $calendar->getTitle() ?>
                                         </option>
                                     <?php endforeach; ?>

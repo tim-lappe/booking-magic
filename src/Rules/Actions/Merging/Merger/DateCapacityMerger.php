@@ -2,6 +2,8 @@
 
 namespace TLBM\Rules\Actions\Merging\Merger;
 
+use Gettext\Merge;
+use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
 use TLBM\MainFactory;
 use TLBM\Rules\Actions\ActionData\CapacityActionData;
 use TLBM\Rules\Actions\Merging\CapacityMergeHelper;
@@ -61,12 +63,41 @@ class DateCapacityMerger extends Merger
         return null;
     }
 
-    public function sumUpResults($term, $mergeResult1, $mergeResult2)
+    /**
+     * @param string $term
+     * @param array $calendarIds
+     * @param MergeResultInterface $mergeResultSummedUp
+     * @param MergeResultInterface $mergeResultToAdd
+     *
+     * @return MergeResultInterface
+     */
+    public function sumUpResults(string $term, array $calendarIds, MergeResultInterface $mergeResultSummedUp, MergeResultInterface $mergeResultToAdd): MergeResultInterface
     {
-        if($term == "dateCapacity") {
-            return $mergeResult1 + $mergeResult2;
-        } else {
-            return $mergeResult1;
+        if ($term == "dateCapacity" && $mergeResultSummedUp instanceof CapacityResult && $mergeResultToAdd instanceof CapacityResult) {
+            $mergeResultSummedUp->setCapacityOriginal($mergeResultSummedUp->getCapacityOriginal() + $mergeResultToAdd->getCapacityOriginal());
+            $mergeResultSummedUp->setCapacityRemaining($mergeResultSummedUp->getCapacityRemaining() + $mergeResultToAdd->getCapacityRemaining());
         }
+
+        return $mergeResultSummedUp;
+    }
+
+    /**
+     * @param string $term
+     * @param array $calendarIds
+     * @param MergeResultInterface $mergeResult
+     *
+     * @return MergeResultInterface
+     */
+    public function lastStepModification(string $term, array $calendarIds, MergeResultInterface $mergeResult): MergeResultInterface
+    {
+        if($mergeResult instanceof CapacityResult) {
+            $calendarBookingManager = MainFactory::get(CalendarBookingManagerInterface::class);
+            $booked = $calendarBookingManager->getBookedSlots($calendarIds, $this->getDateTimeContext());
+
+            $mergeResult->setCapacityRemaining(max(0, $mergeResult->getCapacityOriginal() - $booked));
+            return $mergeResult;
+        }
+
+        return parent::lastStepModification($term, $calendarIds, $mergeResult);
     }
 }

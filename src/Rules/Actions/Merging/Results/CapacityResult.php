@@ -11,29 +11,67 @@ class CapacityResult implements MergeResultInterface, CapacityMergeResultInterfa
     /**
      * @var int
      */
-    public int $capacity = 0;
+    public int $capacityRemaining = 0;
+
+    /**
+     * @var int
+     */
+    public int $capacityOriginal = 0;
 
     /**
      * @return int
      */
-    public function getCapacity(): int
+    public function getCapacityRemaining(): int
     {
-        return $this->capacity;
+        return $this->capacityRemaining;
     }
 
     /**
-     * @param int $capacity
+     * @param int $capacityRemaining
      */
-    public function setCapacity(int $capacity): void
+    public function setCapacityRemaining(int $capacityRemaining): void
     {
-        $this->capacity = max(0, $capacity);
+        $this->capacityRemaining = max(0, $capacityRemaining);
+    }
+
+    /**
+     * @return array
+     */
+    public function getMergeResult(): array
+    {
+        return [
+            "remaining" => $this->getCapacityRemaining(),
+            "original" => $this->getCapacityOriginal()
+        ];
     }
 
     /**
      * @return int
      */
-    public function getMergeResult(): int
+    public function getCapacityOriginal(): int
     {
-        return $this->capacity;
+        return $this->capacityOriginal;
+    }
+
+    /**
+     * @param int $capacityOriginal
+     */
+    public function setCapacityOriginal(int $capacityOriginal): void
+    {
+        $this->capacityOriginal = $capacityOriginal;
+    }
+
+    /**
+     * @param MergeResultInterface ...$mergeResults
+     *
+     */
+    public function sumResults(MergeResultInterface ...$mergeResults)
+    {
+        foreach ($mergeResults as $result) {
+            if($result instanceof CapacityResult) {
+                $this->setCapacityOriginal($this->getCapacityOriginal() + $result->getCapacityOriginal());
+                $this->setCapacityRemaining($this->getCapacityRemaining() + $result->getCapacityRemaining());
+            }
+        }
     }
 }

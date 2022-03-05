@@ -6,8 +6,8 @@ use DateTime;
 use InvalidArgumentException;
 use Iterator;
 use JsonSerializable;
-use TLBM\CMS\Contracts\OptionsInterface;
-use TLBM\CMS\Contracts\TimeUtilsInterface;
+use TLBM\ApiUtils\Contracts\OptionsInterface;
+use TLBM\ApiUtils\Contracts\TimeUtilsInterface;
 use TLBM\MainFactory;
 
 class ExtendedDateTime implements JsonSerializable
@@ -41,6 +41,8 @@ class ExtendedDateTime implements JsonSerializable
 
         if($timestamp !== null) {
             $this->internalDateTime->setTimestamp($timestamp);
+        } else {
+            $this->internalDateTime->setTimestamp($timeutils->time());
         }
 
         $this->setFullDay($fullDay);
@@ -120,19 +122,22 @@ class ExtendedDateTime implements JsonSerializable
     public function format(): string
     {
         $options = MainFactory::get(OptionsInterface::class);
-        $format = $options->getOption('date_format');
-        if (empty($format)) {
-            $format = "d.m.Y";
+        $timeUtils = MainFactory::get(TimeUtilsInterface::class);
+
+        $dateFormat = $options->getOption('date_format');
+        $timeFormat = $options->getOption('time_format');
+
+        if (empty($dateFormat)) {
+            $dateFormat = "d.m.Y";
         }
 
-        $timeformat = MainFactory::get($options->getOption('time_format'));
         $shiftetTimestamp = $this->getTimestamp();
-        $shiftetTimestamp += date_offset_get($this->internalDateTime);
+        $shiftetTimestamp += $this->internalDateTime->getOffset();
 
         if($this->isFullDay()) {
-            return date_i18n($format, $shiftetTimestamp);
+            return $timeUtils->formatI18n($dateFormat, $shiftetTimestamp);
         } else {
-            return date_i18n($format . " " . $timeformat, $shiftetTimestamp);
+            return $timeUtils->formatI18n($dateFormat . " " . $timeFormat, $shiftetTimestamp);
         }
     }
 
@@ -249,12 +254,12 @@ class ExtendedDateTime implements JsonSerializable
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getSeconds(): ?int
+    public function getSeconds(): int
     {
         if($this->isFullDay()) {
-            return null;
+            return 0;
         }
 
         return intval($this->internalDateTime->format("s"));

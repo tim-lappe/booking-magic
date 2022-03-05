@@ -2,7 +2,7 @@
 
 namespace TLBM\Validation;
 
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Rule;
 use TLBM\Entity\RuleAction;
 use TLBM\Entity\RulePeriod;

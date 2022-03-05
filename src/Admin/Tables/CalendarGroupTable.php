@@ -7,7 +7,7 @@ namespace TLBM\Admin\Tables;
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\CalendarGroupEditPage;
 use TLBM\Admin\Tables\DisplayHelper\DisplayCalendarSelection;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\CalendarGroup;
 use TLBM\MainFactory;
 use TLBM\Repository\Query\BaseQuery;

@@ -5,15 +5,21 @@ namespace TLBM\Admin\Pages;
 
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\PageBase;
-use TLBM\CMS\Contracts\AdminPagesInterface;
+use TLBM\ApiUtils\Contracts\AdminPagesInterface;
+use TLBM\MainFactory;
 
 class AdminPageManager implements AdminPageManagerInterface
 {
 
     /**
+     * @var class-string<PageBase>[]
+     */
+    public array $pages = [];
+
+    /**
      * @var PageBase[]
      */
-    public array $pages = array();
+    public array $pageInstances = [];
 
     /**
      * @var AdminPagesInterface
@@ -33,7 +39,7 @@ class AdminPageManager implements AdminPageManagerInterface
      */
     public function getPage(string $class)
     {
-        foreach ($this->pages as $page) {
+        foreach ($this->pageInstances as $page) {
             if ($page instanceof $class) {
                 return $page;
             }
@@ -47,7 +53,13 @@ class AdminPageManager implements AdminPageManagerInterface
      */
     public function loadMenuPages()
     {
-        foreach ($this->pages as $page) {
+        foreach ($this->pages as $pageClass) {
+            /**
+             * @var PageBase $page
+             */
+            $page = MainFactory::create($pageClass);
+            $page->setAdminPageManager($this);
+
             if (empty($page->parentSlug)) {
                 if ($page->showInMenu) {
                     $this->adminPages->addMenuPage($page->menuTitle, $page->menuTitle, $page->capabilities, $page->menuSlug, array(
@@ -72,19 +84,20 @@ class AdminPageManager implements AdminPageManagerInterface
                                                        "display"
                                                    ));
             }
+
+            $this->pageInstances[] = $page;
         }
     }
 
     /**
-     * @param object $page
+     * @param class-string<PageBase> $page
      *
      * @return void
      */
-    public function registerPage(object $page)
+    public function registerPage(string $page)
     {
-        if ( !isset($this->pages[get_class($page)]) && $page instanceof PageBase) {
-            $this->pages[get_class($page)] = $page;
-            $page->setAdminPageManager($this);
+        if (!isset($this->pages[$page])) {
+            $this->pages[$page] = $page;
         }
     }
 }

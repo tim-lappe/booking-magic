@@ -5,12 +5,12 @@ namespace TLBM\Repository\Query;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use Iterator;
-use TLBM\Entity\Rule;
+use TLBM\Entity\RuleAction;
 use TLBM\Localization\Contracts\LabelsInterface;
 use TLBM\MainFactory;
 use TLBM\Repository\Contracts\ORMInterface;
 use TLBM\Repository\Query\Contracts\FullRuleActionQueryInterface;
-use TLBM\Rules\TimedRules;
+use TLBM\Rules\Actions\TimedActions;
 use TLBM\Utilities\ExtendedDateTime;
 
 class FullRuleActionQuery extends TimeBasedQuery implements FullRuleActionQueryInterface
@@ -64,7 +64,7 @@ class FullRuleActionQuery extends TimeBasedQuery implements FullRuleActionQueryI
     public function getTimedRulesResult(): Iterator
     {
         foreach ($this->getResult() as $result) {
-            yield new TimedRules($result->getDateTime(), (array) $result->getQueryResult());
+            yield new TimedActions($result->getDateTime(), (array) $result->getQueryResult());
         }
     }
 
@@ -81,11 +81,11 @@ class FullRuleActionQuery extends TimeBasedQuery implements FullRuleActionQueryI
             $queryBuilder->select("rule,actions,periods,calendarSelection,calendarSelectionCalendars");
         }
 
-        $queryBuilder->from(Rule::class, "rule")
+        $queryBuilder->from(RuleAction::class, "actions")
                      ->distinct(true)
+                     ->leftJoin('actions.rule', "rule")
                      ->leftJoin('rule.calendarSelection', 'calendarSelection')
                      ->leftJoin("calendarSelection.calendars", "calendarSelectionCalendars")
-                     ->leftJoin("rule.actions", "actions")
                      ->leftJoin("rule.periods", "periods");
 
         $where = $queryBuilder->expr()->andX();
@@ -135,15 +135,16 @@ class FullRuleActionQuery extends TimeBasedQuery implements FullRuleActionQueryI
         $labels        = array_keys($this->labels->getWeekdayLabels());
         $weekday_label = $labels[$weekday - 1];
 
-        $weekdays_where = $expr->orX();
+        $weekdaysWhere = $expr->orX();
         if ($satOrSun) {
-            $weekdays_where->add("actions.weekdays = 'sat_and_sun'");
+            $weekdaysWhere->add($expr->eq("actions.weekdays", "'sat_and_sun'"));
         } elseif ($mofr) {
-            $weekdays_where->add("actions.weekdays = 'mo_to_fr'");
+            $weekdaysWhere->add($expr->eq("actions.weekdays", "'mo_to_fr'"));
         }
 
-        $weekdays_where->add("actions.weekdays = 'every_day'");
-        $weekdays_where->add("actions.weekdays = '" . $weekday_label . "'");
-        return $weekdays_where;
+        $weekdaysWhere->add($expr->eq("actions.weekdays", "'every_day'"));
+        $weekdaysWhere->add("actions.weekdays = '" . $weekday_label . "'");
+
+        return $weekdaysWhere;
     }
 }

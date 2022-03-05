@@ -5,8 +5,8 @@ namespace TLBM\Admin\Settings\SingleSettings\General;
 
 
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
-use TLBM\CMS\Contracts\LocalizationInterface;
-use TLBM\CMS\Contracts\OptionsInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\OptionsInterface;
 
 class AdminMail extends SettingsBase
 {

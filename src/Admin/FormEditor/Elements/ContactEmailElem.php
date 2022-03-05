@@ -6,7 +6,7 @@ namespace TLBM\Admin\FormEditor\Elements;
 use TLBM\Admin\FormEditor\FormInputGenerator;
 use TLBM\Admin\FormEditor\LinkedFormData;
 use TLBM\Booking\Semantic\PredefinedValueFieldsCollection;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 
 if ( !defined('ABSPATH')) {
     return;

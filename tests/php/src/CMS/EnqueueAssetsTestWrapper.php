@@ -2,7 +2,7 @@
 
 namespace TLBMTEST\CMS;
 
-use TLBM\CMS\Contracts\EnqueueAssetsInterface;
+use TLBM\ApiUtils\Contracts\EnqueueAssetsInterface;
 
 class EnqueueAssetsTestWrapper implements EnqueueAssetsInterface
 {

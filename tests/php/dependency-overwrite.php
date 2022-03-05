@@ -1,14 +1,14 @@
 <?php
 
-use TLBM\CMS\Contracts\AdminPagesInterface;
-use TLBM\CMS\Contracts\EnqueueAssetsInterface;
-use TLBM\CMS\Contracts\HooksInterface;
-use TLBM\CMS\Contracts\LocalizationInterface;
-use TLBM\CMS\Contracts\OptionsInterface;
-use TLBM\CMS\Contracts\PluginActivationInterface;
-use TLBM\CMS\Contracts\ShortcodeInterface;
-use TLBM\CMS\Contracts\TimeUtilsInterface;
-use TLBM\CMS\Contracts\UrlUtilsInterface;
+use TLBM\ApiUtils\Contracts\AdminPagesInterface;
+use TLBM\ApiUtils\Contracts\EnqueueAssetsInterface;
+use TLBM\ApiUtils\Contracts\HooksInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\OptionsInterface;
+use TLBM\ApiUtils\Contracts\PluginActivationInterface;
+use TLBM\ApiUtils\Contracts\ShortcodeInterface;
+use TLBM\ApiUtils\Contracts\TimeUtilsInterface;
+use TLBM\ApiUtils\Contracts\UrlUtilsInterface;
 use TLBM\Repository\Contracts\ORMInterface;
 use TLBMTEST\CMS\AdminPagesTestWrapper;
 use TLBMTEST\CMS\EnqueueAssetsTestWrapper;

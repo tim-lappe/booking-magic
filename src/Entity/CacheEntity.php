@@ -2,6 +2,9 @@
 
 namespace TLBM\Entity;
 
+use TLBM\ApiUtils\Contracts\TimeUtilsInterface;
+use TLBM\MainFactory;
+
 /**
  * Class Calendar
  * @package TLBM\Entity
@@ -37,7 +40,8 @@ class CacheEntity
 
     public function __construct()
     {
-        $this->timestampCreated = time();
+        $timeUtils = MainFactory::get(TimeUtilsInterface::class);
+        $this->timestampCreated = $timeUtils->time();
     }
 
     /**

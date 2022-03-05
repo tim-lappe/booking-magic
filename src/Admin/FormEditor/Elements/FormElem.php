@@ -9,7 +9,7 @@ if ( !defined('ABSPATH')) {
 
 use TLBM\Admin\FormEditor\ItemSettingsElements\ElementSetting;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Input;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\MainFactory;
 
 abstract class FormElem

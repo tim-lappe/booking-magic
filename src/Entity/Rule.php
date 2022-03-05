@@ -54,8 +54,8 @@ class Rule extends ManageableEntity implements JsonSerializable
      * @param string $title
      * @param int $priority
      * @param CalendarSelection|null $calendarSelection
-     * @param array|null $actions
-     * @param array|null $periods
+     * @param RuleAction[]|null $actions
+     * @param RulePeriod[]|null $periods
      */
     public function __construct(string $title = "", int $priority = 0, ?CalendarSelection $calendarSelection = null, ?array $actions = null, ?array $periods = null)
     {
@@ -72,12 +72,20 @@ class Rule extends ManageableEntity implements JsonSerializable
         if($actions == null) {
             $this->actions = new ArrayCollection();
         } else {
+            foreach ($actions as $action) {
+                $action->setRule($this);
+            }
+
             $this->actions = new ArrayCollection($actions);
         }
 
         if($periods == null) {
             $this->periods = new ArrayCollection();
         } else {
+            foreach ($periods as $period) {
+                $period->setRule($this);
+            }
+
             $this->periods = new ArrayCollection($periods);
         }
     }

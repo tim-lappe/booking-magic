@@ -3,9 +3,9 @@
 namespace TLBM;
 
 use Exception;
-use TLBM\CMS\Contracts\EnqueueAssetsInterface;
-use TLBM\CMS\Contracts\HooksInterface;
-use TLBM\CMS\Contracts\UrlUtilsInterface;
+use TLBM\ApiUtils\Contracts\EnqueueAssetsInterface;
+use TLBM\ApiUtils\Contracts\HooksInterface;
+use TLBM\ApiUtils\Contracts\UrlUtilsInterface;
 use TLBM\Localization\Contracts\ScriptLocalizationInterface;
 
 if ( !defined('ABSPATH')) {

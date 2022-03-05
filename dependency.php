@@ -30,7 +30,7 @@ use TLBM\Admin\Pages\SinglePages\CalendarPage;
 use TLBM\Admin\Pages\SinglePages\Dashboard\BestSellingCalendarsTile;
 use TLBM\Admin\Pages\SinglePages\Dashboard\Contracts\DashboardInterface;
 use TLBM\Admin\Pages\SinglePages\Dashboard\Dashboard;
-use TLBM\Admin\Pages\SinglePages\Dashboard\DatesTodayTile;
+use TLBM\Admin\Pages\SinglePages\Dashboard\BookingsChartTile;
 use TLBM\Admin\Pages\SinglePages\Dashboard\LastBookingsTile;
 use TLBM\Admin\Pages\SinglePages\FormEditPage;
 use TLBM\Admin\Pages\SinglePages\FormPage;
@@ -59,24 +59,24 @@ use TLBM\Booking\CalendarBookingManager;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
 use TLBM\Calendar\CalendarSelectionHandler;
 use TLBM\Calendar\Contracts\CalendarSelectionHandlerInterface;
-use TLBM\CMS\AdminPagesWrapper;
-use TLBM\CMS\Contracts\AdminPagesInterface;
-use TLBM\CMS\Contracts\EnqueueAssetsInterface;
-use TLBM\CMS\Contracts\HooksInterface;
-use TLBM\CMS\Contracts\LocalizationInterface as LocalizationInterfaceAlias;
-use TLBM\CMS\Contracts\OptionsInterface;
-use TLBM\CMS\Contracts\PluginActivationInterface;
-use TLBM\CMS\Contracts\ShortcodeInterface;
-use TLBM\CMS\Contracts\TimeUtilsInterface;
-use TLBM\CMS\Contracts\UrlUtilsInterface;
-use TLBM\CMS\EnqueueAssetsWrapper;
-use TLBM\CMS\HooksWrapper;
-use TLBM\CMS\LocalizationWrapper;
-use TLBM\CMS\OptionsWrapper;
-use TLBM\CMS\PluginActivationWrapper;
-use TLBM\CMS\ShortcodeWrapper;
-use TLBM\CMS\TimeUtilsWrapper;
-use TLBM\CMS\UrlUtilsWrapper;
+use TLBM\ApiUtils\AdminPagesWrapper;
+use TLBM\ApiUtils\Contracts\AdminPagesInterface;
+use TLBM\ApiUtils\Contracts\EnqueueAssetsInterface;
+use TLBM\ApiUtils\Contracts\HooksInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface as LocalizationInterfaceAlias;
+use TLBM\ApiUtils\Contracts\OptionsInterface;
+use TLBM\ApiUtils\Contracts\PluginActivationInterface;
+use TLBM\ApiUtils\Contracts\ShortcodeInterface;
+use TLBM\ApiUtils\Contracts\TimeUtilsInterface;
+use TLBM\ApiUtils\Contracts\UrlUtilsInterface;
+use TLBM\ApiUtils\EnqueueAssetsWrapper;
+use TLBM\ApiUtils\HooksWrapper;
+use TLBM\ApiUtils\LocalizationWrapper;
+use TLBM\ApiUtils\OptionsWrapper;
+use TLBM\ApiUtils\PluginActivationWrapper;
+use TLBM\ApiUtils\ShortcodeWrapper;
+use TLBM\ApiUtils\TimeUtilsWrapper;
+use TLBM\ApiUtils\UrlUtilsWrapper;
 use TLBM\Email\Contracts\MailSenderInterface;
 use TLBM\Email\MailSender;
 use TLBM\Localization\Contracts\LabelsInterface;
@@ -104,6 +104,7 @@ use TLBM\Request\ShowBookingOverview;
 use TLBM\Rules\Actions\DateSlotActionHandler;
 use TLBM\Rules\Actions\MessageActionHandler;
 use TLBM\Rules\Actions\RuleActionsManager;
+use TLBM\Rules\Actions\TimeSlotActionHandler;
 use TLBM\Rules\Contracts\RuleActionsManagerInterface;
 use TLBM\Rules\Contracts\RulesCapacityManagerInterface;
 use TLBM\Rules\RulesCapacityManager;
@@ -164,6 +165,7 @@ return [
         $ruleActionManager = $container->get(RuleActionsManager::class);
         if ($ruleActionManager instanceof RuleActionsManager) {
             $ruleActionManager->registerActionHandlerClass("date_slot", DateSlotActionHandler::class);
+            $ruleActionManager->registerActionHandlerClass("time_slot", TimeSlotActionHandler::class);
             $ruleActionManager->registerActionHandlerClass("message", MessageActionHandler::class);
         }
 
@@ -248,18 +250,18 @@ return [
     AdminPageManagerInterface::class           => factory(function (FactoryInterface $factory, ContainerInterface $container) {
         $adminPageManager = $container->get(AdminPageManager::class);
         if ($adminPageManager instanceof AdminPageManagerInterface) {
-            $adminPageManager->registerPage($container->get(BookingMagicRoot::class));
-            $adminPageManager->registerPage($container->get(BookingsPage::class));
-            $adminPageManager->registerPage($container->get(CalendarPage::class));
-            $adminPageManager->registerPage($container->get(CalendarEditPage::class));
-            $adminPageManager->registerPage($container->get(RulesPage::class));
-            $adminPageManager->registerPage($container->get(RuleEditPage::class));
-            $adminPageManager->registerPage($container->get(FormPage::class));
-            $adminPageManager->registerPage($container->get(FormEditPage::class));
-            $adminPageManager->registerPage($container->get(SettingsPage::class));
-            $adminPageManager->registerPage($container->get(BookingEditPage::class));
-            $adminPageManager->registerPage($container->get(CalendarGroupEditPage::class));
-            $adminPageManager->registerPage($container->get(BookingEditValuesPage::class));
+            $adminPageManager->registerPage(BookingMagicRoot::class);
+            $adminPageManager->registerPage(BookingsPage::class);
+            $adminPageManager->registerPage(CalendarPage::class);
+            $adminPageManager->registerPage(CalendarEditPage::class);
+            $adminPageManager->registerPage(RulesPage::class);
+            $adminPageManager->registerPage(RuleEditPage::class);
+            $adminPageManager->registerPage(FormPage::class);
+            $adminPageManager->registerPage(FormEditPage::class);
+            $adminPageManager->registerPage(SettingsPage::class);
+            $adminPageManager->registerPage(BookingEditPage::class);
+            $adminPageManager->registerPage(CalendarGroupEditPage::class);
+            $adminPageManager->registerPage(BookingEditValuesPage::class);
         }
 
         return $adminPageManager;
@@ -323,7 +325,7 @@ return [
     DashboardInterface::class                  => factory(function (FactoryInterface $factory, ContainerInterface $container) {
         $dashboard = $container->get(Dashboard::class);
         if ($dashboard instanceof DashboardInterface) {
-            $dashboard->registerTile(1, $factory->make(DatesTodayTile::class));
+            $dashboard->registerTile(1, $factory->make(BookingsChartTile::class));
             $dashboard->registerTile(2, $factory->make(LastBookingsTile::class));
             $dashboard->registerTile(2, $factory->make(BestSellingCalendarsTile::class));
         }

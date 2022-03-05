@@ -2,7 +2,7 @@
 
 namespace TLBMTEST\CMS;
 
-use TLBM\CMS\Contracts\OptionsInterface;
+use TLBM\ApiUtils\Contracts\OptionsInterface;
 
 class OptionsTestWrapper implements OptionsInterface
 {

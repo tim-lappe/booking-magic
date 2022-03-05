@@ -18,7 +18,7 @@ class ExtendedDateTimeTest extends TestCase
             [1425117382, new ExtendedDateTime(1425117382)],
             [1362056182, new ExtendedDateTime(1362056182)],
             [1362006000, new ExtendedDateTime(1362006000)],
-            [time(), new ExtendedDateTime()]
+            [TLBM_TEST_TIMESTAMP, new ExtendedDateTime()]
         ];
     }
 

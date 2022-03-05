@@ -7,8 +7,8 @@ if ( !defined('ABSPATH')) {
     return;
 }
 
-use TLBM\CMS\Contracts\HooksInterface;
-use TLBM\CMS\Contracts\ShortcodeInterface;
+use TLBM\ApiUtils\Contracts\HooksInterface;
+use TLBM\ApiUtils\Contracts\ShortcodeInterface;
 use TLBM\Output\Contracts\FormPrintInterface;
 use TLBM\Repository\Contracts\BookingRepositoryInterface;
 use TLBM\Request\Contracts\RequestManagerInterface;

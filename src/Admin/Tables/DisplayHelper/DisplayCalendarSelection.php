@@ -4,7 +4,7 @@ namespace TLBM\Admin\Tables\DisplayHelper;
 
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarSelection;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;

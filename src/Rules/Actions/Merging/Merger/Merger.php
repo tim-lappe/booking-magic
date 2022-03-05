@@ -5,6 +5,7 @@ namespace TLBM\Rules\Actions\Merging\Merger;
 use TLBM\Rules\Actions\ActionData\ActionData;
 use TLBM\Rules\Actions\Merging\Context\MergeContext;
 use TLBM\Rules\Actions\Merging\Contracts\MergeResultInterface;
+use TLBM\Utilities\ExtendedDateTime;
 
 abstract class Merger
 {
@@ -23,9 +24,14 @@ abstract class Merger
      */
     protected ?MergeContext $mergeContext;
 
-    public function __construct(ActionData $actionData, ?Merger $nextMerger = null)
+    /**
+     * @var ExtendedDateTime
+     */
+    protected ExtendedDateTime $dateTimeContext;
+
+    public function __construct(ActionData $ruleActionData, ?Merger $nextMerger = null)
     {
-        $this->actionData = $actionData;
+        $this->actionData = $ruleActionData;
         $this->nextMerging = $nextMerger;
     }
 
@@ -48,6 +54,22 @@ abstract class Merger
     }
 
     /**
+     * @return ExtendedDateTime
+     */
+    public function getDateTimeContext(): ExtendedDateTime
+    {
+        return $this->dateTimeContext;
+    }
+
+    /**
+     * @param ExtendedDateTime $dateTimeContext
+     */
+    public function setDateTimeContext(ExtendedDateTime $dateTimeContext): void
+    {
+        $this->dateTimeContext = $dateTimeContext;
+    }
+
+    /**
      * @return ?ActionData
      */
     protected function getActionData(): ?ActionData
@@ -65,13 +87,13 @@ abstract class Merger
 
     /**
      * @param string $term
-     * @param mixed $mergeResult1
-     * @param mixed $mergeResult2
+     * @param array $calendarIds
+     * @param MergeResultInterface $mergeResult
      *
-     * @return mixed|null
+     * @return mixed
      */
-    public function sumUpResults(string $term, $mergeResult1, $mergeResult2)
+    public function lastStepModification(string $term, array $calendarIds, MergeResultInterface $mergeResult)
     {
-        return $mergeResult1;
+        return $mergeResult;
     }
 }

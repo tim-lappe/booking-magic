@@ -11,19 +11,12 @@ use TLBM\Output\Calendar\CalendarDisplay;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
 use TLBM\Repository\Query\CalendarGroupQuery;
 use TLBM\Repository\Query\CalendarQuery;
-use TLBM\Repository\Query\Contracts\FullRuleActionQueryInterface;
 use TLBM\Repository\RepositoryLogger;
 use TLBM\Rules\Actions\ActionsMerging;
 use TLBM\Utilities\ExtendedDateTime;
 
 class GetMergedActions implements AjaxFunctionInterface
 {
-
-    /**
-     * @var CalendarBookingManagerInterface
-     */
-    private CalendarBookingManagerInterface $calendarBookingManager;
-
     /**
      * @var EntityRepositoryInterface $entityRepository;
      */
@@ -31,11 +24,9 @@ class GetMergedActions implements AjaxFunctionInterface
 
     public function __construct
     (
-        EntityRepositoryInterface $entityRepository,
-        CalendarBookingManagerInterface $calendarBookingManager
+        EntityRepositoryInterface $entityRepository
     )
     {
-        $this->calendarBookingManager = $calendarBookingManager;
         $this->entityRepository = $entityRepository;
     }
 
@@ -107,22 +98,13 @@ class GetMergedActions implements AjaxFunctionInterface
         });
 
         $editedCollection = [];
-
         $actionsMerging->setCalendarIds($calendarIds);
-        foreach ($actionsMerging->getRuleActionsMerged() as $mergeData) {
-            $actions = $mergeData->getMergedActions();
-            $booked = $this->calendarBookingManager->getBookedSlots($calendarIds, $mergeData->getDateTime());
-            if(isset($actions['dateCapacity'])) {
-                $actions['dateCapacity'] = max(0, $actions['dateCapacity'] - $booked);
-            }
-            $mergeData->setMergedActions($actions);
-            $editedCollection[] = $mergeData;
-        }
+        $actionsResult = $actionsMerging->getRuleActionsMerged();
 
         $queries = $logger->end();
 
         return array(
-            "actionsResult" => $editedCollection
+            "actionsResult" => iterator_to_array($actionsResult)
         );
     }
 }

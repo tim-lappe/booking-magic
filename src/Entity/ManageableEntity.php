@@ -2,7 +2,9 @@
 
 namespace TLBM\Entity;
 
+use TLBM\ApiUtils\Contracts\TimeUtilsInterface;
 use TLBM\Entity\Traits\IndexedEntity;
+use TLBM\MainFactory;
 use TLBM\Utilities\ExtendedDateTime;
 
 abstract class ManageableEntity
@@ -30,8 +32,10 @@ abstract class ManageableEntity
 
     public function __construct()
     {
-        $this->timestampCreated = time();
-        $this->timestampEdited = time();
+        $timeUtils = MainFactory::get(TimeUtilsInterface::class);
+
+        $this->timestampCreated = $timeUtils->time();
+        $this->timestampEdited = $timeUtils->time();
     }
 
     /**

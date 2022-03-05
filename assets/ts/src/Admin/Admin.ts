@@ -1,13 +1,11 @@
 import FormFields from "./FormFields/FormFields";
 import {BookingStatesSettingEditor} from "./BookingStatesSetting/BookingStatesSettingEditor";
+import {Charts} from "./Charts/Charts";
 
 export default class Admin {
     public static initAdmin() {
-        this.attachFormFields();
         BookingStatesSettingEditor.init();
-    }
-
-    private static attachFormFields() {
+        Charts.attachLineCharts();
         FormFields.attachFormFields();
     }
 }

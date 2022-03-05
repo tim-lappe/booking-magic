@@ -5,7 +5,7 @@ namespace TLBM\Admin\Settings\SingleSettings\Text;
 
 
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 
 class TextBookingReceived extends SettingsBase
 {

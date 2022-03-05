@@ -5,6 +5,7 @@ namespace TLBM\Admin\Tables;
 
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\FormEditPage;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Form;
 use TLBM\Repository\Query\BaseQuery;
 use TLBM\Repository\Query\ManageableEntityQuery;
@@ -17,11 +18,11 @@ class FormListTable extends ManagableEntityTable
      */
     private AdminPageManagerInterface $adminPageManager;
 
-    public function __construct(AdminPageManagerInterface $adminPageManager)
+    public function __construct(AdminPageManagerInterface $adminPageManager, LocalizationInterface $localization)
     {
         $this->adminPageManager = $adminPageManager;
         parent::__construct(
-            Form::class, $this->localization->__("Forms", TLBM_TEXT_DOMAIN), $this->localization->__("Form", TLBM_TEXT_DOMAIN), 10, $this->localization->__("You haven't created any forms yet", TLBM_TEXT_DOMAIN)
+            Form::class, $localization->__("Forms", TLBM_TEXT_DOMAIN), $localization->__("Form", TLBM_TEXT_DOMAIN), 10, $localization->__("You haven't created any forms yet", TLBM_TEXT_DOMAIN)
         );
     }
 

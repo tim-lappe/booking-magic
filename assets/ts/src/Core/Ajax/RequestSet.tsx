@@ -39,10 +39,15 @@ export class RequestSet {
                     }
 
                     resolve(resolvedData);
-                } catch {
+                } catch (e) {
+
+                    console.log(e);
                     reject();
                 }
-            }).catch(() => reject());
+            }).catch((e) => {
+                console.log(e);
+                reject();
+            });
         });
     }
 }

@@ -4,8 +4,8 @@ namespace TLBM\Ajax;
 
 use TLBM\Ajax\Contracts\AjaxFunctionInterface;
 use TLBM\Ajax\Contracts\AjaxManagerInterface;
-use TLBM\CMS\Contracts\HooksInterface;
-use TLBM\CMS\Contracts\OptionsInterface;
+use TLBM\ApiUtils\Contracts\HooksInterface;
+use TLBM\ApiUtils\Contracts\OptionsInterface;
 
 class AjaxManager implements AjaxManagerInterface
 {

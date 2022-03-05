@@ -10,7 +10,7 @@ if ( !defined('ABSPATH')) {
 
 use TLBM\Admin\FormEditor\FormInputGenerator;
 use TLBM\Admin\FormEditor\LinkedFormData;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 
 final class EmailElem extends FormInputElem
 {

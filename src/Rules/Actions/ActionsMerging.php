@@ -11,7 +11,6 @@ use TLBM\Repository\Query\Contracts\FullRuleActionQueryInterface;
 use TLBM\Rules\Actions\Merging\Context\MergeContext;
 use TLBM\Rules\Actions\Merging\Merger\Merger;
 use TLBM\Rules\Contracts\RuleActionsManagerInterface;
-use TLBM\Rules\TimedRules;
 use TLBM\Utilities\ExtendedDateTime;
 
 class ActionsMerging
@@ -123,7 +122,7 @@ class ActionsMerging
             foreach ($this->calendarIds as $calendarId) {
                 $query = $this->createRuleActionQuery([$calendarId]);
                 foreach ($this->getTimedMergeDataForResult($query->getTimedRulesResult()) as $timedMergeData) {
-                    $mergedActions         = $timedMergeData->getMergedActions();
+                    $mergedActions         = $timedMergeData->getMergeResult();
                     $sumedUpTimedMergeData = $this->searchTimedMergeData($summedUpMergeDataArr, $timedMergeData->getDateTime());
                     if ( !$sumedUpTimedMergeData) {
                         $summedUpMergeDataArr[] = $timedMergeData;
@@ -131,13 +130,21 @@ class ActionsMerging
                         foreach ($mergedActions as $term => $mergedActionResult) {
                             $merger = $timedMergeData->getSingleMerger($term);
                             if ($merger != null) {
-                                if(isset( $sumedUpTimedMergeData->getMergedActions()[$term])) {
-                                    $summedUpActionResult = $sumedUpTimedMergeData->getMergedActions()[$term];
-                                    $summedUpActionResult = $merger->sumUpResults($term, $summedUpActionResult, $mergedActionResult);
-                                    $sumedUpTimedMergeData->setSingleMergeAction($term, $summedUpActionResult);
+                                if(isset( $sumedUpTimedMergeData->getMergeResult()[$term])) {
+                                    $summedUpActionResult = $sumedUpTimedMergeData->getMergeResult()[$term];
+                                    $summedUpActionResult->sumResults($mergedActionResult);
+                                    $sumedUpTimedMergeData->setSingleMergeResult($term, $summedUpActionResult);
                                 } else {
-                                    $sumedUpTimedMergeData->setSingleMergeAction($term, $mergedActionResult);
+                                    $sumedUpTimedMergeData->setSingleMergeResult($term, $mergedActionResult);
                                 }
+                            }
+                        }
+
+                        foreach ($sumedUpTimedMergeData->getMergeResult() as $term => $mergedActionResult) {
+                            $merger = $sumedUpTimedMergeData->getSingleMerger($term);
+                            if($merger != null) {
+                                $mergedActionResult = $merger->lastStepModification($term, $this->calendarIds, $mergedActionResult);
+                                $sumedUpTimedMergeData->setSingleMergeResult($term, $mergedActionResult);
                             }
                         }
                     }
@@ -169,22 +176,23 @@ class ActionsMerging
         return null;
     }
 
-    private function getTimedMergeDataForResult(Iterator $rulesResult): Iterator
+    private function getTimedMergeDataForResult(Iterator $timedRuleActions): Iterator
     {
         /**
-         * @var TimedRules $timedRule
+         * @var TimedActions $timedRuleAction
          */
-        foreach ($rulesResult as $timedRule) {
+        foreach ($timedRuleActions as $timedRuleAction) {
             /**
              * @var Merger[] $actionMergeChains
              */
             $actionMergeChains = [];
-            foreach ($timedRule->getTimedActions()->getRuleActions() as $ruleAction) {
+            foreach ($timedRuleAction->getRuleActions() as $ruleAction) {
                 $handler = $this->ruleActionsManager->getActionHandler($ruleAction);
                 if ($handler) {
                     $mergeTerm  = $handler->getMergeTerm();
                     $nextMerger = $actionMergeChains[$mergeTerm] ?? null;
                     $merger     = $handler->getMerger($nextMerger);
+                    $merger->setDateTimeContext($timedRuleAction->getDateTime());
                     $merger->setMergeContext($this->mergeContext);
                     $actionMergeChains[$mergeTerm] = $merger;
                 }
@@ -192,12 +200,12 @@ class ActionsMerging
 
             $mergedActions = [];
             $usedMergers = [];
-            foreach ($actionMergeChains as $term => $mergeChain) {
-                $mergedActions[$term] = $mergeChain->merge()->getMergeResult();
-                $usedMergers[$term] = $mergeChain;
+            foreach ($actionMergeChains as $term => $mergerChain) {
+                $mergedActions[$term] = $mergerChain->merge();
+                $usedMergers[$term] = $mergerChain;
             }
 
-            yield new TimedMergeData($timedRule->getTimedActions()->getDateTime(), $mergedActions, $usedMergers);
+            yield new TimedMergeData($timedRuleAction->getDateTime(), $mergedActions, $usedMergers);
         }
     }
 

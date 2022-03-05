@@ -1,8 +1,8 @@
 <?php
 
-namespace TLBM\CMS;
+namespace TLBM\ApiUtils;
 
-use TLBM\CMS\Contracts\OptionsInterface;
+use TLBM\ApiUtils\Contracts\OptionsInterface;
 
 class OptionsWrapper implements OptionsInterface
 {

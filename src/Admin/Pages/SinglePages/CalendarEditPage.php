@@ -2,7 +2,8 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\TimeUtilsInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;
@@ -78,13 +79,15 @@ class CalendarEditPage extends EntityEditPage
      */
     public function onSaveEntity($vars, ?ManageableEntity &$savedEntity): array
     {
+        $timeUtils = MainFactory::get(TimeUtilsInterface::class);
+
         $calendar = $this->getEditingEntity();
         if (!$calendar) {
             $calendar = new Calendar();
         }
 
         $calendarValidator = ValidatorFactory::createCalendarValidator($calendar);
-        $calendar->setTimestampEdited(time());
+        $calendar->setTimestampEdited($timeUtils->time());
         $calendar->setTitle($vars['title']);
 
         $validationResult = $calendarValidator->getValidationErrors();

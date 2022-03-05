@@ -80,7 +80,7 @@ class BookingProcessor
 
         $invalidFields = [];
         foreach($formWalker->walkLinkedElements($this->getVars()) as $linkedFormData) {
-            if(!$linkedFormData->validateInput() && !($exclude == null || $linkedFormData->getFormElement() instanceof $exclude)) {
+            if(!$linkedFormData->validateInput() && !($exclude != null && $linkedFormData->getFormElement() instanceof $exclude)) {
                 $invalidFields[] = $linkedFormData;
             }
 

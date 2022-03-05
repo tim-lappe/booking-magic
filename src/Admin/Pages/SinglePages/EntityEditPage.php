@@ -2,7 +2,7 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;
 use TLBM\Repository\Contracts\CacheManagerInterface;

@@ -21,10 +21,14 @@ export class HttpRequest {
                 try {
                     let data = JSON.parse(responseText);
                     resolve(data);
-                } catch {
+                } catch (e) {
+                    console.log(e);
                     reject();
                 }
-            }).catch(() => reject());
+            }).catch((e) => {
+                console.log(e);
+                reject()
+            });
         });
 
         xmlhttp.open("POST", ajax_information.url, true);

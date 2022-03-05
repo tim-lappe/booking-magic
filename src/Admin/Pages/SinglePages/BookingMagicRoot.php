@@ -4,7 +4,7 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 use TLBM\Admin\Pages\SinglePages\Dashboard\Contracts\DashboardInterface;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 
 class BookingMagicRoot extends PageBase
 {

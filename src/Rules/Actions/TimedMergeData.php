@@ -3,6 +3,7 @@
 namespace TLBM\Rules\Actions;
 
 use JsonSerializable;
+use TLBM\Rules\Actions\Merging\Contracts\MergeResultInterface;
 use TLBM\Rules\Actions\Merging\Merger\Merger;
 use TLBM\Utilities\ExtendedDateTime;
 
@@ -10,9 +11,9 @@ class TimedMergeData implements JsonSerializable
 {
 
     /**
-     * @var mixed
+     * @var MergeResultInterface[]
      */
-    private $mergedActions;
+    private array $mergedActions;
 
     /**
      * @var ExtendedDateTime
@@ -26,10 +27,10 @@ class TimedMergeData implements JsonSerializable
 
     /**
      * @param ExtendedDateTime $dateTime
-     * @param mixed $mergedActions
-     * @param array|null $usedMergers
+     * @param MergeResultInterface[] $mergedActions
+     * @param Merger[]|null $usedMergers
      */
-    public function __construct(ExtendedDateTime $dateTime, $mergedActions, ?array $usedMergers = null)
+    public function __construct(ExtendedDateTime $dateTime, array $mergedActions, ?array $usedMergers = null)
     {
         $this->mergedActions = $mergedActions;
         $this->dateTime      = $dateTime;
@@ -37,28 +38,28 @@ class TimedMergeData implements JsonSerializable
     }
 
     /**
-     * @return mixed
+     * @return MergeResultInterface[]
      */
-    public function getMergedActions()
+    public function getMergeResult(): array
     {
         return $this->mergedActions;
     }
 
     /**
-     * @param mixed $mergedActions
+     * @param MergeResultInterface[] $mergedActions
      */
-    public function setMergedActions($mergedActions): void
+    public function setMergeResult(array $mergedActions): void
     {
         $this->mergedActions = $mergedActions;
     }
 
     /**
      * @param string $term
-     * @param mixed $value
+     * @param MergeResultInterface $value
      *
      * @return void
      */
-    public function setSingleMergeAction(string $term, $value)
+    public function setSingleMergeResult(string $term, MergeResultInterface $value)
     {
         $this->mergedActions[$term] = $value;
     }
@@ -115,5 +116,4 @@ class TimedMergeData implements JsonSerializable
             "mergedActions" => $this->mergedActions
         ];
     }
-
 }

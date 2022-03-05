@@ -45,6 +45,36 @@
   border-radius: 5px 5px 10px 10px;
   overflow: hidden;
 }
+.tlbm-calendar-container .tlbm-calendar-table .tlbm-calendar-time-panel {
+  background-color: rgba(0, 0, 0, 0.03);
+  grid-column-start: 1;
+  grid-column-end: 8;
+  padding: 1em;
+  display: grid;
+  grid-gap: 1em;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+}
+.tlbm-calendar-container .tlbm-calendar-table .tlbm-calendar-time-panel .tlbm-calendar-time-slot {
+  background-color: rgba(255, 255, 255, 0.3);
+  display: flex;
+  justify-content: center;
+  border-radius: 5px;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border: 3px solid transparent;
+}
+.tlbm-calendar-container .tlbm-calendar-table .tlbm-calendar-time-panel .tlbm-time-cell-selected {
+  border-radius: 10px;
+  border: 3px solid #72cb72;
+  position: relative;
+  background-color: #e3ffe3 !important;
+}
+.tlbm-calendar-container .tlbm-calendar-table .tlbm-calendar-time-panel .tlbm-time-cell-selected .dashicons {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  color: #45c745;
+}
 .tlbm-calendar-container .tlbm-calendar-table .tlbm-head-weekday {
   align-self: center;
   justify-self: stretch;
@@ -653,6 +683,7 @@
 .tlbm-admin-page .tlbm-admin-page-tile-row {
   display: flex;
   gap: 1.2rem;
+  margin: 1.2rem 0;
   justify-content: stretch;
 }
 .tlbm-admin-page .tlbm-admin-page-tile-row > .tlbm-admin-page-tile {
@@ -741,6 +772,17 @@
   font-weight: 300;
 }
 
+.tlbm-admin-page .wp-list-table {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15);
+}
+.tlbm-admin-page .tablenav .actions select {
+  max-width: unset;
+}
+.tlbm-admin-page .tlbm-admin-plain-table th {
+  padding: 0.7rem;
+}
 .tlbm-admin-page .tlbm-frontend-form {
   font-size: 1.2em;
 }

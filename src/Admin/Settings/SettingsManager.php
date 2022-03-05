@@ -5,7 +5,7 @@ namespace TLBM\Admin\Settings;
 
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
-use TLBM\CMS\Contracts\OptionsInterface;
+use TLBM\ApiUtils\Contracts\OptionsInterface;
 
 class SettingsManager implements SettingsManagerInterface
 {

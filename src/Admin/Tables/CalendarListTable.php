@@ -5,7 +5,7 @@ namespace TLBM\Admin\Tables;
 
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Repository\Query\BaseQuery;
 use TLBM\Repository\Query\ManageableEntityQuery;

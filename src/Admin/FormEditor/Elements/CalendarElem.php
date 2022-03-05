@@ -7,12 +7,13 @@ if ( !defined('ABSPATH')) {
     return;
 }
 
+use InvalidArgumentException;
 use TLBM\Admin\FormEditor\Contracts\AdminElementInterface;
 use TLBM\Admin\FormEditor\FormInputGenerator;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Select;
 use TLBM\Admin\FormEditor\LinkedFormData;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarBooking;
 use TLBM\MainFactory;
@@ -20,6 +21,7 @@ use TLBM\Output\Calendar\CalendarDisplay;
 use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
 use TLBM\Repository\Query\CalendarGroupQuery;
 use TLBM\Repository\Query\CalendarQuery;
+use TLBM\Utilities\ExtendedDateTime;
 
 class CalendarElem extends FormInputElem implements AdminElementInterface
 {
@@ -74,6 +76,25 @@ class CalendarElem extends FormInputElem implements AdminElementInterface
 
         $this->addSettings($selectedCalendar, $weekdaysForm);
         $this->has_user_input = true;
+    }
+
+    public function validate(LinkedFormData $linkedFormData): bool
+    {
+        if(parent::validate($linkedFormData)) {
+            $linkedSettings = $linkedFormData->getLinkedSettings();
+            $name = $linkedSettings->getValue("name");
+            $value = $linkedFormData->getInputVarByName($name);
+
+            try {
+                $dt = new ExtendedDateTime();
+                $dt->setFromObject(json_decode(urldecode($value), true));
+                return true;
+            } catch (InvalidArgumentException $exception) {
+                return false;
+            }
+        }
+
+        return false;
     }
 
     /**

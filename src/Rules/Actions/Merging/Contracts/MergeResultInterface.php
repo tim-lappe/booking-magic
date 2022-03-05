@@ -5,7 +5,8 @@ namespace TLBM\Rules\Actions\Merging\Contracts;
 interface MergeResultInterface
 {
     /**
-     * @return mixed
+     * @param MergeResultInterface ...$mergeResults
+     *
      */
-    public function getMergeResult();
+    public function sumResults(MergeResultInterface... $mergeResults);
 }

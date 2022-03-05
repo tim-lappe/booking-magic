@@ -5,7 +5,7 @@ namespace TLBM\Admin\FormEditor\Elements;
 
 use TLBM\Admin\FormEditor\Contracts\FrontendElementInterface;
 use TLBM\Admin\FormEditor\LinkedFormData;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 
 if ( !defined('ABSPATH')) {
     return;

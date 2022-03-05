@@ -6,7 +6,7 @@ use Exception;
 use Throwable;
 use TLBM\Admin\FormEditor\Contracts\FormElementsCollectionInterface;
 use TLBM\Admin\WpForm\FormEditorField;
-use TLBM\CMS\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Form;
 use TLBM\Entity\ManageableEntity;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
