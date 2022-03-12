@@ -9,10 +9,8 @@ if ( !defined('ABSPATH')) {
 
 use InvalidArgumentException;
 use TLBM\Admin\FormEditor\Contracts\AdminElementInterface;
-use TLBM\Admin\FormEditor\FormInputGenerator;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Select;
 use TLBM\Admin\FormEditor\LinkedFormData;
-use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarBooking;
@@ -34,7 +32,7 @@ class CalendarElem extends FormInputElem implements AdminElementInterface
      * @param LocalizationInterface $localization
      */
     public function __construct(LocalizationInterface $localization) {
-        parent::__construct("calendar", $localization->__("Calendar", TLBM_TEXT_DOMAIN));
+        parent::__construct("calendar", $localization->__("Appointment selection", TLBM_TEXT_DOMAIN));
 
         $this->localization = $localization;
 
@@ -67,14 +65,7 @@ class CalendarElem extends FormInputElem implements AdminElementInterface
             "sourceId", $this->localization->__("Calendar", TLBM_TEXT_DOMAIN), $calendar_select, $default_calendar, false, false, $this->localization->__("Calendar Settings", TLBM_TEXT_DOMAIN)
         );
 
-        $weekdaysForm = new Select(
-            "weekdays_form", $this->localization->__("Weekday Labels", TLBM_TEXT_DOMAIN), [
-            "long"  => $this->localization->__("Long", TLBM_TEXT_DOMAIN),
-            "short" => $this->localization->__("Short", TLBM_TEXT_DOMAIN)
-        ],  "short", false, false, $this->localization->__("Calendar Settings", TLBM_TEXT_DOMAIN)
-        );
-
-        $this->addSettings($selectedCalendar, $weekdaysForm);
+        $this->addSettings($selectedCalendar);
         $this->has_user_input = true;
     }
 

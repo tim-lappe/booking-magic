@@ -73,18 +73,18 @@ abstract class ManagableEntityTable extends TableBase
      * @param string|null $orderby
      * @param string|null $order
      * @param int|null $page
+     * @param bool $useCustomFilters
      *
      * @return ManageableEntityQuery
      */
-    protected function getQuery(?string $orderby, ?string $order, ?int $page): ManageableEntityQuery
+    protected function getQuery(?string $orderby, ?string $order, ?int $page, bool $useCustomFilters = true): ManageableEntityQuery
     {
         $query = $this->getQueryObject();
         $query->setEntityClass($this->entityClass);
 
-        if($orderby == "date_edited") {
+        if ($orderby == "date_edited") {
             $query->setOrderBy([[TLBM_ENTITY_QUERY_ALIAS . ".timestampEdited", $order]]);
-
-        } elseif($orderby == "date_created") {
+        } elseif ($orderby == "date_created") {
             $query->setOrderBy([[TLBM_ENTITY_QUERY_ALIAS . ".timestampCreated", $order]]);
 
         } else {
@@ -115,7 +115,7 @@ abstract class ManagableEntityTable extends TableBase
      */
     protected function getTotalItemsCount(): int
     {
-        $query = $this->getQuery(null,null, null);
+        $query = $this->getQuery(null, null, null, false);
         return $query->getResultCount();
     }
 
@@ -149,8 +149,7 @@ abstract class ManagableEntityTable extends TableBase
         return array();
     }
 
-    protected function tableNav(string $which): void
+    protected function tableNav(string $witch): void
     {
-        // TODO: Implement tableNav() method.
     }
 }

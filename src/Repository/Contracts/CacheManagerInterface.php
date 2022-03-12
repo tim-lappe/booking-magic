@@ -24,4 +24,11 @@ interface CacheManagerInterface
      * @return bool
      */
     public function clearCache(): bool;
+
+    /**
+     * @param mixed $hash
+     *
+     * @return bool
+     */
+    public function entryExists($hash): bool;
 }

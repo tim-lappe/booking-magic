@@ -3,10 +3,11 @@
 
 namespace TLBM\Request;
 
-use TLBM\Booking\BookingProcessor;
+use TLBM\Admin\Settings\SettingsManager;
+use TLBM\Admin\Settings\SingleSettings\Text\TextBookNow;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\Booking\BookingProcessor;
 use TLBM\MainFactory;
-use TLBM\Output\Contracts\FrontendMessengerInterface;
 use TLBM\Output\SemanticFrontendMessenger;
 
 class ShowBookingOverview extends RequestBase
@@ -24,14 +25,21 @@ class ShowBookingOverview extends RequestBase
     private ?BookingProcessor $bookingProcessor;
 
     /**
+     * @var SettingsManager
+     */
+    private SettingsManager $settingsManager;
+
+    /**
      * @param SemanticFrontendMessenger $frontendMessenger
      * @param LocalizationInterface $localization
+     * @param SettingsManager $settingsManager
      */
-    public function __construct(SemanticFrontendMessenger $frontendMessenger, LocalizationInterface $localization)
+    public function __construct(SemanticFrontendMessenger $frontendMessenger, LocalizationInterface $localization, SettingsManager $settingsManager)
     {
         parent::__construct($localization);
         $this->action                    = "showbookingoverview";
         $this->semanticFrontendMessenger = $frontendMessenger;
+        $this->settingsManager           = $settingsManager;
     }
 
     public function onAction()
@@ -117,7 +125,7 @@ class ShowBookingOverview extends RequestBase
             $html .= "<input type='hidden' name='tlbm_action' value='dobooking'>";
             $html .= "<input type='hidden' name='pending_booking' value='" . $this->bookingProcessor->getPendingBooking()->getId() . "'>";
             $html .= wp_nonce_field("dobooking_action", "_wpnonce", true, false);
-            $html .= "<button class='tlbm-book-now-btn'>" . $this->localization->__("Book Now", TLBM_TEXT_DOMAIN) . "</button>";
+            $html .= "<button class='tlbm-book-now-btn'>" . $this->settingsManager->getValue(TextBookNow::class) . "</button>";
             $html .= "</form>";
 
             return $html;

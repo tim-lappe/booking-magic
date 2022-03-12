@@ -7,7 +7,6 @@ use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\FormEditPage;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Form;
-use TLBM\Repository\Query\BaseQuery;
 use TLBM\Repository\Query\ManageableEntityQuery;
 
 class FormListTable extends ManagableEntityTable
@@ -27,10 +26,10 @@ class FormListTable extends ManagableEntityTable
     }
 
 
-    protected function getQuery(?string $orderby, ?string $order, ?int $page): ManageableEntityQuery
+    protected function getQuery(?string $orderby, ?string $order, ?int $page, bool $useCustomFilters = true): ManageableEntityQuery
     {
         $query = parent::getQuery($orderby, $order, $page);
-        if($orderby == "title") {
+        if ($orderby == "title") {
             $query->setOrderBy([[TLBM_ENTITY_QUERY_ALIAS . ".title", $order]]);
         }
 

@@ -12,11 +12,12 @@ use TLBM\Admin\Settings\SingleSettings\Rules\PriorityLevels;
 use TLBM\Admin\Tables\DisplayHelper\DisplayCalendarSelection;
 use TLBM\Admin\Tables\DisplayHelper\DisplayPeriods;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\Entity\Calendar;
 use TLBM\Entity\Rule;
 use TLBM\MainFactory;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
-use TLBM\Repository\Query\BaseQuery;
 use TLBM\Repository\Query\ManageableEntityQuery;
+use TLBM\Repository\Query\RulesQuery;
 
 class RulesListTable extends ManagableEntityTable
 {
@@ -33,25 +34,43 @@ class RulesListTable extends ManagableEntityTable
 
     public function __construct(EntityRepositoryInterface $entityRepository, AdminPageManagerInterface $adminPageManager, SettingsManagerInterface $settingsManager, LocalizationInterface $localization)
     {
-        $this->entityRepository     = $entityRepository;
+        $this->entityRepository = $entityRepository;
         $this->adminPageManager = $adminPageManager;
-        $this->settingsManager = $settingsManager;
+        $this->settingsManager  = $settingsManager;
 
         parent::__construct(
             Rule::class, $localization->__("Rules", TLBM_TEXT_DOMAIN), $localization->__("Rule", TLBM_TEXT_DOMAIN), 10, $localization->__("You haven't created any rules yet", TLBM_TEXT_DOMAIN)
         );
     }
 
-    protected function getQuery(?string $orderby, ?string $order, ?int $page): ManageableEntityQuery
+    protected function getQueryObject(): RulesQuery
+    {
+        return MainFactory::create(RulesQuery::class);
+    }
+
+    protected function getQuery(?string $orderby, ?string $order, ?int $page, bool $useCustomFilters = true): ManageableEntityQuery
     {
         $query = parent::getQuery($orderby, $order, $page);
-        if($orderby == "title") {
-            $query->setOrderBy([[TLBM_ENTITY_QUERY_ALIAS . ".title", $order]]);
-        } elseif ($orderby == "priority") {
-            $query->setOrderBy([[TLBM_ENTITY_QUERY_ALIAS . ".priority", $order]]);
+        if ($query instanceof RulesQuery) {
+            if ($orderby == "title") {
+                $query->setOrderBy([[TLBM_ENTITY_QUERY_ALIAS . ".title", $order]]);
+            } elseif ($orderby == "priority") {
+                $query->setOrderBy([[TLBM_ENTITY_QUERY_ALIAS . ".priority", $order]]);
+            }
+
+            if ($useCustomFilters) {
+                if (isset($_GET['filter_calendar'])) {
+                    $filterCalendar = $this->entityRepository->getEntity(Calendar::class, intval($_GET['filter_calendar']));
+                    if ($filterCalendar != null) {
+                        $query->setFilterCalendarsIds([intval($_GET['filter_calendar'])]);
+                    }
+                }
+            }
+
+            return $query;
         }
 
-        return $query;
+        return MainFactory::create(RulesQuery::class);
     }
 
     /**
@@ -61,8 +80,7 @@ class RulesListTable extends ManagableEntityTable
     {
         $columns = parent::getColumns();
 
-        array_splice($columns, 1, 0, [
-            new Column("title", $this->localization->__("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
+        array_splice($columns, 1, 0, [new Column("title", $this->localization->__("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
                 $ruleEditPage = $this->adminPageManager->getPage(RuleEditPage::class);
                 if ($ruleEditPage instanceof RuleEditPage) {
                     $link = $ruleEditPage->getEditLink($item->getId());
@@ -87,7 +105,7 @@ class RulesListTable extends ManagableEntityTable
 
             }),
             new Column("periods", $this->localization->__("Periods", TLBM_TEXT_DOMAIN), false, function ($item) {
-                $periods = $item->getPeriods();
+                $periods        = $item->getPeriods();
                 $periodsDisplay = MainFactory::create(DisplayPeriods::class);
                 $periodsDisplay->setRulePeriods($periods);
                 $periodsDisplay->display();
@@ -97,13 +115,30 @@ class RulesListTable extends ManagableEntityTable
         return $columns;
     }
 
-    /**
-     * @param string $which
-     *
-     * @return void
-     */
-    protected function tableNav(string $which): void
+    protected function tableNav(string $witch): void
     {
-        // TODO: Implement tableNav() method.
+        if ($witch == "top") {
+            /**
+             * @var Calendar[] $calendars
+             */
+            $calendars = $this->entityRepository->getEntites(Calendar::class);
+            ?>
+            <div class="alignleft actions bulkactions">
+                <select name="filter_calendar">
+                    <option value=""><?php
+                        echo $this->localization->__("All Calendars", TLBM_TEXT_DOMAIN); ?></option>
+                    <?php
+                    foreach ($calendars as $calendar): ?>
+                        <option <?php
+                        selected($calendar->getId(), $_GET['filter_calendar'], true) ?> value="<?php
+                        echo $calendar->getId() ?>"><?php
+                            echo $calendar->getTitle() ?></option>
+                    <?php
+                    endforeach; ?>
+                </select>
+                <button class="button" type="submit">Filter</button>
+            </div>
+            <?php
+        }
     }
 }

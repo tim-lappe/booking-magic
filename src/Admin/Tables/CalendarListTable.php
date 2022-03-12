@@ -7,7 +7,6 @@ use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Calendar;
-use TLBM\Repository\Query\BaseQuery;
 use TLBM\Repository\Query\ManageableEntityQuery;
 
 
@@ -36,11 +35,12 @@ class CalendarListTable extends ManagableEntityTable
      * @param string|null $orderby
      * @param string|null $order
      * @param int|null $page
+     * @param bool $useCustomFilters
      *
      * @return ManageableEntityQuery
      * @SuppressWarnings(PHPMD)
      */
-    protected function getQuery(?string $orderby, ?string $order, ?int $page): ManageableEntityQuery
+    protected function getQuery(?string $orderby, ?string $order, ?int $page, bool $useCustomFilters = true): ManageableEntityQuery
     {
         $calendarQuery = parent::getQuery($orderby, $order, $page);
         if ($orderby == "title") {

@@ -3,8 +3,6 @@
 
 namespace TLBM\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use JsonSerializable;
 use TLBM\Entity\Traits\IndexedEntity;
 use TLBM\Utilities\ExtendedDateTime;
@@ -25,12 +23,6 @@ class RulePeriod implements JsonSerializable
      * @Doctrine\ORM\Mapping\ManyToOne (targetEntity=Rule::class)
      */
     protected ?Rule $rule;
-
-    /**
-     * @var Collection
-     * @Doctrine\ORM\Mapping\OneToMany (targetEntity=TimeSlot::class, mappedBy="rulePeriod", orphanRemoval=true, cascade={"all"})
-     */
-    protected Collection $dailyTimeRanges;
 
     /**
      * @var int
@@ -70,7 +62,6 @@ class RulePeriod implements JsonSerializable
         $this->fromFullDay = $fromFullDay;
         $this->toTimestamp = $toTimestamp;
         $this->toFullDay = $toFullDay;
-        $this->dailyTimeRanges = new ArrayCollection();
     }
 
     /**
@@ -103,36 +94,6 @@ class RulePeriod implements JsonSerializable
     public function setToFullDay(bool $toFullDay): void
     {
         $this->toFullDay = $toFullDay;
-    }
-
-    /**
-     * @param TimeSlot $slot
-     *
-     * @return TimeSlot
-     */
-    public function addTimeSlot(TimeSlot $slot): TimeSlot
-    {
-        if ( !$this->dailyTimeRanges->contains($slot)) {
-            $this->dailyTimeRanges[] = $slot;
-            $slot->setRulePeriod($this);
-        }
-
-        return $slot;
-    }
-
-    /**
-     * @param TimeSlot $slot
-     *
-     * @return TimeSlot
-     */
-    public function removeTimeSlot(TimeSlot $slot): TimeSlot
-    {
-        if ($this->dailyTimeRanges->contains($slot)) {
-            $this->dailyTimeRanges->removeElement($slot);
-            $slot->setRulePeriod(null);
-        }
-
-        return $slot;
     }
 
     /**
@@ -171,22 +132,6 @@ class RulePeriod implements JsonSerializable
         $this->toTimestamp = $toTimestamp;
     }
 
-    /**
-     * @return Collection
-     */
-    public function getDailyTimeRanges()
-    {
-        return $this->dailyTimeRanges;
-    }
-
-    /**
-     * @param Collection $dailyTimeRanges
-     */
-    public function setDailyTimeRanges(Collection $dailyTimeRanges): void
-    {
-        $this->dailyTimeRanges = $dailyTimeRanges;
-    }
-
     public function getRule(): Rule
     {
         return $this->rule;
@@ -213,7 +158,6 @@ class RulePeriod implements JsonSerializable
             "fromDateTime"    => $fromDateTime,
             "toDateTime"      => $toDateTime,
             "id"              => $this->id,
-            "dailyTimeRanges" => $this->dailyTimeRanges->toArray()
         ];
     }
 }

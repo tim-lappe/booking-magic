@@ -2,7 +2,6 @@
 
 namespace TLBM\Rules\Actions;
 
-use Composer\Cache;
 use InvalidArgumentException;
 use Iterator;
 use TLBM\MainFactory;
@@ -114,10 +113,9 @@ class ActionsMerging
     public function getRuleActionsMerged(): Iterator
     {
         $summedUpMergeDataArr = [];
-        $hashObj = $this->getHashObj();
-        $cachedSum = $this->cacheManager->getData($hashObj);
-        if($cachedSum != null) {
-            $summedUpMergeDataArr = $cachedSum;
+        $hashObj              = $this->getHashObj();
+        if ($this->cacheManager->entryExists($hashObj)) {
+            $summedUpMergeDataArr = $this->cacheManager->getData($hashObj);
         } else {
             foreach ($this->calendarIds as $calendarId) {
                 $query = $this->createRuleActionQuery([$calendarId]);
@@ -130,21 +128,13 @@ class ActionsMerging
                         foreach ($mergedActions as $term => $mergedActionResult) {
                             $merger = $timedMergeData->getSingleMerger($term);
                             if ($merger != null) {
-                                if(isset( $sumedUpTimedMergeData->getMergeResult()[$term])) {
+                                if (isset($sumedUpTimedMergeData->getMergeResult()[$term])) {
                                     $summedUpActionResult = $sumedUpTimedMergeData->getMergeResult()[$term];
                                     $summedUpActionResult->sumResults($mergedActionResult);
                                     $sumedUpTimedMergeData->setSingleMergeResult($term, $summedUpActionResult);
                                 } else {
                                     $sumedUpTimedMergeData->setSingleMergeResult($term, $mergedActionResult);
                                 }
-                            }
-                        }
-
-                        foreach ($sumedUpTimedMergeData->getMergeResult() as $term => $mergedActionResult) {
-                            $merger = $sumedUpTimedMergeData->getSingleMerger($term);
-                            if($merger != null) {
-                                $mergedActionResult = $merger->lastStepModification($term, $this->calendarIds, $mergedActionResult);
-                                $sumedUpTimedMergeData->setSingleMergeResult($term, $mergedActionResult);
                             }
                         }
                     }
@@ -154,6 +144,15 @@ class ActionsMerging
             $this->cacheManager->setData($hashObj, $summedUpMergeDataArr);
         }
 
+        foreach ($summedUpMergeDataArr as $sumedUpMD) {
+            foreach ($sumedUpMD->getMergeResult() as $term => $mergedActionResult) {
+                $merger = $sumedUpMD->getSingleMerger($term);
+                if ($merger != null) {
+                    $mergedActionResult = $merger->lastStepModification($term, $this->calendarIds, $mergedActionResult);
+                    $sumedUpMD->setSingleMergeResult($term, $mergedActionResult);
+                }
+            }
+        }
 
         foreach ($summedUpMergeDataArr as $item) {
             yield $item;

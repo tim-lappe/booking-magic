@@ -35,6 +35,11 @@ class Booking extends ManageableEntity implements JsonSerializable
      */
     protected ?Form $form;
 
+    /**
+     * @var string
+     * @Doctrine\ORM\Mapping\Column(type="text", nullable=false)
+     */
+    protected string $notes = "";
 
     /**
      * @var string
@@ -241,16 +246,32 @@ class Booking extends ManageableEntity implements JsonSerializable
     }
 
     /**
+     * @return string
+     */
+    public function getNotes(): string
+    {
+        return $this->notes;
+    }
+
+    /**
+     * @param string $notes
+     */
+    public function setNotes(string $notes): void
+    {
+        $this->notes = $notes;
+    }
+
+    /**
      * @return array
      */
     public function jsonSerialize(): array
     {
-        return [
-            "bookingValues" => $this->bookingValues->toArray(),
+        return ["bookingValues" => $this->bookingValues->toArray(),
             "calendarBookings" => $this->calendarBookings->toArray(),
             "timestampCreated" => $this->timestampCreated,
             "id" => $this->id,
             "formId" => $this->form->getId()
         ];
     }
+
 }

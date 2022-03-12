@@ -7,17 +7,15 @@ use Throwable;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\SinglePageBooking;
 use TLBM\Admin\Settings\SingleSettings\Emails\EmailBookingConfirmation;
+use TLBM\Admin\Settings\SingleSettings\Text\TextBookingReceived;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Booking\BookingProcessor;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
 use TLBM\Booking\Semantic\BookingValueSemantic;
-use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Email\Contracts\MailSenderInterface;
 use TLBM\MainFactory;
-use TLBM\Output\Contracts\FrontendMessengerInterface;
 use TLBM\Output\SemanticFrontendMessenger;
 use TLBM\Repository\Contracts\BookingRepositoryInterface;
-
-use function DI\value;
 
 if ( !defined('ABSPATH')) {
     return;
@@ -136,7 +134,7 @@ class CompleteBookingRequest extends RequestBase
     {
         //TODO: Implement booking completed content
         if ($this->bookingSuccessed === true) {
-            return "<h2>Die Buchung ist erfolgreich eingegangen.</h2><p>Sie erhalten in Kürze eine Bestätigungsmail</p>";
+            return $this->settingsManager->getValue(TextBookingReceived::class);
         } elseif ($this->error) {
             return "<h2>Es ist ein Fehler aufgetreten</h2><p>Ihre Buchung konnte nicht bearbeitet werden, da ein unbekannter Fehler aufgetreten ist</p>";
         } else {

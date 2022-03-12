@@ -33,9 +33,6 @@ abstract class ManageableEntity
     public function __construct()
     {
         $timeUtils = MainFactory::get(TimeUtilsInterface::class);
-
-        $this->timestampCreated = $timeUtils->time();
-        $this->timestampEdited = $timeUtils->time();
     }
 
     /**
@@ -92,5 +89,13 @@ abstract class ManageableEntity
     public function setAdministrationStatus(string $administrationStatus): void
     {
         $this->administrationStatus = $administrationStatus;
+    }
+
+    /**
+     * @param int $timestampCreated
+     */
+    public function setTimestampCreated(int $timestampCreated): void
+    {
+        $this->timestampCreated = $timestampCreated;
     }
 }

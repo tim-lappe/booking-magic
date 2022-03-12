@@ -4,11 +4,9 @@
 namespace TLBM\Admin\WpForm;
 
 
-use DateTime;
 use Throwable;
 use TLBM\Admin\WpForm\Contracts\FormFieldReadVarsInterface;
 use TLBM\Entity\RulePeriod;
-use TLBM\Entity\TimeSlot;
 use TLBM\Utilities\ExtendedDateTime;
 
 if ( !defined('ABSPATH')) {
@@ -87,15 +85,6 @@ class PeriodEditorField extends FormFieldBase implements FormFieldReadVarsInterf
 
                     if ($periodObj->id > 0 && is_numeric($periodObj->id)) {
                         $period->setId($periodObj->id);
-                    }
-
-                    foreach ($periodObj->dailyTimeRanges as $timeRangeObj) {
-                        $time_range = new TimeSlot();
-                        $time_range->setFromHour($timeRangeObj->from_hour);
-                        $time_range->setToHour($timeRangeObj->to_hour);
-                        $time_range->setFromMin($timeRangeObj->from_min);
-                        $time_range->setToMin($timeRangeObj->to_min);
-                        $period->addTimeSlot($time_range);
                     }
 
                     $periods[] = $period;

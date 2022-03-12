@@ -94,7 +94,7 @@ class CalendarBooking implements JsonSerializable
         bool $fromFullDay = true,
         ?int $toTimestamp = 0,
         bool $toFullDay = true,
-        int $slots = 0
+        int $slots = 1
     )
     {
         $this->booking = $booking;
