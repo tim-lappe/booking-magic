@@ -4,10 +4,9 @@ namespace TLBM\Repository\Query;
 
 use Doctrine\ORM\QueryBuilder;
 use TLBM\Entity\CalendarGroup;
+use TLBM\Repository\Contracts\ORMInterface;
 
-define("TLBM_CALENDAR_GROUP_QUERY_ALIAS", "cg");
-
-class CalendarGroupQuery extends BaseQuery
+class CalendarGroupQuery extends ManageableEntityQuery
 {
 
     /**
@@ -15,23 +14,23 @@ class CalendarGroupQuery extends BaseQuery
      */
     private ?array $groupIds = null;
 
+    public function __construct(ORMInterface $repository)
+    {
+        parent::__construct($repository);
+        $this->setEntityClass(CalendarGroup::class);
+    }
 
     /**
      * @inheritDoc
      */
     protected function buildQuery(QueryBuilder $queryBuilder, bool $onlyCount = false): void
     {
-        if($onlyCount) {
-            $queryBuilder->select("count(" .TLBM_CALENDAR_GROUP_QUERY_ALIAS . ".id)")->from(CalendarGroup::class, TLBM_CALENDAR_GROUP_QUERY_ALIAS);
-        } else {
-            $queryBuilder->select(TLBM_CALENDAR_GROUP_QUERY_ALIAS)->from(CalendarGroup::class, TLBM_CALENDAR_GROUP_QUERY_ALIAS);
-        }
-
+        parent::buildQuery($queryBuilder, $onlyCount);
         $where = $queryBuilder->expr()->andX();
 
-        if($this->groupIds) {
+        if ($this->groupIds) {
             $queryBuilder->setParameter(":groupIds", implode(",", $this->groupIds));
-            $where->add($queryBuilder->expr()->in(TLBM_CALENDAR_GROUP_QUERY_ALIAS . ".id",":groupIds"));
+            $where->add($queryBuilder->expr()->in(TLBM_ENTITY_QUERY_ALIAS . ".id", ":groupIds"));
         }
 
         if($where->count() > 0) {

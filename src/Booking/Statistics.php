@@ -39,7 +39,7 @@ class Statistics
             $bookingsQuery->setFilterToDateTime($to);
         }
 
-        $bookingsQuery->setFilterStates(["confirmed"]);
+        $bookingsQuery->setFilterStates(["confirmed", "new", "processing", "appeared", "not_appeared"]);
 
         $bookings = $bookingsQuery->getResult();
         $bookingsMonthly = [];

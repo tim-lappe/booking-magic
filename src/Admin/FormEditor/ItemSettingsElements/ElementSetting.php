@@ -101,11 +101,12 @@ abstract class ElementSetting
         $this->category_title = $category_title;
     }
 
-
     public static function GetForbiddenNameValues(): array
     {
-        return array(
-            "form"
-        );
+        return ["form",
+            "calendar",
+            "_wp_nonce",
+            "_wp_http_referer"
+        ];
     }
 }

@@ -26,11 +26,12 @@ use TLBM\Admin\Pages\SinglePages\BookingMagicRoot;
 use TLBM\Admin\Pages\SinglePages\BookingsPage;
 use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
 use TLBM\Admin\Pages\SinglePages\CalendarGroupEditPage;
+use TLBM\Admin\Pages\SinglePages\CalendarGroupPage;
 use TLBM\Admin\Pages\SinglePages\CalendarPage;
 use TLBM\Admin\Pages\SinglePages\Dashboard\BestSellingCalendarsTile;
+use TLBM\Admin\Pages\SinglePages\Dashboard\BookingsChartTile;
 use TLBM\Admin\Pages\SinglePages\Dashboard\Contracts\DashboardInterface;
 use TLBM\Admin\Pages\SinglePages\Dashboard\Dashboard;
-use TLBM\Admin\Pages\SinglePages\Dashboard\BookingsChartTile;
 use TLBM\Admin\Pages\SinglePages\Dashboard\LastBookingsTile;
 use TLBM\Admin\Pages\SinglePages\FormEditPage;
 use TLBM\Admin\Pages\SinglePages\FormPage;
@@ -55,10 +56,6 @@ use TLBM\Ajax\AjaxManager;
 use TLBM\Ajax\Contracts\AjaxManagerInterface;
 use TLBM\Ajax\GetMergedActions;
 use TLBM\Ajax\PingPong;
-use TLBM\Booking\CalendarBookingManager;
-use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
-use TLBM\Calendar\CalendarSelectionHandler;
-use TLBM\Calendar\Contracts\CalendarSelectionHandlerInterface;
 use TLBM\ApiUtils\AdminPagesWrapper;
 use TLBM\ApiUtils\Contracts\AdminPagesInterface;
 use TLBM\ApiUtils\Contracts\EnqueueAssetsInterface;
@@ -77,6 +74,10 @@ use TLBM\ApiUtils\PluginActivationWrapper;
 use TLBM\ApiUtils\ShortcodeWrapper;
 use TLBM\ApiUtils\TimeUtilsWrapper;
 use TLBM\ApiUtils\UrlUtilsWrapper;
+use TLBM\Booking\CalendarBookingManager;
+use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
+use TLBM\Calendar\CalendarSelectionHandler;
+use TLBM\Calendar\Contracts\CalendarSelectionHandlerInterface;
 use TLBM\Email\Contracts\MailSenderInterface;
 use TLBM\Email\MailSender;
 use TLBM\Localization\Contracts\LabelsInterface;
@@ -91,8 +92,8 @@ use TLBM\Repository\BookingRepository;
 use TLBM\Repository\CacheManager;
 use TLBM\Repository\Contracts\BookingRepositoryInterface;
 use TLBM\Repository\Contracts\CacheManagerInterface;
-use TLBM\Repository\Contracts\ORMInterface;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
+use TLBM\Repository\Contracts\ORMInterface;
 use TLBM\Repository\EntityRepository;
 use TLBM\Repository\ORMManager;
 use TLBM\Repository\Query\Contracts\FullRuleActionQueryInterface;
@@ -253,6 +254,8 @@ return [
             $adminPageManager->registerPage(BookingMagicRoot::class);
             $adminPageManager->registerPage(BookingsPage::class);
             $adminPageManager->registerPage(CalendarPage::class);
+            $adminPageManager->registerPage(CalendarGroupPage::class);
+
             $adminPageManager->registerPage(CalendarEditPage::class);
             $adminPageManager->registerPage(RulesPage::class);
             $adminPageManager->registerPage(RuleEditPage::class);
@@ -301,7 +304,6 @@ return [
              * Text
              */
             $settingsManager->registerSettingsGroup("text", $localization->__("Text", TLBM_TEXT_DOMAIN));
-            $settingsManager->registerSetting($container->get(WeekdayLabels::class));
             $settingsManager->registerSetting($container->get(TextBookingReceived::class));
             $settingsManager->registerSetting($container->get(TextBookNow::class));
             /**

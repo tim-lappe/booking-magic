@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
     mode: "development",
     resolve: {
-        extensions: ['.tsx', '.ts', '.js'],
+        extensions: ['.tsx', '.ts', '.js', '.css'],
     },
     entry: {
         'frontend': './assets/ts/src/frontend.ts',
@@ -18,7 +18,11 @@ module.exports = {
                 test: /.tsx?$/,
                 exclude: /node_modules/,
                 loader: 'ts-loader'
-            }
+            },
+            {
+                test: /\.css$/i,
+                use: ["css-loader"],
+            },
         ]
     }
 };

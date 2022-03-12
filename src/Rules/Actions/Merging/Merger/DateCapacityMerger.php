@@ -2,7 +2,6 @@
 
 namespace TLBM\Rules\Actions\Merging\Merger;
 
-use Gettext\Merge;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
 use TLBM\MainFactory;
 use TLBM\Rules\Actions\ActionData\CapacityActionData;
@@ -92,9 +91,13 @@ class DateCapacityMerger extends Merger
     {
         if($mergeResult instanceof CapacityResult) {
             $calendarBookingManager = MainFactory::get(CalendarBookingManagerInterface::class);
-            $booked = $calendarBookingManager->getBookedSlots($calendarIds, $this->getDateTimeContext());
+
+            $dateTime = $this->getDateTimeContext()->copy();
+            $dateTime->setFullDay(true);
+            $booked = $calendarBookingManager->getBookedSlots($calendarIds, $dateTime);
 
             $mergeResult->setCapacityRemaining(max(0, $mergeResult->getCapacityOriginal() - $booked));
+
             return $mergeResult;
         }
 

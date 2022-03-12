@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Line } from "react-chartjs-2";
+import {Line} from "react-chartjs-2";
 import {CategoryScale} from 'chart.js';
 import Chart from "chart.js/auto";
 import {Utils} from "../../Utils";
@@ -11,10 +11,14 @@ export class LineChart extends React.Component<any, any> {
         aspectRatio: 5,
         scales: {
             yAxis: {
-                suggestedMin: 0,
+                suggestedMin: 1,
                 ticks: {
                     beginAtZero: true,
-                    callback: function (value) { if (Number.isInteger(value)) { return value; } },
+                    callback: function (value) {
+                        if (Number.isInteger(value)) {
+                            return value;
+                        }
+                    },
                     stepSize: 1
                 }
             }

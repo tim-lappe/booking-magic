@@ -3,11 +3,19 @@
 namespace TLBM\Repository\Query;
 
 use Doctrine\ORM\QueryBuilder;
+use TLBM\Entity\Form;
+use TLBM\Repository\Contracts\ORMInterface;
 
 define("TLBM_FORM_QUERY_ALIAS", "f");
 
-class FormQuery extends BaseQuery
+class FormQuery extends ManageableEntityQuery
 {
+
+    public function __construct(ORMInterface $repository)
+    {
+        parent::__construct($repository);
+        $this->setEntityClass(Form::class);
+    }
 
     /**
      * @param QueryBuilder $queryBuilder
@@ -17,10 +25,6 @@ class FormQuery extends BaseQuery
      */
     protected function buildQuery(QueryBuilder $queryBuilder, bool $onlyCount = false): void
     {
-        if($onlyCount) {
-            $queryBuilder->select("count(" . TLBM_FORM_QUERY_ALIAS . ".id)")->from("\TLBM\Entity\Form", TLBM_FORM_QUERY_ALIAS);
-        } else {
-            $queryBuilder->select(TLBM_FORM_QUERY_ALIAS)->from("\TLBM\Entity\Form", TLBM_FORM_QUERY_ALIAS);
-        }
+        parent::buildQuery($queryBuilder, $onlyCount);
     }
 }

@@ -3,11 +3,24 @@
 namespace TLBM\Repository\Query;
 
 use Doctrine\ORM\QueryBuilder;
+use TLBM\Entity\Rule;
+use TLBM\MainFactory;
+use TLBM\Repository\Contracts\ORMInterface;
 
-define("TLBM_RULE_QUERY_ALIAS", "r");
-
-class RulesQuery extends BaseQuery
+class RulesQuery extends ManageableEntityQuery
 {
+    /**
+     * @var int[]
+     */
+    private array $filterCalendarsIds = [];
+
+    public function __construct(ORMInterface $repository)
+    {
+        parent::__construct($repository);
+
+        $this->setEntityClass(Rule::class);
+    }
+
 
     /**
      * @param QueryBuilder $queryBuilder
@@ -17,10 +30,36 @@ class RulesQuery extends BaseQuery
      */
     protected function buildQuery(QueryBuilder $queryBuilder, bool $onlyCount = false): void
     {
-        if ($onlyCount) {
-            $queryBuilder->select("count(" . TLBM_RULE_QUERY_ALIAS . ".id)")->from("\TLBM\Entity\Rule", TLBM_RULE_QUERY_ALIAS);
-        } else {
-            $queryBuilder->select(TLBM_RULE_QUERY_ALIAS)->from("\TLBM\Entity\Rule", TLBM_RULE_QUERY_ALIAS);
+        parent::buildQuery($queryBuilder, $onlyCount);
+        $where = $queryBuilder->expr()->andX();
+
+        if ($this->filterCalendarsIds != null) {
+            $queryBuilder->leftJoin(TLBM_ENTITY_QUERY_ALIAS . '.calendarSelection', 'calendarSelection');
+            $queryBuilder->leftJoin("calendarSelection.calendars", "calendarSelectionCalendars");
+
+            $calendarSelectionHelper = MainFactory::create(CalendarSelectionQueryHelper::class);
+            $calendarSelectionHelper->setCalendarIds($this->filterCalendarsIds);
+            $where->add($calendarSelectionHelper->getQueryExpr($queryBuilder));
         }
+
+        if ($where->count() > 0) {
+            $queryBuilder->where($where);
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilterCalendarsIds(): array
+    {
+        return $this->filterCalendarsIds;
+    }
+
+    /**
+     * @param int[] $filterCalendarsIds
+     */
+    public function setFilterCalendarsIds(array $filterCalendarsIds): void
+    {
+        $this->filterCalendarsIds = $filterCalendarsIds;
     }
 }

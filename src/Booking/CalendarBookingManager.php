@@ -27,19 +27,20 @@ class CalendarBookingManager implements CalendarBookingManagerInterface
      * @param array $calendarIds
      * @param ExtendedDateTime $extendedDateTime
      * @param CalendarBooking|null $exclude
+     * @param bool|null $fullDay
      *
      * @return int
      */
-    public function getRemainingSlots(array $calendarIds, ExtendedDateTime $extendedDateTime, ?CalendarBooking $exclude = null): int
+    public function getRemainingSlots(array $calendarIds, ExtendedDateTime $extendedDateTime, ?CalendarBooking $exclude = null, ?bool $fullDay = null): int
     {
-        $capacity = $this->capacityManager->getOriginalCapacity($calendarIds, $extendedDateTime);
-        $bookedSlots = $this->getBookedSlots($calendarIds, $extendedDateTime);
+        $capacity    = $this->capacityManager->getOriginalCapacity($calendarIds, $extendedDateTime);
+        $bookedSlots = $this->getBookedSlots($calendarIds, $extendedDateTime, $fullDay);
 
-        if($exclude != null) {
+        if ($exclude != null) {
             $bookedSlots -= $exclude->getSlots();
         }
 
-        return max(0,($capacity - $bookedSlots));
+        return max(0, ($capacity - $bookedSlots));
     }
 
     /**
@@ -53,17 +54,20 @@ class CalendarBookingManager implements CalendarBookingManagerInterface
         $query = MainFactory::create(CalendarBookingsQuery::class);
         $query->setReturnSlotsScalar(true);
 
-        if($calendarIds != null) {
+        if ($calendarIds != null) {
             $query->setCalendarIds($calendarIds);
         }
-        if($dateTime != null) {
+
+        if ($dateTime != null) {
             $query->setDateTime($dateTime);
         }
+
+        $query->setExcludeBookingStates(["canceled"]);
 
         try {
             return $query->getQuery()->getSingleScalarResult() ?? 0;
         } catch (Exception $e) {
-            if(WP_DEBUG) {
+            if (WP_DEBUG) {
                 echo $e->getMessage();
             }
         }

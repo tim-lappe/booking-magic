@@ -31,14 +31,16 @@ export class MonthViewTimePanel extends React.Component<MonthViewTimePanelProps,
     }
 
     onClickOnTimeTile(event: any, timeCapacity: any) {
-        if(this.props.onSelect) {
-            this.props.onSelect(timeCapacity);
-        }
+        if (timeCapacity.capacityRemaining > 0) {
+            if (this.props.onSelect) {
+                this.props.onSelect(timeCapacity);
+            }
 
-        this.setState((prevState: MonthViewTimePanelState) => {
-            prevState.selected = timeCapacity;
-            return prevState;
-        });
+            this.setState((prevState: MonthViewTimePanelState) => {
+                prevState.selected = timeCapacity;
+                return prevState;
+            });
+        }
 
         event.preventDefault();
     }
@@ -48,9 +50,14 @@ export class MonthViewTimePanel extends React.Component<MonthViewTimePanelProps,
             <div className={"tlbm-calendar-time-panel "} style={{display: this.props.times.length > 0 ? "grid" : "none"}}>
                 {this.props.times.map((timeCapacity) => {
                     return (
-                        <div className={"tlbm-calendar-time-slot " + (this.state.selected == timeCapacity ? "tlbm-time-cell-selected ": "")} onClick={(e) => this.onClickOnTimeTile(e, timeCapacity)} key={timeCapacity.hour + "_" + timeCapacity.minute}  style={{display: timeCapacity.capacityOriginal > 0 ? "flex" : "none"}}>
-                            <span>{this.getWithLeadingZero(timeCapacity.hour)}:{this.getWithLeadingZero(timeCapacity.minute)}</span>***{timeCapacity.capacityOriginal}
-                            <span className={"dashicons dashicons-yes-alt"} style={{display: this.state.selected == timeCapacity ? "block": "none"}} />
+                        <div
+                            className={"tlbm-calendar-time-slot " + (this.state.selected == timeCapacity ? "tlbm-time-cell-selected " : "") + (timeCapacity.capacityRemaining <= 0 ? " tlbm-time-cell-no-capacities" : "")}
+                            onClick={(e) => this.onClickOnTimeTile(e, timeCapacity)}
+                            key={timeCapacity.hour + "_" + timeCapacity.minute}
+                            style={{display: timeCapacity.capacityOriginal > 0 ? "flex" : "none"}}>
+                            <span>{this.getWithLeadingZero(timeCapacity.hour)}:{this.getWithLeadingZero(timeCapacity.minute)}</span>
+                            <span className={"dashicons dashicons-yes-alt"}
+                                  style={{display: this.state.selected == timeCapacity ? "block" : "none"}}/>
                         </div>
                     )
                 })}

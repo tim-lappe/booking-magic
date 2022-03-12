@@ -33,10 +33,32 @@ class CacheManager implements CacheManagerInterface
 
             return true;
         } catch (Exception $exception) {
-            if(WP_DEBUG) {
+            if (WP_DEBUG) {
                 echo $exception->getMessage();
             }
         }
+
+        return false;
+    }
+
+    /**
+     * @param mixed $hash
+     *
+     * @return bool
+     */
+    public function entryExists($hash): bool
+    {
+        $hash = $this->hashObj($hash);
+        try {
+            $mgr = $this->repository->getEntityManager();
+
+            return $mgr->find(CacheEntity::class, $hash) != null;
+        } catch (Exception $exception) {
+            if (WP_DEBUG) {
+                echo $exception->getMessage();
+            }
+        }
+
         return false;
     }
 

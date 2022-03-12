@@ -5,12 +5,12 @@ namespace TLBM\Repository\Query;
 use Doctrine\ORM\QueryBuilder;
 use TLBM\Entity\Booking;
 use TLBM\Entity\Calendar;
-use TLBM\Entity\CalendarBooking;
+use TLBM\Repository\Contracts\ORMInterface;
 use TLBM\Utilities\ExtendedDateTime;
 
 define("TLBM_BOOKING_QUERY_ALIAS", "b");
 
-class BookingsQuery extends BaseQuery
+class BookingsQuery extends ManageableEntityQuery
 {
 
     /**
@@ -33,6 +33,12 @@ class BookingsQuery extends BaseQuery
      */
     private ?ExtendedDateTime $filterToDateTime = null;
 
+    public function __construct(ORMInterface $repository)
+    {
+        parent::__construct($repository);
+        $this->setEntityClass(Booking::class);
+    }
+
     /**
      * @param QueryBuilder $queryBuilder
      * @param bool $onlyCount
@@ -41,26 +47,22 @@ class BookingsQuery extends BaseQuery
      */
     protected function buildQuery(QueryBuilder $queryBuilder, bool $onlyCount = false): void
     {
-        if($onlyCount) {
-            $queryBuilder->select("count(" . TLBM_BOOKING_QUERY_ALIAS . ".id)")->from(Booking::class, TLBM_BOOKING_QUERY_ALIAS);
-        } else {
-            $queryBuilder->select(TLBM_BOOKING_QUERY_ALIAS)->from(Booking::class, TLBM_BOOKING_QUERY_ALIAS);
-        }
+        parent::buildQuery($queryBuilder, $onlyCount);
 
         $whereAndExpr = $queryBuilder->expr()->andX();
         if($this->filterFromDateTime != null) {
             $queryBuilder->setParameter("filterFromTstamp", $this->filterFromDateTime->getTimestamp());
-            $whereAndExpr->add(TLBM_BOOKING_QUERY_ALIAS . ".timestampCreated >= :filterFromTstamp");
+            $whereAndExpr->add(TLBM_ENTITY_QUERY_ALIAS . ".timestampCreated >= :filterFromTstamp");
         }
 
         if($this->filterToDateTime != null) {
             $queryBuilder->setParameter("filterToTimestamp", $this->filterToDateTime->getTimestamp());
-            $whereAndExpr->add(TLBM_BOOKING_QUERY_ALIAS . ".timestampCreated <= :filterToTimestamp");
+            $whereAndExpr->add(TLBM_ENTITY_QUERY_ALIAS . ".timestampCreated <= :filterToTimestamp");
         }
 
         if($this->filterCalendars != null) {
-            $queryBuilder->leftJoin(CalendarBooking::class, "calendarBooking");
-            $queryBuilder->leftJoin(Calendar::class, "calendar");
+            $queryBuilder->leftJoin(TLBM_ENTITY_QUERY_ALIAS . ".calendarBookings", "calendarBooking");
+            $queryBuilder->leftJoin("calendarBooking.calendar", "calendar");
             $calendarOrExpr = $queryBuilder->expr()->orX();
             foreach ($this->filterCalendars as $calendar) {
                 $calendarOrExpr->add($queryBuilder->expr()->eq("calendar.id", $calendar->getId()));
@@ -71,7 +73,7 @@ class BookingsQuery extends BaseQuery
         if($this->filterStates != null) {
             $statesOrExpr = $queryBuilder->expr()->orX();
             foreach ($this->filterStates as $state) {
-                $statesOrExpr->add($queryBuilder->expr()->eq(TLBM_BOOKING_QUERY_ALIAS . ".state", "'" . $state. "'"));
+                $statesOrExpr->add($queryBuilder->expr()->eq(TLBM_ENTITY_QUERY_ALIAS . ".state", "'" . $state . "'"));
             }
 
             $whereAndExpr->add($statesOrExpr);

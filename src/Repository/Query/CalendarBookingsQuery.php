@@ -21,6 +21,11 @@ class CalendarBookingsQuery extends TimeBasedQuery
     private bool $returnSlotsScalar = false;
 
     /**
+     * @var array
+     */
+    private array $excludeBookingStates = [];
+
+    /**
      * @param ORMInterface $repository
      */
     public function __construct(ORMInterface $repository)
@@ -42,6 +47,22 @@ class CalendarBookingsQuery extends TimeBasedQuery
     public function setReturnSlotsScalar(bool $returnSlotsScalar): void
     {
         $this->returnSlotsScalar = $returnSlotsScalar;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExcludeBookingStates(): array
+    {
+        return $this->excludeBookingStates;
+    }
+
+    /**
+     * @param array $excludeBookingStates
+     */
+    public function setExcludeBookingStates(array $excludeBookingStates): void
+    {
+        $this->excludeBookingStates = $excludeBookingStates;
     }
 
     /**
@@ -80,15 +101,20 @@ class CalendarBookingsQuery extends TimeBasedQuery
 
         $queryBuilder->from(CalendarBooking::class, "calendarBooking");
         $queryBuilder->join("calendarBooking.calendar", "calendar");
+        $queryBuilder->join("calendarBooking.booking", "booking");
 
         $where = $queryBuilder->expr()->andX();
 
-        if($this->getCalendarIds() != null) {
+        if ($this->getCalendarIds() != null) {
             $queryBuilder->setParameter("calendarIds", $this->getCalendarIds());
             $where->add($expr->in("calendar.id", ":calendarIds"));
         }
 
-        if($dateTime != null) {
+        if (count($this->excludeBookingStates) > 0) {
+            $where->add($expr->notIn("booking.state", $this->excludeBookingStates));
+        }
+
+        if ($dateTime != null) {
             $where->add($this->exprInTimeRange($queryBuilder, $dateTime, "calendarBooking"));
         }
 

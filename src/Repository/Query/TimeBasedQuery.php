@@ -94,35 +94,40 @@ abstract class TimeBasedQuery extends BaseQuery implements TimeBasedQueryInterfa
     protected function exprInTimeRange(QueryBuilder $queryBuilder, ExtendedDateTime $dateTime, string $column): Orx
     {
         $timestampBeginOfDay = $dateTime->getTimestampBeginOfDay();
-        $timestampEndOfDay = $dateTime->getTimestampEndOfDay();
+        $timestampEndOfDay   = $dateTime->getTimestampEndOfDay();
 
         $timestampFrom = $dateTime->isFullDay() ? $timestampEndOfDay : $dateTime->getTimestamp();
-        $timestampTo = $dateTime->isFullDay() ? $timestampBeginOfDay : $dateTime->getTimestamp();
+        $timestampTo   = $dateTime->isFullDay() ? $timestampBeginOfDay : $dateTime->getTimestamp();
 
-        $expr = $queryBuilder->expr();
-        $whereClause = $expr->orX();
+        $expr            = $queryBuilder->expr();
+        $whereClause     = $expr->orX();
         $fullRangeClause = $expr->andX();
 
         $clauseFromOr = $expr->orX();
-        $clauseFromOr->add($column . ".fromTimestamp <= '" . $timestampFrom . "'");
-
-        $clauseFromFullDay = $expr->andX();
-        $clauseFromFullDay->add($column . ".fromTimestamp <= '" . $timestampEndOfDay . "'");
-        $clauseFromFullDay->add($column . ".fromFullDay = true");
-        $clauseFromOr->add($clauseFromFullDay);
+        if ($dateTime->isFullDay()) {
+            $clauseFromFullDay = $expr->andX();
+            $clauseFromFullDay->add($column . ".fromTimestamp <= '" . $timestampEndOfDay . "'");
+            $clauseFromFullDay->add($column . ".fromFullDay = 1");
+            $clauseFromOr->add($clauseFromFullDay);
+        } else {
+            $clauseFromOr->add($column . ".fromTimestamp <= '" . $timestampFrom . "'");
+        }
 
         $clauseToOr = $expr->orX();
-        $clauseToOr->add($expr->isNull($column . ".toTimestamp"));
-        $clauseToOr->add($column .".toTimestamp >= '" . $timestampTo . "'");
-
-        $clauseToFullDay = $expr->andX();
-        $clauseToFullDay->add($column . ".toTimestamp >= '" . $timestampBeginOfDay . "'");
-        $clauseToFullDay->add($column . ".toFullDay = true");
-        $clauseToOr->add($clauseToFullDay);
+        if ($dateTime->isFullDay()) {
+            $clauseToFullDay = $expr->andX();
+            $clauseToFullDay->add($column . ".toTimestamp >= '" . $timestampBeginOfDay . "'");
+            $clauseToFullDay->add($column . ".toFullDay = 1");
+            $clauseToOr->add($clauseToFullDay);
+        } else {
+            $clauseToOr->add($expr->isNull($column . ".toTimestamp"));
+            $clauseToOr->add($column . ".toTimestamp >= '" . $timestampTo . "'");
+        }
 
         $fullRangeClause->add($clauseFromOr);
         $fullRangeClause->add($clauseToOr);
         $whereClause->add($fullRangeClause);
+
         return $whereClause;
     }
 

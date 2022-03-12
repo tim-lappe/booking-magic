@@ -3,16 +3,23 @@
 namespace TLBM\Repository\Query;
 
 use Doctrine\ORM\QueryBuilder;
+use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarSelection;
+use TLBM\Repository\Contracts\ORMInterface;
 
-define("TLBM_CALENDAR_QUERY_ALIAS", "c");
 
-class CalendarQuery extends BaseQuery
+class CalendarQuery extends ManageableEntityQuery
 {
     /**
      * @var CalendarSelection|null
      */
     private ?CalendarSelection $calendarSelection = null;
+
+    public function __construct(ORMInterface $repository)
+    {
+        parent::__construct($repository);
+        $this->setEntityClass(Calendar::class);
+    }
 
     /**
      * @param QueryBuilder $queryBuilder
@@ -22,18 +29,14 @@ class CalendarQuery extends BaseQuery
      */
     protected function buildQuery(QueryBuilder $queryBuilder, bool $onlyCount = false): void
     {
-        if($onlyCount) {
-            $queryBuilder->select("count(".TLBM_CALENDAR_QUERY_ALIAS.".id)")->from("\TLBM\Entity\Calendar", TLBM_CALENDAR_QUERY_ALIAS);
-        } else {
-            $queryBuilder->select(TLBM_CALENDAR_QUERY_ALIAS)->from("\TLBM\Entity\Calendar", TLBM_CALENDAR_QUERY_ALIAS);
-        }
+        parent::buildQuery($queryBuilder, $onlyCount);
 
         $where = $queryBuilder->expr()->andX();
         if($this->calendarSelection && $this->calendarSelection->getSelectionMode() != TLBM_CALENDAR_SELECTION_TYPE_ALL) {
             if($this->calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
-                $where->add($queryBuilder->expr()->in(TLBM_CALENDAR_QUERY_ALIAS . ".id", $this->calendarSelection->getCalendarIds()));
+                $where->add($queryBuilder->expr()->in(TLBM_ENTITY_QUERY_ALIAS . ".id", $this->calendarSelection->getCalendarIds()));
             } elseif ($this->calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
-                $where->add($queryBuilder->expr()->notIn(TLBM_CALENDAR_QUERY_ALIAS . ".id", $this->calendarSelection->getCalendarIds()));
+                $where->add($queryBuilder->expr()->notIn(TLBM_ENTITY_QUERY_ALIAS . ".id", $this->calendarSelection->getCalendarIds()));
             }
         }
 

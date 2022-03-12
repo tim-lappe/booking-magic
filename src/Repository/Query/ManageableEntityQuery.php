@@ -20,6 +20,9 @@ class ManageableEntityQuery extends BaseQuery
      */
     private bool $includeDeleted = false;
 
+    /**
+     * @var bool
+     */
     private bool $onlyDeleted = false;
 
     /**

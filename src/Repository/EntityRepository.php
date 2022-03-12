@@ -4,6 +4,8 @@ namespace TLBM\Repository;
 
 use Exception;
 use Iterator;
+use TLBM\ApiUtils\Contracts\TimeUtilsInterface;
+use TLBM\ApiUtils\TimeUtilsWrapper;
 use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
@@ -17,9 +19,15 @@ class EntityRepository implements EntityRepositoryInterface
      */
     private ORMInterface $repository;
 
-    public function __construct(ORMInterface $repository)
+    /**
+     * @var TimeUtilsWrapper
+     */
+    private TimeUtilsInterface $timeUtils;
+
+    public function __construct(ORMInterface $repository, TimeUtilsInterface $timeUtils)
     {
         $this->repository = $repository;
+        $this->timeUtils  = $timeUtils;
     }
 
     /**
@@ -98,8 +106,16 @@ class EntityRepository implements EntityRepositoryInterface
     {
         try {
             $mgr = $this->repository->getEntityManager();
+
+            if ( !$mgr->contains($entity)) {
+                $entity->setTimestampCreated($this->timeUtils->time());
+            }
+
+            $entity->setTimestampEdited($this->timeUtils->time());
+
             $mgr->persist($entity);
             $mgr->flush();
+
             return true;
         } catch (Exception $exception) {
             if(WP_DEBUG) {

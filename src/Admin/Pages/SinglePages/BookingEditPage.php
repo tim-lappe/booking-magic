@@ -5,8 +5,9 @@ namespace TLBM\Admin\Pages\SinglePages;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
 use TLBM\Admin\WpForm\SelectField;
-use TLBM\Booking\Semantic\BookingValueSemantic;
+use TLBM\Admin\WpForm\TextareaField;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\Booking\Semantic\BookingValueSemantic;
 use TLBM\Entity\Booking;
 use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;
@@ -52,13 +53,14 @@ class BookingEditPage extends EntityEditPage
 
     public function defineFormFields()
     {
-        $states = [];
+        $states   = [];
         $settings = $this->settingsManager->getSetting(BookingStates::class);
-        if($settings instanceof BookingStates) {
+        if ($settings instanceof BookingStates) {
             $states = $settings->getStatesKeyValue();
         }
 
         $this->formBuilder->defineFormField(new SelectField("state", $this->localization->__("State", TLBM_TEXT_DOMAIN), $states, true));
+        $this->formBuilder->defineFormField(new TextareaField("notes", $this->localization->__("Notes", TLBM_TEXT_DOMAIN)));
     }
 
     protected function getHeadTitle(): string
@@ -81,7 +83,7 @@ class BookingEditPage extends EntityEditPage
         ?>
 
         <div class="tlbm-admin-page-tile-row">
-            <div class="tlbm-admin-page-tile tlbm-admin-page-tile-grow-3 tlbm-admin-page-booking-value-tile">
+            <div class="tlbm-admin-page-tile tlbm-admin-page-tile-grow-2 tlbm-admin-page-booking-value-tile">
                 <div class="tlbm-admin-booking-id"> <?php echo sprintf($this->localization->__("#%s", TLBM_TEXT_DOMAIN), $booking->getId()) ?></div>
                 <div class="tlbm-admin-booking-values">
                     <?php if($semantic->hasFullName()): ?>
@@ -149,6 +151,7 @@ class BookingEditPage extends EntityEditPage
                 <?php
                 $this->formBuilder->displayFormHead();
                 $this->formBuilder->displayFormField("state", $booking->getState());
+                $this->formBuilder->displayFormField("notes", $booking->getNotes());
                 $this->formBuilder->displayFormFooter();
                 ?>
             </div>
@@ -193,6 +196,7 @@ class BookingEditPage extends EntityEditPage
         }
 
         $booking->setState($vars['state']);
+        $booking->setNotes($vars['notes']);
 
         if($this->entityRepository->saveEntity($booking)) {
             $savedEntity = $booking;

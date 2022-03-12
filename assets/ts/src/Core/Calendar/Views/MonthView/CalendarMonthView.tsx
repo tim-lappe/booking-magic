@@ -178,8 +178,16 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSt
                             {dayTiles.map((date: any, index) => {
                                 if(date instanceof DateTime && this.state.bookingOptions != null) {
                                     let dateCapacity = this.state.bookingOptions?.getMergedActionsForDay(date).getActionResultValue("dateCapacity")?.capacityRemaining;
-                                    let timeCapacities = this.state.bookingOptions?.getMergedActionsForDay(date).getActionResultValue("timeCapacities")?.timeSlotCapacities;
-                                    let cellDisabled = (dateCapacity == null || dateCapacity == 0) && (timeCapacities == null || timeCapacities.length == 0);
+                                    let timeCapacities = this.state.bookingOptions?.getMergedActionsForDay(date).getActionResultValue("timeCapacities")?.timeSlotsCapacities;
+                                    let cellDisabled = (dateCapacity == null || dateCapacity == 0);
+
+                                    if (timeCapacities != null && timeCapacities.length > 1) {
+                                        for (let timeCap of timeCapacities) {
+                                            if (timeCap.capacityRemaining > 0) {
+                                                cellDisabled = false;
+                                            }
+                                        }
+                                    }
 
                                     return (
                                         <MonthViewDateCell
@@ -187,7 +195,10 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSt
                                             empty={false} onClick={this.onClickOnDateTile}
                                             selected={!cellDisabled && this.state.viewState.selectedDate != null && DateTime.isSameDay(this.state.viewState.selectedDate, date)}
                                             dateTime={date} key={index}>
-                                            <span style={{float: "right", visibility: (!cellDisabled ? "visible" : "hidden")}}>{dateCapacity}</span>
+                                            <span style={{
+                                                float: "right",
+                                                visibility: (!cellDisabled ? "visible" : "hidden")
+                                            }}>{dateCapacity}</span>
                                         </MonthViewDateCell>
                                     )
                                 } else {
