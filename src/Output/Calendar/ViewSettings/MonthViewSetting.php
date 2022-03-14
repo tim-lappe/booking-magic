@@ -6,13 +6,13 @@ use TLBM\Localization\Contracts\LabelsInterface;
 class MonthViewSetting
 {
 
-    public array $weekday_labels = array();
+    public array $weekdayLabels = [];
 
     /**
      * @param LabelsInterface $labels
      */
     public function __construct(LabelsInterface $labels)
     {
-        $this->weekday_labels = $labels->getWeekdayLabels();
+        $this->weekdayLabels = array_values($labels->getWeekdayLabels());
     }
 }

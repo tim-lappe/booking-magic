@@ -6,12 +6,15 @@ namespace TLBM\Request;
 use Throwable;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\SinglePageBooking;
-use TLBM\Admin\Settings\SingleSettings\Emails\EmailBookingConfirmation;
+use TLBM\Admin\Settings\SingleSettings\Emails\AdminEmailBookingReceived;
+use TLBM\Admin\Settings\SingleSettings\Emails\EmailBookingReceived;
+use TLBM\Admin\Settings\SingleSettings\General\AdminMail;
 use TLBM\Admin\Settings\SingleSettings\Text\TextBookingReceived;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Booking\BookingProcessor;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
 use TLBM\Booking\Semantic\BookingValueSemantic;
+use TLBM\Email\BookingEmailSemantic;
 use TLBM\Email\Contracts\MailSenderInterface;
 use TLBM\MainFactory;
 use TLBM\Output\SemanticFrontendMessenger;
@@ -111,7 +114,12 @@ class CompleteBookingRequest extends RequestBase
                         $semantic = MainFactory::create(BookingValueSemantic::class);
                         $semantic->setValuesFromBooking($pendingBooking);
 
-                        $this->mailSender->sendTemplate($semantic->getContactEmail(), EmailBookingConfirmation::class);
+                        $emailSemantic = MainFactory::create(BookingEmailSemantic::class);
+                        $emailSemantic->setBooking($pendingBooking);
+                        $emailSemantic->setBookingSemantic($semantic);
+
+                        $this->mailSender->sendTemplate($semantic->getContactEmail(), EmailBookingReceived::class, $emailSemantic);
+                        $this->mailSender->sendTemplate($this->settingsManager->getValue(AdminMail::class), AdminEmailBookingReceived::class, $emailSemantic);
                         $this->bookingSuccessed = true;
                     } else {
                         $this->hasContent = false;

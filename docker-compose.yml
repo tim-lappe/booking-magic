@@ -9,11 +9,6 @@ services:
       - ./:/app
 
     environment:
-      WORDPRESS_DB_HOST: wordpress_database_it
-      WORDPRESS_DB_USER: dbuser
-      WORDPRESS_DB_PASSWORD: password
-      WORDPRESS_DB_NAME: wordpress_db
-      WORDPRESS_DEBUG: 1
       TLBM_DEBUG: 1
       SCRIPT_DEBUG: 1
       WP_TESTS_DIR: /var/www/html

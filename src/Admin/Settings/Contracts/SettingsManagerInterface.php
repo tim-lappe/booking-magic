@@ -2,8 +2,6 @@
 
 namespace TLBM\Admin\Settings\Contracts;
 
-use TLBM\Admin\Settings\SingleSettings\SettingsBase;
-
 interface SettingsManagerInterface
 {
 
@@ -23,13 +21,13 @@ interface SettingsManagerInterface
     public function registerSettingsGroup(string $name, string $title): bool;
 
     /**
-     * @template T of SettingsBase
+     * @template T
      *
      * @param class-string<T> $name
      *
      * @return ?T
      */
-    public function getSetting(string $name): ?SettingsBase;
+    public function getSetting(string $name);
 
     /**
      * @return array

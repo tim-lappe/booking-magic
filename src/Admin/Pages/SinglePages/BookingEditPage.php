@@ -7,7 +7,9 @@ use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
 use TLBM\Admin\WpForm\SelectField;
 use TLBM\Admin\WpForm\TextareaField;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\Booking\BookingChangeManager;
 use TLBM\Booking\Semantic\BookingValueSemantic;
+use TLBM\Email\Contracts\MailSenderInterface;
 use TLBM\Entity\Booking;
 use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;
@@ -39,12 +41,15 @@ class BookingEditPage extends EntityEditPage
      */
     protected LocalizationInterface $localization;
 
-    public function __construct(EntityRepositoryInterface $entityRepository, BookingRepositoryInterface $bookingManager, SettingsManagerInterface $settingsManager, LocalizationInterface $localization)
+    protected MailSenderInterface $mailSender;
+
+    public function __construct(MailSenderInterface $mail, EntityRepositoryInterface $entityRepository, BookingRepositoryInterface $bookingManager, SettingsManagerInterface $settingsManager, LocalizationInterface $localization)
     {
-        $this->settingsManager = $settingsManager;
-        $this->bookingManager = $bookingManager;
+        $this->mailSender       = $mail;
+        $this->settingsManager  = $settingsManager;
+        $this->bookingManager   = $bookingManager;
         $this->entityRepository = $entityRepository;
-        $this->localization = $localization;
+        $this->localization     = $localization;
 
         parent::__construct($this->localization->__("Booking", TLBM_TEXT_DOMAIN), "booking-edit", "booking-edit", false);
 
@@ -191,19 +196,23 @@ class BookingEditPage extends EntityEditPage
     protected function onSaveEntity($vars, ?ManageableEntity &$savedEntity): array
     {
         $booking = $this->getEditingEntity();
-        if (!$booking) {
+        if ( !$booking) {
             $booking = new Booking();
         }
 
-        $booking->setState($vars['state']);
+        $bookingChange = MainFactory::create(BookingChangeManager::class);
+        $bookingChange->setBooking($booking);
+        $bookingChange->setState($vars['state']);
+        $bookingChange->storeValuesToBooking();
+
         $booking->setNotes($vars['notes']);
 
-        if($this->entityRepository->saveEntity($booking)) {
-            $savedEntity = $booking;
-            return array(
-                "success" => $this->localization->__("Booking has been saved", TLBM_TEXT_DOMAIN)
-            );
 
+        if ($this->entityRepository->saveEntity($booking)) {
+            $savedEntity = $booking;
+
+            return ["success" => $this->localization->__("Booking has been saved", TLBM_TEXT_DOMAIN)
+            ];
         } else {
             return array(
                 "error" => $this->localization->__("An internal error occured. ", TLBM_TEXT_DOMAIN)

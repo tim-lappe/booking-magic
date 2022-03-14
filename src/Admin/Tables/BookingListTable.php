@@ -9,6 +9,7 @@ use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\Booking\BookingChangeManager;
 use TLBM\Booking\Semantic\BookingValueSemantic;
 use TLBM\Entity\Booking;
 use TLBM\Entity\Calendar;
@@ -63,8 +64,11 @@ class BookingListTable extends ManagableEntityTable
         foreach ($states as $key => $title) {
             if($action == "set_state_" . $key) {
                 foreach ($ids as $id) {
-                    $booking = $this->entityRepository->getEntity(Booking::class, $id);
-                    $booking->setState($key);
+                    $booking       = $this->entityRepository->getEntity(Booking::class, $id);
+                    $bookingChange = MainFactory::create(BookingChangeManager::class);
+                    $bookingChange->setBooking($booking);
+                    $bookingChange->setState($key);
+                    $bookingChange->storeValuesToBooking();
 
                     $this->entityRepository->saveEntity($booking);
                 }
