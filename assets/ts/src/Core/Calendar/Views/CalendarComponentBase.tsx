@@ -5,7 +5,6 @@ import {CalendarDisplay} from "../../Entity/CalendarDisplay";
 import {MergedActionsRequest} from "../../Ajax/MergedActionsRequest";
 import {RequestSet} from "../../Ajax/RequestSet";
 import {RequestCommandBase} from "../../Ajax/RequestCommandBase";
-import {func} from "prop-types";
 
 export interface CalendarBaseProps {
     display: CalendarDisplay;

@@ -2,6 +2,8 @@
 
 namespace TLBM\Rules\Actions\Merging\Merger;
 
+use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
+use TLBM\Admin\Settings\SingleSettings\BookingProcess\LatestBookingPossibility;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
 use TLBM\Entity\RuleAction;
 use TLBM\MainFactory;
@@ -10,6 +12,7 @@ use TLBM\Rules\Actions\Merging\CapacityMergeHelper;
 use TLBM\Rules\Actions\Merging\Contracts\MergeResultInterface;
 use TLBM\Rules\Actions\Merging\Results\TimeCapacitiesCollectionResults;
 use TLBM\Rules\Actions\Merging\Results\TimedCapacityResult;
+use TLBM\Utilities\ExtendedDateTime;
 
 class TimeCapacityMerger extends Merger
 {
@@ -37,7 +40,7 @@ class TimeCapacityMerger extends Merger
         }
 
         if($mergeResult instanceof TimeCapacitiesCollectionResults) {
-            $hour = $this->getRuleAction()->getTimeHour();
+            $hour   = $this->getRuleAction()->getTimeHour();
             $minute = $this->getRuleAction()->getTimeMin();
 
             $timedCap = $mergeResult->getTimeCapacityAt($hour, $minute);
@@ -97,6 +100,14 @@ class TimeCapacityMerger extends Merger
     public function lastStepModification(string $term, array $calendarIds, MergeResultInterface $mergeResult): MergeResultInterface
     {
         if ($term == "timeCapacities" && $mergeResult instanceof TimeCapacitiesCollectionResults) {
+            $settingsManager          = MainFactory::create(SettingsManagerInterface::class);
+            $latestBookingPossibility = $settingsManager->getSetting(LatestBookingPossibility::class);
+
+            /**
+             * @var ExtendedDateTime $latestDt
+             */
+            $latestDt = $latestBookingPossibility->getLatestPossibilityDateTime();
+
             foreach ($mergeResult->getTimeCapacities() as $timeCapacity) {
                 $calendarBookingManager = MainFactory::get(CalendarBookingManagerInterface::class);
 
@@ -106,8 +117,10 @@ class TimeCapacityMerger extends Merger
                 $dateTime->setMinute($timeCapacity->getMinute());
                 $dateTime->setSeconds(0);
 
-                $booked = $calendarBookingManager->getBookedSlots($calendarIds, $dateTime);
-                $timeCapacity->setCapacityRemaining(max(0, $timeCapacity->getCapacityOriginal() - $booked));
+                if ( !$dateTime->isEarlierThan($latestDt)) {
+                    $booked = $calendarBookingManager->getBookedSlots($calendarIds, $dateTime);
+                    $timeCapacity->setCapacityRemaining(max(0, $timeCapacity->getCapacityOriginal() - $booked));
+                }
             }
         }
 

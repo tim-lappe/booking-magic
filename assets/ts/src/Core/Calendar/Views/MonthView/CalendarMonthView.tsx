@@ -122,7 +122,7 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSt
 
     render() {
         let dayTiles = this.getDayTiles();
-        let weekdayTiles = [...this.props.display.viewSettings.weekday_labels];
+        let weekdayTiles = [...this.props.display.viewSettings.weekdayLabels];
 
         let columnSize = (1 / weekdayTiles.length) * 100;
         let cssGridColumns = "";

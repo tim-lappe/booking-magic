@@ -2,12 +2,15 @@
 
 namespace TLBM\Rules\Actions\Merging\Merger;
 
+use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
+use TLBM\Admin\Settings\SingleSettings\BookingProcess\LatestBookingPossibility;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
 use TLBM\MainFactory;
 use TLBM\Rules\Actions\ActionData\CapacityActionData;
 use TLBM\Rules\Actions\Merging\CapacityMergeHelper;
 use TLBM\Rules\Actions\Merging\Contracts\MergeResultInterface;
 use TLBM\Rules\Actions\Merging\Results\CapacityResult;
+use TLBM\Utilities\ExtendedDateTime;
 
 class DateCapacityMerger extends Merger
 {
@@ -90,15 +93,26 @@ class DateCapacityMerger extends Merger
     public function lastStepModification(string $term, array $calendarIds, MergeResultInterface $mergeResult): MergeResultInterface
     {
         if($mergeResult instanceof CapacityResult) {
+            $settingsManager        = MainFactory::get(SettingsManagerInterface::class);
             $calendarBookingManager = MainFactory::get(CalendarBookingManagerInterface::class);
 
+            $latestBookingPossibility = $settingsManager->getSetting(LatestBookingPossibility::class);
+
+            /**
+             * @var ExtendedDateTime $latestDt
+             */
+            $latestDt = $latestBookingPossibility->getLatestPossibilityDateTime();
             $dateTime = $this->getDateTimeContext()->copy();
             $dateTime->setFullDay(true);
-            $booked = $calendarBookingManager->getBookedSlots($calendarIds, $dateTime);
 
-            $mergeResult->setCapacityRemaining(max(0, $mergeResult->getCapacityOriginal() - $booked));
+            if ( !$dateTime->isEarlierThan($latestDt)) {
+                $booked = $calendarBookingManager->getBookedSlots($calendarIds, $dateTime);
+                $mergeResult->setCapacityRemaining(max(0, $mergeResult->getCapacityOriginal() - $booked));
 
-            return $mergeResult;
+                return $mergeResult;
+            } else {
+                $mergeResult->setCapacityRemaining(0);
+            }
         }
 
         return parent::lastStepModification($term, $calendarIds, $mergeResult);

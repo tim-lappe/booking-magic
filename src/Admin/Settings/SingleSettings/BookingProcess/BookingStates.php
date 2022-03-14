@@ -69,14 +69,13 @@ class BookingStates extends SettingsBase
                 "color"   => "#a10b0b",
                 "custom"  => false
             ),
-            array(
-                "name"    => "canceled",
-                "title"   => $this->localization->__("Canceled", TLBM_TEXT_DOMAIN),
+            ["name" => "cancelled",
+                "title" => $this->localization->__("Cancelled", TLBM_TEXT_DOMAIN),
                 "enabled" => true,
                 "default" => false,
-                "color"   => "#fa3434",
-                "custom"  => false
-            )
+                "color" => "#fa3434",
+                "custom" => false
+            ]
         );
     }
 

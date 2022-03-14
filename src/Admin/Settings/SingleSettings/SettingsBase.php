@@ -84,8 +84,23 @@ abstract class SettingsBase
      */
     public function getValue()
     {
-        $options = MainFactory::get(OptionsInterface::class);
-        return $options->getOption($this->optionName, $this->defaultValue);
+        $options     = MainFactory::get(OptionsInterface::class);
+        $optionValue = $options->getOption($this->optionName, $this->defaultValue);
+        if ($this->isValueValid($optionValue)) {
+            return $optionValue;
+        }
+
+        return $this->defaultValue;
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return bool
+     */
+    public function isValueValid($value): bool
+    {
+        return true;
     }
 
     public function display()

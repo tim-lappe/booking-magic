@@ -43,8 +43,13 @@ use TLBM\Admin\Settings\SettingsManager;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\DefaultBookingState;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\ExpiryTime;
+use TLBM\Admin\Settings\SingleSettings\BookingProcess\LatestBookingPossibility;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\SinglePageBooking;
+use TLBM\Admin\Settings\SingleSettings\Emails\AdminEmailBookingReceived;
+use TLBM\Admin\Settings\SingleSettings\Emails\EmailBookingCancelled;
 use TLBM\Admin\Settings\SingleSettings\Emails\EmailBookingConfirmation;
+use TLBM\Admin\Settings\SingleSettings\Emails\EmailBookingInProcess;
+use TLBM\Admin\Settings\SingleSettings\Emails\EmailBookingReceived;
 use TLBM\Admin\Settings\SingleSettings\General\AdminMail;
 use TLBM\Admin\Settings\SingleSettings\Rules\PriorityLevels;
 use TLBM\Admin\Settings\SingleSettings\Text\TextBookingReceived;
@@ -61,6 +66,7 @@ use TLBM\ApiUtils\Contracts\AdminPagesInterface;
 use TLBM\ApiUtils\Contracts\EnqueueAssetsInterface;
 use TLBM\ApiUtils\Contracts\HooksInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface as LocalizationInterfaceAlias;
+use TLBM\ApiUtils\Contracts\MailInterface;
 use TLBM\ApiUtils\Contracts\OptionsInterface;
 use TLBM\ApiUtils\Contracts\PluginActivationInterface;
 use TLBM\ApiUtils\Contracts\ShortcodeInterface;
@@ -69,6 +75,7 @@ use TLBM\ApiUtils\Contracts\UrlUtilsInterface;
 use TLBM\ApiUtils\EnqueueAssetsWrapper;
 use TLBM\ApiUtils\HooksWrapper;
 use TLBM\ApiUtils\LocalizationWrapper;
+use TLBM\ApiUtils\MailWrapper;
 use TLBM\ApiUtils\OptionsWrapper;
 use TLBM\ApiUtils\PluginActivationWrapper;
 use TLBM\ApiUtils\ShortcodeWrapper;
@@ -158,11 +165,12 @@ return [
     EnqueueAssetsInterface::class => autowire(EnqueueAssetsWrapper::class),
     UrlUtilsInterface::class => autowire(UrlUtilsWrapper::class),
     TimeUtilsInterface::class => autowire(TimeUtilsWrapper::class),
+    MailInterface::class => autowire(MailWrapper::class),
 
     /**
      * Register Rule Actions
      */
-    RuleActionsManagerInterface::class         => factory(function (ContainerInterface $container, FactoryInterface $factory) {
+    RuleActionsManagerInterface::class => factory(function (ContainerInterface $container, FactoryInterface $factory) {
         $ruleActionManager = $container->get(RuleActionsManager::class);
         if ($ruleActionManager instanceof RuleActionsManager) {
             $ruleActionManager->registerActionHandlerClass("date_slot", DateSlotActionHandler::class);
@@ -293,12 +301,20 @@ return [
             $settingsManager->registerSetting($container->get(BookingStates::class));
             $settingsManager->registerSetting($container->get(DefaultBookingState::class));
             $settingsManager->registerSetting($container->get(ExpiryTime::class));
+            $settingsManager->registerSetting($container->get(LatestBookingPossibility::class));
+
 
             /**
              * E-Mails
              */
             $settingsManager->registerSettingsGroup("emails", $localization->__("E-Mails", TLBM_TEXT_DOMAIN));
+            //  $settingsManager->registerSetting($container->get(SenderName::class));
+            //  $settingsManager->registerSetting($container->get(SenderMail::class));
+            $settingsManager->registerSetting($container->get(EmailBookingReceived::class));
+            $settingsManager->registerSetting($container->get(EmailBookingInProcess::class));
             $settingsManager->registerSetting($container->get(EmailBookingConfirmation::class));
+            $settingsManager->registerSetting($container->get(EmailBookingCancelled::class));
+            $settingsManager->registerSetting($container->get(AdminEmailBookingReceived::class));
 
             /**
              * Text

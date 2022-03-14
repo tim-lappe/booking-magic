@@ -12,7 +12,8 @@ abstract class EmailSetting extends SettingsBase
     public function __construct($option_name, $title, $default_subject)
     {
         parent::__construct("emails", $option_name, $title, ["subject" => $default_subject,
-            "message" => $this->getDefaultTemplate()
+            "message" => $this->getDefaultTemplate(),
+            "enabled" => "on"
         ]);
     }
 
@@ -26,14 +27,46 @@ abstract class EmailSetting extends SettingsBase
         return $value;
     }
 
+    /**
+     * @param mixed $value
+     *
+     * @return bool
+     */
+    public function isValueValid($value): bool
+    {
+        if ( !isset($value['subject']) || !isset($value['message']) || !isset($value['enabled'])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        $value = $this->getValue();
+
+        return $value && $value['enabled'] == "yes";
+    }
+
     public function display()
     {
         $opt = $this->getValue();
-        if ( !isset($opt['subject']) || !isset($opt['message'])) {
-            $opt = $this->defaultValue;
-        }
         ?>
 
+        <label>
+            <select name="<?php
+            echo $this->optionName ?>[enabled]">
+                <option <?php
+                selected("yes", $opt['enabled']) ?> value="yes"><?php
+                    echo $this->localization->__("Enabled", TLBM_TEXT_DOMAIN) ?></option>
+                <option <?php
+                selected("no", $opt['enabled']) ?> value="no"><?php
+                    echo $this->localization->__("Disabled", TLBM_TEXT_DOMAIN) ?></option>
+            </select>
+        </label><br><br>
         <label>
             <?php
             echo $this->localization->__("Subject", TLBM_TEXT_DOMAIN) ?><br>
