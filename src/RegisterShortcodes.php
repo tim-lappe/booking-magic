@@ -12,6 +12,7 @@ use TLBM\ApiUtils\Contracts\ShortcodeInterface;
 use TLBM\Output\Contracts\FormPrintInterface;
 use TLBM\Repository\Contracts\BookingRepositoryInterface;
 use TLBM\Request\Contracts\RequestManagerInterface;
+use TLBM\Session\SessionManager;
 
 class RegisterShortcodes
 {
@@ -31,13 +32,16 @@ class RegisterShortcodes
      */
     private ShortcodeInterface $shortcode;
 
-    public function __construct(FormPrintInterface $formPrint, RequestManagerInterface $requestManager, HooksInterface $hooks, ShortcodeInterface $shortcode)
-    {
-        $this->formPrint = $formPrint;
-        $this->shortcode = $shortcode;
-        $this->requestManager = $requestManager;
+    private SessionManager $sessionManager;
 
-        $hooks->addAction("init", array($this, "addShortcodes"));
+    public function __construct(FormPrintInterface $formPrint, RequestManagerInterface $requestManager, HooksInterface $hooks, ShortcodeInterface $shortcode, SessionManager $sessionManager)
+    {
+        $this->formPrint      = $formPrint;
+        $this->shortcode      = $shortcode;
+        $this->requestManager = $requestManager;
+        $this->sessionManager = $sessionManager;
+
+        $hooks->addAction("init", [$this, "addShortcodes"]);
     }
 
     /**
@@ -63,7 +67,15 @@ class RegisterShortcodes
                 if ($this->requestManager->hasContent()) {
                     return $this->requestManager->getContent();
                 } else {
-                    return $this->formPrint->printForm($args['id'], $this->requestManager->getVars());
+                    $vars                = $this->requestManager->getVars();
+                    $lastFormFieldValues = $this->sessionManager->getValue("lastFormFieldValues");
+                    if (is_array($lastFormFieldValues)) {
+                        foreach ($lastFormFieldValues as $key => $value) {
+                            $vars[$key] = $value;
+                        }
+                    }
+
+                    return $this->formPrint->printForm($args['id'], $vars);
                 }
             }
         }

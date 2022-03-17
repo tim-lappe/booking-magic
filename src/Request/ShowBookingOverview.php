@@ -9,6 +9,7 @@ use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Booking\BookingProcessor;
 use TLBM\MainFactory;
 use TLBM\Output\SemanticFrontendMessenger;
+use TLBM\Session\SessionManager;
 
 class ShowBookingOverview extends RequestBase
 {
@@ -30,16 +31,27 @@ class ShowBookingOverview extends RequestBase
     private SettingsManager $settingsManager;
 
     /**
+     * @var SessionManager
+     */
+    private SessionManager $sessionManager;
+
+    /**
      * @param SemanticFrontendMessenger $frontendMessenger
      * @param LocalizationInterface $localization
      * @param SettingsManager $settingsManager
+     * @param SessionManager $sessionManager
      */
-    public function __construct(SemanticFrontendMessenger $frontendMessenger, LocalizationInterface $localization, SettingsManager $settingsManager)
-    {
+    public function __construct(
+        SemanticFrontendMessenger $frontendMessenger,
+        LocalizationInterface $localization,
+        SettingsManager $settingsManager,
+        SessionManager $sessionManager
+    ) {
         parent::__construct($localization);
         $this->action                    = "showbookingoverview";
         $this->semanticFrontendMessenger = $frontendMessenger;
         $this->settingsManager           = $settingsManager;
+        $this->sessionManager            = $sessionManager;
     }
 
     public function onAction()
@@ -49,16 +61,23 @@ class ShowBookingOverview extends RequestBase
         if (isset($vars['form']) && intval($vars['form']) > 0 && $verified) {
             $bookingProcessor = MainFactory::create(BookingProcessor::class);
             $bookingProcessor->setVars($vars);
-            $invalidFields   = $bookingProcessor->validateVars();
+            $invalidFields = $bookingProcessor->validateVars();
 
-            if(count($invalidFields) > 0) {
+            $formValues = [];
+            foreach ($bookingProcessor->getLinkedFormDataFields() as $field) {
+                $name              = $field->getLinkedSettings()->getValue("name");
+                $formValues[$name] = $field->getInputVarByName($name);
+            }
+
+            $this->sessionManager->setValue("lastFormFieldValues", $formValues);
+
+            if (count($invalidFields) > 0) {
                 $this->semanticFrontendMessenger->addMissingRequiredFieldsMessage($invalidFields);
                 $this->hasContent = false;
-
             } elseif ($bookingProcessor->reserveBooking() != null) {
                 $this->bookingProcessor = $bookingProcessor;
-                $this->hasContent       = true;
-
+                $this->hasContent       = $this->sessionManager->setValue("pendingBookingId", $bookingProcessor->getPendingBooking()->getId());
+                $this->semanticFrontendMessenger->addMessage($this->localization->__("Session problem!", TLBM_TEXT_DOMAIN));
             } else {
                 $this->hasContent = false;
                 $this->semanticFrontendMessenger->addMessage($this->localization->__("Booking could not be completed. Some booking times are no longer available ", TLBM_TEXT_DOMAIN));
@@ -123,7 +142,7 @@ class ShowBookingOverview extends RequestBase
 
             $html .= "</div></div>";
             $html .= "<input type='hidden' name='tlbm_action' value='dobooking'>";
-            $html .= "<input type='hidden' name='pending_booking' value='" . $this->bookingProcessor->getPendingBooking()->getId() . "'>";
+            $html .= $this->sessionManager->getFormInputContent();
             $html .= wp_nonce_field("dobooking_action", "_wpnonce", true, false);
             $html .= "<button class='tlbm-book-now-btn'>" . $this->settingsManager->getValue(TextBookNow::class) . "</button>";
             $html .= "</form>";

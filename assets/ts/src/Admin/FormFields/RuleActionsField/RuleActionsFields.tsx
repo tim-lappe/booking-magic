@@ -1,5 +1,5 @@
 import * as React from "react";
-import {RuleActionsItem} from "./RuleActionItem";
+import {RuleActionsItemContainer} from "./RuleActionItemContainer";
 import {Localization} from "../../../Localization";
 import {RuleAction} from "../../Entity/RuleAction";
 import {Utils} from "../../../Utils";
@@ -100,7 +100,7 @@ export class RuleActionsFields extends React.Component<any, RuleActionsFieldsSta
                 <input name={this.props.dataset.name} type={"hidden"} value={datavalue}/>
                 <div className="tlbm-actions-list">
                     {this.state.items.map((item, index) => {
-                        return <RuleActionsItem
+                        return <RuleActionsItemContainer
                             onRemove={() => this.onRemove(index)}
                             onChange={() => this.onChange(item, index)}
                             onMoveUp={() => this.onMoveUp(index)}
@@ -109,10 +109,18 @@ export class RuleActionsFields extends React.Component<any, RuleActionsFieldsSta
                         />
                     })}
                 </div>
-                <select onChange={this.onSelectTypeChanged} className="tlbm-action-select-type" value={this.state.select_type}>
-                    <option value={'date_slot'}>{Localization.__("Date Slot")}</option>
-                    <option value={'time_slot'}>{Localization.__("Time Slot")}</option>
-                    <option value={'message'}>{Localization.__("Message")}</option>
+                <select onChange={this.onSelectTypeChanged} className="tlbm-action-select-type"
+                        value={this.state.select_type}>
+                    <optgroup label={Localization.__("All Day")}>
+                        <option value={'date_slot'}>{Localization.__("Day slot")}</option>
+                    </optgroup>
+                    <optgroup label={Localization.__("Time specific")}>
+                        <option value={'time_slot'}>{Localization.__("Time slot")}</option>
+                        <option value={'multiple_time_slots'}>{Localization.__("Multiple time slots")}</option>
+                    </optgroup>
+                    <optgroup label={Localization.__("Miscellous")}>
+                        <option value={'message'}>{Localization.__("Message")}</option>
+                    </optgroup>
                 </select>
                 <button onClick={this.onAdd} className="button tlbm-add-action">{Localization.__("Add")}</button>
             </div>
