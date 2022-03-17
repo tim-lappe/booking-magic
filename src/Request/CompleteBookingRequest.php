@@ -19,6 +19,7 @@ use TLBM\Email\Contracts\MailSenderInterface;
 use TLBM\MainFactory;
 use TLBM\Output\SemanticFrontendMessenger;
 use TLBM\Repository\Contracts\BookingRepositoryInterface;
+use TLBM\Session\SessionManager;
 
 if ( !defined('ABSPATH')) {
     return;
@@ -55,28 +56,37 @@ class CompleteBookingRequest extends RequestBase
      */
     protected LocalizationInterface $localization;
 
+    /**
+     * @var SettingsManagerInterface
+     */
     private SettingsManagerInterface $settingsManager;
 
-    public function __construct
-    (
+    /**
+     * @var SessionManager
+     */
+    private SessionManager $sessionManager;
+
+    public function __construct(
         LocalizationInterface $localization,
         SemanticFrontendMessenger $frontendMessenger,
         CalendarBookingManagerInterface $calendarBookingManager,
         BookingRepositoryInterface $bookingManager,
         MailSenderInterface $mailSender,
-        SettingsManagerInterface $settingsManager
+        SettingsManagerInterface $settingsManager,
+        SessionManager $sessionManager
     )
     {
         parent::__construct($localization);
 
-        $this->settingsManager = $settingsManager;
-        $this->localization = $localization;
+        $this->settingsManager        = $settingsManager;
+        $this->localization           = $localization;
         $this->calendarBookingManager = $calendarBookingManager;
-        $this->mailSender  = $mailSender;
-        $this->bookingManager = $bookingManager;
-        $this->frontendMessenger = $frontendMessenger;
-        $this->action      = "dobooking";
-        $this->hasContent  = true;
+        $this->mailSender             = $mailSender;
+        $this->bookingManager         = $bookingManager;
+        $this->frontendMessenger      = $frontendMessenger;
+        $this->action                 = "dobooking";
+        $this->hasContent             = true;
+        $this->sessionManager         = $sessionManager;
     }
 
     public function onAction()
@@ -87,8 +97,10 @@ class CompleteBookingRequest extends RequestBase
             $pendingBooking = null;
 
             if($isOnePage != "on") {
-                $pendingBookingId = intval($vars['pending_booking']);
-                $pendingBooking   = $this->bookingManager->getBooking($pendingBookingId);
+                $pendingBookingId = $this->sessionManager->getValue("pendingBookingId");
+                if ($pendingBookingId) {
+                    $pendingBooking = $this->bookingManager->getBooking($pendingBookingId);
+                }
             }
 
             if($isOnePage == "on") {
@@ -110,6 +122,15 @@ class CompleteBookingRequest extends RequestBase
                     if(count($this->calendarBookingManager->areValidCalendarBookings($pendingBooking->getCalendarBookings()->toArray())) == 0) {
                         $pendingBooking->setInternalState(TLBM_BOOKING_INTERNAL_STATE_COMPLETED);
                         $this->bookingManager->saveBooking($pendingBooking);
+                        $this->sessionManager->removeValue("pendingBookingId");
+                        $completedBookingIds = $this->sessionManager->getValue("completedBookings");
+
+                        if ( !$completedBookingIds) {
+                            $this->sessionManager->setValue("completedBookings", [$vars['_wpnonce'] => $pendingBooking->getId()]);
+                        } else {
+                            $completedBookingIds[$vars['_wpnonce']] = $pendingBooking->getId();
+                            $this->sessionManager->setValue("completedBookings", $completedBookingIds);
+                        }
 
                         $semantic = MainFactory::create(BookingValueSemantic::class);
                         $semantic->setValuesFromBooking($pendingBooking);
@@ -121,6 +142,7 @@ class CompleteBookingRequest extends RequestBase
                         $this->mailSender->sendTemplate($semantic->getContactEmail(), EmailBookingReceived::class, $emailSemantic);
                         $this->mailSender->sendTemplate($this->settingsManager->getValue(AdminMail::class), AdminEmailBookingReceived::class, $emailSemantic);
                         $this->bookingSuccessed = true;
+
                     } else {
                         $this->hasContent = false;
                         $this->frontendMessenger->addMessage($this->localization->__("Booking could not be completed. Some booking times are no longer available ", TLBM_TEXT_DOMAIN));
@@ -128,11 +150,20 @@ class CompleteBookingRequest extends RequestBase
 
                     return;
                 } catch (Throwable $exception) {
-                    if(WP_DEBUG) {
+                    if (WP_DEBUG) {
                         echo $exception->getMessage();
                     }
                 }
             }
+        }
+
+        $completedBookingIds = $this->sessionManager->getValue("completedBookings");
+        if (isset($completedBookingIds[$vars['_wpnonce']])) {
+            $this->hasContent       = true;
+            $this->error            = false;
+            $this->bookingSuccessed = true;
+
+            return;
         }
 
         $this->error = true;

@@ -11,6 +11,7 @@ use TLBM\MainFactory;
 use TLBM\PluginActivation;
 use TLBM\RegisterShortcodes;
 use TLBM\Request\Contracts\RequestManagerInterface;
+use TLBM\Session\SessionManager;
 
 if ( ! defined ( 'ABSPATH' )) {
     return;
@@ -61,6 +62,7 @@ try {
             $adminPageManager->loadMenuPages();
         });
 
+        $tlbmContainer->get(SessionManager::class);
         $tlbmContainer->get(RegisterShortcodes::class);
         $tlbmContainer->get(EnqueueAssets::class);
         $tlbmContainer->get(FormElementsCollectionInterface::class);
