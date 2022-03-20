@@ -5,7 +5,6 @@ namespace TLBM\Repository;
 use Exception;
 use Iterator;
 use TLBM\ApiUtils\Contracts\TimeUtilsInterface;
-use TLBM\ApiUtils\TimeUtilsWrapper;
 use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
@@ -20,14 +19,20 @@ class EntityRepository implements EntityRepositoryInterface
     private ORMInterface $repository;
 
     /**
-     * @var TimeUtilsWrapper
+     * @var TimeUtilsInterface
      */
     private TimeUtilsInterface $timeUtils;
 
-    public function __construct(ORMInterface $repository, TimeUtilsInterface $timeUtils)
+    /**
+     * @var CacheManager
+     */
+    private CacheManager $cacheManager;
+
+    public function __construct(ORMInterface $repository, TimeUtilsInterface $timeUtils, CacheManager $cacheManager)
     {
-        $this->repository = $repository;
-        $this->timeUtils  = $timeUtils;
+        $this->repository   = $repository;
+        $this->timeUtils    = $timeUtils;
+        $this->cacheManager = $cacheManager;
     }
 
     /**
@@ -63,9 +68,12 @@ class EntityRepository implements EntityRepositoryInterface
     public function deleteEntityPermanently(ManageableEntity $entity): bool
     {
         try {
-            $mgr  = $this->repository->getEntityManager();
+            $mgr = $this->repository->getEntityManager();
             $mgr->remove($entity);
             $mgr->flush();
+
+            $this->cacheManager->clearCache();
+
             return true;
         } catch (Exception $e) {
             if(WP_DEBUG) {
@@ -83,6 +91,8 @@ class EntityRepository implements EntityRepositoryInterface
     public function moveEntityToTrash(ManageableEntity $entity): bool
     {
         $entity->setAdministrationStatus(TLBM_ENTITY_ADMINSTATUS_DELETED);
+        $this->cacheManager->clearCache();
+
         return $this->saveEntity($entity);
     }
 
@@ -94,6 +104,8 @@ class EntityRepository implements EntityRepositoryInterface
     public function restoreEntity(ManageableEntity $entity): bool
     {
         $entity->setAdministrationStatus(TLBM_ENTITY_ADMINSTATUS_ACTIVE);
+        $this->cacheManager->clearCache();
+
         return $this->saveEntity($entity);
     }
 
@@ -116,6 +128,7 @@ class EntityRepository implements EntityRepositoryInterface
             $mgr->persist($entity);
             $mgr->flush();
 
+            $this->cacheManager->clearCache();
             return true;
         } catch (Exception $exception) {
             if(WP_DEBUG) {

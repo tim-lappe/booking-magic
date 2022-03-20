@@ -1,12 +1,11 @@
 import * as React from "react";
 import {Localization} from "../../../Localization";
-import {RuleActionsFields} from "./RuleActionsFields";
-import {RuleActionsManager} from "./RuleActionsManager";
+import {RuleActionItemMeta, RuleActionsManager} from "./RuleActionsManager";
 import {SelectableActionWindowItem} from "./SelectableActionWindowItem";
 
 interface SelectActionsWindowProps {
     onCancel?: () => void;
-    ruleActionFieldsComponent: RuleActionsFields;
+    onAddAction?: (actionMeta: RuleActionItemMeta) => void;
     ruleActionsManager: RuleActionsManager;
     show: boolean;
 }
@@ -22,10 +21,18 @@ export class SelectActionsWindow extends React.Component<SelectActionsWindowProp
 
         this.onBackgroundClicked = this.onBackgroundClicked.bind(this);
         this.onSearchInputChanged = this.onSearchInputChanged.bind(this);
+        this.onActionClicked = this.onActionClicked.bind(this);
+        this.onCancelClicked = this.onCancelClicked.bind(this);
+
+        this.state = {
+            searchString: ""
+        }
     }
 
-    onActionClicked() {
-
+    onActionClicked(item: RuleActionItemMeta) {
+        if (this.props.onAddAction) {
+            this.props.onAddAction(item);
+        }
     }
 
     onSearchInputChanged(event: any) {
@@ -75,7 +82,7 @@ export class SelectActionsWindow extends React.Component<SelectActionsWindowProp
         });
 
         return (
-            <div onClick={this.onBackgroundClicked} style={{display: this.props.show != null ? "flex" : "none"}}
+            <div onClick={this.onBackgroundClicked} style={{display: this.props.show ? "flex" : "none"}}
                  className={"tlbm-select-action-window tlbm-window-outer"}>
                 <div className={"tlbm-add-action-window-inner tlbm-window-inner"}>
                     <div className={"tlbm-add-action-top-bar"}>
@@ -92,9 +99,9 @@ export class SelectActionsWindow extends React.Component<SelectActionsWindowProp
                                     <div className={"tlbm-action-elements-list"}>
                                         {filteredActions[category].map((item) => {
                                             return (
-                                                <SelectableActionWindowItem key={item.unique_name}
-                                                                            onClicked={this.onActionClicked}
-                                                                            formElement={item}/>
+                                                <SelectableActionWindowItem key={item.name}
+                                                                            onClick={this.onActionClicked}
+                                                                            actionItem={item}/>
                                             )
                                         })}
                                     </div>

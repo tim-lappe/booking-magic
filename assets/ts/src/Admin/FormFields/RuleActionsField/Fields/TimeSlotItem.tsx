@@ -1,10 +1,13 @@
 import React = require("react");
 import {RuleActionItemBase} from "./RuleActionItemBase";
+import {Localization} from "../../../../Localization";
 
-export class DateSlotItem extends RuleActionItemBase {
+export class TimeSlotItem extends RuleActionItemBase {
+
     protected getFields(): JSX.Element {
         return (
             <React.Fragment>
+                {this.getTimeSlotFields(Localization.__("Time"))}
                 {this.getCapacityFields()}
             </React.Fragment>
         );

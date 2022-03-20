@@ -17,16 +17,6 @@ class FormElementsCollection implements FormElementsCollectionInterface
      */
     private array $formElements = array();
 
-
-    public function __construct()
-    {
-        $this->registerFormElements();
-    }
-
-    public function registerFormElements(): void
-    {
-    }
-
     /**
      * @param FormElem $formelem
      */
