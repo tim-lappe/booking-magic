@@ -38,6 +38,12 @@ use TLBM\Admin\Pages\SinglePages\FormPage;
 use TLBM\Admin\Pages\SinglePages\RuleEditPage;
 use TLBM\Admin\Pages\SinglePages\RulesPage;
 use TLBM\Admin\Pages\SinglePages\SettingsPage;
+use TLBM\Admin\RuleActionsEditor\Actions\DaySlotEditorElem;
+use TLBM\Admin\RuleActionsEditor\Actions\MessageEditorElem;
+use TLBM\Admin\RuleActionsEditor\Actions\MultipleTimeSlotEditorElem;
+use TLBM\Admin\RuleActionsEditor\Actions\TimeSlotEditorElem;
+use TLBM\Admin\RuleActionsEditor\Contracts\RuleActionsEditorCollectionInterface;
+use TLBM\Admin\RuleActionsEditor\RuleActionsEditorCollection;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SettingsManager;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
@@ -111,6 +117,7 @@ use TLBM\Request\RequestManager;
 use TLBM\Request\ShowBookingOverview;
 use TLBM\Rules\Actions\DateSlotActionHandler;
 use TLBM\Rules\Actions\MessageActionHandler;
+use TLBM\Rules\Actions\MultipleTimeSlotActionHandler;
 use TLBM\Rules\Actions\RuleActionsManager;
 use TLBM\Rules\Actions\TimeSlotActionHandler;
 use TLBM\Rules\Contracts\RuleActionsManagerInterface;
@@ -167,14 +174,28 @@ return [
     TimeUtilsInterface::class => autowire(TimeUtilsWrapper::class),
     MailInterface::class => autowire(MailWrapper::class),
 
+
+    RuleActionsEditorCollectionInterface::class => factory(function (ContainerInterface $container, FactoryInterface $factory) {
+        $ruleActionsEditorCollection = $container->get(RuleActionsEditorCollection::class);
+        if ($ruleActionsEditorCollection instanceof RuleActionsEditorCollection) {
+            $ruleActionsEditorCollection->registerRuleActionEditorElem(DaySlotEditorElem::class);
+            $ruleActionsEditorCollection->registerRuleActionEditorElem(TimeSlotEditorElem::class);
+            $ruleActionsEditorCollection->registerRuleActionEditorElem(MultipleTimeSlotEditorElem::class);
+            $ruleActionsEditorCollection->registerRuleActionEditorElem(MessageEditorElem::class);
+        }
+
+        return $ruleActionsEditorCollection;
+    }),
+
     /**
      * Register Rule Actions
      */
     RuleActionsManagerInterface::class => factory(function (ContainerInterface $container, FactoryInterface $factory) {
         $ruleActionManager = $container->get(RuleActionsManager::class);
         if ($ruleActionManager instanceof RuleActionsManager) {
-            $ruleActionManager->registerActionHandlerClass("date_slot", DateSlotActionHandler::class);
+            $ruleActionManager->registerActionHandlerClass("day_slot", DateSlotActionHandler::class);
             $ruleActionManager->registerActionHandlerClass("time_slot", TimeSlotActionHandler::class);
+            $ruleActionManager->registerActionHandlerClass("multiple_time_slots", MultipleTimeSlotActionHandler::class);
             $ruleActionManager->registerActionHandlerClass("message", MessageActionHandler::class);
         }
 

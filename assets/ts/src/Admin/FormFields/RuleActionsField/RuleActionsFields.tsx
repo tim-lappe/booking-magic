@@ -3,13 +3,22 @@ import {RuleActionsItemContainer} from "./RuleActionItemContainer";
 import {Localization} from "../../../Localization";
 import {RuleAction} from "../../Entity/RuleAction";
 import {Utils} from "../../../Utils";
+import {SelectActionsWindow} from "./SelectActionsWindow";
+import {RuleActionItemMeta, RuleActionsManager} from "./RuleActionsManager";
+import {DaySlotItem} from "./Fields/DaySlotItem";
+import {TimeSlotItem} from "./Fields/TimeSlotItem";
+import {MessageItem} from "./Fields/MessageItem";
+import {MultipleTimeSlotItem} from "./Fields/MultipleTimeSlotItem";
 
 interface RuleActionsFieldsState {
     items: RuleAction[];
-    select_type: string;
+    selectType: string;
+    addActionWindowOpen: boolean;
 }
 
 export class RuleActionsFields extends React.Component<any, RuleActionsFieldsState> {
+
+    private ruleActionsManager: RuleActionsManager = new RuleActionsManager();
 
     constructor(props) {
         super(props);
@@ -19,40 +28,62 @@ export class RuleActionsFields extends React.Component<any, RuleActionsFieldsSta
         this.onMoveUp = this.onMoveUp.bind(this);
         this.onRemove = this.onRemove.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onAddAction = this.onAddAction.bind(this);
         this.onSelectTypeChanged = this.onSelectTypeChanged.bind(this);
+        this.onCancelAddAction = this.onCancelAddAction.bind(this);
 
-        let jsondata = Utils.decodeUriComponent(props.dataset.json);
-        jsondata = JSON.parse(jsondata);
+        let datavalue = JSON.parse(Utils.decodeUriComponent(props.dataset.value));
+
+        this.ruleActionsManager.setActionsMeta(JSON.parse(Utils.decodeUriComponent(props.dataset.actions)));
+        this.ruleActionsManager.registerComponent("day_slot", DaySlotItem);
+        this.ruleActionsManager.registerComponent("time_slot", TimeSlotItem);
+        this.ruleActionsManager.registerComponent("message", MessageItem);
+        this.ruleActionsManager.registerComponent("multiple_time_slots", MultipleTimeSlotItem);
 
         this.state = {
             items: [],
-            select_type: "date_slot"
+            selectType: "day_slot",
+            addActionWindowOpen: false
         }
 
-        if(Array.isArray(jsondata)) {
+        if (Array.isArray(datavalue)) {
             this.state = {
-                items: jsondata,
-                select_type: "date_slot"
+                items: datavalue,
+                selectType: "day_slot",
+                addActionWindowOpen: false
             }
         }
     }
 
     onAdd(event: any) {
-        let items = this.state.items;
-        let dataItem = new RuleAction();
-        dataItem.id = -Math.random();
-        dataItem.action_type = this.state.select_type;
-
         this.setState({
-            items: [...items, dataItem]
+            addActionWindowOpen: true
         });
 
         event.preventDefault();
     }
 
+    onAddAction(actionMeta: RuleActionItemMeta) {
+        let items = this.state.items;
+        let dataItem = new RuleAction();
+        dataItem.id = -Math.random();
+        dataItem.action_type = actionMeta.name;
+
+        this.setState({
+            items: [...items, dataItem],
+            addActionWindowOpen: false
+        });
+    }
+
+    onCancelAddAction() {
+        this.setState({
+            addActionWindowOpen: false
+        });
+    }
+
     onMoveDown(index: number) {
         let items = this.state.items;
-        [items[index], items[index + 1]] =  [items[index + 1], items[index]];
+        [items[index], items[index + 1]] = [items[index + 1], items[index]];
 
         this.setState({
             items: [...items]
@@ -79,7 +110,7 @@ export class RuleActionsFields extends React.Component<any, RuleActionsFieldsSta
 
     onSelectTypeChanged(event: any) {
         this.setState({
-            select_type: event.target.value
+            selectType: event.target.value
         })
     }
 
@@ -97,6 +128,8 @@ export class RuleActionsFields extends React.Component<any, RuleActionsFieldsSta
 
         return (
             <div className="tlbm-rule-actions-field-component">
+                <SelectActionsWindow onCancel={this.onCancelAddAction} ruleActionsManager={this.ruleActionsManager}
+                                     onAddAction={this.onAddAction} show={this.state.addActionWindowOpen}/>
                 <input name={this.props.dataset.name} type={"hidden"} value={datavalue}/>
                 <div className="tlbm-actions-list">
                     {this.state.items.map((item, index) => {
@@ -105,24 +138,11 @@ export class RuleActionsFields extends React.Component<any, RuleActionsFieldsSta
                             onChange={() => this.onChange(item, index)}
                             onMoveUp={() => this.onMoveUp(index)}
                             onMoveDown={() => this.onMoveDown(index)}
-                            dataItem={item} key={item.id}
+                            dataItem={item} key={item.id} ruleActionsManager={this.ruleActionsManager}
                         />
                     })}
                 </div>
-                <select onChange={this.onSelectTypeChanged} className="tlbm-action-select-type"
-                        value={this.state.select_type}>
-                    <optgroup label={Localization.__("All Day")}>
-                        <option value={'date_slot'}>{Localization.__("Day slot")}</option>
-                    </optgroup>
-                    <optgroup label={Localization.__("Time specific")}>
-                        <option value={'time_slot'}>{Localization.__("Time slot")}</option>
-                        <option value={'multiple_time_slots'}>{Localization.__("Multiple time slots")}</option>
-                    </optgroup>
-                    <optgroup label={Localization.__("Miscellous")}>
-                        <option value={'message'}>{Localization.__("Message")}</option>
-                    </optgroup>
-                </select>
-                <button onClick={this.onAdd} className="button tlbm-add-action">{Localization.__("Add")}</button>
+                <button onClick={this.onAdd} className="button tlbm-add-action">{Localization.__("Add Action")}</button>
             </div>
         );
     }

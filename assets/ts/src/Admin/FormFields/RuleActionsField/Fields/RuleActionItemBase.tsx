@@ -1,9 +1,9 @@
 import * as React from "react";
-import {Localization} from "../../../Localization";
-import {WeekdaySelect, WeekdaySelectWeekday} from "../WeekdaySelect";
-import {TimeSelect, TimeSelectTime} from "../TimeSelect";
-import {RuleAction} from "../../Entity/RuleAction";
-import {CapacitySelect, CapacitySelectCapacity} from "../CapacitySelect";
+import {Localization} from "../../../../Localization";
+import {WeekdaySelect, WeekdaySelectWeekday} from "../../WeekdaySelect";
+import {TimeSelect, TimeSelectTime} from "../../TimeSelect";
+import {RuleAction} from "../../../Entity/RuleAction";
+import {CapacitySelect, CapacitySelectCapacity} from "../../CapacitySelect";
 
 export interface ItemContentProps {
     content?: any;
@@ -81,14 +81,14 @@ export abstract class RuleActionItemBase extends React.Component<ItemContentProp
      *
      * @protected
      */
-    protected getTimeSlotFields(): JSX.Element {
+    protected getTimeSlotFields(title: string, nameMinute: string = null, nameHour: string = null): JSX.Element {
         return (
             <div style={{marginLeft: "20px"}}>
-                <small>{Localization.__("Timeslot")}</small><br/>
+                <small>{title}</small><br/>
                 <TimeSelect initState={{
                     minute: this.state.ruleAction.time_min,
                     hour: this.state.ruleAction.time_hour
-                }} minutesSteps={5} onChange={this.onChangeTime}/>
+                }} minutesSteps={5} onChange={this.onChangeTime} nameHour={nameHour} nameMinute={nameMinute}/>
             </div>
         );
     }

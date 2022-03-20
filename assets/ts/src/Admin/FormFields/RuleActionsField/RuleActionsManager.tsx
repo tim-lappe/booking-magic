@@ -1,51 +1,34 @@
-import {DateSlotItem} from "./DateSlotItem";
-import {RuleActionItemBase} from "./RuleActionItemBase";
-import {TimeSlotItem} from "./TimeSlotItem";
-import {MessageItem} from "./MessageItem";
+import {RuleActionItemBase} from "./Fields/RuleActionItemBase";
+import {RuleAction} from "../../Entity/RuleAction";
+import React = require("react");
 
 export class RuleActionItemMeta {
     public name: string;
     public title: string;
     public description: string;
     public category: string;
-    public className: typeof RuleActionItemBase;
 }
 
 export class RuleActionsManager {
 
-    private ruleActionItems: RuleActionItemMeta[] = [
-        {
-            name: "date_slot",
-            title: "Day slot",
-            category: "All Day",
-            description: "",
-            className: DateSlotItem
-        },
-        {
-            name: "time_slot",
-            title: "Time slot",
-            description: "",
-            category: "Time specific",
-            className: TimeSlotItem
-        },
-        {
-            name: "multiple_time_slot",
-            description: "",
-            title: "Multiple time slots",
-            category: "Time specific",
-            className: TimeSlotItem
-        },
-        {
-            name: "message",
-            title: "Message",
-            description: "",
-            category: "Miscellous",
-            className: MessageItem
+    private ruleActionItemsMeta: RuleActionItemMeta[] = [];
+    private ruleActionComponent: { [props: string]: typeof RuleActionItemBase } = {}
+
+    public registerComponent(name: string, componentClass: typeof RuleActionItemBase) {
+        this.ruleActionComponent[name] = componentClass;
+    }
+
+    public createComponent(ruleAction: RuleAction, onChange: (ruleAction: RuleAction) => void) {
+        if (this.ruleActionComponent[ruleAction.action_type]) {
+            const ElementComponent = this.ruleActionComponent[ruleAction.action_type];
+            return (<ElementComponent ruleAction={ruleAction} onChange={onChange}/>)
         }
-    ];
 
-    constructor() {
+        return null;
+    }
 
+    public setActionsMeta(meta: RuleActionItemMeta[]) {
+        this.ruleActionItemsMeta = meta;
     }
 
     public getActionElementsList(): { [props: string]: RuleActionItemMeta[] } {
@@ -54,7 +37,7 @@ export class RuleActionsManager {
         for (let cat of categories) {
             elements[cat] = [];
         }
-        for (let elem of this.ruleActionItems) {
+        for (let elem of this.ruleActionItemsMeta) {
             elements[elem.category].push(elem);
         }
         return elements;
@@ -63,7 +46,7 @@ export class RuleActionsManager {
 
     public getCategories(): string[] {
         let categories = [];
-        for (let actionItem of this.ruleActionItems) {
+        for (let actionItem of this.ruleActionItemsMeta) {
             if (categories.indexOf(actionItem.category) == -1) {
                 categories.push(actionItem.category);
             }

@@ -1,11 +1,15 @@
 import React = require("react");
 import {ItemContentState, RuleActionItemBase} from "./RuleActionItemBase";
-import {Localization} from "../../../Localization";
+import {Localization} from "../../../../Localization";
 
 export class MessageItem extends RuleActionItemBase {
 
     constructor(props) {
         super(props);
+
+        this.state.ruleAction.actions = {
+            "message": props.dataItem?.actions?.message ?? ""
+        };
 
         this.onChangeMessage = this.onChangeMessage.bind(this);
     }

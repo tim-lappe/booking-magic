@@ -1,0 +1,788 @@
+.tlbm-radio-item {
+  padding: 10px;
+  margin: 0 0 10px 0;
+
+  background-color: $admin-item-bg-color;
+  border-radius: 10px;
+}
+
+.tlbm-button-white {
+  background: white !important;
+  &:hover {
+    background: #f8faff !important;
+  }
+}
+
+.tlbm-number-field {
+  width: 100px;
+}
+
+.tlbm-button-danger {
+  color: red !important;
+  border-color: red !important;
+  background-color: transparent !important;
+
+  &:hover {
+    background-color: rgba(255, 0, 0, 0.02) !important;
+  }
+}
+
+.tlbm-timespan-part {
+  display: inline-block;
+  margin: 0 20px 0 0 ;
+  min-width: 150px;
+  select {
+    min-width: 80px;
+  }
+}
+
+.tlbm-ruleeditor-rule-container {
+  padding: 10px;
+  margin: 0 0 10px 0;
+
+  background-color: $admin-item-bg-color;
+  border-radius: 10px;
+}
+
+.tlbm-select-datetime {
+  display: flex;
+  justify-content: flex-start;
+  .tlbm-date {
+
+  }
+  .tlbm-time {
+    margin-left: 20px;
+  }
+}
+
+.tlbm-calendar-select-panel {
+  margin-top: 20px;
+  width: auto;
+  overflow: auto;
+  scroll-behavior: smooth;
+  max-height: 400px;
+  padding-left: 2px;
+
+  .tlbm-calendar-select-item {
+    display: inline-block;
+    margin: 0 30px 10px 0;
+  }
+}
+
+.tlbm-weekday-picker {
+  display: flex;
+  flex-wrap: wrap;
+
+  .tlbm-weekday-pick-item {
+    background-color: $admin-item-bg-color-disabled;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 0 10px 10px 0;
+    min-width: 350px;
+    -webkit-transition: background-color 200ms ease-in-out;
+    transition: background-color 200ms ease-in-out;
+
+    &.tlbm-weekday-pick-item-active {
+      background-color: $admin-item-bg-color-activated;
+    }
+
+    &:not(.tlbm-weekday-pick-item-active) *:not(label) {
+      color: lightgray;
+    }
+
+    .tlbm-weekday-checkbox-label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .tlbm-weekday-pick-item-timeblock-container {
+      display: flex;
+      justify-content: space-between;
+      background-color: white;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 0 0 10px 0;
+      position: relative;
+
+      .button-link-delete {
+        position: absolute;
+        right: 2px;
+        top: 2px;
+      }
+
+      .tlbm-weekday-pick-item-timeblock:first-child {
+        margin: 0 20px 0 0;
+      }
+    }
+  }
+}
+
+.tlbm-endless-checkbox-container {
+  margin: 5px 0 10px 0;
+}
+
+.tlbm-shortcode-label {
+  background-color: #efefef;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-weight: bolder;
+  font-family: monospace;
+}
+
+.tlbm-form-values-table {
+  font-size: 16px;
+
+  .tlbm-value-title {
+    min-width: 200px;
+  }
+
+  tr {
+    height: 30px;
+  }
+}
+
+.button-timeslot-delete {
+  height: 30px;
+  width: 30px;
+  padding: 4px !important;
+  color: red !important;
+  border-color: red !important;
+}
+
+.tlbm-date-select {
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+  flex-direction: row;
+
+  .dashicons {
+    margin-left: 15px;
+    margin-right: 5px;
+  }
+
+  .button-remove-time {
+    margin-left: 15px;
+  }
+
+  .button-add-time {
+    margin-left: 15px;
+  }
+}
+
+.tlbm-date-daterange-label {
+  margin: 0 !important;
+}
+
+.tlbm-period-item {
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+
+
+  .tlbm-period-delete, .tlbm-timeslot-delete {
+    color: red !important;
+    height: 30px;
+    width: 30px;
+    padding: 4px !important;
+    border-color: red !important;
+    margin-left: 10px;
+  }
+
+  label {
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+
+  .tlbm-button-add-range {
+    margin-top: 10px;
+  }
+
+  .tlbm-weekdays-checkboxes {
+    label {
+      display: block;
+    }
+  }
+
+  .tlbm-horizontal {
+    display: flex;
+    align-items: flex-start;
+    justify-content: stretch;
+    flex-direction: row;
+
+    & > * {
+      flex-grow: 1;
+      flex-basis: 0;
+    }
+  }
+
+  .tlbm-period-panel {
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-grow: 1;
+    flex-basis: 0;
+
+    > * {
+      &:not(:first-child) {
+        margin-top: 10px;
+      }
+    }
+
+    &.tlbm-period-timeslots-panel {
+      flex-direction: row;
+      flex-grow: 1;
+      margin-left: 50px;
+    }
+  }
+
+  .tlbm-timeslots-container {
+    flex-grow: 0;
+    min-width: 200px;
+  }
+
+  .tlbm-timeslots {
+    border-radius: 3px;
+
+    .tlbm-timeslot-item {
+      display: flex;
+      margin-bottom: 10px;
+      background: white;
+      border-radius: 5px;
+      padding: 10px;
+      align-items: end;
+
+      .tlbm-time-select {
+        margin-right: 10px;
+      }
+
+      .button-link-delete {
+        opacity: 0;
+        margin-left: auto;
+        margin-right: 10px;
+        transition-property: opacity;
+        transition-duration: 0.2s;
+      }
+
+      &:hover .button-link-delete {
+        opacity: 1;
+        margin-left: auto;
+        margin-right: 10px;
+      }
+    }
+  }
+}
+.tlbm-flex-date-range {
+  display: flex;
+  flex-wrap: wrap;
+  transition-property: max-height;
+  transition-duration: 0.5s;
+
+  > div:first-child {
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+}
+
+.tlbm-dateselect-to {
+  margin-left: 10px;
+}
+
+.tlbm-gray-container {
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.tlbm-rule-actions-field {
+  .tlbm-action-rule-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    min-height: 50px;
+
+    &:first-child {
+      .tlbm-up-down-buttons {
+        button.tlbm-ud-button-up {
+          display: none;
+        }
+      }
+    }
+
+    &:last-child {
+      .tlbm-up-down-buttons {
+        button.tlbm-ud-button-down {
+          display: none;
+        }
+      }
+    }
+
+    .tlbm-up-down-buttons {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      left: -40px;
+      top: 0;
+      justify-content: center;
+      align-items: stretch;
+      align-content: stretch;
+      height: 100%;
+
+      button {
+        background: #f6f6f6;
+        border: none;
+        cursor: pointer;
+        margin: 2px 0;
+        padding: 5px;
+
+        &:hover {
+          background: #e8e8e8;
+        }
+
+        &[disabled] {
+          background: none;
+          opacity: 0.3;
+          &:hover {
+            background: none;
+          }
+        }
+      }
+    }
+  }
+  .tlbm-action-item-form {
+    flex-grow: 1;
+  }
+  .tlbm-action-item-delete {
+    margin-left: 10px;
+    color: red !important;
+    height: 30px;
+    width: 30px;
+    padding: 4px !important;
+    border-color: red !important;
+  }
+
+}
+
+.tlbm-table-list-state {
+  padding: 0.7em 1.2em;
+  border-radius: 4px;
+  color: #1c1c1c;
+  display: inline-block;
+  font-size: 1.1em;
+  font-weight: 600;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.tlbm-admin-textarea {
+  min-height: 150px;
+  width: 50em;
+}
+
+.tlbm-inner-settings-table {
+
+  th {
+    padding: 0 0 10px 0;
+    width: auto;
+    min-width: 100px;
+
+  }
+
+  td {
+    padding: 5px 5px 5px 0;
+
+    .tlbm-settings-table-short-input {
+      margin-right: 2em;
+    }
+  }
+}
+
+.tlbm-status-name-input {
+}
+
+.tlbm-admin-booking-information {
+  padding: 20px;
+  margin-top: 12px;
+  background-color: rgba(77, 120, 141, 0.05);
+
+  .tlbm-admin-booking-information-list {
+    display: flex;
+    flex-wrap: wrap;
+
+    .tlbm-admin-booking-information-item {
+      margin-right: 10%;
+
+      .tlbm-admin-booked-calendar-values {
+        display: inline-block;
+        font-size: 2.5em;
+        margin: 10px 0;
+        font-weight: normal;
+      }
+
+      .tlbm-admin-booked-calendar-title {
+        display: inline-block;
+        font-size: 1.6em;
+        font-weight: bold;
+      }
+
+      .tlbm-admin-booking-headline {
+        font-size: 1.6em;
+        font-weight: bold;
+      }
+
+      .tlbm-admin-booking-values{
+        font-size: 1.4em;
+      }
+
+
+    }
+  }
+}
+
+#tlbm_mb_tlbm_save {
+  .inside {
+    margin: 0;
+    padding: 0;
+
+    .spinner {
+      float: right;
+    }
+    input {
+      display: block;
+    //  width: 50%;
+    //  float: right;
+    }
+  }
+}
+
+.tlbm-admin-page-head {
+  background-color: white;
+  box-shadow: 0 0 10px 0 lightgray;
+  padding: 0.75rem 20px;
+  margin-left: -20px;
+  display: flex;
+  justify-content: space-between;
+
+  .tlbm-admin-page-head-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: inline-block;
+    margin: 0.75rem 0;
+  }
+
+  .tlbm-admin-page-head-bar {
+    display: flex;
+    width: auto;
+
+    *:not(:last-child) {
+      margin-right: 1rem;
+    }
+
+    .tlbm-admin-button-bar {
+      font-size: 0.9rem;
+      padding: 0 1rem;
+      align-items: center;
+      display: flex;
+
+      &:not(.button-primary) {
+        background: transparent;
+
+        &:hover {
+          background: #f8faff;
+        }
+      }
+    }
+  }
+}
+
+.tlbm-admin-form-input-title {
+  font-size: 1.2rem;
+  width: 100%;
+}
+
+.wrap h1.wp-heading-inline-secondary, .wrap h2.wp-heading-inline-secondary,  {
+  display: inline-block;
+  margin-right: 5px;
+  font-size: 23px;
+  font-weight: 400;
+  padding: 9px 0 4px 0;
+  line-height: 1.3;
+}
+
+.tlbm-dashboard {
+  width: 100%;
+  margin-top: 2rem;
+
+  .tlbm-dashboard-tile {
+    background-color: white;
+    box-shadow: 0 3px 5px 0 #dedede;
+    padding: 20px;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    position: relative;
+    border-radius: 7px;
+
+    .tlbm-text-big-light {
+      position: absolute;
+      display: block;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      width: 90%;
+      text-align: center;
+      line-height: 3rem;
+    }
+
+    .tlbm-dashboard-tile-heading {
+      font-size: 1.2rem;
+      font-weight: bold;
+      display: inline-block;
+      margin-bottom: 2rem;
+    }
+
+    .tlbm-dashboard-tile-best-selling-list {
+
+      li {
+        margin-bottom: 1.5rem;
+      }
+      a {
+        font-size: 1.4rem;
+        margin-bottom: 0.3rem;
+        text-decoration: none;
+      }
+    }
+  }
+
+  .tlbm-dashboard-tile-row {
+    display: flex;
+    justify-content: center;
+
+    .tlbm-dashboard-tile {
+      flex-grow: 1;
+      flex-basis: 0;
+      margin-top: 20px;
+      margin-right: 20px;
+
+      &:first-child {
+        flex-grow: 2;
+      }
+    }
+  }
+}
+
+.tlbm-text-big-light {
+  font-size: 1.5rem;
+  font-weight: bolder;
+  color: rgba(0, 0, 0, 0.2);
+}
+
+.tlbm-admin-empty-table {
+  padding: 1rem;
+ // margin: 5.7rem 0 1rem 0;
+  min-height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tlbm-admin-page {
+  padding: 0 0 2rem 0;
+  margin-right: 1rem;
+
+  .tlbm-admin-page-tile {
+    background-color: white;
+    box-shadow: 0 2px 3px 0 #dedede;
+    margin: 1.2rem 0;
+    padding: 1.2rem 1.2rem;
+    border-radius: 4px;
+
+    > h2 {
+      margin-top: 0;
+    }
+
+    .subsubsub {
+      margin: 0;
+    }
+  }
+
+  .tlbm-admin-page-tile-row {
+    display: flex;
+    gap: 1.2rem;
+    margin: 1.2rem 0;
+    justify-content: stretch;
+
+    > .tlbm-admin-page-tile {
+      margin: 0;
+      flex-basis: 0;
+      flex-grow: 1;
+
+      &.tlbm-admin-page-tile-grow-2 {
+        flex-grow: 2;
+      }
+
+      &.tlbm-admin-page-tile-grow-3 {
+        flex-grow: 3;
+      }
+    }
+
+    .tlbm-admin-page-tile:first-child {
+      margin-left: 0;
+    }
+    .tlbm-admin-page-tile:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .wp-list-table {
+    border: 1px solid #dcdcdc;
+    box-shadow: none;
+
+    th {
+      padding: 0 0.7rem;
+
+      a {
+        padding: 0.7rem 0;
+      }
+
+      &.check-column {
+        padding: 1.2rem 0 0 3px;
+      }
+    }
+
+    td {
+      padding: 1rem 0.7rem;
+    }
+
+    thead tr > * {
+      border-bottom: 1px solid #dcdcdc;
+    }
+
+    tfoot tr > * {
+      border-top: 1px solid #dcdcdc;
+    }
+  }
+
+}
+
+.tlbm-admin-booking-id {
+  display: inline-block;
+  padding: 0.7em;
+  background-color: #135e96;
+  color: white;
+  font-size: 1.5em;
+  border-radius: 10px;
+  letter-spacing: 0.1em;
+}
+
+.tlbm-admin-booking-values {
+  font-size: 1.4em;
+  line-height: 1.4em;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-column-gap: 2em;
+  grid-row-gap: 1em;
+  justify-content: flex-start;
+
+  .tlbm-booking-value-title {
+    display: block;
+    font-weight: bolder;
+    margin-bottom: 0.5em;
+  }
+}
+
+.tlbm-admin-page-booking-value-tile {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 5em;
+  min-height: 200px;
+  padding: 3em 2em !important;
+}
+
+.tlbm-admin-booking-calendars {
+  border-left: 1px solid lightgray;
+  height: 100%;
+  padding-left: 2em;
+  grid-template-columns: repeat(1, 1fr);
+}
+
+.tlbm-booking-calendar-content {
+  font-size: 1.5em;
+  font-weight: 300;
+}
+
+
+.tlbm-admin-page {
+  .wp-list-table {
+    border: 1px solid rgb(0, 0, 0, 0.15);
+    border-radius: 4px;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15);
+
+  }
+
+  .tablenav .actions select {
+    max-width: unset;
+  }
+
+  .tlbm-admin-plain-table {
+    th {
+      padding: 0.7rem;
+    }
+  }
+
+  .tlbm-frontend-form {
+    font-size: 1.2em;
+
+    .tlbm-input-title {
+      margin-bottom: 0.3em;
+    }
+  }
+
+  .tlbm-calendar-edit-title {
+    font-size: 1.2em;
+    display: block;
+    margin: 0 0 1em 0;
+    font-weight: bolder;
+  }
+
+  .alternate, .striped > tbody > :nth-child(2n), ul.striped > :nth-child(2n) {
+    background-color: white;
+  }
+
+  .tlbm-admin-page-tile-middle-container {
+    width: 50%;
+    min-width: fit-content;
+    margin-left:  auto;
+    margin-right: auto;
+  }
+
+  .tlbm-admin-page-tile-big-padding {
+    padding-left: 2em;
+    padding-right: 2em;
+  }
+  .tlbm-admin-page-tile-sm-form {
+    table.form-table {
+      th {
+        width: 100px;
+      }
+      td {
+        padding-right: 0;
+      }
+    }
+  }
+}
+.tlbm-select-wide {
+    width: 100%;
+}
+
+.tlbm-admin-calendar-field {
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.tlbm-admin-content-box {
+  background-color: rgba(0,0,0,0.015);
+  box-shadow: 0 2px 2px lightgray;
+  border: 1px solid #c9c9c9;
+}

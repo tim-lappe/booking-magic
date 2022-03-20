@@ -3,8 +3,10 @@
 
 namespace TLBM\Admin\WpForm;
 
+use TLBM\Admin\RuleActionsEditor\Contracts\RuleActionsEditorCollectionInterface;
 use TLBM\Admin\WpForm\Contracts\FormFieldReadVarsInterface;
 use TLBM\Entity\RuleAction;
+use TLBM\MainFactory;
 
 if ( !defined('ABSPATH')) {
     return;
@@ -21,12 +23,14 @@ class RuleActionsField extends FormFieldBase implements FormFieldReadVarsInterfa
      */
     public function displayContent($value): void
     {
+        $actionsCollection = MainFactory::get(RuleActionsEditorCollectionInterface::class);
+
         /**
          * @var RuleAction[] $actions
          */
         $actions = $value;
         if ( !is_array($actions)) {
-            $actions = array();
+            $actions = [];
         }
         ?>
         <tr>
@@ -39,12 +43,13 @@ class RuleActionsField extends FormFieldBase implements FormFieldReadVarsInterfa
             </th>
             <td>
                 <div
-                        data-json="<?php
+                        data-value="<?php
                         echo urlencode(json_encode($actions)) ?>"
+                        data-actions="<?php
+                        echo urlencode(json_encode($actionsCollection->getRegisteredRuleActions())) ?>"
                         data-name="<?php
                         echo $this->name ?>"
                         class="tlbm-actions tlbm-rule-actions-field">
-
                 </div>
             </td>
         </tr>

@@ -17,6 +17,7 @@ use TLBM\Entity\CalendarBooking;
 use TLBM\Entity\CalendarGroup;
 use TLBM\Entity\Form;
 use TLBM\MainFactory;
+use TLBM\Repository\CacheManager;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
 use TLBM\Utilities\ExtendedDateTime;
 
@@ -54,18 +55,24 @@ class BookingProcessor
     private CalendarBookingManagerInterface $calendarBookingManager;
 
     /**
+     * @var CacheManager
+     */
+    private CacheManager $cacheManager;
+
+    /**
      * @var ?Booking
      */
     private ?Booking $pendingBooking;
 
-    public function __construct
-    (
+    public function __construct(
         EntityRepositoryInterface $entityRepository,
-        CalendarBookingManagerInterface $calendarBookingManager
+        CalendarBookingManagerInterface $calendarBookingManager,
+        CacheManager $cacheManager
     )
     {
-        $this->entityRepository = $entityRepository;
+        $this->entityRepository       = $entityRepository;
         $this->calendarBookingManager = $calendarBookingManager;
+        $this->cacheManager           = $cacheManager;
     }
 
     /**
@@ -160,7 +167,6 @@ class BookingProcessor
 
             if ($this->entityRepository->saveEntity($booking)) {
                 $this->pendingBooking = $booking;
-
                 return $booking;
             }
         }

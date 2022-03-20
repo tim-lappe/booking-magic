@@ -56,8 +56,7 @@ $repository->saveEntity($calgroup2);
 
 $rule1 = new Rule("DefaultRule1", 0, new CalendarSelection(TLBM_CALENDAR_SELECTION_TYPE_ALL),
         [
-            new RuleAction(null, "date_slot", "mo_to_fr", 0, 0, 1, [
-                "mode" => "set",
+            new RuleAction(null, "day_slot", "mo_to_fr", 0, 0, 1, ["mode" => "set",
                 "amount" => 5
             ]),
         ]
@@ -65,11 +64,9 @@ $rule1 = new Rule("DefaultRule1", 0, new CalendarSelection(TLBM_CALENDAR_SELECTI
 $repository->saveEntity($rule1);
 
 $rule2 = new Rule("DefaultRule2", 1, new CalendarSelection(TLBM_CALENDAR_SELECTION_TYPE_ALL),
-       [
-           new RuleAction(null, "date_slot", "every_day", 0, 0, 1, [
-               "mode" => "add",
-               "amount" => 5
-           ]),
+       [new RuleAction(null, "day_slot", "every_day", 0, 0, 1, ["mode" => "add",
+           "amount" => 5
+       ]),
        ]
 );
 $repository->saveEntity($rule2);
@@ -78,11 +75,9 @@ $rule3 = new Rule("DefaultRule3", 2,
        new CalendarSelection(TLBM_CALENDAR_SELECTION_TYPE_ONLY, [
            $calendarAlice, $calendarFabian
            ]),
-       [
-           new RuleAction(null, "date_slot", "every_day", 0, 0, 1, [
-               "mode" => "set",
-               "amount" => 0
-           ]),
+       [new RuleAction(null, "day_slot", "every_day", 0, 0, 1, ["mode" => "set",
+           "amount" => 0
+       ]),
        ],[
            new RulePeriod(null, 1646130842, true, 1646908442, true)
        ]

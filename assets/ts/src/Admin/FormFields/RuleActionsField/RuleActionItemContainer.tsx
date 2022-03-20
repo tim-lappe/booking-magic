@@ -1,8 +1,6 @@
 import * as React from "react";
 import {RuleAction} from "../../Entity/RuleAction";
-import {TimeSlotItem} from "./TimeSlotItem";
-import {DateSlotItem} from "./DateSlotItem";
-import {MessageItem} from "./MessageItem";
+import {RuleActionsManager} from "./RuleActionsManager";
 
 
 interface RuleActionsItemProps {
@@ -11,6 +9,7 @@ interface RuleActionsItemProps {
     onMoveUp?: (action: RuleAction) => void;
     onMoveDown?: (action: RuleAction) => void;
     dataItem?: RuleAction;
+    ruleActionsManager: RuleActionsManager;
 }
 
 interface RuleActionsItemState {
@@ -19,6 +18,8 @@ interface RuleActionsItemState {
 
 export class RuleActionsItemContainer extends React.Component<RuleActionsItemProps, RuleActionsItemState> {
 
+    private readonly ruleActionComponent: JSX.Element = null;
+
     constructor(props) {
         super(props);
 
@@ -26,17 +27,12 @@ export class RuleActionsItemContainer extends React.Component<RuleActionsItemPro
             item: props.dataItem
         };
 
-        if (props.dataItem.action_type == "message") {
-            this.state.item.actions = {
-                "message": props.dataItem?.actions?.message ?? ""
-            }
-        }
-
         this.onRemove = this.onRemove.bind(this);
         this.onMoveUp = this.onMoveUp.bind(this);
         this.onMoveDown = this.onMoveDown.bind(this);
         this.onChange = this.onChange.bind(this);
 
+        this.ruleActionComponent = this.props.ruleActionsManager.createComponent(this.state.item, this.onChange)
     }
 
     onRemove(event: any) {
@@ -63,24 +59,10 @@ export class RuleActionsItemContainer extends React.Component<RuleActionsItemPro
     }
 
     render() {
-        let formcontent = (<div />);
-
-        if(this.state.item.action_type == "time_slot") {
-            formcontent = (<TimeSlotItem ruleAction={this.state.item} onChange={this.onChange}/>)
-        }
-
-        if(this.state.item.action_type == "date_slot") {
-            formcontent = (<DateSlotItem ruleAction={this.state.item} onChange={this.onChange}/>)
-        }
-
-        if(this.state.item.action_type == "message") {
-            formcontent = (<MessageItem ruleAction={this.state.item} onChange={this.onChange}/>)
-        }
-
         return (
             <div className={'tlbm-action-rule-item tlbm-gray-container tlbm-admin-content-box'}>
                 <div className={'tlbm-action-item-form'}>
-                    {formcontent}
+                    {this.ruleActionComponent}
                 </div>
                 <div className={'tlbm-up-down-buttons'}>
                     <button onClick={this.onMoveUp} className={'tlbm-ud-button-up'}><span className={'dashicons dashicons-arrow-up-alt2'} /></button>
