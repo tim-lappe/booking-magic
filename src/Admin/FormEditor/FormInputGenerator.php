@@ -50,16 +50,32 @@ class FormInputGenerator
         $css = implode(" ", $attributes['css_arr']);
         $fieldvalue = $this->linkedFormData->getInputVarByName($attributes['name']);
 
-        $html     = "<div class='tlbm-fe-form-control " . $css . "'>";
-        $html     .= "<label>";
-        $html     .= "<span class='tlbm-input-title'>" . $attributes['title'] . "</span>";
-        $html     .= "<select class='tlbm-input-field' name='" . $attributes['name'] . "' " . $attributes['required'] . ">";
+        $html = "<div class='tlbm-fe-form-control " . $css . "'>";
+        $html .= "<label>";
+        $html .= "<span class='tlbm-input-title'>" . $attributes['title'] . "</span>";
+        $html .= "<select class='tlbm-input-field' name='" . $attributes['name'] . "' " . $attributes['required'] . ">";
 
         foreach ($keyValues as $key => $value) {
-            $html .= "<option ".selected($key == $fieldvalue, true,false)." value='" . $key . "'>" . $value . "</option>";
+            $html .= "<option " . selected($key == $fieldvalue, true, false) . " value='" . $key . "'>" . $value . "</option>";
         }
 
         $html .= "</select>";
+        $html .= "</label>";
+        $html .= "</div>";
+
+        return $html;
+    }
+
+    public function getTextarea()
+    {
+        $attributes = $this->getAttributes();
+        $css        = implode(" ", $attributes['css_arr']);
+        $value      = $this->linkedFormData->getInputVarByName($attributes['name']);
+
+        $html = "<div class='" . $css . "'>";
+        $html .= "<label>";
+        $html .= "<span class='tlbm-input-title'>" . $attributes['title'] . "</span>";
+        $html .= "<textarea class='tlbm-input-field' name='" . $attributes['name'] . "' " . $attributes['required'] . ">" . $value . "</textarea>";
         $html .= "</label>";
         $html .= "</div>";
 

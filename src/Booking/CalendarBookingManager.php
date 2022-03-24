@@ -33,14 +33,12 @@ class CalendarBookingManager implements CalendarBookingManagerInterface
      */
     public function getRemainingSlots(array $calendarIds, ExtendedDateTime $extendedDateTime, ?CalendarBooking $exclude = null, ?bool $fullDay = null): int
     {
-        $capacity    = $this->capacityManager->getOriginalCapacity($calendarIds, $extendedDateTime);
-        $bookedSlots = $this->getBookedSlots($calendarIds, $extendedDateTime, $fullDay);
-
-        if ($exclude != null) {
-            $bookedSlots -= $exclude->getSlots();
+        $capacityResult = $this->capacityManager->getCapacityResult($calendarIds, $extendedDateTime);
+        if ($exclude != null && $exclude->getFromDateTime()->isEqualTo($extendedDateTime)) {
+            $capacityResult->setCapacityRemaining($capacityResult->getCapacityRemaining() + $exclude->getSlots());
         }
 
-        return max(0, ($capacity - $bookedSlots));
+        return $capacityResult->getCapacityRemaining();
     }
 
     /**
@@ -129,6 +127,7 @@ class CalendarBookingManager implements CalendarBookingManagerInterface
     {
         //TODO: Wird nur auf "From" DateTime geprüft, muss also noch angepasst werden
         $remaining = $this->getRemainingSlots(array($calendarBooking->getCalendar()->getId()), $calendarBooking->getFromDateTime(), $calendarBooking);
+
         return $remaining >= $calendarBooking->getSlots();
     }
 }

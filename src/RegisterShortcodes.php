@@ -10,6 +10,7 @@ if ( !defined('ABSPATH')) {
 use TLBM\ApiUtils\Contracts\HooksInterface;
 use TLBM\ApiUtils\Contracts\ShortcodeInterface;
 use TLBM\Output\Contracts\FormPrintInterface;
+use TLBM\Output\Contracts\FrontendMessengerInterface;
 use TLBM\Repository\Contracts\BookingRepositoryInterface;
 use TLBM\Request\Contracts\RequestManagerInterface;
 use TLBM\Session\SessionManager;
@@ -32,14 +33,29 @@ class RegisterShortcodes
      */
     private ShortcodeInterface $shortcode;
 
+    /**
+     * @var SessionManager
+     */
     private SessionManager $sessionManager;
 
-    public function __construct(FormPrintInterface $formPrint, RequestManagerInterface $requestManager, HooksInterface $hooks, ShortcodeInterface $shortcode, SessionManager $sessionManager)
-    {
-        $this->formPrint      = $formPrint;
-        $this->shortcode      = $shortcode;
-        $this->requestManager = $requestManager;
-        $this->sessionManager = $sessionManager;
+    /**
+     * @var FrontendMessengerInterface
+     */
+    private FrontendMessengerInterface $frontendMessenger;
+
+    public function __construct(
+        FormPrintInterface $formPrint,
+        RequestManagerInterface $requestManager,
+        HooksInterface $hooks,
+        ShortcodeInterface $shortcode,
+        SessionManager $sessionManager,
+        FrontendMessengerInterface $frontendMessenger
+    ) {
+        $this->frontendMessenger = $frontendMessenger;
+        $this->formPrint         = $formPrint;
+        $this->shortcode         = $shortcode;
+        $this->requestManager    = $requestManager;
+        $this->sessionManager    = $sessionManager;
 
         $hooks->addAction("init", [$this, "addShortcodes"]);
     }
@@ -65,7 +81,7 @@ class RegisterShortcodes
         if (sizeof($args) > 0) {
             if (isset($args['id'])) {
                 if ($this->requestManager->hasContent()) {
-                    return $this->requestManager->getContent();
+                    return $this->frontendMessenger->getContent() . $this->requestManager->getContent();
                 } else {
                     $vars                = $this->requestManager->getVars();
                     $lastFormFieldValues = $this->sessionManager->getValue("lastFormFieldValues");
@@ -75,7 +91,7 @@ class RegisterShortcodes
                         }
                     }
 
-                    return $this->formPrint->printForm($args['id'], $vars);
+                    return $this->frontendMessenger->getContent() . $this->formPrint->printForm($args['id'], $vars);
                 }
             }
         }

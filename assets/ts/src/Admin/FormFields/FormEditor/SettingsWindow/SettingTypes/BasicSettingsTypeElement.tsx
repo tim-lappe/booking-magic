@@ -1,13 +1,13 @@
 import * as React from "react";
 import {ElementSetting} from "../../../../Entity/FormEditor/ElementSetting";
 
-interface BasicSettingsTypeElementProps {
+export interface BasicSettingsTypeElementProps {
     onChange?: (newVal: any, oldVal: any) => void;
     elementSetting: ElementSetting;
     value?: any;
 }
 
-interface BasicSettingsTypeElementState {
+export interface BasicSettingsTypeElementState {
     value?: any;
 }
 

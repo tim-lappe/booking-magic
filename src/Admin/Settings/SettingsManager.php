@@ -5,7 +5,9 @@ namespace TLBM\Admin\Settings;
 
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
+use TLBM\ApiUtils\Contracts\HooksInterface;
 use TLBM\ApiUtils\Contracts\OptionsInterface;
+use TLBM\Repository\Contracts\CacheManagerInterface;
 
 class SettingsManager implements SettingsManagerInterface
 {
@@ -17,7 +19,7 @@ class SettingsManager implements SettingsManagerInterface
     /**
      * @var array
      */
-    public array $groups = array();
+    public array $groups = [];
 
     /**
      * @var OptionsInterface
@@ -25,11 +27,25 @@ class SettingsManager implements SettingsManagerInterface
     private OptionsInterface $options;
 
     /**
-     * @param OptionsInterface $options
+     * @var HooksInterface
      */
-    public function __construct(OptionsInterface $options)
+    private HooksInterface $hooks;
+
+    /**
+     * @var CacheManagerInterface
+     */
+    private CacheManagerInterface $cacheManager;
+
+    /**
+     * @param CacheManagerInterface $cacheManager
+     * @param OptionsInterface $options
+     * @param HooksInterface $hooks
+     */
+    public function __construct(CacheManagerInterface $cacheManager, OptionsInterface $options, HooksInterface $hooks)
     {
-        $this->options = $options;
+        $this->cacheManager = $cacheManager;
+        $this->options      = $options;
+        $this->hooks        = $hooks;
     }
 
     /**
@@ -127,16 +143,26 @@ class SettingsManager implements SettingsManagerInterface
      */
     public function loadSettings(): void
     {
+        $this->hooks->addAction("updated_option", [$this, "updatedSettings"]);
+
         foreach ($this->groups as $key => $group) {
             $this->options->addSettingsSection("tlbm_" . $key . "_section", $group, null, "tlbm_settings_" . $key);
         }
 
         foreach ($this->settings as $setting) {
-            $this->options->registerSetting("tlbm_" . $setting->optionGroup, $setting->optionName, array("default" => $setting->defaultValue));
+            $this->options->registerSetting("tlbm_" . $setting->optionGroup, $setting->optionName, ["default" => $setting->defaultValue]);
             $this->options->addSettingsField(
-                "tlbm_" . $setting->optionGroup . "_" . $setting->optionName . "_field", $setting->title, array($setting, "display"), 'tlbm_settings_' . $setting->optionGroup, "tlbm_" . $setting->optionGroup . "_section"
+                "tlbm_" . $setting->optionGroup . "_" . $setting->optionName . "_field", $setting->title, [$setting, "display"], 'tlbm_settings_' . $setting->optionGroup, "tlbm_" . $setting->optionGroup . "_section"
             );
         }
+    }
+
+    /**
+     * @return void
+     */
+    public function updatedSettings()
+    {
+        $this->cacheManager->clearCache();
     }
 
     /**

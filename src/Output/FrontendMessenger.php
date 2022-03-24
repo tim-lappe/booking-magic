@@ -16,13 +16,20 @@ class FrontendMessenger implements FrontendMessengerInterface
     /**
      * @var array
      */
-    private array $frontendMsgs = array();
+    private array $frontendMsgs = [];
 
-    public function addMessage($html)
+    /**
+     * @param string $html
+     *
+     */
+    public function addMessage(string $html)
     {
         $this->frontendMsgs[] = $html;
     }
 
+    /**
+     * @return string
+     */
     public function getContent(): string
     {
         if (count($this->frontendMsgs) > 0) {
@@ -35,6 +42,6 @@ class FrontendMessenger implements FrontendMessengerInterface
             return $html;
         }
 
-        return "";
+        return '';
     }
 }

@@ -47,10 +47,11 @@ class MultipleTimeSlotActionHandler implements Contracts\ActionHandlerInterface
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getMergeTerm(): string
+    public function getMergeTerm(): array
     {
-        return "timeCapacities";
+        return ["timeCapacities"
+        ];
     }
 }

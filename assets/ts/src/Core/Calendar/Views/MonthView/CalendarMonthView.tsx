@@ -139,21 +139,25 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSt
         datePrevMonth.addMonth(-1);
         let labelPrevMonth =  DateLocalization.GetMonthLabelByNum(datePrevMonth.getMonth()) + " " + datePrevMonth.getYear();
 
-        if(this.state.viewState.smallVersion) {
+        if (this.state.viewState.smallVersion) {
             labelNextMonth = ">";
             labelPrevMonth = "<";
 
-            for(let i = 0; i < weekdayTiles.length; i++) {
+            for (let i = 0; i < weekdayTiles.length; i++) {
                 weekdayTiles[i] = weekdayTiles[i].substr(0, 1);
             }
         }
 
-        let timeCapacities = [];
-        if(this.state.viewState.selectedDate && this.state.bookingOptions != null) {
+        let timeCapacitiesOfSelectedDate = [];
+        let fullDayCapacitiesOfSelectedDate = null;
+        if (this.state.viewState.selectedDate && this.state.bookingOptions != null) {
+            let dayCapacity = this.state.bookingOptions?.getMergedActionsForDay(this.state.viewState.selectedDate).getActionResultValue("dayCapacity");
             let timeCapsSelected = this.state.bookingOptions?.getMergedActionsForDay(this.state.viewState.selectedDate).getActionResultValue("timeCapacities")?.timeSlotsCapacities;
-            if(Array.isArray(timeCapsSelected)) {
-                timeCapacities = timeCapsSelected;
+            if (Array.isArray(timeCapsSelected)) {
+                timeCapacitiesOfSelectedDate = timeCapsSelected;
             }
+
+            fullDayCapacitiesOfSelectedDate = dayCapacity ?? null;
         }
 
         let today = DateTime.create();
@@ -177,9 +181,9 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSt
                             })}
                             {dayTiles.map((date: any, index) => {
                                 if(date instanceof DateTime && this.state.bookingOptions != null) {
-                                    let dateCapacity = this.state.bookingOptions?.getMergedActionsForDay(date).getActionResultValue("dateCapacity")?.capacityRemaining;
+                                    let dayCapacity = this.state.bookingOptions?.getMergedActionsForDay(date).getActionResultValue("dayCapacity")?.capacityRemaining;
                                     let timeCapacities = this.state.bookingOptions?.getMergedActionsForDay(date).getActionResultValue("timeCapacities")?.timeSlotsCapacities;
-                                    let cellDisabled = (dateCapacity == null || dateCapacity == 0);
+                                    let cellDisabled = (dayCapacity == null || dayCapacity == 0);
 
                                     if (timeCapacities != null && timeCapacities.length > 1) {
                                         for (let timeCap of timeCapacities) {
@@ -198,7 +202,9 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSt
                                             <span style={{
                                                 float: "right",
                                                 visibility: (!cellDisabled ? "visible" : "hidden")
-                                            }}>{dateCapacity}</span>
+                                            }}>
+
+                                            </span>
                                         </MonthViewDateCell>
                                     )
                                 } else {
@@ -208,7 +214,8 @@ export class CalendarMonthView extends CalendarComponentBase<CalendarMonthViewSt
                                 }
                             })}
 
-                            <MonthViewTimePanel onSelect={this.onClickOnTimeTile} times={timeCapacities} />
+                            <MonthViewTimePanel fullDay={fullDayCapacitiesOfSelectedDate}
+                                                onSelect={this.onClickOnTimeTile} times={timeCapacitiesOfSelectedDate}/>
                         </div>
                     </React.Fragment>
                 ): null}

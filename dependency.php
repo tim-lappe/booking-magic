@@ -9,12 +9,14 @@ use TLBM\Admin\FormEditor\Elements\CalendarElem;
 use TLBM\Admin\FormEditor\Elements\CityElem;
 use TLBM\Admin\FormEditor\Elements\ColumnsElem;
 use TLBM\Admin\FormEditor\Elements\ContactEmailElem;
+use TLBM\Admin\FormEditor\Elements\CustomHtmlElem;
 use TLBM\Admin\FormEditor\Elements\EmailElem;
 use TLBM\Admin\FormEditor\Elements\FirstNameElem;
 use TLBM\Admin\FormEditor\Elements\HrElem;
 use TLBM\Admin\FormEditor\Elements\LastNameElem;
 use TLBM\Admin\FormEditor\Elements\SelectElement;
 use TLBM\Admin\FormEditor\Elements\SpacingElem;
+use TLBM\Admin\FormEditor\Elements\TextareaElem;
 use TLBM\Admin\FormEditor\Elements\TextBoxElem;
 use TLBM\Admin\FormEditor\Elements\ZipElem;
 use TLBM\Admin\FormEditor\FormElementsCollection;
@@ -41,6 +43,7 @@ use TLBM\Admin\Pages\SinglePages\SettingsPage;
 use TLBM\Admin\RuleActionsEditor\Actions\DaySlotEditorElem;
 use TLBM\Admin\RuleActionsEditor\Actions\MessageEditorElem;
 use TLBM\Admin\RuleActionsEditor\Actions\MultipleTimeSlotEditorElem;
+use TLBM\Admin\RuleActionsEditor\Actions\SlotOverwriteEditorElem;
 use TLBM\Admin\RuleActionsEditor\Actions\TimeSlotEditorElem;
 use TLBM\Admin\RuleActionsEditor\Contracts\RuleActionsEditorCollectionInterface;
 use TLBM\Admin\RuleActionsEditor\RuleActionsEditorCollection;
@@ -119,6 +122,7 @@ use TLBM\Rules\Actions\DateSlotActionHandler;
 use TLBM\Rules\Actions\MessageActionHandler;
 use TLBM\Rules\Actions\MultipleTimeSlotActionHandler;
 use TLBM\Rules\Actions\RuleActionsManager;
+use TLBM\Rules\Actions\SlotOverwriteHandler;
 use TLBM\Rules\Actions\TimeSlotActionHandler;
 use TLBM\Rules\Contracts\RuleActionsManagerInterface;
 use TLBM\Rules\Contracts\RulesCapacityManagerInterface;
@@ -182,6 +186,7 @@ return [
             $ruleActionsEditorCollection->registerRuleActionEditorElem(TimeSlotEditorElem::class);
             $ruleActionsEditorCollection->registerRuleActionEditorElem(MultipleTimeSlotEditorElem::class);
             $ruleActionsEditorCollection->registerRuleActionEditorElem(MessageEditorElem::class);
+            $ruleActionsEditorCollection->registerRuleActionEditorElem(SlotOverwriteEditorElem::class);
         }
 
         return $ruleActionsEditorCollection;
@@ -197,6 +202,7 @@ return [
             $ruleActionManager->registerActionHandlerClass("time_slot", TimeSlotActionHandler::class);
             $ruleActionManager->registerActionHandlerClass("multiple_time_slots", MultipleTimeSlotActionHandler::class);
             $ruleActionManager->registerActionHandlerClass("message", MessageActionHandler::class);
+            $ruleActionManager->registerActionHandlerClass("slot_overwrite", SlotOverwriteHandler::class);
         }
 
         return $ruleActionManager;
@@ -255,6 +261,8 @@ return [
             $formElementsCollection->registerFormElement($factory->make(EmailElem::class));
             $formElementsCollection->registerFormElement($factory->make(TextBoxElem::class));
             $formElementsCollection->registerFormElement($factory->make(SelectElement::class));
+            $formElementsCollection->registerFormElement($factory->make(CustomHtmlElem::class));
+            $formElementsCollection->registerFormElement($factory->make(TextareaElem::class));
         }
 
         return $formElementsCollection;
@@ -348,11 +356,6 @@ return [
              */
             $settingsManager->registerSettingsGroup("rules", $localization->__("Rules", TLBM_TEXT_DOMAIN));
             $settingsManager->registerSetting($container->get(PriorityLevels::class));
-
-            /**
-             * Advanced
-             */
-            $settingsManager->registerSettingsGroup("advanced", $localization->__("Advanced", TLBM_TEXT_DOMAIN));
         }
 
         return $settingsManager;

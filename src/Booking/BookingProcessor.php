@@ -368,6 +368,13 @@ class BookingProcessor
         return $this->pendingBooking;
     }
 
+    public function setFromPendingBooking(Booking $pendingBooking)
+    {
+        $this->pendingBooking = $pendingBooking;
+        $this->setForm($pendingBooking->getForm());
+        $this->setVars($pendingBooking->getBookingKeyValuesPairs());
+    }
+
     /**
      * @param Form $form
      */

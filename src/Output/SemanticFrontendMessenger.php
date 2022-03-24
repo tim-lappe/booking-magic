@@ -4,13 +4,14 @@ namespace TLBM\Output;
 
 use TLBM\Admin\FormEditor\LinkedFormData;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\Output\Contracts\FrontendMessengerInterface;
 
 class SemanticFrontendMessenger
 {
     /**
-     * @var FrontendMessenger
+     * @var FrontendMessengerInterface
      */
-    private FrontendMessenger $frontendMessenger;
+    private FrontendMessengerInterface $frontendMessenger;
 
     /**
      * @var LocalizationInterface
@@ -18,13 +19,13 @@ class SemanticFrontendMessenger
     private LocalizationInterface $localization;
 
     /**
-     * @param FrontendMessenger $frontendMessenger
+     * @param FrontendMessengerInterface $frontendMessenger
      * @param LocalizationInterface $localization
      */
-    public function __construct(FrontendMessenger $frontendMessenger, LocalizationInterface $localization)
+    public function __construct(FrontendMessengerInterface $frontendMessenger, LocalizationInterface $localization)
     {
         $this->frontendMessenger = $frontendMessenger;
-        $this->localization =   $localization;
+        $this->localization      = $localization;
     }
 
     /**
@@ -53,6 +54,5 @@ class SemanticFrontendMessenger
         }
 
         $this->frontendMessenger->addMessage($this->localization->__("Not all required fields were filled out: <br>" . implode("<br>", $errors), TLBM_TEXT_DOMAIN));
-
     }
 }

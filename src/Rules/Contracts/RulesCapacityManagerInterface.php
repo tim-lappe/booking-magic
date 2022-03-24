@@ -2,7 +2,7 @@
 
 namespace TLBM\Rules\Contracts;
 
-use TLBM\Entity\Calendar;
+use TLBM\Rules\Actions\Merging\Results\CapacityResult;
 use TLBM\Utilities\ExtendedDateTime;
 
 interface RulesCapacityManagerInterface
@@ -11,7 +11,7 @@ interface RulesCapacityManagerInterface
      * @param ExtendedDateTime $dateTime
      * @param array $calendarIds
      *
-     * @return int
+     * @return CapacityResult
      */
-    public function getOriginalCapacity(array $calendarIds, ExtendedDateTime $dateTime): int;
+    public function getCapacityResult(array $calendarIds, ExtendedDateTime $dateTime): CapacityResult;
 }
