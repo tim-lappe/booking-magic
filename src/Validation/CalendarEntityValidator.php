@@ -32,7 +32,7 @@ class CalendarEntityValidator implements CalendarEntityValidatorInterface
         $localization = MainFactory::get(LocalizationInterface::class);
 
         if(empty($this->calendar->getTitle())) {
-            $errors[] = $localization->__("The title is too short", TLBM_TEXT_DOMAIN);
+            $errors[] = $localization->getText("The title is too short", TLBM_TEXT_DOMAIN);
         }
 
         return $errors;

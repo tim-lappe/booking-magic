@@ -95,7 +95,7 @@ abstract class ElementSetting
         $this->localization = MainFactory::get(LocalizationInterface::class);
 
         if ($category_title == "General") {
-            $category_title = $this->localization->__("General", TLBM_TEXT_DOMAIN);
+            $category_title = $this->localization->getText("General", TLBM_TEXT_DOMAIN);
         }
 
         $this->category_title = $category_title;

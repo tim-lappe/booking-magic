@@ -64,11 +64,11 @@ class FormPrint implements FormPrintInterface
                 if ($this->settingsManager->getValue(SinglePageBooking::class) == "on") {
                     $html .= "<input type='hidden' name='tlbm_action' value='dobooking'>";
                     $html .= wp_nonce_field("dobooking_action", "_wpnonce", true, false);
-                    $html .= "<button class='tlbm-form-submit-button'>" . $this->localization->__("Book now", TLBM_TEXT_DOMAIN) . "</button>";
+                    $html .= "<button class='tlbm-form-submit-button'>" . $this->localization->getText("Book now", TLBM_TEXT_DOMAIN) . "</button>";
                 } else {
                     $html .= "<input type='hidden' name='tlbm_action' value='showbookingoverview'>";
                     $html .= wp_nonce_field("showbookingoverview_action", "_wpnonce", true, false);
-                    $html .= "<button class='tlbm-form-submit-button'>" . $this->localization->__("Continue", TLBM_TEXT_DOMAIN) . "</button>";
+                    $html .= "<button class='tlbm-form-submit-button'>" . $this->localization->getText("Continue", TLBM_TEXT_DOMAIN) . "</button>";
                 }
 
                 $html .= "</form>";
@@ -77,6 +77,6 @@ class FormPrint implements FormPrintInterface
             }
         }
 
-        return sprintf($this->localization->__("<p><b>Unknown Form-Id: %s</b></p>", TLBM_TEXT_DOMAIN), $formId);
+        return sprintf($this->localization->getText("<p><b>Unknown Form-Id: %s</b></p>", TLBM_TEXT_DOMAIN), $formId);
     }
 }

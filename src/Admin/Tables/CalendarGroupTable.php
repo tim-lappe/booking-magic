@@ -30,7 +30,7 @@ class CalendarGroupTable extends ManagableEntityTable
         $this->localization = $localization;
 
         parent::__construct(
-            CalendarGroup::class, $this->localization->__("Groups", TLBM_TEXT_DOMAIN), $this->localization->__("Group", TLBM_TEXT_DOMAIN), 10, $this->localization->__("You haven't created any groups yet", TLBM_TEXT_DOMAIN)
+            CalendarGroup::class, $this->localization->getText("Groups", TLBM_TEXT_DOMAIN), $this->localization->getText("Group", TLBM_TEXT_DOMAIN), 10, $this->localization->getText("You haven't created any groups yet", TLBM_TEXT_DOMAIN)
         );
     }
 
@@ -55,30 +55,27 @@ class CalendarGroupTable extends ManagableEntityTable
     {
         $columns = parent::getColumns();
 
-        array_splice($columns, 1, 0, [
-            new Column("title", $this->localization->__("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
-                $groupEditPage = $this->adminPageManager->getPage(CalendarGroupEditPage::class);
-                $link = $groupEditPage->getEditLink($item->getId());
+        array_splice($columns, 1, 0, [new Column("title", $this->localization->getText("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
+            $groupEditPage = $this->adminPageManager->getPage(CalendarGroupEditPage::class);
+            $link          = $groupEditPage->getEditLink($item->getId());
 
-                if ( !empty($item->getTitle())) {
-                    echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
-                } else {
-                    echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
-                }
-
-            }),
-            new Column("selected_calendars", $this->localization->__('Selected Calendars', TLBM_TEXT_DOMAIN), false, function ($item) {
-                $selection = $item->getCalendarSelection();
+            if ( !empty($item->getTitle())) {
+                echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
+            } else {
+                echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
+            }
+        }),
+            new Column("selected_calendars", $this->localization->getText('Selected Calendars', TLBM_TEXT_DOMAIN), false, function ($item) {
+                $selection        = $item->getCalendarSelection();
                 $selectionDisplay = MainFactory::create(DisplayCalendarSelection::class);
                 $selectionDisplay->setCalendarSelection($selection);
                 $selectionDisplay->display();
-
             }),
-            new Column("booking_distribution", $this->localization->__('Booking Distribution', TLBM_TEXT_DOMAIN), true, function ($item) {
+            new Column("booking_distribution", $this->localization->getText('Booking Distribution', TLBM_TEXT_DOMAIN), true, function ($item) {
                 if ($item->getBookingDisitribution() == TLBM_BOOKING_DISTRIBUTION_EVENLY) {
-                    echo $this->localization->__("Evenly", TLBM_TEXT_DOMAIN);
+                    echo $this->localization->getText("Evenly", TLBM_TEXT_DOMAIN);
                 } elseif ($item->getBookingDisitribution() == TLBM_BOOKING_DISTRIBUTION_FILL_ONE) {
-                    echo $this->localization->__("Fill One First", TLBM_TEXT_DOMAIN);
+                    echo $this->localization->getText("Fill One First", TLBM_TEXT_DOMAIN);
                 }
             })
         ]);

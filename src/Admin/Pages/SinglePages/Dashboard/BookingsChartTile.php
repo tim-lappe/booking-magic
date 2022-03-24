@@ -22,7 +22,7 @@ class BookingsChartTile extends DashboardTile
     public function __construct(LocalizationInterface $localization, Statistics $statistics)
     {
         $this->statistics = $statistics;
-        parent::__construct($localization->__("Bookings", TLBM_TEXT_DOMAIN));
+        parent::__construct($localization->getText("Bookings", TLBM_TEXT_DOMAIN));
     }
 
     public function displayBody(): void

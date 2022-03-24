@@ -15,14 +15,14 @@ class CalendarPage extends PageBase
     private LocalizationInterface $localization;
 
     public function __construct(LocalizationInterface $localization) {
-        parent::__construct($localization->__("Calendars", TLBM_TEXT_DOMAIN), "booking-magic-calendar");
+        parent::__construct($localization->getText("Calendars", TLBM_TEXT_DOMAIN), "booking-magic-calendar");
         $this->parentSlug   = "booking-magic";
         $this->localization = $localization;
     }
 
     public function getHeadTitle(): string
     {
-        return $this->localization->__("Calendars", TLBM_TEXT_DOMAIN);
+        return $this->localization->getText("Calendars", TLBM_TEXT_DOMAIN);
     }
 
     public function displayDefaultHeadBar()

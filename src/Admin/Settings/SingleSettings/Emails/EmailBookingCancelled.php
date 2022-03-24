@@ -12,7 +12,7 @@ class EmailBookingCancelled extends EmailSetting
     public function __construct(LocalizationInterface $localization)
     {
         parent::__construct(
-            "email_booking_cancelled", $localization->__("Booking has been cancelled", TLBM_TEXT_DOMAIN), $localization->__("Booking has been cancelled", TLBM_TEXT_DOMAIN)
+            "email_booking_cancelled", $localization->getText("Booking has been cancelled", TLBM_TEXT_DOMAIN), $localization->getText("Booking has been cancelled", TLBM_TEXT_DOMAIN)
         );
     }
 

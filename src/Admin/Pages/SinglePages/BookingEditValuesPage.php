@@ -6,15 +6,12 @@ use Throwable;
 use TLBM\Admin\FormEditor\Elements\CalendarElem;
 use TLBM\Admin\FormEditor\FormDataWalker;
 use TLBM\Admin\FormEditor\RecursiveFormContentWalker;
-use TLBM\Booking\BookingProcessor;
-use TLBM\Booking\Semantic\BookingValueSemantic;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\Booking\BookingProcessor;
 use TLBM\Entity\Booking;
 use TLBM\Entity\Calendar;
-use TLBM\Entity\CalendarBooking;
 use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;
-use TLBM\Output\Contracts\FormPrintInterface;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
 use TLBM\Repository\Query\CalendarQuery;
 use TLBM\Utilities\ExtendedDateTime;
@@ -38,8 +35,8 @@ class BookingEditValuesPage extends EntityEditPage
     public function __construct(EntityRepositoryInterface $entityRepository, LocalizationInterface $localization)
     {
         $this->entityRepository = $entityRepository;
-        $this->localization = $localization;
-        parent::__construct($this->localization->__("Edit booking form values", TLBM_TEXT_DOMAIN), "booking-edit-form-values", "booking-edit-form-values", false);
+        $this->localization     = $localization;
+        parent::__construct($this->localization->getText("Edit booking form values", TLBM_TEXT_DOMAIN), "booking-edit-form-values", "booking-edit-form-values", false);
     }
 
     /**
@@ -49,10 +46,10 @@ class BookingEditValuesPage extends EntityEditPage
     {
         $booking = $this->getEditingEntity();
         if ($booking) {
-            return $this->localization->__("Edit Booking", TLBM_TEXT_DOMAIN);
+            return $this->localization->getText("Edit Booking", TLBM_TEXT_DOMAIN);
         }
 
-        return $this->localization->__("Add New Booking", TLBM_TEXT_DOMAIN);
+        return $this->localization->getText("Add New Booking", TLBM_TEXT_DOMAIN);
     }
 
     /**
@@ -179,8 +176,7 @@ class BookingEditValuesPage extends EntityEditPage
         $wrong = $bookingProcessor->validateVars(CalendarElem::class);
 
         if(count($wrong) > 0) {
-            return [
-                    "error" => $this->localization->__("Some fields are required", TLBM_TEXT_DOMAIN)
+            return ["error" => $this->localization->getText("Some fields are required", TLBM_TEXT_DOMAIN)
             ];
         }
 
@@ -216,8 +212,7 @@ class BookingEditValuesPage extends EntityEditPage
                         }
 
                     } catch (Throwable $exception) {
-                        return [
-                            "error" => $this->localization->__("An internal error occured. ", TLBM_TEXT_DOMAIN)
+                        return ["error" => $this->localization->getText("An internal error occured. ", TLBM_TEXT_DOMAIN)
                         ];
                     }
                 }
@@ -231,12 +226,10 @@ class BookingEditValuesPage extends EntityEditPage
         if ($this->entityRepository->saveEntity($booking)) {
             $savedEntity = $booking;
 
-            return [
-                    "success" => $this->localization->__("Booking has been saved", TLBM_TEXT_DOMAIN)
+            return ["success" => $this->localization->getText("Booking has been saved", TLBM_TEXT_DOMAIN)
             ];
         } else {
-            return [
-                    "error" => $this->localization->__("An internal error occured. ", TLBM_TEXT_DOMAIN)
+            return ["error" => $this->localization->getText("An internal error occured. ", TLBM_TEXT_DOMAIN)
             ];
         }
     }

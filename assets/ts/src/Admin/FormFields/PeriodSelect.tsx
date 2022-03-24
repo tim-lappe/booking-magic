@@ -71,11 +71,13 @@ export class PeriodSelect extends React.Component<any, PeriodSelectState>{
                 <div className="tlbm-periods-rules-list">
                     {this.state.items.map((item, index) => {
                         return (
-                            <PeriodSelectItem onRemove={() => this.onRemoveItem(index)} onChange={item1 => this.onChangeItem(index, item1)} item={item} key={item.id} />
+                            <PeriodSelectItem onRemove={() => this.onRemoveItem(index)}
+                                              onChange={item1 => this.onChangeItem(index, item1)} item={item}
+                                              key={item.id}/>
                         )
                     })}
                 </div>
-                <button className="button tlbm-add-period" onClick={this.onAdd}>{Localization.__("Add")}</button>
+                <button className="button tlbm-add-period" onClick={this.onAdd}>{Localization.getText("Add")}</button>
             </div>
         );
     }

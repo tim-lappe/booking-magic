@@ -35,7 +35,7 @@ export class BasicEditorElement<T extends FormElement> extends React.Component<B
                 </span>
                 {this.state.formNode.formData.required == "yes" ? (
                     <span className={"tlbm-form-settings-print-required"}>
-                        {Localization.__("Required")}
+                        {Localization.getText("Required")}
                     </span>
                 ) : null}
             </div>

@@ -11,8 +11,8 @@ class TextareaElem extends FormInputElem
 
     public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("field_textarea", $localization->__("Textarea", TLBM_TEXT_DOMAIN));
-        $this->description = $this->localization->__("Multi-line textbox", TLBM_TEXT_DOMAIN);
+        parent::__construct("field_textarea", $localization->getText("Textarea", TLBM_TEXT_DOMAIN));
+        $this->description = $this->localization->getText("Multi-line textbox", TLBM_TEXT_DOMAIN);
     }
 
 

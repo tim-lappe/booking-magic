@@ -30,7 +30,7 @@ class CalendarGroupEditPage extends EntityEditPage
         $this->entityRepository = $entityRepository;
         $this->localization = $localization;
 
-        parent::__construct( $this->localization->__("Group",TLBM_TEXT_DOMAIN), "calendar-group-edit", "calendar-group-edit", false);
+        parent::__construct($this->localization->getText("Group", TLBM_TEXT_DOMAIN), "calendar-group-edit", "calendar-group-edit", false);
 
         $this->defineFormFields();
     }
@@ -38,13 +38,12 @@ class CalendarGroupEditPage extends EntityEditPage
     public function defineFormFields()
     {
         $this->formBuilder->defineFormField(
-            new CalendarPickerField($this->entityRepository, "calendars", $this->localization->__("Calendars", TLBM_TEXT_DOMAIN))
+            new CalendarPickerField($this->entityRepository, "calendars", $this->localization->getText("Calendars", TLBM_TEXT_DOMAIN))
         );
         $this->formBuilder->defineFormField(
-            new SelectField("booking_distribution", $this->localization->__("Booking Distribution", TLBM_TEXT_DOMAIN), array(
-                TLBM_BOOKING_DISTRIBUTION_EVENLY => $this->localization->__("Evenly", TLBM_TEXT_DOMAIN),
-                TLBM_BOOKING_DISTRIBUTION_FILL_ONE => $this->localization->__("Fill One", TLBM_TEXT_DOMAIN)
-            ))
+            new SelectField("booking_distribution", $this->localization->getText("Booking Distribution", TLBM_TEXT_DOMAIN), [TLBM_BOOKING_DISTRIBUTION_EVENLY => $this->localization->getText("Evenly", TLBM_TEXT_DOMAIN),
+                TLBM_BOOKING_DISTRIBUTION_FILL_ONE => $this->localization->getText("Fill One", TLBM_TEXT_DOMAIN)
+            ])
         );
     }
 
@@ -96,10 +95,10 @@ class CalendarGroupEditPage extends EntityEditPage
 
         if($this->entityRepository->saveEntity($calendarGroup)) {
             $savedEntity = $calendarGroup;
-            return ["success" => $this->localization->__("Group has been saved", TLBM_TEXT_DOMAIN)];
+
+            return ["success" => $this->localization->getText("Group has been saved", TLBM_TEXT_DOMAIN)];
         } else {
-            return array(
-                "error" => $this->localization->__("An internal error occured.", TLBM_TEXT_DOMAIN)
+            return array("error" => $this->localization->getText("An internal error occured.", TLBM_TEXT_DOMAIN)
             );
         }
     }

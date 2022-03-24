@@ -31,7 +31,7 @@ export class ColumnsElement<T extends ColumnFormElement> extends BasicEditorElem
             columnComponents.push((
 
                 <EntityChildContainer
-                    emptyText={Localization.__("This column is empty")}
+                    emptyText={Localization.getText("This column is empty")}
                     formEditor={this.props.formEditor}
                     formNode={this.state.formNode.children[c]}
                     key={c} style={{flexGrow: grow}} additionalClassName={'tlbm-form-column tlbm-form-column-number-' + c} />

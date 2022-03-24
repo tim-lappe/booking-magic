@@ -27,7 +27,7 @@ class CalendarListTable extends ManagableEntityTable
         $this->localization = $localization;
         $this->adminPageManager = $adminPageManager;
         parent::__construct(
-             Calendar::class, $this->localization->__("Calendars", TLBM_TEXT_DOMAIN), $this->localization->__("Calendar", TLBM_TEXT_DOMAIN), 10, $this->localization->__("You haven't created any calendars yet", TLBM_TEXT_DOMAIN)
+            Calendar::class, $this->localization->getText("Calendars", TLBM_TEXT_DOMAIN), $this->localization->getText("Calendar", TLBM_TEXT_DOMAIN), 10, $this->localization->getText("You haven't created any calendars yet", TLBM_TEXT_DOMAIN)
         );
     }
 
@@ -55,8 +55,7 @@ class CalendarListTable extends ManagableEntityTable
         $columns = parent::getColumns();
 
         array_splice(
-            $columns, 1, 0, [
-                new Column("title", $this->localization->__('Title', TLBM_TEXT_DOMAIN), true, function ($item) {
+            $columns, 1, 0, [new Column("title", $this->localization->getText('Title', TLBM_TEXT_DOMAIN), true, function ($item) {
                         $calendarEditPage = $this->adminPageManager->getPage(CalendarEditPage::class);
                         if ($calendarEditPage != null) {
                             $link = $calendarEditPage->getEditLink($item->getId());

@@ -20,7 +20,7 @@ class BookingStates extends SettingsBase
     public function __construct(LocalizationInterface $localization)
     {
         $this->localization = $localization;
-        parent::__construct("booking_process", "booking_states", $this->localization->__("Booking States", TLBM_TEXT_DOMAIN), $this->getDefaultStates());
+        parent::__construct("booking_process", "booking_states", $this->localization->getText("Booking States", TLBM_TEXT_DOMAIN), $this->getDefaultStates());
     }
 
     /**
@@ -28,49 +28,43 @@ class BookingStates extends SettingsBase
      */
     public function getDefaultStates(): array
     {
-        return array(
-            array(
-                "name"    => "new",
-                "title"   => $this->localization->__("New", TLBM_TEXT_DOMAIN),
-                "enabled" => true,
-                "default" => true,
-                "color"   => "#94dcf2",
-                "custom"  => false
-            ),
-            array(
-                "name"    => "processing",
-                "title"   => $this->localization->__("Processing", TLBM_TEXT_DOMAIN),
+        return array(array("name" => "new",
+            "title" => $this->localization->getText("New", TLBM_TEXT_DOMAIN),
+            "enabled" => true,
+            "default" => true,
+            "color" => "#94dcf2",
+            "custom" => false
+        ),
+            array("name" => "processing",
+                "title" => $this->localization->getText("Processing", TLBM_TEXT_DOMAIN),
                 "enabled" => false,
                 "default" => false,
-                "color"   => "#f5c842",
-                "custom"  => false
+                "color" => "#f5c842",
+                "custom" => false
             ),
-            array(
-                "name"    => "confirmed",
-                "title"   => $this->localization->__("Confirmed", TLBM_TEXT_DOMAIN),
+            array("name" => "confirmed",
+                "title" => $this->localization->getText("Confirmed", TLBM_TEXT_DOMAIN),
                 "enabled" => true,
                 "default" => false,
-                "color"   => "#5ce072",
-                "custom"  => false
+                "color" => "#5ce072",
+                "custom" => false
             ),
-            array(
-                "name"    => "appeared",
-                "title"   => $this->localization->__("Appeared", TLBM_TEXT_DOMAIN),
+            array("name" => "appeared",
+                "title" => $this->localization->getText("Appeared", TLBM_TEXT_DOMAIN),
                 "enabled" => false,
                 "default" => false,
-                "color"   => "#277534",
-                "custom"  => false
+                "color" => "#277534",
+                "custom" => false
             ),
-            array(
-                "name"    => "not_appeared",
-                "title"   => $this->localization->__("Not Appeared", TLBM_TEXT_DOMAIN),
+            array("name" => "not_appeared",
+                "title" => $this->localization->getText("Not Appeared", TLBM_TEXT_DOMAIN),
                 "enabled" => false,
                 "default" => false,
-                "color"   => "#a10b0b",
-                "custom"  => false
+                "color" => "#a10b0b",
+                "custom" => false
             ),
             ["name" => "cancelled",
-                "title" => $this->localization->__("Cancelled", TLBM_TEXT_DOMAIN),
+                "title" => $this->localization->getText("Cancelled", TLBM_TEXT_DOMAIN),
                 "enabled" => true,
                 "default" => false,
                 "color" => "#fa3434",
@@ -113,13 +107,13 @@ class BookingStates extends SettingsBase
             <thead>
             <tr>
                 <th><?php
-                    echo $this->localization->__("Enabled", TLBM_TEXT_DOMAIN) ?></th>
+                    echo $this->localization->getText("Enabled", TLBM_TEXT_DOMAIN) ?></th>
                 <th><?php
-                    echo $this->localization->__("Name", TLBM_TEXT_DOMAIN) ?></th>
+                    echo $this->localization->getText("Name", TLBM_TEXT_DOMAIN) ?></th>
                 <th><?php
-                    echo $this->localization->__("Title", TLBM_TEXT_DOMAIN) ?></th>
+                    echo $this->localization->getText("Title", TLBM_TEXT_DOMAIN) ?></th>
                 <th><?php
-                    echo $this->localization->__("Color", TLBM_TEXT_DOMAIN) ?></th>
+                    echo $this->localization->getText("Color", TLBM_TEXT_DOMAIN) ?></th>
             </tr>
             </thead>
             <tbody>
@@ -184,7 +178,7 @@ class BookingStates extends SettingsBase
             echo sizeof($states) ?>">
                 <td>
                     <button class="button tlbm-add-booking-state"><?php
-                        echo $this->localization->__("Add Custom Status", TLBM_TEXT_DOMAIN) ?></button>
+                        echo $this->localization->getText("Add Custom Status", TLBM_TEXT_DOMAIN) ?></button>
                 </td>
             </tr>
             </tbody>

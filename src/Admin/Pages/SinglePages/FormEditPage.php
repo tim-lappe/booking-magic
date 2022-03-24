@@ -39,7 +39,7 @@ class FormEditPage extends EntityEditPage
         LocalizationInterface $localization
     ) {
         parent::__construct(
-             $localization->__("Form", TLBM_TEXT_DOMAIN), "form-edit", "booking-magic-form-edit", false
+            $localization->getText("Form", TLBM_TEXT_DOMAIN), "form-edit", "booking-magic-form-edit", false
         );
 
         $this->localization = $localization;
@@ -53,7 +53,7 @@ class FormEditPage extends EntityEditPage
     private function defineFormFields()
     {
         $this->formBuilder->defineFormField(
-            new FormEditorField($this->elementsCollection, "form", $this->localization->__("Form", TLBM_TEXT_DOMAIN))
+            new FormEditorField($this->elementsCollection, "form", $this->localization->getText("Form", TLBM_TEXT_DOMAIN))
         );
     }
 
@@ -102,14 +102,12 @@ class FormEditPage extends EntityEditPage
                 $form_node_tree = json_decode(urldecode($vars['form']));
                 $form->setFormData($form_node_tree);
             } else {
-                return array(
-                    "error" => $this->localization->__("Unknown Error occured.", TLBM_TEXT_DOMAIN)
-                );
+                return ["error" => $this->localization->getText("Unknown Error occured.", TLBM_TEXT_DOMAIN)
+                ];
             }
         } catch (Throwable $exception) {
-            return array(
-                "error" => $this->localization->__("Unknown Error occured: " . $exception->getMessage(), TLBM_TEXT_DOMAIN)
-            );
+            return ["error" => $this->localization->getText("Unknown Error occured: " . $exception->getMessage(), TLBM_TEXT_DOMAIN)
+            ];
         }
 
         $validationResult = $formValidator->getValidationErrors();
@@ -117,9 +115,9 @@ class FormEditPage extends EntityEditPage
             if($this->entityRepository->saveEntity($form)) {
                 $savedEntity = $form;
 
-                return ["success" => $this->localization->__("Form has been saved", TLBM_TEXT_DOMAIN)];
+                return ["success" => $this->localization->getText("Form has been saved", TLBM_TEXT_DOMAIN)];
             } else {
-                return ["error" => $this->localization->__("An internal error occurred.", TLBM_TEXT_DOMAIN)];
+                return ["error" => $this->localization->getText("An internal error occurred.", TLBM_TEXT_DOMAIN)];
             }
         }
 

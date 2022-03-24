@@ -87,9 +87,9 @@ export class SelectActionsWindow extends React.Component<SelectActionsWindowProp
                 <div className={"tlbm-add-action-window-inner tlbm-window-inner"}>
                     <div className={"tlbm-add-action-top-bar"}>
                         <input onChange={this.onSearchInputChanged} className={"regular-text"} type={"text"}
-                               placeholder={Localization.__("Search...")}/>
+                               placeholder={Localization.getText("Search...")}/>
                         <button onClick={this.onCancelClicked}
-                                className={"button tlbm-cancel-button"}>{Localization.__("Cancel")}</button>
+                                className={"button tlbm-cancel-button"}>{Localization.getText("Cancel")}</button>
                     </div>
                     <div className={"tlbm-add-action-list-container"}>
                         {filteredCategories.map((category) => {

@@ -31,32 +31,31 @@ class ColumnsElem extends FormElem implements FrontendElementInterface
     {
         $this->localization = MainFactory::get(LocalizationInterface::class);
 
-        parent::__construct($name, $this->localization->__($columns . " Columns", TLBM_TEXT_DOMAIN));
+        parent::__construct($name, $this->localization->getText($columns . " Columns", TLBM_TEXT_DOMAIN));
         $this->menu_category = "Layout";
         $this->columns       = $columns;
         $this->type          = "columns";
         $this->only_in_root  = $columns > 3;
         $this->description   = sprintf(
-            $this->localization->__("Adds a section in which form fields can be displayed in a %s-column layout", TLBM_TEXT_DOMAIN), $columns
+            $this->localization->getText("Adds a section in which form fields can be displayed in a %s-column layout", TLBM_TEXT_DOMAIN), $columns
         );
 
         $settings = [];
         for ($i = 1; $i <= $columns; $i++) {
             $settings[] = new Select(
-                "split_" . $i, sprintf($this->localization->__("Size Column %s", TLBM_TEXT_DOMAIN), $i), [
-                "1"  => "1",
-                "2"  => "2",
-                "3"  => "3",
-                "4"  => "4",
-                "5"  => "5",
-                "6"  => "6",
-                "7"  => "7",
-                "8"  => "8",
-                "9"  => "9",
+                "split_" . $i, sprintf($this->localization->getText("Size Column %s", TLBM_TEXT_DOMAIN), $i), ["1" => "1",
+                "2" => "2",
+                "3" => "3",
+                "4" => "4",
+                "5" => "5",
+                "6" => "6",
+                "7" => "7",
+                "8" => "8",
+                "9" => "9",
                 "10" => "10",
                 "11" => "11",
                 "12" => "12"
-            ],  1, false, false, $this->localization->__("Column Sizes", TLBM_TEXT_DOMAIN)
+            ],  1, false, false, $this->localization->getText("Column Sizes", TLBM_TEXT_DOMAIN)
             );
         }
 

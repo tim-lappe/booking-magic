@@ -30,9 +30,9 @@ class CalendarEditPage extends EntityEditPage
 
     public function __construct(EntityRepositoryInterface $entityRepository, LocalizationInterface $localization)
     {
-        $this->localization = $localization;
+        $this->localization     = $localization;
         $this->entityRepository = $entityRepository;
-        parent::__construct($this->localization->__("Calendar", TLBM_TEXT_DOMAIN), "calendar-edit", "booking-calendar-edit", false);
+        parent::__construct($this->localization->getText("Calendar", TLBM_TEXT_DOMAIN), "calendar-edit", "booking-calendar-edit", false);
     }
 
     /**
@@ -95,14 +95,12 @@ class CalendarEditPage extends EntityEditPage
         if(count($validationResult) == 0) {
             if($this->entityRepository->saveEntity($calendar)) {
                 $savedEntity = $calendar;
-                return array(
-                    "success" => $this->localization->__("Calendar has been saved", TLBM_TEXT_DOMAIN)
-                );
 
+                return ["success" => $this->localization->getText("Calendar has been saved", TLBM_TEXT_DOMAIN)
+                ];
             } else {
-                return array(
-                    "error" => $this->localization->__("An internal error occured. ", TLBM_TEXT_DOMAIN)
-                );
+                return ["error" => $this->localization->getText("An internal error occured. ", TLBM_TEXT_DOMAIN)
+                ];
             }
         }
 

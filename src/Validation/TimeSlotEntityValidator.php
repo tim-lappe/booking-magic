@@ -34,11 +34,11 @@ class TimeSlotEntityValidator implements TimeSlotEntityValidatorInterface
         $localization = MainFactory::get(LocalizationInterface::class);
 
         if(!$this->isValidHour($fromHour)) {
-            $errors[] = sprintf($localization->__("Invalid period time slot. From hour: %s", TLBM_TEXT_DOMAIN), $fromHour);
+            $errors[] = sprintf($localization->getText("Invalid period time slot. From hour: %s", TLBM_TEXT_DOMAIN), $fromHour);
         }
 
         if(!$this->isValidMinute($fromMinute)) {
-            $errors[] = sprintf($localization->__("Invalid period time slot. From minute: %s", TLBM_TEXT_DOMAIN), $fromMinute);
+            $errors[] = sprintf($localization->getText("Invalid period time slot. From minute: %s", TLBM_TEXT_DOMAIN), $fromMinute);
         }
 
         return $errors;
@@ -55,11 +55,11 @@ class TimeSlotEntityValidator implements TimeSlotEntityValidatorInterface
         $localization = MainFactory::get(LocalizationInterface::class);
 
         if(!$this->isValidHour($toHour)) {
-            $errors[] = sprintf($localization->__("Invalid period time slot. To hour: %s", TLBM_TEXT_DOMAIN), $toHour);
+            $errors[] = sprintf($localization->getText("Invalid period time slot. To hour: %s", TLBM_TEXT_DOMAIN), $toHour);
         }
 
         if(!$this->isValidMinute($toMinute)) {
-            $errors[] = sprintf($localization->__("Invalid period time slot. To minute: %s", TLBM_TEXT_DOMAIN), $toMinute);
+            $errors[] = sprintf($localization->getText("Invalid period time slot. To minute: %s", TLBM_TEXT_DOMAIN), $toMinute);
         }
 
         return $errors;

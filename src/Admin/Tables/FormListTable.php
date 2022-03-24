@@ -21,7 +21,7 @@ class FormListTable extends ManagableEntityTable
     {
         $this->adminPageManager = $adminPageManager;
         parent::__construct(
-            Form::class, $localization->__("Forms", TLBM_TEXT_DOMAIN), $localization->__("Form", TLBM_TEXT_DOMAIN), 10, $localization->__("You haven't created any forms yet", TLBM_TEXT_DOMAIN)
+            Form::class, $localization->getText("Forms", TLBM_TEXT_DOMAIN), $localization->getText("Form", TLBM_TEXT_DOMAIN), 10, $localization->getText("You haven't created any forms yet", TLBM_TEXT_DOMAIN)
         );
     }
 
@@ -42,18 +42,17 @@ class FormListTable extends ManagableEntityTable
     protected function getColumns(): array
     {
         $columns = parent::getColumns();
-        array_splice($columns, 1, 0, [
-            new Column("title", $this->localization->__("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
-                $page = $this->adminPageManager->getPage(FormEditPage::class);
-                if ($page instanceof FormEditPage) {
-                    $link = $page->getEditLink($item->getId());
-                    if ( !empty($item->getTitle())) {
-                        echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
-                    } else {
-                        echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
-                    }
+        array_splice($columns, 1, 0, [new Column("title", $this->localization->getText("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
+            $page = $this->adminPageManager->getPage(FormEditPage::class);
+            if ($page instanceof FormEditPage) {
+                $link = $page->getEditLink($item->getId());
+                if ( !empty($item->getTitle())) {
+                    echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
+                } else {
+                    echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
                 }
-            })
+            }
+        })
         ]);
 
         return $columns;

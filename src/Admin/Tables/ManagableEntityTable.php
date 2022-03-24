@@ -48,14 +48,14 @@ abstract class ManagableEntityTable extends TableBase
                 return $item->getId();
             }),
 
-            new Column("date_edited", $this->localization->__('Date last edited', TLBM_TEXT_DOMAIN), true, function ($item) {
+            new Column("date_edited", $this->localization->getText('Date last edited', TLBM_TEXT_DOMAIN), true, function ($item) {
                 /**
                  * @var ManageableEntity $item
                  */
                 echo $item->getDateTimeEdited();
             }),
 
-            new Column("date_created", $this->localization->__('Date created', TLBM_TEXT_DOMAIN), true, function ($item) {
+            new Column("date_created", $this->localization->getText('Date created', TLBM_TEXT_DOMAIN), true, function ($item) {
                 /**
                  * @var ManageableEntity $item
                  */
@@ -136,9 +136,8 @@ abstract class ManagableEntityTable extends TableBase
      */
     protected function getBulkActions(): array
     {
-        return array(
-            'delete' => $this->localization->__('Delete', TLBM_TEXT_DOMAIN)
-        );
+        return ['delete' => $this->localization->getText('Delete', TLBM_TEXT_DOMAIN)
+        ];
     }
 
     /**

@@ -13,7 +13,7 @@ class TextBookingReceived extends SettingsBase
     public function __construct(LocalizationInterface $localization)
     {
         parent::__construct(
-            "text", "text_booking_received", $localization->__("Booking Received", TLBM_TEXT_DOMAIN), $localization->__(
+            "text", "text_booking_received", $localization->getText("Booking Received", TLBM_TEXT_DOMAIN), $localization->getText(
             "<h2>Your booking has been received successfully</h2><p>You will receive a confirmation email soon</p>", TLBM_TEXT_DOMAIN
         )
         );

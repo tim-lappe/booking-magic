@@ -39,7 +39,7 @@ class RulesListTable extends ManagableEntityTable
         $this->settingsManager  = $settingsManager;
 
         parent::__construct(
-            Rule::class, $localization->__("Rules", TLBM_TEXT_DOMAIN), $localization->__("Rule", TLBM_TEXT_DOMAIN), 10, $localization->__("You haven't created any rules yet", TLBM_TEXT_DOMAIN)
+            Rule::class, $localization->getText("Rules", TLBM_TEXT_DOMAIN), $localization->getText("Rule", TLBM_TEXT_DOMAIN), 10, $localization->getText("You haven't created any rules yet", TLBM_TEXT_DOMAIN)
         );
     }
 
@@ -80,31 +80,29 @@ class RulesListTable extends ManagableEntityTable
     {
         $columns = parent::getColumns();
 
-        array_splice($columns, 1, 0, [new Column("title", $this->localization->__("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
-                $ruleEditPage = $this->adminPageManager->getPage(RuleEditPage::class);
-                if ($ruleEditPage instanceof RuleEditPage) {
-                    $link = $ruleEditPage->getEditLink($item->getId());
-                    if ( !empty($item->getTitle())) {
-                        echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
-                    } else {
-                        echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
-                    }
+        array_splice($columns, 1, 0, [new Column("title", $this->localization->getText("Title", TLBM_TEXT_DOMAIN), true, function ($item) {
+            $ruleEditPage = $this->adminPageManager->getPage(RuleEditPage::class);
+            if ($ruleEditPage instanceof RuleEditPage) {
+                $link = $ruleEditPage->getEditLink($item->getId());
+                if ( !empty($item->getTitle())) {
+                    echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
+                } else {
+                    echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
                 }
-            }),
-            new Column("calendars", $this->localization->__("Calendars", TLBM_TEXT_DOMAIN), false, function ($item) {
+            }
+        }),
+            new Column("calendars", $this->localization->getText("Calendars", TLBM_TEXT_DOMAIN), false, function ($item) {
                 $calendarEditPage = $this->adminPageManager->getPage(CalendarEditPage::class);
-                $selection = $item->getCalendarSelection();
+                $selection        = $item->getCalendarSelection();
                 $selectionDisplay = MainFactory::create(DisplayCalendarSelection::class);
                 $selectionDisplay->setCalendarSelection($selection);
                 $selectionDisplay->display();
-
             }),
-            new Column("priority", $this->localization->__("Priority", TLBM_TEXT_DOMAIN), true, function ($item) {
+            new Column("priority", $this->localization->getText("Priority", TLBM_TEXT_DOMAIN), true, function ($item) {
                 $levels = $this->settingsManager->getValue(PriorityLevels::class);
                 echo $levels[$item->getPriority()];
-
             }),
-            new Column("periods", $this->localization->__("Periods", TLBM_TEXT_DOMAIN), false, function ($item) {
+            new Column("periods", $this->localization->getText("Periods", TLBM_TEXT_DOMAIN), false, function ($item) {
                 $periods        = $item->getPeriods();
                 $periodsDisplay = MainFactory::create(DisplayPeriods::class);
                 $periodsDisplay->setRulePeriods($periods);
@@ -126,7 +124,7 @@ class RulesListTable extends ManagableEntityTable
             <div class="alignleft actions bulkactions">
                 <select name="filter_calendar">
                     <option value=""><?php
-                        echo $this->localization->__("All Calendars", TLBM_TEXT_DOMAIN); ?></option>
+                        echo $this->localization->getText("All Calendars", TLBM_TEXT_DOMAIN); ?></option>
                     <?php
                     foreach ($calendars as $calendar): ?>
                         <option <?php

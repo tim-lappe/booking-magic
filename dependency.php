@@ -14,6 +14,7 @@ use TLBM\Admin\FormEditor\Elements\EmailElem;
 use TLBM\Admin\FormEditor\Elements\FirstNameElem;
 use TLBM\Admin\FormEditor\Elements\HrElem;
 use TLBM\Admin\FormEditor\Elements\LastNameElem;
+use TLBM\Admin\FormEditor\Elements\SelectCalendarElement;
 use TLBM\Admin\FormEditor\Elements\SelectElement;
 use TLBM\Admin\FormEditor\Elements\SpacingElem;
 use TLBM\Admin\FormEditor\Elements\TextareaElem;
@@ -63,7 +64,6 @@ use TLBM\Admin\Settings\SingleSettings\General\AdminMail;
 use TLBM\Admin\Settings\SingleSettings\Rules\PriorityLevels;
 use TLBM\Admin\Settings\SingleSettings\Text\TextBookingReceived;
 use TLBM\Admin\Settings\SingleSettings\Text\TextBookNow;
-use TLBM\Admin\Settings\SingleSettings\Text\WeekdayLabels;
 use TLBM\Admin\WpForm\Contracts\FormBuilderInterface;
 use TLBM\Admin\WpForm\FormBuilder;
 use TLBM\Ajax\AjaxManager;
@@ -263,6 +263,7 @@ return [
             $formElementsCollection->registerFormElement($factory->make(SelectElement::class));
             $formElementsCollection->registerFormElement($factory->make(CustomHtmlElem::class));
             $formElementsCollection->registerFormElement($factory->make(TextareaElem::class));
+            $formElementsCollection->registerFormElement($factory->make(SelectCalendarElement::class));
         }
 
         return $formElementsCollection;
@@ -317,14 +318,14 @@ return [
             /**
              * General
              */
-            $settingsManager->registerSettingsGroup("general", $localization->__("General", TLBM_TEXT_DOMAIN));
+            $settingsManager->registerSettingsGroup("general", $localization->getText("General", TLBM_TEXT_DOMAIN));
             $settingsManager->registerSetting($container->get(AdminMail::class));
 
             /**
              * Booking Process,
              */
             $settingsManager->registerSettingsGroup(
-                "booking_process", $localization->__("Booking Process", TLBM_TEXT_DOMAIN)
+                "booking_process", $localization->getText("Booking Process", TLBM_TEXT_DOMAIN)
             );
             $settingsManager->registerSetting($container->get(SinglePageBooking::class));
             $settingsManager->registerSetting($container->get(BookingStates::class));
@@ -336,7 +337,7 @@ return [
             /**
              * E-Mails
              */
-            $settingsManager->registerSettingsGroup("emails", $localization->__("E-Mails", TLBM_TEXT_DOMAIN));
+            $settingsManager->registerSettingsGroup("emails", $localization->getText("E-Mails", TLBM_TEXT_DOMAIN));
             //  $settingsManager->registerSetting($container->get(SenderName::class));
             //  $settingsManager->registerSetting($container->get(SenderMail::class));
             $settingsManager->registerSetting($container->get(EmailBookingReceived::class));
@@ -348,13 +349,13 @@ return [
             /**
              * Text
              */
-            $settingsManager->registerSettingsGroup("text", $localization->__("Text", TLBM_TEXT_DOMAIN));
+            $settingsManager->registerSettingsGroup("text", $localization->getText("Text", TLBM_TEXT_DOMAIN));
             $settingsManager->registerSetting($container->get(TextBookingReceived::class));
             $settingsManager->registerSetting($container->get(TextBookNow::class));
             /**
              * Rules
              */
-            $settingsManager->registerSettingsGroup("rules", $localization->__("Rules", TLBM_TEXT_DOMAIN));
+            $settingsManager->registerSettingsGroup("rules", $localization->getText("Rules", TLBM_TEXT_DOMAIN));
             $settingsManager->registerSetting($container->get(PriorityLevels::class));
         }
 

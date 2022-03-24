@@ -56,7 +56,7 @@ class RulesActionEntityValidator implements RulesActionEntityValidatorInterface
         $allTypes = array_keys($this->ruleActionsManager->getAllActionsHandlerClasses());
 
         if(!in_array($type, $allTypes)) {
-            $errors[] = sprintf($this->localization->__("Unknown action type: %s", TLBM_TEXT_DOMAIN), $type);
+            $errors[] = sprintf($this->localization->getText("Unknown action type: %s", TLBM_TEXT_DOMAIN), $type);
         }
 
         return $errors;
@@ -70,7 +70,7 @@ class RulesActionEntityValidator implements RulesActionEntityValidatorInterface
         $errors = array();
         $hour = $this->ruleAction->getTimeHour();
         if(!($hour >= 0 && $hour < 24)) {
-            $errors[] = sprintf($this->localization->__("Invalid time hour: %s", TLBM_TEXT_DOMAIN), $hour);
+            $errors[] = sprintf($this->localization->getText("Invalid time hour: %s", TLBM_TEXT_DOMAIN), $hour);
         }
 
         return $errors;
@@ -85,7 +85,7 @@ class RulesActionEntityValidator implements RulesActionEntityValidatorInterface
         $minute = $this->ruleAction->getTimeMin();
 
         if(!($minute >= 0 && $minute < 60)) {
-            $errors[] = sprintf($this->localization->__("Invalid time minute: %s", TLBM_TEXT_DOMAIN), $minute);
+            $errors[] = sprintf($this->localization->getText("Invalid time minute: %s", TLBM_TEXT_DOMAIN), $minute);
         }
 
         return $errors;
@@ -102,7 +102,7 @@ class RulesActionEntityValidator implements RulesActionEntityValidatorInterface
         $weekdayRangeKeys = array_keys($this->labels->getWeekdayRangeLabels());
 
         if(!in_array($weekdays, array_merge($weekdayRangeKeys, $weekdayKeys))) {
-            $errors[] = sprintf($this->localization->__("Unknown weekday definition: %s", TLBM_TEXT_DOMAIN), $weekdays);
+            $errors[] = sprintf($this->localization->getText("Unknown weekday definition: %s", TLBM_TEXT_DOMAIN), $weekdays);
         }
 
         return $errors;

@@ -6,7 +6,6 @@ import {Localization} from "../../../../Localization";
 import {SettingsTypeManager} from "./SettingsTypeManager";
 import {FormEditorNode} from "../../../Entity/FormEditor/FormEditorNode";
 import {Editor} from "../Editor";
-import {createRef, Fragment} from "react";
 
 interface ElementSettingsWindowProps {
     onCancel?: () => void;
@@ -135,11 +134,11 @@ export class ElementSettingsWindow extends React.Component<ElementSettingsWindow
                         <div className={"tlbm-form-settings-top-bar"}>
                             <h3>{this.state.formElement?.title}</h3>
                             <button onClick={this.onRemoveClicked}
-                                    className={"button tlbm-button-danger"}>{Localization.__("Remove")}</button>
+                                    className={"button tlbm-button-danger"}>{Localization.getText("Remove")}</button>
                             <button onClick={this.onCancelClicked}
-                                    className={"button tlbm-button-white"}>{Localization.__("Cancel")}</button>
+                                    className={"button tlbm-button-white"}>{Localization.getText("Cancel")}</button>
                             <button disabled={this.hasErrors()} onClick={this.onApplyClicked}
-                                    className={"button button-primary"}>{Localization.__("Apply")}</button>
+                                    className={"button button-primary"}>{Localization.getText("Apply")}</button>
                         </div>
                         <div className={"tlbm-form-settings-container"}>
                             {categories.map((category) => {

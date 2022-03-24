@@ -59,7 +59,7 @@ export class SettingsWindowItem extends React.Component<SettingsWindowItemProps,
                 let rootNode = this.props.window?.props.formEditor?.state.rootNode;
                 let duplicate = rootNode.findNodesWithData(this.props.elementSetting.name, value, this.props.formNode);
                 if(duplicate.length > 0) {
-                    prevState.errorMessage = Localization.__("This field has to be unique");
+                    prevState.errorMessage = Localization.getText("This field has to be unique");
                 } else {
                     prevState.errorMessage = "";
                 }
@@ -67,7 +67,7 @@ export class SettingsWindowItem extends React.Component<SettingsWindowItemProps,
 
             let forbidden = this.props.elementSetting.forbidden_values;
             if(forbidden.indexOf(value) != -1) {
-                prevState.errorMessage = Localization.__("This value is not allowed");
+                prevState.errorMessage = Localization.getText("This value is not allowed");
             }
 
             if(this.props.onErrorUpdate) {

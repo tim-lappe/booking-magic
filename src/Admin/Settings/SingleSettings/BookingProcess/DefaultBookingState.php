@@ -12,7 +12,7 @@ class DefaultBookingState extends SettingsBase
 
     public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("booking_process", "booking_default_state", $localization->__("Default Booking State", TLBM_TEXT_DOMAIN), "new");
+        parent::__construct("booking_process", "booking_default_state", $localization->getText("Default Booking State", TLBM_TEXT_DOMAIN), "new");
     }
 
     public function display()

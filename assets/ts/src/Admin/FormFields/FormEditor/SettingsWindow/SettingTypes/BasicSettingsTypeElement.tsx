@@ -8,6 +8,8 @@ export interface BasicSettingsTypeElementProps {
 }
 
 export interface BasicSettingsTypeElementState {
+    [props: string]: any;
+
     value?: any;
 }
 

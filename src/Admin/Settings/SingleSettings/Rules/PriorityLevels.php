@@ -9,14 +9,13 @@ class PriorityLevels extends SettingsBase
 {
     public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("rules", "priority_levels", $localization->__("Priority Levels", TLBM_TEXT_DOMAIN), array(
-            $localization->__("Low", TLBM_TEXT_DOMAIN),
-            $localization->__("Between Low and Medium", TLBM_TEXT_DOMAIN),
-            $localization->__("Medium", TLBM_TEXT_DOMAIN),
-            $localization->__("Between Medium and High", TLBM_TEXT_DOMAIN),
-            $localization->__("High", TLBM_TEXT_DOMAIN),
-            $localization->__("Very High", TLBM_TEXT_DOMAIN)
-        ));
+        parent::__construct("rules", "priority_levels", $localization->getText("Priority Levels", TLBM_TEXT_DOMAIN), [$localization->getText("Low", TLBM_TEXT_DOMAIN),
+            $localization->getText("Between Low and Medium", TLBM_TEXT_DOMAIN),
+            $localization->getText("Medium", TLBM_TEXT_DOMAIN),
+            $localization->getText("Between Medium and High", TLBM_TEXT_DOMAIN),
+            $localization->getText("High", TLBM_TEXT_DOMAIN),
+            $localization->getText("Very High", TLBM_TEXT_DOMAIN)
+        ]);
     }
 
     /**

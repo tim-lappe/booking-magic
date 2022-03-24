@@ -62,7 +62,7 @@ export class MultipleTimeSlotItem extends RuleActionItemBase {
         return (
             <React.Fragment>
                 <div style={{marginLeft: "20px"}}>
-                    <small>{Localization.__("From")}</small><br/>
+                    <small>{Localization.getText("From")}</small><br/>
                     <TimeSelect initState={{
                         minute: this.state.ruleAction.actions.fromMinute,
                         hour: this.state.ruleAction.actions.fromHour
@@ -70,19 +70,19 @@ export class MultipleTimeSlotItem extends RuleActionItemBase {
                                 nameMinute={"fromMinute"}/>
                 </div>
                 <div style={{marginLeft: "20px"}}>
-                    <small>{Localization.__("To")}</small><br/>
+                    <small>{Localization.getText("To")}</small><br/>
                     <TimeSelect initState={{
                         minute: this.state.ruleAction.actions.toMinute,
                         hour: this.state.ruleAction.actions.toHour
                     }} minutesSteps={1} onChange={this.onChangeTimeTo} nameHour={"toHour"} nameMinute={"toMinute"}/>
                 </div>
                 <div style={{marginLeft: "20px"}}>
-                    <small>{Localization.__("Interval")}</small><br/>
+                    <small>{Localization.getText("Interval")}</small><br/>
                     <select name={"interval"} value={this.state.ruleAction.actions.interval}
                             onChange={this.onChangeInterval}>
                         {Array.from(Array(361).keys()).filter((minute) => minute > 0 && (minute % 2 == 0 || minute % 5 == 0 || minute == 1)).map((minutes: number) => {
                             return (<option key={minutes} value={minutes}>
-                                {(minutes + " " + Localization.__("Minutes")).toString()}
+                                {(minutes + " " + Localization.getText("Minutes")).toString()}
                             </option>)
                         })}
                     </select>

@@ -50,7 +50,7 @@ class BookingListTable extends ManagableEntityTable
         $this->colors          = new Colors();
 
         parent::__construct(
-            Booking::class, $localization->__("Bookings", TLBM_TEXT_DOMAIN), $localization->__("Booking", TLBM_TEXT_DOMAIN), 10, $localization->__("You don't have any bookings yet", TLBM_TEXT_DOMAIN)
+            Booking::class, $localization->getText("Bookings", TLBM_TEXT_DOMAIN), $localization->getText("Booking", TLBM_TEXT_DOMAIN), 10, $localization->getText("You don't have any bookings yet", TLBM_TEXT_DOMAIN)
         );
     }
 
@@ -89,7 +89,7 @@ class BookingListTable extends ManagableEntityTable
             <div class="alignleft actions bulkactions">
                 <select name="filter_calendar">
                     <option value=""><?php
-                        echo $this->localization->__("All Calendars", TLBM_TEXT_DOMAIN); ?></option>
+                        echo $this->localization->getText("All Calendars", TLBM_TEXT_DOMAIN); ?></option>
                     <?php
                     foreach ($calendars as $calendar): ?>
                         <option <?php
@@ -101,7 +101,7 @@ class BookingListTable extends ManagableEntityTable
                 </select>
                 <select name="filter_state">
                     <option value=""><?php
-                        echo $this->localization->__("All States", TLBM_TEXT_DOMAIN); ?></option>
+                        echo $this->localization->getText("All States", TLBM_TEXT_DOMAIN); ?></option>
                     <?php
                     foreach ($states as $key => $title): ?>
                         <option <?php
@@ -124,7 +124,7 @@ class BookingListTable extends ManagableEntityTable
         $settingsStates = $this->settingsManager->getSetting(BookingStates::class);
         $states         = $settingsStates->getStatesKeyValue();
 
-        $cstatelabel               = $this->localization->__("Set state", TLBM_TEXT_DOMAIN);
+        $cstatelabel               = $this->localization->getText("Set state", TLBM_TEXT_DOMAIN);
         $bulkActions[$cstatelabel] = [];
         foreach ($states as $key => $title) {
             $bulkActions[$cstatelabel]["set_state_" . $key] = $title;
@@ -177,8 +177,8 @@ class BookingListTable extends ManagableEntityTable
     {
         $columns = parent::getColumns();
 
-        array_splice($columns, 1, 0, [new Column("id", $this->localization->__("ID", TLBM_TEXT_DOMAIN), true, array($this, "columnDisplayId")),
-            new Column("values", $this->localization->__("Form values", TLBM_TEXT_DOMAIN), false, function (Booking $booking) {
+        array_splice($columns, 1, 0, [new Column("id", $this->localization->getText("ID", TLBM_TEXT_DOMAIN), true, [$this, "columnDisplayId"]),
+            new Column("values", $this->localization->getText("Form values", TLBM_TEXT_DOMAIN), false, function (Booking $booking) {
                 $semantic = MainFactory::create(BookingValueSemantic::class);
                 $semantic->setValuesFromBooking($booking);
 
@@ -187,8 +187,8 @@ class BookingListTable extends ManagableEntityTable
 
                 echo $content;
             }),
-            new Column("calendar", $this->localization->__("Calendar", TLBM_TEXT_DOMAIN), false, array($this, "columnDisplayCalendar")),
-            new Column("state", $this->localization->__("State", TLBM_TEXT_DOMAIN), true, array($this, "columnDisplayState")),
+            new Column("calendar", $this->localization->getText("Calendar", TLBM_TEXT_DOMAIN), false, [$this, "columnDisplayCalendar"]),
+            new Column("state", $this->localization->getText("State", TLBM_TEXT_DOMAIN), true, [$this, "columnDisplayState"]),
         ]);
 
         return $columns;
@@ -229,7 +229,7 @@ class BookingListTable extends ManagableEntityTable
 
                     echo $prefix . "<a href='" . $link . "'>" . $calendar->getTitle() . "</a>&nbsp;&nbsp;&nbsp;" . $calendarBooking->getFromDateTime() . "<br>";
                 } else {
-                    echo $prefix . "<strong>" . $this->localization->__("Calendar deleted", TLBM_TEXT_DOMAIN) . "</strong>&nbsp;&nbsp;&nbsp;" .  $calendarBooking->getFromDateTime() . "<br>";
+                    echo $prefix . "<strong>" . $this->localization->getText("Calendar deleted", TLBM_TEXT_DOMAIN) . "</strong>&nbsp;&nbsp;&nbsp;" . $calendarBooking->getFromDateTime() . "<br>";
                 }
             }
 

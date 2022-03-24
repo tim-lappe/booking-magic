@@ -10,7 +10,7 @@ class LocalizationTestWrapper implements LocalizationInterface
     /**
      * @inheritDoc
      */
-    public function __(string $text, string $namespace): string
+    public function getText(string $text, string $namespace): string
     {
         return $text;
     }
@@ -18,7 +18,7 @@ class LocalizationTestWrapper implements LocalizationInterface
     /**
      * @inheritDoc
      */
-    public function _e(string $text, string $namespace)
+    public function echoText(string $text, string $namespace)
     {
         echo $text;
     }

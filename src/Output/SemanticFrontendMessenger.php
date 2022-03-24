@@ -53,6 +53,6 @@ class SemanticFrontendMessenger
             }
         }
 
-        $this->frontendMessenger->addMessage($this->localization->__("Not all required fields were filled out: <br>" . implode("<br>", $errors), TLBM_TEXT_DOMAIN));
+        $this->frontendMessenger->addMessage($this->localization->getText("Not all required fields were filled out: <br>" . implode("<br>", $errors), TLBM_TEXT_DOMAIN));
     }
 }

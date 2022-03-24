@@ -11,10 +11,10 @@ class TimeSlotEditorElem extends RuleActionEditorElem
 
     public function __construct(LocalizationInterface $localization)
     {
-        $this->setCategory($localization->__("Time specific", TLBM_TEXT_DOMAIN));
+        $this->setCategory($localization->getText("Time specific", TLBM_TEXT_DOMAIN));
 
-        $this->setTitle($localization->__("Time slot", TLBM_TEXT_DOMAIN));
-        $this->setDescription($localization->__("Create slots that can be booked at specific times", TLBM_TEXT_DOMAIN));
+        $this->setTitle($localization->getText("Time slot", TLBM_TEXT_DOMAIN));
+        $this->setDescription($localization->getText("Create slots that can be booked at specific times", TLBM_TEXT_DOMAIN));
         $this->setName("time_slot");
     }
 }

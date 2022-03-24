@@ -61,22 +61,22 @@ abstract class EmailSetting extends SettingsBase
             echo $this->optionName ?>[enabled]">
                 <option <?php
                 selected("yes", $opt['enabled']) ?> value="yes"><?php
-                    echo $this->localization->__("Enabled", TLBM_TEXT_DOMAIN) ?></option>
+                    echo $this->localization->getText("Enabled", TLBM_TEXT_DOMAIN) ?></option>
                 <option <?php
                 selected("no", $opt['enabled']) ?> value="no"><?php
-                    echo $this->localization->__("Disabled", TLBM_TEXT_DOMAIN) ?></option>
+                    echo $this->localization->getText("Disabled", TLBM_TEXT_DOMAIN) ?></option>
             </select>
         </label><br><br>
         <label>
             <?php
-            echo $this->localization->__("Subject", TLBM_TEXT_DOMAIN) ?><br>
+            echo $this->localization->getText("Subject", TLBM_TEXT_DOMAIN) ?><br>
             <input type="text" class="regular-text" name="<?php
             echo $this->optionName ?>[subject]" value="<?php
             echo $opt['subject']; ?>">
         </label><br><br>
         <label>
             <?php
-            echo $this->localization->__("Message", TLBM_TEXT_DOMAIN) ?><br>
+            echo $this->localization->getText("Message", TLBM_TEXT_DOMAIN) ?><br>
             <div class="tlbm-html-editor" data-name="<?php
             echo $this->optionName ?>[message]" data-value="<?php
             echo urlencode($opt['message']); ?>"></div>

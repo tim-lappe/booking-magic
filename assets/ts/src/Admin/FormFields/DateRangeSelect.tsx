@@ -2,7 +2,6 @@ import {DateSelect, DateSelectState} from "./DateSelect";
 import * as React from "react";
 import {DateTime} from "../../Core/Adapter/DateTime";
 import {Localization} from "../../Localization";
-import {Utils} from "../../Utils";
 
 
 interface DateRangeSelectProps {
@@ -81,8 +80,8 @@ export class DateRangeSelect extends React.Component<DateRangeSelectProps, DateR
                 <input type={"hidden"} name={this.props.formName} value={input} />
                 {this.state.hasDateRange ? (
                     <React.Fragment>
-                        <small>{Localization.__("From")}</small>
-                        <br />
+                        <small>{Localization.getText("From")}</small>
+                        <br/>
                     </React.Fragment>
                 ): null}
 
@@ -90,16 +89,19 @@ export class DateRangeSelect extends React.Component<DateRangeSelectProps, DateR
                     {this.state.hasDateRange ? (
                         <React.Fragment>
                             <div style={{marginTop: "0.5em"}}>
-                                <small>{Localization.__("To")}</small><br />
-                                <DateSelect defaultDateTime={this.state.toDateTime} allowTimeSet={true} onChange={this.onChangeToDate} />
+                                <small>{Localization.getText("To")}</small><br/>
+                                <DateSelect defaultDateTime={this.state.toDateTime} allowTimeSet={true}
+                                            onChange={this.onChangeToDate}/>
                                 <div style={{marginTop: "0.5em"}}>
-                                    <button onClick={this.onRemoveRange} className={"button"}>{Localization.__("Remove Range")}</button>
+                                    <button onClick={this.onRemoveRange}
+                                            className={"button"}>{Localization.getText("Remove Range")}</button>
                                 </div>
                             </div>
                         </React.Fragment>
                         ): (
                         <div style={{marginTop: "0.5em"}}>
-                            <button onClick={this.onAddRange} className={"button"}>{Localization.__("Add Range")}</button>
+                            <button onClick={this.onAddRange}
+                                    className={"button"}>{Localization.getText("Add Range")}</button>
                         </div>
                     )}
             </div>

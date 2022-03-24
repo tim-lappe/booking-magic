@@ -12,7 +12,7 @@ class EmailBookingConfirmation extends EmailSetting
     public function __construct(LocalizationInterface $localization)
     {
         parent::__construct(
-            "email_booking_confirmation", $localization->__("Booking confirmed", TLBM_TEXT_DOMAIN), $localization->__("Booking confirmed", TLBM_TEXT_DOMAIN)
+            "email_booking_confirmation", $localization->getText("Booking confirmed", TLBM_TEXT_DOMAIN), $localization->getText("Booking confirmed", TLBM_TEXT_DOMAIN)
         );
     }
 

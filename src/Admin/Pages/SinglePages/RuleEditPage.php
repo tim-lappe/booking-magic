@@ -42,7 +42,7 @@ class RuleEditPage extends EntityEditPage
         SettingsManagerInterface $settingsManager,
         LocalizationInterface $localization
     ) {
-        parent::__construct($localization->__("Rule", TLBM_TEXT_DOMAIN), "rule-edit", "booking-magic-rule-edit", false);
+        parent::__construct($localization->getText("Rule", TLBM_TEXT_DOMAIN), "rule-edit", "booking-magic-rule-edit", false);
 
         $this->localization = $localization;
         $this->entityRepository    = $entityRepository;
@@ -55,16 +55,16 @@ class RuleEditPage extends EntityEditPage
     public function defineFormFields()
     {
         $this->formBuilder->defineFormField(
-            new CalendarPickerField($this->entityRepository, "calendars", $this->localization->__("Calendars", TLBM_TEXT_DOMAIN))
+            new CalendarPickerField($this->entityRepository, "calendars", $this->localization->getText("Calendars", TLBM_TEXT_DOMAIN))
         );
         $this->formBuilder->defineFormField(
-            new RuleActionsField("rule_actions", $this->localization->__("Actions", TLBM_TEXT_DOMAIN))
+            new RuleActionsField("rule_actions", $this->localization->getText("Actions", TLBM_TEXT_DOMAIN))
         );
         $this->formBuilder->defineFormField(
-            new PeriodEditorField("rule_periods", $this->localization->__("Periods", TLBM_TEXT_DOMAIN))
+            new PeriodEditorField("rule_periods", $this->localization->getText("Periods", TLBM_TEXT_DOMAIN))
         );
         $this->formBuilder->defineFormField(
-            new SelectField("rule_priority", $this->localization->__("Priority", TLBM_TEXT_DOMAIN), $this->settingsManager->getValue(PriorityLevels::class))
+            new SelectField("rule_priority", $this->localization->getText("Priority", TLBM_TEXT_DOMAIN), $this->settingsManager->getValue(PriorityLevels::class))
         );
     }
 
@@ -144,17 +144,15 @@ class RuleEditPage extends EntityEditPage
                 $this->entityRepository->saveEntity($rule);
                 $savedEntity = $rule;
             } catch (Throwable $exception) {
-                return array(
-                    "error" => $this->localization->__("An internal error occured: " . $exception->getMessage(), TLBM_TEXT_DOMAIN)
-                );
+                return ["error" => $this->localization->getText("An internal error occured: " . $exception->getMessage(), TLBM_TEXT_DOMAIN)
+                ];
             }
         } else {
             return $validationResult;
         }
 
-        return array(
-            "success" => $this->localization->__("Rule has been saved", TLBM_TEXT_DOMAIN)
-        );
+        return ["success" => $this->localization->getText("Rule has been saved", TLBM_TEXT_DOMAIN)
+        ];
     }
 
     /**

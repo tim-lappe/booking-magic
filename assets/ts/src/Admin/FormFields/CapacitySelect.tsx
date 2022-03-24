@@ -62,12 +62,15 @@ export class CapacitySelect extends React.Component<CapacitySelectProps, Capacit
     render() {
         return (
             <div style={{"display": "flex"}}>
-                <select ref={this.selectModeDom} onLoad={this.onChangeMode} onChange={this.onChangeMode} value={this.state.mode} name={this.props.modeName ?? "capacity_mode"}>
-                    <option value={"set"}>{Localization.__("Set")}</option>
-                    <option value={"add"}>{Localization.__("Add")}</option>
-                    <option value={"subtract"}>{Localization.__("Subtract")}</option>
+                <select ref={this.selectModeDom} onLoad={this.onChangeMode} onChange={this.onChangeMode}
+                        value={this.state.mode} name={this.props.modeName ?? "capacity_mode"}>
+                    <option value={"set"}>{Localization.getText("Set")}</option>
+                    <option value={"add"}>{Localization.getText("Add")}</option>
+                    <option value={"subtract"}>{Localization.getText("Subtract")}</option>
                 </select>
-                <input ref={this.inputAmountDom} onLoad={this.onChangeAmount} onChange={this.onChangeAmount} value={this.state.amount} type="number" min="0" name={this.props.amountName ?? "capacity_amount"} />
+                <input ref={this.inputAmountDom} onLoad={this.onChangeAmount} onChange={this.onChangeAmount}
+                       value={this.state.amount} type="number" min="0"
+                       name={this.props.amountName ?? "capacity_amount"}/>
             </div>
         )
     }

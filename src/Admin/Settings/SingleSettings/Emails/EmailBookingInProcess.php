@@ -12,7 +12,7 @@ class EmailBookingInProcess extends EmailSetting
     public function __construct(LocalizationInterface $localization)
     {
         parent::__construct(
-            "email_booking_in_process", $localization->__("Booking is being processed", TLBM_TEXT_DOMAIN), $localization->__("Booking is being processed", TLBM_TEXT_DOMAIN)
+            "email_booking_in_process", $localization->getText("Booking is being processed", TLBM_TEXT_DOMAIN), $localization->getText("Booking is being processed", TLBM_TEXT_DOMAIN)
         );
     }
 

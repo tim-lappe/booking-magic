@@ -111,8 +111,10 @@ export class SelectFormElementWindow extends React.Component<SelectFormElementWi
             <div onClick={this.onBackgroundClicked} style={{display: this.state.formNode != null ? "flex" : "none"}} className={"tlbm-form-editor-select-element-window tlbm-window-outer"}>
                 <div className={"tlbm-add-elements-window-inner tlbm-window-inner"}>
                     <div className={"tlbm-add-elements-top-bar"}>
-                        <input onChange={this.onSearchInputChanged} className={"regular-text"} type={"text"} placeholder={Localization.__("Search...")} />
-                        <button onClick={this.onCancelClicked} className={"button tlbm-cancel-button"}>{Localization.__("Cancel")}</button>
+                        <input onChange={this.onSearchInputChanged} className={"regular-text"} type={"text"}
+                               placeholder={Localization.getText("Search...")}/>
+                        <button onClick={this.onCancelClicked}
+                                className={"button tlbm-cancel-button"}>{Localization.getText("Cancel")}</button>
                     </div>
                     <div className={"tlbm-add-elements-list-container"}>
                         {filteredCategories.map((category) => {

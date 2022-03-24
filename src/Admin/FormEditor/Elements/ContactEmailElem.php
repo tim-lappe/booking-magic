@@ -5,8 +5,8 @@ namespace TLBM\Admin\FormEditor\Elements;
 
 use TLBM\Admin\FormEditor\FormInputGenerator;
 use TLBM\Admin\FormEditor\LinkedFormData;
-use TLBM\Booking\Semantic\PredefinedValueFieldsCollection;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\Booking\Semantic\PredefinedValueFieldsCollection;
 
 if ( !defined('ABSPATH')) {
     return;
@@ -23,10 +23,10 @@ final class ContactEmailElem extends FormInputElem
     {
         $this->localization = $localization;
 
-        parent::__construct("field_contact_email", $this->localization->__("Contact E-Mail", TLBM_TEXT_DOMAIN));
+        parent::__construct("field_contact_email", $this->localization->getText("Contact E-Mail", TLBM_TEXT_DOMAIN));
 
-        $this->menu_category = $this->localization->__("Predefined fields", TLBM_TEXT_DOMAIN);
-        $this->description   = $this->localization->__(
+        $this->menu_category = $this->localization->getText("Predefined fields", TLBM_TEXT_DOMAIN);
+        $this->description   = $this->localization->getText(
             "The contact email to which the user receives emails such as booking confirmations", TLBM_TEXT_DOMAIN
         );
 
@@ -35,7 +35,7 @@ final class ContactEmailElem extends FormInputElem
         $name_setting->readonly      = true;
 
         $title_setting                = $this->getSettingsType("title");
-        $title_setting->default_value = $this->localization->__("E-Mail", TLBM_TEXT_DOMAIN);
+        $title_setting->default_value = $this->localization->getText("E-Mail", TLBM_TEXT_DOMAIN);
 
         $required                = $this->getSettingsType("required");
         $required->default_value = "yes";

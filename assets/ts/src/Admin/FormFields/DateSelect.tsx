@@ -158,7 +158,7 @@ export class DateSelect extends React.Component<DateSelectProps, DateSelectState
                     {dayOptions}
                 </select>
                 <select onChange={this.onChangeMonth} value={selectedDate.getMonth()}>
-                    {Object.entries(Localization.__Arr("months")).map((item) => {
+                    {Object.entries(Localization.getTextArr("months")).map((item) => {
                         return (
                             <option key={parseInt(item[0])} value={parseInt(item[0])}>{item[1]}</option>
                         )
