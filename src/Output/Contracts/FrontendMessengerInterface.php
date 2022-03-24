@@ -5,11 +5,11 @@ namespace TLBM\Output\Contracts;
 interface FrontendMessengerInterface
 {
     /**
-     * @param $html
+     * @param string $html
      *
      * @return mixed
      */
-    public function addMessage($html);
+    public function addMessage(string $html);
 
     /**
      * @return string

@@ -14,7 +14,7 @@ class RulesCapacityManager implements Contracts\RulesCapacityManagerInterface
     /**
      * @inheritDoc
      */
-    public function getOriginalCapacity(array $calendarIds, ExtendedDateTime $dateTime): int
+    public function getCapacityResult(array $calendarIds, ExtendedDateTime $dateTime): CapacityResult
     {
         $actionsMerging = MainFactory::create(ActionsMerging::class);
         $actionsMerging->setCalendarIds($calendarIds);
@@ -22,20 +22,20 @@ class RulesCapacityManager implements Contracts\RulesCapacityManagerInterface
 
         $mergedCollection = $actionsMerging->getRuleActionsMerged();
 
-        $capacity = 0;
+        $capacityResult = new CapacityResult();
         foreach ($mergedCollection as $mergeData) {
             foreach ($mergeData->getMergeResult() as $result) {
                 if($dateTime->isFullDay() && $result instanceof CapacityResult) {
-                    $capacity += $result->getCapacityOriginal();
+                    $capacityResult->sumResults($result);
                 } elseif (!$dateTime->isFullDay() && $result instanceof TimeCapacitiesCollectionResults) {
                     $timeCap = $result->getTimeCapacityAt($dateTime->getHour(), $dateTime->getMinute());
                     if($timeCap != null) {
-                        $capacity += $timeCap->getCapacityOriginal();
+                        $capacityResult->sumResults($timeCap);
                     }
                 }
             }
         }
-        
-        return $capacity;
+
+        return $capacityResult;
     }
 }

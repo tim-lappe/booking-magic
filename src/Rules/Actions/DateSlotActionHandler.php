@@ -28,11 +28,12 @@ class DateSlotActionHandler implements ActionHandlerInterface
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getMergeTerm(): string
+    public function getMergeTerm(): array
     {
-        return "dateCapacity";
+        return ["dayCapacity"
+        ];
     }
 
     /**

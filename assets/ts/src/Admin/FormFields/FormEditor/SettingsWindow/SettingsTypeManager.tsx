@@ -3,6 +3,7 @@ import * as React from "react";
 import {ElementSetting} from "../../../Entity/FormEditor/ElementSetting";
 import {SelectSettingsType} from "./SettingTypes/SelectSettingsType";
 import {TextareaSettingsType} from "./SettingTypes/TextareaSettingsType";
+import {HtmlSettingsType} from "./SettingTypes/HtmlSettingsType";
 
 export class SettingsTypeManager {
     readonly settingsTypeComponents: Map<string, typeof BasicSettingsTypeElement>;
@@ -11,6 +12,7 @@ export class SettingsTypeManager {
         this.settingsTypeComponents = new Map<string, typeof BasicSettingsTypeElement>();
         this.settingsTypeComponents.set("select", SelectSettingsType);
         this.settingsTypeComponents.set("textarea", TextareaSettingsType);
+        this.settingsTypeComponents.set("html", HtmlSettingsType);
     }
 
     public createSettingsTypeComponent(elementSetting: ElementSetting, value: any, onChange: (oldVal: any, newVal: any) => void): JSX.Element {

@@ -9,6 +9,7 @@ use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Booking\BookingProcessor;
 use TLBM\MainFactory;
 use TLBM\Output\SemanticFrontendMessenger;
+use TLBM\Repository\Contracts\BookingRepositoryInterface;
 use TLBM\Session\SessionManager;
 
 class ShowBookingOverview extends RequestBase
@@ -36,6 +37,11 @@ class ShowBookingOverview extends RequestBase
     private SessionManager $sessionManager;
 
     /**
+     * @var BookingRepositoryInterface
+     */
+    private BookingRepositoryInterface $bookingRepository;
+
+    /**
      * @param SemanticFrontendMessenger $frontendMessenger
      * @param LocalizationInterface $localization
      * @param SettingsManager $settingsManager
@@ -45,9 +51,11 @@ class ShowBookingOverview extends RequestBase
         SemanticFrontendMessenger $frontendMessenger,
         LocalizationInterface $localization,
         SettingsManager $settingsManager,
-        SessionManager $sessionManager
+        SessionManager $sessionManager,
+        BookingRepositoryInterface $bookingRepository
     ) {
         parent::__construct($localization);
+        $this->bookingRepository         = $bookingRepository;
         $this->action                    = "showbookingoverview";
         $this->semanticFrontendMessenger = $frontendMessenger;
         $this->settingsManager           = $settingsManager;
@@ -59,6 +67,19 @@ class ShowBookingOverview extends RequestBase
         $vars = $this->getVars();
         $verified = wp_verify_nonce($vars['_wpnonce'], "showbookingoverview_action");
         if (isset($vars['form']) && intval($vars['form']) > 0 && $verified) {
+            $pendingBookingId = $this->sessionManager->getValue("pendingBookingId");
+            if (intval($pendingBookingId)) {
+                $pendingBooking = $this->bookingRepository->getBooking($pendingBookingId);
+                if ($pendingBooking) {
+                    $bookingProcessor = MainFactory::create(BookingProcessor::class);
+                    $bookingProcessor->setFromPendingBooking($pendingBooking);
+                    $this->bookingProcessor = $bookingProcessor;
+                    $this->hasContent       = true;
+
+                    return;
+                }
+            }
+
             $bookingProcessor = MainFactory::create(BookingProcessor::class);
             $bookingProcessor->setVars($vars);
             $invalidFields = $bookingProcessor->validateVars();
@@ -77,10 +98,12 @@ class ShowBookingOverview extends RequestBase
             } elseif ($bookingProcessor->reserveBooking() != null) {
                 $this->bookingProcessor = $bookingProcessor;
                 $this->hasContent       = $this->sessionManager->setValue("pendingBookingId", $bookingProcessor->getPendingBooking()->getId());
-                $this->semanticFrontendMessenger->addMessage($this->localization->__("Session problem!", TLBM_TEXT_DOMAIN));
+                if ( !$this->hasContent) {
+                    $this->semanticFrontendMessenger->addMessage($this->localization->__("An internal error occured!", TLBM_TEXT_DOMAIN));
+                }
             } else {
                 $this->hasContent = false;
-                $this->semanticFrontendMessenger->addMessage($this->localization->__("Booking could not be completed. Some booking times are no longer available ", TLBM_TEXT_DOMAIN));
+                $this->semanticFrontendMessenger->addMessage($this->localization->__("Booking could not be completed. Please select a valid time", TLBM_TEXT_DOMAIN));
             }
         }
     }
@@ -136,7 +159,6 @@ class ShowBookingOverview extends RequestBase
                 $html .= "<div class='tlbm-overview-section-title'>" . $this->localization->__("Selected time", TLBM_TEXT_DOMAIN) . "</div>";
                 foreach ($calendarBookings as $calendarBooking) {
                     $html .= $calendarBooking->getFromDateTime() . "<br>";
-                    $html .= $calendarBooking->getCalendar()->getTitle();
                 }
             }
 

@@ -12,7 +12,7 @@ class MessageMerger extends Merger
     public function merge(?MergeResultInterface $mergeResult = null): ?MergeResultInterface
     {
         if ($mergeResult == null) {
-            $mergeResult = new MessageResult();
+            $mergeResult = MainFactory::create(TimeCapacitiesCollectionResults::class);
         }
 
         if ($mergeResult instanceof MessageResult) {

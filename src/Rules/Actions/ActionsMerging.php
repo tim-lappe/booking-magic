@@ -188,12 +188,15 @@ class ActionsMerging
             foreach ($timedRuleAction->getRuleActions() as $ruleAction) {
                 $handler = $this->ruleActionsManager->getActionHandler($ruleAction);
                 if ($handler) {
-                    $mergeTerm  = $handler->getMergeTerm();
-                    $nextMerger = $actionMergeChains[$mergeTerm] ?? null;
-                    $merger     = $handler->getMerger($nextMerger);
-                    $merger->setDateTimeContext($timedRuleAction->getDateTime());
-                    $merger->setMergeContext($this->mergeContext);
-                    $actionMergeChains[$mergeTerm] = $merger;
+                    $mergeTerms = $handler->getMergeTerm();
+                    foreach ($mergeTerms as $mergeTerm) {
+                        $nextMerger = $actionMergeChains[$mergeTerm] ?? null;
+                        $merger     = $handler->getMerger($nextMerger);
+                        $merger->setMergeTerm($mergeTerm);
+                        $merger->setDateTimeContext($timedRuleAction->getDateTime());
+                        $merger->setMergeContext($this->mergeContext);
+                        $actionMergeChains[$mergeTerm] = $merger;
+                    }
                 }
             }
 

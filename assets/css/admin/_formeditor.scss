@@ -289,7 +289,7 @@
   .tlbm-element-settings-window-inner {
     min-width: 400px;
     max-width: 1200%;
-    padding: 0;
+    padding: 0 !important;
     overflow: hidden;
 
     .tlbm-form-settings-top-bar {

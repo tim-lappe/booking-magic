@@ -171,10 +171,10 @@ class CompleteBookingRequest extends RequestBase
 
     public function getContent(): string
     {
-        //TODO: Implement booking completed content
         if ($this->bookingSuccessed === true) {
             return $this->settingsManager->getValue(TextBookingReceived::class);
         } elseif ($this->error) {
+            //TODO: Implement TextBookingFailed Setting and print here
             return "<h2>Es ist ein Fehler aufgetreten</h2><p>Ihre Buchung konnte nicht bearbeitet werden, da ein unbekannter Fehler aufgetreten ist</p>";
         } else {
             return "";

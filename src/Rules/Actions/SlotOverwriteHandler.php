@@ -4,16 +4,13 @@ namespace TLBM\Rules\Actions;
 
 use TLBM\Entity\RuleAction;
 use TLBM\Rules\Actions\ActionData\ActionData;
-use TLBM\Rules\Actions\ActionData\CapacityActionData;
+use TLBM\Rules\Actions\ActionData\SlotOverwriteData;
 use TLBM\Rules\Actions\Merging\Merger\Merger;
-use TLBM\Rules\Actions\Merging\Merger\TimeCapacityMerger;
+use TLBM\Rules\Actions\Merging\Merger\SlotOverwriteMerger;
 
-class TimeSlotActionHandler implements Contracts\ActionHandlerInterface
+class SlotOverwriteHandler implements Contracts\ActionHandlerInterface
 {
 
-    /**
-     * @var RuleAction
-     */
     private RuleAction $ruleAction;
 
     /**
@@ -21,16 +18,15 @@ class TimeSlotActionHandler implements Contracts\ActionHandlerInterface
      */
     public function getMerger(?Merger $nextMerger): ?Merger
     {
-        return new TimeCapacityMerger($this->getRuleAction(), $nextMerger);
+        return new SlotOverwriteMerger($this->getActionData(), $nextMerger);
     }
 
     /**
      * @inheritDoc
      */
-    public function getMergeTerm(): array
+    public function getActionData(): ?ActionData
     {
-        return ["timeCapacities"
-        ];
+        return new SlotOverwriteData($this->getRuleAction()->getData());
     }
 
     /**
@@ -52,8 +48,10 @@ class TimeSlotActionHandler implements Contracts\ActionHandlerInterface
     /**
      * @inheritDoc
      */
-    public function getActionData(): ?ActionData
+    public function getMergeTerm(): array
     {
-        return new CapacityActionData($this->getRuleAction()->getData());
+        return ["dayCapacity",
+            "timeCapacities"
+        ];
     }
 }

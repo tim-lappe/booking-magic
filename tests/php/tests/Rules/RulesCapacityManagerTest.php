@@ -44,32 +44,32 @@ class RulesCapacityManagerTest extends TestCase
             /**
              * First 8 Test cases of TestCaseSpreadsheet
              */
-            $capacity = $rulesCapacity->getOriginalCapacity([$calendar->getId()], new ExtendedDateTime(1648805642, true));
+            $capacity = $rulesCapacity->getCapacityResult([$calendar->getId()], new ExtendedDateTime(1648805642, true));
             $this->assertEquals(10, $capacity);
 
             /**
              * 8-16 Test cases of TestCaseSpreadsheet
              */
-            $capacity = $rulesCapacity->getOriginalCapacity([$calendar->getId()], new ExtendedDateTime(1648880528, true));
+            $capacity = $rulesCapacity->getCapacityResult([$calendar->getId()], new ExtendedDateTime(1648880528, true));
             $this->assertEquals(5, $capacity);
         }
 
         /**
          * Test Rule 3, No Capacity from 01.03. to 10.03. for Alice and Fabian
          */
-        $this->assertEquals(0, $rulesCapacity->getOriginalCapacity([$allCalendarIds["Alice"]], new ExtendedDateTime(1646292128, true)));
-        $this->assertEquals(0, $rulesCapacity->getOriginalCapacity([$allCalendarIds["Fabian"]], new ExtendedDateTime(1646292128, true)));
+        $this->assertEquals(0, $rulesCapacity->getCapacityResult([$allCalendarIds["Alice"]], new ExtendedDateTime(1646292128, true)));
+        $this->assertEquals(0, $rulesCapacity->getCapacityResult([$allCalendarIds["Fabian"]], new ExtendedDateTime(1646292128, true)));
 
         /**
          * But still have Capacity for others
          */
-        $this->assertEquals(10, $rulesCapacity->getOriginalCapacity([$allCalendarIds["ABC"]], new ExtendedDateTime(1646292128, true)));
+        $this->assertEquals(10, $rulesCapacity->getCapacityResult([$allCalendarIds["ABC"]], new ExtendedDateTime(1646292128, true)));
 
         /**
          * Test summed up capacities for some dates
          */
-        $this->assertEquals(80, $rulesCapacity->getOriginalCapacity($allCalendarIds, new ExtendedDateTime(1648805642, true)));
-        $this->assertEquals(40, $rulesCapacity->getOriginalCapacity($allCalendarIds, new ExtendedDateTime(1648880528, true)));
-        $this->assertEquals(60, $rulesCapacity->getOriginalCapacity($allCalendarIds, new ExtendedDateTime(1646292128, true)));
+        $this->assertEquals(80, $rulesCapacity->getCapacityResult($allCalendarIds, new ExtendedDateTime(1648805642, true)));
+        $this->assertEquals(40, $rulesCapacity->getCapacityResult($allCalendarIds, new ExtendedDateTime(1648880528, true)));
+        $this->assertEquals(60, $rulesCapacity->getCapacityResult($allCalendarIds, new ExtendedDateTime(1646292128, true)));
     }
 }

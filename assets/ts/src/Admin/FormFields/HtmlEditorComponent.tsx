@@ -6,22 +6,30 @@ import "ace-builds/src-noconflict/theme-chrome";
 import "ace-builds/src-noconflict/ext-language_tools"
 import {Utils} from "../../Utils";
 
-export class HtmlEditorComponent extends React.Component<any, any> {
+interface HtmlEditorComponentProps {
+    onChange?: (value: string) => void;
+    dataset?: { value?: any, name?: any };
+    width?: string;
+    minLines?: number;
+    maxLines?: number
+}
+
+export class HtmlEditorComponent extends React.Component<HtmlEditorComponentProps, any> {
 
 
     constructor(props) {
         super(props);
 
         this.onChange = this.onChange.bind(this);
-
         this.state = {
-            value: Utils.decodeUriComponent(this.props.dataset?.value)
+            value: this.props.dataset != null ? Utils.decodeUriComponent(this.props.dataset?.value) : ""
         }
     }
 
     onChange(value: string) {
         this.setState((prevState) => {
             prevState.value = value;
+            this.props.onChange?.call(this, value);
             return prevState;
         })
     }
@@ -30,8 +38,9 @@ export class HtmlEditorComponent extends React.Component<any, any> {
         return (
             <React.Fragment>
                 <input type={"hidden"} name={this.props.dataset?.name} value={encodeURIComponent(this.state.value)}/>
-                <AceEditor mode={"html"} width={"75%"} showPrintMargin={false} onChange={this.onChange} minLines={10}
-                           maxLines={25} value={this.state.value} fontSize={14} setOptions={{
+                <AceEditor style={{minWidth: "500px"}} mode={"html"} width={this.props.width ?? "75%"}
+                           showPrintMargin={false} onChange={this.onChange} minLines={this.props.minLines ?? 10}
+                           maxLines={this.props.maxLines ?? 25} value={this.state.value} fontSize={14} setOptions={{
                     enableBasicAutocompletion: true,
                     enableLiveAutocompletion: true,
                     enableSnippets: false,

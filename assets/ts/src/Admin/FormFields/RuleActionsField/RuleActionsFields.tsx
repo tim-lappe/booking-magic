@@ -9,6 +9,7 @@ import {DaySlotItem} from "./Fields/DaySlotItem";
 import {TimeSlotItem} from "./Fields/TimeSlotItem";
 import {MessageItem} from "./Fields/MessageItem";
 import {MultipleTimeSlotItem} from "./Fields/MultipleTimeSlotItem";
+import {SlotOverwriteItem} from "./Fields/SlotOverwriteItem";
 
 interface RuleActionsFieldsState {
     items: RuleAction[];
@@ -39,6 +40,8 @@ export class RuleActionsFields extends React.Component<any, RuleActionsFieldsSta
         this.ruleActionsManager.registerComponent("time_slot", TimeSlotItem);
         this.ruleActionsManager.registerComponent("message", MessageItem);
         this.ruleActionsManager.registerComponent("multiple_time_slots", MultipleTimeSlotItem);
+        this.ruleActionsManager.registerComponent("slot_overwrite", SlotOverwriteItem);
+
 
         this.state = {
             items: [],

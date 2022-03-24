@@ -14,7 +14,6 @@ use TLBM\Admin\Settings\SingleSettings\BookingProcess\SinglePageBooking;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Form;
 use TLBM\Output\Contracts\FormPrintInterface;
-use TLBM\Output\Contracts\FrontendMessengerInterface;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
 
 
@@ -27,11 +26,6 @@ class FormPrint implements FormPrintInterface
     private EntityRepositoryInterface $entityRepository;
 
     /**
-     * @var FrontendMessengerInterface
-     */
-    private FrontendMessengerInterface $frontendMessenger;
-
-    /**
      * @var LocalizationInterface
      */
     private LocalizationInterface $localization;
@@ -41,12 +35,11 @@ class FormPrint implements FormPrintInterface
      */
     private SettingsManagerInterface $settingsManager;
 
-    public function __construct(EntityRepositoryInterface $entityRepository, FrontendMessengerInterface $frontendMessenger, LocalizationInterface $localization, SettingsManagerInterface $settingsManager)
+    public function __construct(EntityRepositoryInterface $entityRepository, LocalizationInterface $localization, SettingsManagerInterface $settingsManager)
     {
         $this->entityRepository = $entityRepository;
-        $this->frontendMessenger = $frontendMessenger;
-        $this->localization = $localization;
-        $this->settingsManager = $settingsManager;
+        $this->localization     = $localization;
+        $this->settingsManager  = $settingsManager;
     }
 
     /**
@@ -59,14 +52,12 @@ class FormPrint implements FormPrintInterface
     {
         $form = $this->entityRepository->getEntity( Form::class, $formId);
         if($form != null) {
-            $html = $this->frontendMessenger->getContent();
-
             $formWalker    = FormDataWalker::createFromData($form->getFormData());
             $contentWalker = new RecursiveFormContentWalker($inputVars);
             $result        = $formWalker->walkCallback($contentWalker);
 
             if ($form instanceof Form) {
-                $html .= "<form class='tlbm-frontend-form' action='" . $_SERVER['REQUEST_URI'] . "' method='post'>";
+                $html = "<form class='tlbm-frontend-form' action='" . $_SERVER['REQUEST_URI'] . "' method='post'>";
                 $html .= $result;
                 $html .= "<input type='hidden' name='form' value='" . $form->getId() . "'>";
 

@@ -28,11 +28,12 @@ class MessageActionHandler implements ActionHandlerInterface
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getMergeTerm(): string
+    public function getMergeTerm(): array
     {
-        return "messages";
+        return ["messages"
+        ];
     }
 
     /**

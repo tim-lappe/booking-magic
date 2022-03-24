@@ -29,9 +29,14 @@ abstract class Merger
      */
     protected ExtendedDateTime $dateTimeContext;
 
+    /**
+     * @var string
+     */
+    protected string $mergeTerm;
+
     public function __construct(ActionData $ruleActionData, ?Merger $nextMerger = null)
     {
-        $this->actionData = $ruleActionData;
+        $this->actionData  = $ruleActionData;
         $this->nextMerging = $nextMerger;
     }
 
@@ -67,6 +72,22 @@ abstract class Merger
     public function setDateTimeContext(ExtendedDateTime $dateTimeContext): void
     {
         $this->dateTimeContext = $dateTimeContext;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMergeTerm(): string
+    {
+        return $this->mergeTerm;
+    }
+
+    /**
+     * @param string $mergeTerm
+     */
+    public function setMergeTerm(string $mergeTerm): void
+    {
+        $this->mergeTerm = $mergeTerm;
     }
 
     /**
