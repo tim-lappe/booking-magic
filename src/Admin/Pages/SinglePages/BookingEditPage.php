@@ -51,7 +51,7 @@ class BookingEditPage extends EntityEditPage
         $this->entityRepository = $entityRepository;
         $this->localization     = $localization;
 
-        parent::__construct($this->localization->__("Booking", TLBM_TEXT_DOMAIN), "booking-edit", "booking-edit", false);
+        parent::__construct($this->localization->getText("Booking", TLBM_TEXT_DOMAIN), "booking-edit", "booking-edit", false);
 
         $this->defineFormFields();
     }
@@ -64,13 +64,13 @@ class BookingEditPage extends EntityEditPage
             $states = $settings->getStatesKeyValue();
         }
 
-        $this->formBuilder->defineFormField(new SelectField("state", $this->localization->__("State", TLBM_TEXT_DOMAIN), $states, true));
-        $this->formBuilder->defineFormField(new TextareaField("notes", $this->localization->__("Notes", TLBM_TEXT_DOMAIN)));
+        $this->formBuilder->defineFormField(new SelectField("state", $this->localization->getText("State", TLBM_TEXT_DOMAIN), $states, true));
+        $this->formBuilder->defineFormField(new TextareaField("notes", $this->localization->getText("Notes", TLBM_TEXT_DOMAIN)));
     }
 
     protected function getHeadTitle(): string
     {
-        return $this->localization->__("View Booking", TLBM_TEXT_DOMAIN);
+        return $this->localization->getText("View Booking", TLBM_TEXT_DOMAIN);
     }
 
     /**
@@ -79,7 +79,7 @@ class BookingEditPage extends EntityEditPage
     public function displayEntityEditForm(): void
     {
         $booking = $this->getEditingEntity();
-        if (!$booking) {
+        if ( !$booking) {
             $booking = new Booking();
         }
 
@@ -89,23 +89,34 @@ class BookingEditPage extends EntityEditPage
 
         <div class="tlbm-admin-page-tile-row">
             <div class="tlbm-admin-page-tile tlbm-admin-page-tile-grow-2 tlbm-admin-page-booking-value-tile">
-                <div class="tlbm-admin-booking-id"> <?php echo sprintf($this->localization->__("#%s", TLBM_TEXT_DOMAIN), $booking->getId()) ?></div>
+                <div class="tlbm-admin-booking-id"> <?php
+                    echo sprintf($this->localization->getText("#%s", TLBM_TEXT_DOMAIN), $booking->getId()) ?></div>
                 <div class="tlbm-admin-booking-values">
-                    <?php if($semantic->hasFullName()): ?>
+                    <?php
+                    if ($semantic->hasFullName()): ?>
                         <div class="tlbm-admin-booking-block">
-                            <span class="tlbm-booking-value-title"><?php _e("Name", TLBM_TEXT_DOMAIN); ?></span>
-                            <span class="tlbm-booking-value-content"><?php echo $semantic->getFullName() ?></span>
+                            <span class="tlbm-booking-value-title"><?php
+                                _e("Name", TLBM_TEXT_DOMAIN); ?></span>
+                            <span class="tlbm-booking-value-content"><?php
+                                echo $semantic->getFullName() ?></span>
                         </div>
-                    <?php endif; ?>
-                    <?php if($semantic->hasFullAddress()): ?>
+                    <?php
+                    endif; ?>
+                    <?php
+                    if ($semantic->hasFullAddress()): ?>
                         <div class="tlbm-admin-booking-block">
-                            <span class="tlbm-booking-value-title"><?php _e("Address", TLBM_TEXT_DOMAIN); ?></span>
-                            <span class="tlbm-booking-value-content"><?php echo $semantic->getFullAddress() ?></span>
+                            <span class="tlbm-booking-value-title"><?php
+                                _e("Address", TLBM_TEXT_DOMAIN); ?></span>
+                            <span class="tlbm-booking-value-content"><?php
+                                echo $semantic->getFullAddress() ?></span>
                         </div>
-                    <?php endif; ?>
-                    <?php if($semantic->hasContactEmail()): ?>
+                    <?php
+                    endif; ?>
+                    <?php
+                    if ($semantic->hasContactEmail()): ?>
                         <div class="tlbm-admin-booking-block">
-                            <span class="tlbm-booking-value-title"><?php _e("E-Mail", TLBM_TEXT_DOMAIN); ?></span>
+                            <span class="tlbm-booking-value-title"><?php
+                                _e("E-Mail", TLBM_TEXT_DOMAIN); ?></span>
                             <span class="tlbm-booking-value-content">
                                 <a href="mailto:<?php echo $semantic->getContactEmail() ?>">
                                     <?php echo $semantic->getContactEmail() ?>
@@ -211,12 +222,11 @@ class BookingEditPage extends EntityEditPage
         if ($this->entityRepository->saveEntity($booking)) {
             $savedEntity = $booking;
 
-            return ["success" => $this->localization->__("Booking has been saved", TLBM_TEXT_DOMAIN)
+            return ["success" => $this->localization->getText("Booking has been saved", TLBM_TEXT_DOMAIN)
             ];
         } else {
-            return array(
-                "error" => $this->localization->__("An internal error occured. ", TLBM_TEXT_DOMAIN)
-            );
+            return ["error" => $this->localization->getText("An internal error occured. ", TLBM_TEXT_DOMAIN)
+            ];
         }
     }
 }

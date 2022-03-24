@@ -81,7 +81,7 @@ export class MonthViewTimePanel extends React.Component<MonthViewTimePanelProps,
                         onClick={this.onClickFullDay}
                         style={{display: this.props.fullDay.capacityRemaining > 0 ? "flex" : "none"}}>
 
-                        {Localization.__("All Day")}
+                        {Localization.getText("All Day")}
                         <span className={"dashicons dashicons-yes-alt"}
                               style={{display: this.state.selected == null ? "block" : "none"}}/>
                     </div>

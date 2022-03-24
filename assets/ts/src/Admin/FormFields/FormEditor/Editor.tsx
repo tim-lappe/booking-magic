@@ -240,11 +240,12 @@ export class Editor extends React.Component<FormEditorProps, FormEditorState> {
 
                 {this.state.rootNode.children.length == 0 ? (
                     <div className={"tlbm-editor-is-empty"}>
-                        <span>{Localization.__("Click the button below to add elements to this form")}</span>
+                        <span>{Localization.getText("Click the button below to add elements to this form")}</span>
                         <button onClick={(event) => {
                             this.rootEntityChildContainer.current?.onClickAddElement(event);
                             event.preventDefault();
-                        }} className={"button button-primary button-large"} style={{marginTop: "20px"}}>{Localization.__("Add Element")}</button>
+                        }} className={"button button-primary button-large"}
+                                style={{marginTop: "20px"}}>{Localization.getText("Add Element")}</button>
                     </div>
                 ) : null}
                 <EntityChildContainer emptyText={""} ref={this.rootEntityChildContainer} hideAddElementsButton={this.state.rootNode.children.length == 0}  additionalClassName={"tlbm-editor-root-container"} formEditor={this} formNode={this.state.rootNode} />

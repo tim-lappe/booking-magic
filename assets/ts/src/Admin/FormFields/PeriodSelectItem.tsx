@@ -87,21 +87,26 @@ export class PeriodSelectItem extends React.Component<PeriodSelectItemProps, Per
             <div className={"tlbm-period-item tlbm-gray-container tlbm-admin-content-box"}>
                 <div className={"tlbm-period-panel"}>
                     <div>
-                        <small>{Localization.__("Start")}</small>
-                        <DateSelect defaultDateTime={this.state.item.fromDateTime} allowTimeSet={true} onChange={this.onChangeStartDate} minYear={currentDate.getFullYear()} />
+                        <small>{Localization.getText("Start")}</small>
+                        <DateSelect defaultDateTime={this.state.item.fromDateTime} allowTimeSet={true}
+                                    onChange={this.onChangeStartDate} minYear={currentDate.getFullYear()}/>
                     </div>
 
                     {this.hasEndDate() ? (
                         <div>
-                            <small>{Localization.__("End")}</small>
-                            <DateSelect defaultDateTime={this.state.item.toDateTime} allowTimeSet={true} onChange={this.onChangeEndDate} minYear={currentDate.getFullYear()} />
+                            <small>{Localization.getText("End")}</small>
+                            <DateSelect defaultDateTime={this.state.item.toDateTime} allowTimeSet={true}
+                                        onChange={this.onChangeEndDate} minYear={currentDate.getFullYear()}/>
                         </div>
-                    ): null }
+                    ) : null}
 
-                    {!this.hasEndDate() ? <button onClick={this.onAddEnd} className={"button"}>{Localization.__("Add End")}</button> : null}
-                    {this.hasEndDate() ? <button onClick={this.onRemoveEnd} className={"button"}>{Localization.__("Remove End")}</button> : null}
+                    {!this.hasEndDate() ? <button onClick={this.onAddEnd}
+                                                  className={"button"}>{Localization.getText("Add End")}</button> : null}
+                    {this.hasEndDate() ? <button onClick={this.onRemoveEnd}
+                                                 className={"button"}>{Localization.getText("Remove End")}</button> : null}
                 </div>
-                <button onClick={this.onRemove} className={'button button-small tlbm-period-delete'}><span className={'dashicons dashicons-trash'} /></button>
+                <button onClick={this.onRemove} className={'button button-small tlbm-period-delete'}><span
+                    className={'dashicons dashicons-trash'}/></button>
             </div>
         )
     }

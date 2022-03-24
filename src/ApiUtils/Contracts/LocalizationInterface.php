@@ -10,13 +10,13 @@ interface LocalizationInterface
      *
      * @return string
      */
-    public function __(string $text, string $namespace): string;
+    public function getText(string $text, string $namespace): string;
 
     /**
      * @param string $text
      * @param string $namespace
      *
-     * @return mixed
+     * @return void
      */
-    public function _e(string $text, string $namespace);
+    public function echoText(string $text, string $namespace): void;
 }

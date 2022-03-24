@@ -10,7 +10,7 @@ class TextBookNow extends SettingsBase
 
     public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("text", "text_book_now", $localization->__("Button 'Book Now'", TLBM_TEXT_DOMAIN), $localization->__("Book Now", TLBM_TEXT_DOMAIN));
+        parent::__construct("text", "text_book_now", $localization->getText("Button 'Book Now'", TLBM_TEXT_DOMAIN), $localization->getText("Book Now", TLBM_TEXT_DOMAIN));
     }
 
     public function display()

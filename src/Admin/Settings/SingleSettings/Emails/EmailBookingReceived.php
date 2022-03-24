@@ -12,7 +12,7 @@ class EmailBookingReceived extends EmailSetting
     public function __construct(LocalizationInterface $localization)
     {
         parent::__construct(
-            "email_booking_received", $localization->__("Booking has been received", TLBM_TEXT_DOMAIN), $localization->__("Booking has been received", TLBM_TEXT_DOMAIN)
+            "email_booking_received", $localization->getText("Booking has been received", TLBM_TEXT_DOMAIN), $localization->getText("Booking has been received", TLBM_TEXT_DOMAIN)
         );
     }
 

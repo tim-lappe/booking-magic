@@ -13,7 +13,7 @@ class FormPage extends PageBase
 
     public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct($localization->__("Form", TLBM_TEXT_DOMAIN), "booking-magic-form");
+        parent::__construct($localization->getText("Form", TLBM_TEXT_DOMAIN), "booking-magic-form");
         $this->parentSlug = "booking-magic";
     }
 

@@ -61,16 +61,16 @@ export class SlotOverwriteItem extends RuleActionItemBase {
         return (
             <React.Fragment>
                 <div style={{marginLeft: "20px"}}>
-                    <small>{Localization.__("All Day")}</small><br/>
+                    <small>{Localization.getText("All Day")}</small><br/>
                     <select onChange={this.onChangeAllDay} value={this.state.ruleAction.actions.isFullDay}>
-                        <option value={"true"}>{Localization.__("Yes")}</option>
-                        <option value={"false"}>{Localization.__("No")}</option>
+                        <option value={"true"}>{Localization.getText("Yes")}</option>
+                        <option value={"false"}>{Localization.getText("No")}</option>
                     </select>
                 </div>
                 {this.state.ruleAction.actions.isFullDay ? null : (
                     <React.Fragment>
                         <div style={{marginLeft: "20px"}}>
-                            <small>{Localization.__("From")}</small><br/>
+                            <small>{Localization.getText("From")}</small><br/>
                             <TimeSelect initState={{
                                 minute: this.state.ruleAction.actions.fromMinute,
                                 hour: this.state.ruleAction.actions.fromHour
@@ -78,7 +78,7 @@ export class SlotOverwriteItem extends RuleActionItemBase {
                                         nameMinute={"fromMinute"}/>
                         </div>
                         <div style={{marginLeft: "20px"}}>
-                            <small>{Localization.__("To")}</small><br/>
+                            <small>{Localization.getText("To")}</small><br/>
                             <TimeSelect initState={{
                                 minute: this.state.ruleAction.actions.toMinute,
                                 hour: this.state.ruleAction.actions.toHour

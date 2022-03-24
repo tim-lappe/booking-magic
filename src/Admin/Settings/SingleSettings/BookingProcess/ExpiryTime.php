@@ -12,7 +12,7 @@ class ExpiryTime extends SettingsBase
      */
     public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("booking_process", "expiry_time", $localization->__("Expiry Time (in Minutes)", TLBM_TEXT_DOMAIN), 10);
+        parent::__construct("booking_process", "expiry_time", $localization->getText("Expiry Time (in Minutes)", TLBM_TEXT_DOMAIN), 10);
     }
 
     /**

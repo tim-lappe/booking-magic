@@ -13,7 +13,7 @@ class AdminMail extends SettingsBase
 
     public function __construct(LocalizationInterface $localization, OptionsInterface $options)
     {
-        parent::__construct("general", "admin_mail", $localization->__("Admin Mail", TLBM_TEXT_DOMAIN), $options->getOption("admin_email"));
+        parent::__construct("general", "admin_mail", $localization->getText("Admin Mail", TLBM_TEXT_DOMAIN), $options->getOption("admin_email"));
     }
 
     public function display()

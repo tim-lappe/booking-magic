@@ -2,7 +2,6 @@ import {BasicEditorElement} from "./BasicEditorElement";
 import {FormElement} from "../../../Entity/FormEditor/FormElement";
 import * as React from "react";
 import {Localization} from "../../../../Localization";
-import {SelectSettingsType} from "../SettingsWindow/SettingTypes/SelectSettingsType";
 import {SelectElementSetting} from "../../../Entity/FormEditor/SelectElementSetting";
 
 export class CalendarElement extends BasicEditorElement<FormElement> {
@@ -13,7 +12,7 @@ export class CalendarElement extends BasicEditorElement<FormElement> {
 
         let subtitle = this.state.formNode.formData.name ?? "";
 
-        let selectedCalendar = this.state.formNode.formData.selected_calendar ?? Localization.__("No calendar selected");
+        let selectedCalendar = this.state.formNode.formData.selected_calendar ?? Localization.getText("No calendar selected");
         let selectedCalendarLabel = "";
 
         let settings = this.state.formElement.settings;
@@ -38,7 +37,7 @@ export class CalendarElement extends BasicEditorElement<FormElement> {
                     </span>
                     {this.state.formNode.formData.required == "yes" ? (
                         <span className={"tlbm-form-settings-print-required"}>
-                        {Localization.__("Required")}
+                        {Localization.getText("Required")}
                     </span>
                     ) : null}
                 </div>

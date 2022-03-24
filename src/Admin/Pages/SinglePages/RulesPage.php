@@ -12,7 +12,7 @@ class RulesPage extends PageBase
 {
     public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct($localization->__("Rules", TLBM_TEXT_DOMAIN), "booking-magic-rules");
+        parent::__construct($localization->getText("Rules", TLBM_TEXT_DOMAIN), "booking-magic-rules");
         $this->parentSlug = "booking-magic";
     }
 

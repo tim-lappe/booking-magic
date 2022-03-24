@@ -103,9 +103,7 @@ abstract class EntityEditPage extends FormPageBase
      */
     protected function getHeadTitle(): string
     {
-        return $this->getEditingEntity() == null ?
-            sprintf($this->localization->__("Add New %s", TLBM_TEXT_DOMAIN), $this->entityTitle) :
-            sprintf($this->localization->__("Edit %s", TLBM_TEXT_DOMAIN), $this->entityTitle);
+        return $this->getEditingEntity() == null ? sprintf($this->localization->getText("Add New %s", TLBM_TEXT_DOMAIN), $this->entityTitle) : sprintf($this->localization->getText("Edit %s", TLBM_TEXT_DOMAIN), $this->entityTitle);
     }
 
     /**

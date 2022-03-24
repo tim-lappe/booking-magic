@@ -11,10 +11,10 @@ class DaySlotEditorElem extends RuleActionEditorElem
 
     public function __construct(LocalizationInterface $localization)
     {
-        $this->setCategory($localization->__("All Day", TLBM_TEXT_DOMAIN));
+        $this->setCategory($localization->getText("All Day", TLBM_TEXT_DOMAIN));
 
-        $this->setTitle($localization->__("Day slot", TLBM_TEXT_DOMAIN));
-        $this->setDescription($localization->__("Create slots that can be booked all day ", TLBM_TEXT_DOMAIN));
+        $this->setTitle($localization->getText("Day slot", TLBM_TEXT_DOMAIN));
+        $this->setDescription($localization->getText("Create slots that can be booked all day ", TLBM_TEXT_DOMAIN));
         $this->setName("day_slot");
     }
 }

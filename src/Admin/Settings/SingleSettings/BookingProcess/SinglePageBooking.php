@@ -12,7 +12,7 @@ class SinglePageBooking extends SettingsBase
 
     public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("booking_process", "single_page_booking", $localization->__("One Page Booking", TLBM_TEXT_DOMAIN), "");
+        parent::__construct("booking_process", "single_page_booking", $localization->getText("One Page Booking", TLBM_TEXT_DOMAIN), "");
     }
 
     public function display()

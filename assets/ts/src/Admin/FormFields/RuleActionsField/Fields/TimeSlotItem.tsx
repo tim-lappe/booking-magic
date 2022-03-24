@@ -7,7 +7,7 @@ export class TimeSlotItem extends RuleActionItemBase {
     protected getFields(): JSX.Element {
         return (
             <React.Fragment>
-                {this.getTimeSlotFields(Localization.__("Time"))}
+                {this.getTimeSlotFields(Localization.getText("Time"))}
                 {this.getCapacityFields()}
             </React.Fragment>
         );

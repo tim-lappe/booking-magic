@@ -10,7 +10,7 @@ class SenderMail extends SettingsBase
 {
     public function __construct(LocalizationInterface $localization, OptionsInterface $options)
     {
-        parent::__construct("emails", "mail_sender_mail", $localization->__("Sender e-mail", TLBM_TEXT_DOMAIN), $options->getOption("admin_email"));
+        parent::__construct("emails", "mail_sender_mail", $localization->getText("Sender e-mail", TLBM_TEXT_DOMAIN), $options->getOption("admin_email"));
     }
 
     public function display()

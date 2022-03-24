@@ -12,12 +12,12 @@ use TLBM\Admin\FormEditor\Contracts\AdminElementInterface;
 use TLBM\Admin\FormEditor\ItemSettingsElements\Select;
 use TLBM\Admin\FormEditor\LinkedFormData;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\Calendar\CalendarHelper;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarBooking;
 use TLBM\MainFactory;
 use TLBM\Output\Calendar\CalendarDisplay;
 use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
-use TLBM\Repository\Query\CalendarGroupQuery;
 use TLBM\Repository\Query\CalendarQuery;
 use TLBM\Utilities\ExtendedDateTime;
 
@@ -31,38 +31,22 @@ class CalendarElem extends FormInputElem implements AdminElementInterface
     /**
      * @param LocalizationInterface $localization
      */
-    public function __construct(LocalizationInterface $localization) {
-        parent::__construct("calendar", $localization->__("Appointment selection", TLBM_TEXT_DOMAIN));
+    public function __construct(LocalizationInterface $localization)
+    {
+        parent::__construct("calendar", $localization->getText("Appointment selection", TLBM_TEXT_DOMAIN));
 
         $this->localization = $localization;
 
-        $this->menu_category = $this->localization->__("Calendar", TLBM_TEXT_DOMAIN);
-        $this->description   = $this->localization->__(
+        $this->menu_category = $this->localization->getText("Calendar", TLBM_TEXT_DOMAIN);
+        $this->description   = $this->localization->getText(
             "Allows the user to choose from a calendar or a group of calendars", TLBM_TEXT_DOMAIN
         );
 
-        $calendarsQuery = MainFactory::create(CalendarQuery::class);
-        $calendarGroupQuery = MainFactory::create(CalendarGroupQuery::class);
+        $calendarHelper = MainFactory::create(CalendarHelper::class);
+        $keyValues      = $calendarHelper->getGroupAndCalendarKeyValues();
 
-        $calendar_kv = [];
-        foreach ($calendarsQuery->getResult() as $calendar) {
-            $calendar_kv["calendar_" . $calendar->getId()] = $calendar->getTitle();
-        }
-
-        $groups_kv       = [];
-        $calendar_groups = iterator_to_array($calendarGroupQuery->getResult());
-        foreach ($calendar_groups as $group) {
-            $groups_kv["group_" . $group->getId()] = $group->getTitle();
-        }
-
-        $calendar_select = [
-            $this->localization->__("Groups", TLBM_TEXT_DOMAIN)          => $groups_kv,
-            $this->localization->__("Single Calendar", TLBM_TEXT_DOMAIN) => $calendar_kv,
-        ];
-
-        $default_calendar = sizeof($calendar_kv) > 0 ? array_keys($calendar_kv)[0] : "";
         $selectedCalendar = new Select(
-            "sourceId", $this->localization->__("Calendar", TLBM_TEXT_DOMAIN), $calendar_select, $default_calendar, false, false, $this->localization->__("Calendar Settings", TLBM_TEXT_DOMAIN)
+            "sourceId", $this->localization->getText("Calendar", TLBM_TEXT_DOMAIN), $keyValues, "", false, false, $this->localization->getText("Calendar Settings", TLBM_TEXT_DOMAIN)
         );
 
         $this->addSettings($selectedCalendar);
@@ -119,7 +103,7 @@ class CalendarElem extends FormInputElem implements AdminElementInterface
 
             return $calendarDisplay->getDisplayContent();
         } else {
-            return "<div class='tlbm-no-calendar-alert'>" . $this->localization->__(
+            return "<div class='tlbm-no-calendar-alert'>" . $this->localization->getText(
                     "No calendar or calendargroup selected", TLBM_TEXT_DOMAIN
                 ) . "</div>";
         }
@@ -148,7 +132,7 @@ class CalendarElem extends FormInputElem implements AdminElementInterface
             $html .= "<div class='tlbm-admin-calendar-field'>";
             $html .= "<div>";
             $html .= "<div>";
-            $html .= "<small>" . $this->localization->__("Calendar", TLBM_TEXT_DOMAIN) . "</small><br>";
+            $html .= "<small>" . $this->localization->getText("Calendar", TLBM_TEXT_DOMAIN) . "</small><br>";
             $html .= "<select name='" . $name . "[calendar_id]'>";
 
             /**
@@ -161,7 +145,7 @@ class CalendarElem extends FormInputElem implements AdminElementInterface
             $html .= "</select>";
             $html .= "</div>";
             $html .= "<div style='margin-top: 1em'>";
-            $html .= "<small>" . $this->localization->__("Time", TLBM_TEXT_DOMAIN) . "</small><br>";
+            $html .= "<small>" . $this->localization->getText("Time", TLBM_TEXT_DOMAIN) . "</small><br>";
             $html .= "<div class='tlbm-date-range-field' data-to='" . urlencode(json_encode($calendarBooking->getToDateTime())) . "' data-from='" . urlencode(json_encode($calendarBooking->getFromDateTime())) . "'>";
 
             $html .= "</div>";

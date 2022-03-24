@@ -21,9 +21,9 @@ trait CapacityFieldTrait
         $selectField = MainFactory::create(ActionSettingsField::class);
         $selectField->setName($name . "_mode");
         $selectField->setType("select");
-        $selectField->setOptions(["set" => $localization->__("Set", TLBM_TEXT_DOMAIN),
-                                     "add" => $localization->__("Add", TLBM_TEXT_DOMAIN),
-                                     "subtract" => $localization->__("Subtract", TLBM_TEXT_DOMAIN)
+        $selectField->setOptions(["set" => $localization->getText("Set", TLBM_TEXT_DOMAIN),
+                                     "add" => $localization->getText("Add", TLBM_TEXT_DOMAIN),
+                                     "subtract" => $localization->getText("Subtract", TLBM_TEXT_DOMAIN)
                                  ]);
 
         $numberField = MainFactory::create(ActionSettingsField::class);

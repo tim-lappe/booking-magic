@@ -57,19 +57,22 @@ export class CalendarSelect extends React.Component<any, CalendarSelectState>{
 
         return (
             <div className={"tlbm-form-field-calendar-selector"}>
-                <input type={"hidden"} name={this.props.dataset.name} value={selection}  />
+                <input type={"hidden"} name={this.props.dataset.name} value={selection}/>
                 <select value={this.state.selection.selection_mode} onChange={this.onSelectionModeChanged}>
-                    <option value="all">{Localization.__("All")}</option>
-                    <option value="all_but">{Localization.__("All But")}</option>
-                    <option value="only">{Localization.__("Only These")}</option>
+                    <option value="all">{Localization.getText("All")}</option>
+                    <option value="all_but">{Localization.getText("All But")}</option>
+                    <option value="only">{Localization.getText("Only These")}</option>
                 </select>
-                <div className="tlbm-calendar-select-panel" style={{"display": this.state.selection.selection_mode != "all" ? "block" : "none"}}>
-                    <span style={{"display": Object.entries(this.state.calendars).length > 0 ? "none" : "block"}}>{Localization.__("There are no calendars to select")}</span>
+                <div className="tlbm-calendar-select-panel"
+                     style={{"display": this.state.selection.selection_mode != "all" ? "block" : "none"}}>
+                    <span
+                        style={{"display": Object.entries(this.state.calendars).length > 0 ? "none" : "block"}}>{Localization.getText("There are no calendars to select")}</span>
                     {Object.entries(this.state.calendars).map((item) => {
                         return (
                             <div key={item[0]} className="tlbm-calendar-select-item">
                                 <label>
-                                    <input type={"checkbox"} onChange={this.onCalendarCheckedChanged} value={item[0]} checked={this.state.selection.calendar_ids.includes(parseInt(item[0]))} />
+                                    <input type={"checkbox"} onChange={this.onCalendarCheckedChanged} value={item[0]}
+                                           checked={this.state.selection.calendar_ids.includes(parseInt(item[0]))}/>
                                     {item[1]}
                                 </label>
                             </div>

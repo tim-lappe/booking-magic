@@ -145,7 +145,8 @@ export class RuleActionsFields extends React.Component<any, RuleActionsFieldsSta
                         />
                     })}
                 </div>
-                <button onClick={this.onAdd} className="button tlbm-add-action">{Localization.__("Add Action")}</button>
+                <button onClick={this.onAdd}
+                        className="button tlbm-add-action">{Localization.getText("Add Action")}</button>
             </div>
         );
     }

@@ -27,7 +27,7 @@ class BookingMagicRoot extends PageBase
     {
         $this->localization = $localization;
 
-        parent::__construct($this->localization->__("Booking Magic", TLBM_TEXT_DOMAIN), "booking-magic");
+        parent::__construct($this->localization->getText("Booking Magic", TLBM_TEXT_DOMAIN), "booking-magic");
         $this->menuSecondaryTitle = "Dashboard";
         $this->dashboard          = $dashboard;
     }
@@ -37,7 +37,7 @@ class BookingMagicRoot extends PageBase
      */
     public function getHeadTitle(): string
     {
-        return $this->localization->__("Dashboard", TLBM_TEXT_DOMAIN);
+        return $this->localization->getText("Dashboard", TLBM_TEXT_DOMAIN);
     }
 
     /**

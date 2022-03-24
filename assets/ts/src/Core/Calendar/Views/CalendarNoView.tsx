@@ -12,7 +12,7 @@ export class CalendarNoView extends CalendarComponentBase<CalendarNoViewState> {
     render() {
         return (
             <div className={"notice notice-info"}>
-                <p>{Localization.__("No calendar view loaded")}</p>
+                <p>{Localization.getText("No calendar view loaded")}</p>
             </div>
         );
     }

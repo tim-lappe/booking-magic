@@ -18,11 +18,11 @@ final class SpacingElem extends FormElem implements FrontendElementInterface
 
     public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("spacing", $localization->__("Spacing", TLBM_TEXT_DOMAIN));
-        $this->description   = $this->localization->__("Useful to leave space within the form", TLBM_TEXT_DOMAIN);
-        $this->menu_category = $this->localization->__("Layout", TLBM_TEXT_DOMAIN);
+        parent::__construct("spacing", $localization->getText("Spacing", TLBM_TEXT_DOMAIN));
+        $this->description   = $this->localization->getText("Useful to leave space within the form", TLBM_TEXT_DOMAIN);
+        $this->menu_category = $this->localization->getText("Layout", TLBM_TEXT_DOMAIN);
 
-        $this->addSettings(new Input("spacing", $this->localization->__("Spacing (in px)", TLBM_TEXT_DOMAIN), "number", 100));
+        $this->addSettings(new Input("spacing", $this->localization->getText("Spacing (in px)", TLBM_TEXT_DOMAIN), "number", 100));
     }
 
     /**

@@ -31,7 +31,7 @@ export class MessageItem extends RuleActionItemBase {
         return (
             <React.Fragment>
                 <div style={{marginLeft: "20px", flexGrow: 1}}>
-                    <small>{Localization.__("Message")}</small><br/>
+                    <small>{Localization.getText("Message")}</small><br/>
                     <textarea style={{minWidth: "75%"}} onChange={this.onChangeMessage}
                               value={this.state.ruleAction.actions.message}/>
                 </div>

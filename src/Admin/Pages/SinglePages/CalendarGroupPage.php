@@ -16,14 +16,14 @@ class CalendarGroupPage extends PageBase
 
     public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct($localization->__("Calendar Groups", TLBM_TEXT_DOMAIN), "booking-magic-calendar-group");
+        parent::__construct($localization->getText("Calendar Groups", TLBM_TEXT_DOMAIN), "booking-magic-calendar-group");
         $this->parentSlug   = "booking-magic";
         $this->localization = $localization;
     }
 
     public function getHeadTitle(): string
     {
-        return $this->localization->__("Calendar Groups", TLBM_TEXT_DOMAIN);
+        return $this->localization->getText("Calendar Groups", TLBM_TEXT_DOMAIN);
     }
 
     public function displayDefaultHeadBar()

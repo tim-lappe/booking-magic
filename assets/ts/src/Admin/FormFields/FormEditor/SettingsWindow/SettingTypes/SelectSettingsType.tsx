@@ -12,7 +12,7 @@ export class SelectSettingsType extends BasicSettingsTypeElement {
                 {this.props.elementSetting.title}<br />
                 <select disabled={this.props.elementSetting.readonly ?? false} onChange={this.onChange} value={this.state.value}>
                     <option disabled={true} value={""}>
-                        {Localization.__("Nothing selected")}
+                        {Localization.getText("Nothing selected")}
                     </option>
                     {Object.entries(settings.key_values).map((item: any) => {
                         if (!((typeof item[1] == "string") || (typeof item[1] == "number"))) {

@@ -62,14 +62,14 @@ abstract class FormElem
 
     public function __construct($name, $title)
     {
-        $this->localization = MainFactory::get(LocalizationInterface::class);
+        $this->localization  = MainFactory::get(LocalizationInterface::class);
         $this->title         = $title;
         $this->unique_name   = $name;
-        $this->menu_category = $this->localization->__("General", TLBM_TEXT_DOMAIN);
+        $this->menu_category = $this->localization->getText("General", TLBM_TEXT_DOMAIN);
         $this->description   = "";
         $this->type          = $name;
 
-        $setting_css_class = new Input("css_classes", $this->localization->__("Custom CSS Classes (seperate with whitespace)", TLBM_TEXT_DOMAIN), "text", "", false, false, [], $this->localization->__("Advanced", TLBM_TEXT_DOMAIN));
+        $setting_css_class = new Input("css_classes", $this->localization->getText("Custom CSS Classes (seperate with whitespace)", TLBM_TEXT_DOMAIN), "text", "", false, false, [], $this->localization->getText("Advanced", TLBM_TEXT_DOMAIN));
 
         $this->addSettings($setting_css_class);
     }

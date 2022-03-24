@@ -145,7 +145,7 @@ class CompleteBookingRequest extends RequestBase
 
                     } else {
                         $this->hasContent = false;
-                        $this->frontendMessenger->addMessage($this->localization->__("Booking could not be completed. Some booking times are no longer available ", TLBM_TEXT_DOMAIN));
+                        $this->frontendMessenger->addMessage($this->localization->getText("Booking could not be completed. Some booking times are no longer available ", TLBM_TEXT_DOMAIN));
                     }
 
                     return;

@@ -1,10 +1,10 @@
 import * as React from "react";
+import {CSSProperties} from "react";
 import {Editor} from "./Editor";
 import {FormEditorNode} from "../../Entity/FormEditor/FormEditorNode";
 import {EditorEntity} from "./EditorEntity";
 import {EditorEntityDropPosition, EntityNodeBase, EntityNodeBaseProps, EntityNodeBaseState} from "./EntityNodeBase";
 import {Localization} from "../../../Localization";
-import {CSSProperties} from "react";
 
 interface EntityChildContainerProps extends EntityNodeBaseProps {
     additionalClassName?: string;
@@ -34,7 +34,7 @@ export class EntityChildContainer extends EntityNodeBase<EntityChildContainerPro
             formNode: this.props.formNode,
             isDragOver: EditorEntityDropPosition.NONE,
             isDragging: false,
-            emptyText: this.props.emptyText ?? Localization.__("This container is empty")
+            emptyText: this.props.emptyText ?? Localization.getText("This container is empty")
         }
     }
 

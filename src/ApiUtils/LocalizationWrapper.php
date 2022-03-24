@@ -8,7 +8,7 @@ class LocalizationWrapper implements Contracts\LocalizationInterface
     /**
      * @inheritDoc
      */
-    public function __(string $text, string $namespace): string
+    public function getText(string $text, string $namespace): string
     {
         return __($text, $namespace);
     }
@@ -16,7 +16,7 @@ class LocalizationWrapper implements Contracts\LocalizationInterface
     /**
      * @inheritDoc
      */
-    public function _e(string $text, string $namespace)
+    public function echoText(string $text, string $namespace): void
     {
         _e($text, $namespace);
     }

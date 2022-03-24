@@ -13,7 +13,7 @@ class LatestBookingPossibility extends SettingsBase
      */
     public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct("booking_process", "latest_booking_possibility", $localization->__("Latest booking possibility", TLBM_TEXT_DOMAIN), ["hours" => 0,
+        parent::__construct("booking_process", "latest_booking_possibility", $localization->getText("Latest booking possibility", TLBM_TEXT_DOMAIN), ["hours" => 0,
             "days" => 1
         ]);
     }
@@ -53,7 +53,7 @@ class LatestBookingPossibility extends SettingsBase
                     <option <?php
                     echo selected($i, $value['days']) ?> value="<?php
                     echo $i ?>"><?php
-                        echo $i . "&nbsp;" . $this->localization->__("Days", TLBM_TEXT_DOMAIN) ?></option>
+                        echo $i . "&nbsp;" . $this->localization->getText("Days", TLBM_TEXT_DOMAIN) ?></option>
                 <?php
                 endfor; ?>
             </select>
@@ -64,12 +64,12 @@ class LatestBookingPossibility extends SettingsBase
                     <option <?php
                     echo selected($i, $value['hours']) ?> value="<?php
                     echo $i ?>"><?php
-                        echo $i . "&nbsp;" . $this->localization->__("Hours", TLBM_TEXT_DOMAIN) ?></option>
+                        echo $i . "&nbsp;" . $this->localization->getText("Hours", TLBM_TEXT_DOMAIN) ?></option>
                 <?php
                 endfor; ?>
             </select>
             <b><?php
-                echo $this->localization->__("Before booking time", TLBM_TEXT_DOMAIN) ?></b>
+                echo $this->localization->getText("Before booking time", TLBM_TEXT_DOMAIN) ?></b>
         </label>
         <?php
     }

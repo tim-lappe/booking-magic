@@ -4,6 +4,7 @@ import {ElementSetting} from "../../../Entity/FormEditor/ElementSetting";
 import {SelectSettingsType} from "./SettingTypes/SelectSettingsType";
 import {TextareaSettingsType} from "./SettingTypes/TextareaSettingsType";
 import {HtmlSettingsType} from "./SettingTypes/HtmlSettingsType";
+import {CalendarSelectionRepeaterType} from "./SettingTypes/CalendarSelectionRepeaterType";
 
 export class SettingsTypeManager {
     readonly settingsTypeComponents: Map<string, typeof BasicSettingsTypeElement>;
@@ -13,6 +14,7 @@ export class SettingsTypeManager {
         this.settingsTypeComponents.set("select", SelectSettingsType);
         this.settingsTypeComponents.set("textarea", TextareaSettingsType);
         this.settingsTypeComponents.set("html", HtmlSettingsType);
+        this.settingsTypeComponents.set("calendar_selection_repeater", CalendarSelectionRepeaterType)
     }
 
     public createSettingsTypeComponent(elementSetting: ElementSetting, value: any, onChange: (oldVal: any, newVal: any) => void): JSX.Element {

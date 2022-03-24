@@ -30,7 +30,7 @@ class ScriptLocalization implements ScriptLocalizationInterface
         $keys = $this->getLabelKeys();
         $arr  = array();
         foreach ($keys as $key) {
-            $arr[$key] = $this->localization->__($key, TLBM_TEXT_DOMAIN);
+            $arr[$key] = $this->localization->getText($key, TLBM_TEXT_DOMAIN);
         }
 
         return $arr + $this->getLabelCollections();

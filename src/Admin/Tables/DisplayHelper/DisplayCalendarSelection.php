@@ -49,7 +49,7 @@ class DisplayCalendarSelection
 
         if($this->calendarSelection) {
             if ($this->calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
-                echo $this->localization->__("All", TLBM_TEXT_DOMAIN);
+                echo $this->localization->getText("All", TLBM_TEXT_DOMAIN);
             } elseif ($this->calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
                 foreach ($this->calendarSelection->getCalendarIds() as $key => $id) {
                     $cal  = $this->entityRepository->getEntity(Calendar::class, $id);
@@ -61,7 +61,7 @@ class DisplayCalendarSelection
                     echo "<a href='" . $link . "'>" . $cal->getTitle() . "</a>";
                 }
             } elseif ($this->calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
-                echo $this->localization->__("All but ", TLBM_TEXT_DOMAIN);
+                echo $this->localization->getText("All but ", TLBM_TEXT_DOMAIN);
                 foreach ($this->calendarSelection->getCalendarIds() as $key => $id) {
                     $cal  = $this->entityRepository->getEntity(Calendar::class, $id);
                     $link = $calendarEditPage->getEditLink($id);
@@ -73,7 +73,7 @@ class DisplayCalendarSelection
                 }
             }
         } else {
-            echo $this->localization->__("All", TLBM_TEXT_DOMAIN);
+            echo $this->localization->getText("All", TLBM_TEXT_DOMAIN);
         }
     }
 

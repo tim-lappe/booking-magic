@@ -13,7 +13,7 @@ class LastBookingsTile extends DashboardTile
 
     public function __construct(LocalizationInterface $localization)
     {
-        parent::__construct($localization->__("Last Bookings", TLBM_TEXT_DOMAIN));
+        parent::__construct($localization->getText("Last Bookings", TLBM_TEXT_DOMAIN));
         $this->setGrowLevel(2);
     }
 

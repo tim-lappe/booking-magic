@@ -61,7 +61,7 @@ export abstract class RuleActionItemBase extends React.Component<ItemContentProp
         return (
             <div style={{display: "flex"}}>
                 <div>
-                    <small>{Localization.__("Weekdays")}</small><br/>
+                    <small>{Localization.getText("Weekdays")}</small><br/>
                     <WeekdaySelect initState={{
                         weekday: this.state.ruleAction.weekdays
                     }} onChange={this.onChangeWeekday}/>
@@ -96,7 +96,7 @@ export abstract class RuleActionItemBase extends React.Component<ItemContentProp
     protected getCapacityFields(): JSX.Element {
         return (
             <div style={{marginLeft: "20px"}}>
-                <small>{Localization.__("Capacity")}</small><br/>
+                <small>{Localization.getText("Capacity")}</small><br/>
                 <CapacitySelect initState={this.state.ruleAction.actions} onChange={this.onChangeCapacity}/>
             </div>
         );

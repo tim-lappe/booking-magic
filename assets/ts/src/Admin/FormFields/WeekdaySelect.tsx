@@ -46,16 +46,17 @@ export class WeekdaySelect extends React.Component<WeekdaySelectProps, WeekdaySe
 
 
     render() {
-        return (<select ref={this.selectDom} value={this.state.weekday} onLoad={this.onChange} onChange={this.onChange} name={this.props.name ?? "weekday"}>
-            <optgroup label={Localization.__('Multiple Weekdays')}>
-                {Object.entries(Localization.__Arr("weekdaysRange")).map((item) => {
+        return (<select ref={this.selectDom} value={this.state.weekday} onLoad={this.onChange} onChange={this.onChange}
+                        name={this.props.name ?? "weekday"}>
+            <optgroup label={Localization.getText('Multiple Weekdays')}>
+                {Object.entries(Localization.getTextArr("weekdaysRange")).map((item) => {
                     return (
                         <option value={item[0]} key={item[0]}>{item[1]}</option>
                     )
                 })}
             </optgroup>
-            <optgroup label={Localization.__('Single Weekday')}>
-                {Object.entries(Localization.__Arr("weekdays")).map((item) => {
+            <optgroup label={Localization.getText('Single Weekday')}>
+                {Object.entries(Localization.getTextArr("weekdays")).map((item) => {
                     return (
                         <option value={item[0]} key={item[0]}>{item[1]}</option>
                     )
