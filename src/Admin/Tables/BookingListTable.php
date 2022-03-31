@@ -49,9 +49,7 @@ class BookingListTable extends ManagableEntityTable
         $this->localization = $localization;
         $this->colors          = new Colors();
 
-        parent::__construct(
-            Booking::class, $localization->getText("Bookings", TLBM_TEXT_DOMAIN), $localization->getText("Booking", TLBM_TEXT_DOMAIN), 10, $localization->getText("You don't have any bookings yet", TLBM_TEXT_DOMAIN)
-        );
+        parent::__construct(Booking::class, $localization->getText("Bookings", TLBM_TEXT_DOMAIN), $localization->getText("Booking", TLBM_TEXT_DOMAIN));
     }
 
     protected function processBuldActions(string $action, array $ids)
