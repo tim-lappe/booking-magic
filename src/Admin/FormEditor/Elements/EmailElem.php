@@ -20,8 +20,8 @@ final class EmailElem extends FormInputElem
 
         $this->description = $localization->getText("A field in which the user can enter an e-mail", TLBM_TEXT_DOMAIN);
 
-        $this->getSettingsType("name")->default_value  = "email";
-        $this->getSettingsType("title")->default_value = $localization->getText("E-Mail", TLBM_TEXT_DOMAIN);
+        $this->getSettingsType("name")->defaultValue  = "email";
+        $this->getSettingsType("title")->defaultValue = $localization->getText("E-Mail", TLBM_TEXT_DOMAIN);
     }
 
 

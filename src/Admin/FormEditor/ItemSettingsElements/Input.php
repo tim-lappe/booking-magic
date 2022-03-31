@@ -32,8 +32,8 @@ class Input extends ElementSetting
     public int $input_maxlength = 100;
 
     /**
-     * @param $name
-     * @param $title
+     * @param string $name
+     * @param string $title
      * @param string $input_type
      * @param string $default_value
      * @param bool $readonly
@@ -42,13 +42,13 @@ class Input extends ElementSetting
      * @param string $category_title
      */
     public function __construct(
-        $name,
-        $title,
+        string $name,
+        string $title,
         string $input_type = "text",
         $default_value = "",
         bool $readonly = false,
         $must_unique = false,
-        array $forbidden_values = array(),
+        array $forbidden_values = [],
         string $category_title = "General"
     ) {
         parent::__construct($name, $title, $default_value, $readonly, $must_unique, $forbidden_values, $category_title);

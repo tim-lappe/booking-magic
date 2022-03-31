@@ -4,9 +4,18 @@ namespace TLBM\Admin\FormEditor\ItemSettingsElements;
 
 class Html extends ElementSetting
 {
-    public function __construct($name, $title, string $default_value = "", bool $readonly = false, bool $must_unique = false, array $forbidden_values = [], string $category_title = "General")
+    /**
+     * @param string $name
+     * @param string $title
+     * @param string $defaultValue
+     * @param bool $readonly
+     * @param bool $mustUnique
+     * @param array $forbiddenValues
+     * @param string $categoryTitle
+     */
+    public function __construct(string $name, string $title, string $defaultValue = "", bool $readonly = false, bool $mustUnique = false, array $forbiddenValues = [], string $categoryTitle = "General")
     {
-        parent::__construct($name, $title, $default_value, $readonly, $must_unique, $forbidden_values, $category_title);
+        parent::__construct($name, $title, $defaultValue, $readonly, $mustUnique, $forbiddenValues, $categoryTitle);
         $this->type = "html";
     }
 }

@@ -34,7 +34,6 @@ abstract class FormInputElem extends FormElem implements FormElementValidatorInt
         );
 
         $this->addSettings($settingTitle, $settingName, $settingRequired);
-        $this->has_user_input = true;
     }
 
     /**

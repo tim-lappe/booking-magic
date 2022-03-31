@@ -5,16 +5,25 @@ namespace TLBM\Admin\FormEditor\ItemSettingsElements;
 class Textarea extends ElementSetting
 {
 
+    /**
+     * @param string $name
+     * @param string $title
+     * @param mixed $defaultValue
+     * @param bool $readonly
+     * @param bool $mustUnique
+     * @param array $forbiddenValues
+     * @param string $categoryTitle
+     */
     public function __construct(
-        $name,
-        $title,
-        $default_value = "",
+        string $name,
+        string $title,
+        $defaultValue = "",
         bool $readonly = false,
-        $must_unique = false,
-        $forbidden_values = array(),
-        $category_title = "General"
+        bool $mustUnique = false,
+        array $forbiddenValues = [],
+        string $categoryTitle = "General"
     ) {
-        parent::__construct($name, $title, $default_value, $readonly, $must_unique, $forbidden_values, $category_title);
+        parent::__construct($name, $title, $defaultValue, $readonly, $mustUnique, $forbiddenValues, $categoryTitle);
         $this->type = "textarea";
     }
 }

@@ -27,7 +27,7 @@ abstract class ElementSetting
     /**
      * @var string
      */
-    public string $default_value;
+    public string $defaultValue;
 
     /**
      * @var bool
@@ -42,22 +42,27 @@ abstract class ElementSetting
     /**
      * @var bool
      */
-    public bool $must_unique = false;
+    public bool $mustUnique = false;
 
     /**
      * @var array
      */
-    public array $forbidden_values = array();
+    public array $forbiddenValues = [];
 
     /**
      * @var string
      */
-    public string $category_title = "General";
+    public string $categoryTitle = "General";
 
     /**
      * @var bool
      */
     public bool $expand = false;
+
+    /**
+     * @var string|null
+     */
+    public ?string $dataSourceProvier = null;
 
     /**
      * @var LocalizationInterface
@@ -67,38 +72,38 @@ abstract class ElementSetting
     /**
      * SettingsType constructor.
      *
-     * @param $name
-     * @param $title
-     * @param string $default_value
+     * @param string $name
+     * @param string $title
+     * @param string $defaultValue
      * @param bool $readonly
-     * @param bool $must_unique
-     * @param array $forbidden_values
-     * @param string $category_title
+     * @param bool $mustUnique
+     * @param array $forbiddenValues
+     * @param string $categoryTitle
      */
     public function __construct(
-        $name,
-        $title,
-        string $default_value = "",
+        string $name,
+        string $title,
+        string $defaultValue = "",
         bool $readonly = false,
-        bool $must_unique = false,
-        array $forbidden_values = array(),
-        string $category_title = "General"
+        bool $mustUnique = false,
+        array $forbiddenValues = array(),
+        string $categoryTitle = "General"
     ) {
-        $this->name             = $name;
-        $this->title            = $title;
-        $this->default_value    = $default_value;
-        $this->readonly         = $readonly;
-        $this->type             = "";
-        $this->must_unique      = $must_unique;
-        $this->forbidden_values = $forbidden_values;
+        $this->name            = $name;
+        $this->title           = $title;
+        $this->defaultValue    = $defaultValue;
+        $this->readonly        = $readonly;
+        $this->type            = "";
+        $this->mustUnique      = $mustUnique;
+        $this->forbiddenValues = $forbiddenValues;
 
         $this->localization = MainFactory::get(LocalizationInterface::class);
 
-        if ($category_title == "General") {
-            $category_title = $this->localization->getText("General", TLBM_TEXT_DOMAIN);
+        if ($categoryTitle == "General") {
+            $categoryTitle = $this->localization->getText("General", TLBM_TEXT_DOMAIN);
         }
 
-        $this->category_title = $category_title;
+        $this->categoryTitle = $categoryTitle;
     }
 
     public static function GetForbiddenNameValues(): array

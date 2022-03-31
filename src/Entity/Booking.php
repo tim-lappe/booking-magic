@@ -32,6 +32,7 @@ class Booking extends ManageableEntity implements JsonSerializable
     /**
      * @var ?Form
      * @Doctrine\ORM\Mapping\ManyToOne (targetEntity=Form::class)
+     * @Doctrine\ORM\Mapping\JoinColumn(onDelete="SET NULL")
      */
     protected ?Form $form;
 

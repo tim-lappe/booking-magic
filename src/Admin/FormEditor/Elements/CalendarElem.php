@@ -37,8 +37,8 @@ class CalendarElem extends FormInputElem implements AdminElementInterface
 
         $this->localization = $localization;
 
-        $this->menu_category = $this->localization->getText("Calendar", TLBM_TEXT_DOMAIN);
-        $this->description   = $this->localization->getText(
+        $this->menuCategory = $this->localization->getText("Calendar", TLBM_TEXT_DOMAIN);
+        $this->description  = $this->localization->getText(
             "Allows the user to choose from a calendar or a group of calendars", TLBM_TEXT_DOMAIN
         );
 
@@ -49,16 +49,21 @@ class CalendarElem extends FormInputElem implements AdminElementInterface
             "sourceId", $this->localization->getText("Calendar", TLBM_TEXT_DOMAIN), $keyValues, "", false, false, $this->localization->getText("Calendar Settings", TLBM_TEXT_DOMAIN)
         );
 
+        $selectedCalendar->selectDataSource = "calendar_or_group";
         $this->addSettings($selectedCalendar);
-        $this->has_user_input = true;
     }
 
+    /**
+     * @param LinkedFormData $linkedFormData
+     *
+     * @return bool
+     */
     public function validate(LinkedFormData $linkedFormData): bool
     {
-        if(parent::validate($linkedFormData)) {
+        if (parent::validate($linkedFormData)) {
             $linkedSettings = $linkedFormData->getLinkedSettings();
-            $name = $linkedSettings->getValue("name");
-            $value = $linkedFormData->getInputVarByName($name);
+            $name           = $linkedSettings->getValue("name");
+            $value          = $linkedFormData->getInputVarByName($name);
 
             try {
                 $dt = new ExtendedDateTime();

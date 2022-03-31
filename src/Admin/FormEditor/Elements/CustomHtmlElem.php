@@ -16,10 +16,10 @@ class CustomHtmlElem extends FormElem implements FrontendElementInterface
 
         parent::__construct("html", $this->localization->getText("HTML", TLBM_TEXT_DOMAIN));
 
-        $this->description   = $this->localization->getText("Adds custom HTML to the form", TLBM_TEXT_DOMAIN);
-        $this->menu_category = $this->localization->getText("General", TLBM_TEXT_DOMAIN);
-        $htmlItem            = new Html("html", $this->localization->getText("HTML", TLBM_TEXT_DOMAIN), "", false, false, [], $this->localization->getText("HTML", TLBM_TEXT_DOMAIN));
-        $htmlItem->expand    = true;
+        $this->description  = $this->localization->getText("Adds custom HTML to the form", TLBM_TEXT_DOMAIN);
+        $this->menuCategory = $this->localization->getText("General", TLBM_TEXT_DOMAIN);
+        $htmlItem           = new Html("html", $this->localization->getText("HTML", TLBM_TEXT_DOMAIN), "", false, false, [], $this->localization->getText("HTML", TLBM_TEXT_DOMAIN));
+        $htmlItem->expand   = true;
 
         $this->addSettings($htmlItem);
     }

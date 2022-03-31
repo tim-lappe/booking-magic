@@ -20,7 +20,7 @@ export class ElementsManager {
     }
 
     public static registerElementComponent(component_key: string, element: typeof BasicEditorElement) {
-        if(!this.elementComponents.has(component_key)) {
+        if (!this.elementComponents.has(component_key)) {
             this.elementComponents.set(component_key, element);
         } else {
             this.elementComponents.delete(component_key);
@@ -28,11 +28,11 @@ export class ElementsManager {
         }
     }
 
-    public createDefaultElementData(unique_name: string): FormElementData {
-        let element = this.getFormElementByName(unique_name);
+    public createDefaultElementData(uniqueName: string): FormElementData {
+        let element = this.getFormElementByName(uniqueName);
         let formData = new FormElementData();
-        for(let setting of element.settings) {
-            formData[setting.name] = setting.default_value;
+        for (let setting of element.settings) {
+            formData[setting.name] = setting.defaultValue;
         }
         return formData;
     }
@@ -44,7 +44,7 @@ export class ElementsManager {
             elements[cat] = [];
         }
         for (let elem of this.formElements) {
-            elements[elem.menu_category].push(elem);
+            elements[elem.menuCategory].push(elem);
         }
         return elements;
     }
@@ -52,8 +52,8 @@ export class ElementsManager {
     public getCategories() {
         let categories = [];
         for(let formElement of this.formElements) {
-            if(categories.indexOf(formElement.menu_category) == -1) {
-                categories.push(formElement.menu_category);
+            if (categories.indexOf(formElement.menuCategory) == -1) {
+                categories.push(formElement.menuCategory);
             }
         }
         return categories;
@@ -61,16 +61,16 @@ export class ElementsManager {
 
     /**
      *
-     * @param unique_name
+     * @param uniqueName
      */
-    public getFormElementByName<T extends FormElement>(unique_name: string): T {
-        let result = this.formElements.filter((elem) => elem.unique_name == unique_name);
+    public getFormElementByName<T extends FormElement>(uniqueName: string): T {
+        let result = this.formElements.filter((elem) => elem.uniqueName == uniqueName);
         return result.length > 0 ? result[0] as T : null;
     }
 
     public createElementComponent(formEditor: Editor, formNode: FormEditorNode): JSX.Element {
         let Components = ElementsManager.elementComponents;
-        let formElement = formEditor.formElementsManager.getFormElementByName(formNode.formData.unique_name);
+        let formElement = formEditor.formElementsManager.getFormElementByName(formNode.formData.uniqueName);
 
         if(Components.has(formElement.type)) {
            const ElementComponent = Components.get(formElement.type);

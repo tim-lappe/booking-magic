@@ -20,7 +20,7 @@ export class BasicEditorElement<T extends FormElement> extends React.Component<B
         super(props);
         this.state = {
             formNode: this.props.formNode,
-            formElement: this.props.formEditor.formElementsManager.getFormElementByName<T>(this.props.formNode.formData.unique_name)
+            formElement: this.props.formEditor.formElementsManager.getFormElementByName<T>(this.props.formNode.formData.uniqueName)
         }
     }
 

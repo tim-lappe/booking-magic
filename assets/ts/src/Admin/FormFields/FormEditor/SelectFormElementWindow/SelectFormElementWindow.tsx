@@ -90,13 +90,13 @@ export class SelectFormElementWindow extends React.Component<SelectFormElementWi
                 let description = formElement.description.toLowerCase().replace(" ", "").replace("-", "");
 
                 let uniqueReadonlySettings = formElement.settings.filter((setting) => {
-                    return setting.must_unique && setting.readonly;
+                    return setting.mustUnique && setting.readonly;
                 });
 
                 let canAdd = true;
                 if(uniqueReadonlySettings.length > 0) {
                     let setting = uniqueReadonlySettings[0];
-                    canAdd = this.props.formEditor.state.rootNode.findNodesWithData(setting.name, setting.default_value).length == 0;
+                    canAdd = this.props.formEditor.state.rootNode.findNodesWithData(setting.name, setting.defaultValue).length == 0;
                 }
 
                 return canAdd && (title.indexOf(search) != -1 || description.indexOf(search) != -1);
@@ -123,9 +123,12 @@ export class SelectFormElementWindow extends React.Component<SelectFormElementWi
                                     <h3>{category}</h3>
                                     <div className={"tlbm-form-elements-list"}>
                                         {filteredElements[category].map((item) => {
-                                            let disabeld = item.only_in_root ? this.state.formNode?.parent != null : false;
+                                            let disabeld = item.onlyInRoot ? this.state.formNode?.parent != null : false;
                                             return (
-                                                <SelectableFormElementWindowItem disabled={disabeld} key={item.unique_name} onClicked={this.onItemClicked} formElement={item} />
+                                                <SelectableFormElementWindowItem disabled={disabeld}
+                                                                                 key={item.uniqueName}
+                                                                                 onClicked={this.onItemClicked}
+                                                                                 formElement={item}/>
                                             )
                                         })}
                                     </div>

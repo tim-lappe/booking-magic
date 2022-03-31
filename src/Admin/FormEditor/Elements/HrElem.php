@@ -19,8 +19,8 @@ final class HrElem extends FormElem implements FrontendElementInterface
     {
         parent::__construct("hr", $localization->getText("Horizontal Line", TLBM_TEXT_DOMAIN));
 
-        $this->description   = $this->localization->getText("Inserts a horizontal dividing line to visually separate areas from each other", TLBM_TEXT_DOMAIN);
-        $this->menu_category = $this->localization->getText("Layout", TLBM_TEXT_DOMAIN);
+        $this->description  = $this->localization->getText("Inserts a horizontal dividing line to visually separate areas from each other", TLBM_TEXT_DOMAIN);
+        $this->menuCategory = $this->localization->getText("Layout", TLBM_TEXT_DOMAIN);
     }
 
     /**

@@ -17,13 +17,13 @@ export class SettingsTypeManager {
         this.settingsTypeComponents.set("calendar_selection_repeater", CalendarSelectionRepeaterType)
     }
 
-    public createSettingsTypeComponent(elementSetting: ElementSetting, value: any, onChange: (oldVal: any, newVal: any) => void): JSX.Element {
+    public createSettingsTypeComponent(elementSetting: ElementSetting, value: any, onChange: (oldVal: any) => void): JSX.Element {
         let Components = this.settingsTypeComponents;
-        if(Components.has(elementSetting.type)) {
+        if (Components.has(elementSetting.type)) {
             const ElementComponent = Components.get(elementSetting.type);
-            return <ElementComponent elementSetting={elementSetting} value={value} onChange={onChange} />;
+            return <ElementComponent elementSetting={elementSetting} value={value} onChange={onChange}/>;
         }
 
-        return <BasicSettingsTypeElement elementSetting={elementSetting} value={value} onChange={onChange} />;
+        return <BasicSettingsTypeElement elementSetting={elementSetting} value={value} onChange={onChange}/>;
     }
 }

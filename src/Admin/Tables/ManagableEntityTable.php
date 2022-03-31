@@ -25,13 +25,12 @@ abstract class ManagableEntityTable extends TableBase
      * @param string $titlePlural
      * @param string $titleSingular
      * @param int $itemsPerPage
-     * @param string $noItemsDisplay
      */
-    public function __construct(string $entityClass, string $titlePlural, string $titleSingular, int $itemsPerPage = 10, string $noItemsDisplay = "")
+    public function __construct(string $entityClass, string $titlePlural, string $titleSingular, int $itemsPerPage = 10)
     {
-        $this->entityClass = $entityClass;
+        $this->entityClass      = $entityClass;
         $this->entityRepository = MainFactory::get(EntityRepositoryInterface::class);
-        parent::__construct($titlePlural, $titleSingular, $itemsPerPage, $noItemsDisplay);
+        parent::__construct($titlePlural, $titleSingular, $itemsPerPage);
     }
 
     /**
