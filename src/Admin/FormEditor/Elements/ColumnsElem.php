@@ -32,11 +32,11 @@ class ColumnsElem extends FormElem implements FrontendElementInterface
         $this->localization = MainFactory::get(LocalizationInterface::class);
 
         parent::__construct($name, $this->localization->getText($columns . " Columns", TLBM_TEXT_DOMAIN));
-        $this->menu_category = "Layout";
-        $this->columns       = $columns;
-        $this->type          = "columns";
-        $this->only_in_root  = $columns > 3;
-        $this->description   = sprintf(
+        $this->menuCategory = "Layout";
+        $this->columns      = $columns;
+        $this->type         = "columns";
+        $this->onlyInRoot   = $columns > 3;
+        $this->description  = sprintf(
             $this->localization->getText("Adds a section in which form fields can be displayed in a %s-column layout", TLBM_TEXT_DOMAIN), $columns
         );
 

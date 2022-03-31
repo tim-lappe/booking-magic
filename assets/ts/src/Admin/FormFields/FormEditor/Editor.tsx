@@ -150,19 +150,19 @@ export class Editor extends React.Component<FormEditorProps, FormEditorState> {
     }
 
     onElementFromAddElementWindowSelected(formElement: FormElement) {
-        if(!formElement.only_in_root || this.addElementsWindow.current.state.formNode.parent == null) {
+        if (!formElement.onlyInRoot || this.addElementsWindow.current.state.formNode.parent == null) {
             let formNode = this.addElementsWindow.current.state.formNode;
-            let formData = this.formElementsManager.createDefaultElementData(formElement.unique_name);
-            formData.unique_name = formElement.unique_name;
+            let formData = this.formElementsManager.createDefaultElementData(formElement.uniqueName);
+            formData.uniqueName = formElement.uniqueName;
 
             let formDataCopy = {...formData};
             let invalidFields = this.getInvalidFormDataFields(formData);
             let fieldsDone = 0;
-            for(let fieldname of invalidFields) {
-                for(let i = 2; i <= 100; i++) {
+            for (let fieldname of invalidFields) {
+                for (let i = 2; i <= 100; i++) {
                     formData[fieldname] = formDataCopy[fieldname] + i;
                     let newInvalidFields = this.getInvalidFormDataFields(formData);
-                    if(newInvalidFields.indexOf(fieldname) == -1) {
+                    if (newInvalidFields.indexOf(fieldname) == -1) {
                         fieldsDone++;
                         break;
                     }
@@ -179,10 +179,10 @@ export class Editor extends React.Component<FormEditorProps, FormEditorState> {
 
     getInvalidFormDataFields(formData: FormElementData) {
         let invalidFields = [];
-        let formElement = this.formElementsManager.getFormElementByName(formData.unique_name);
+        let formElement = this.formElementsManager.getFormElementByName(formData.uniqueName);
 
         for(let setting of formElement.settings) {
-            if (setting.must_unique) {
+            if (setting.mustUnique) {
                 if (this.state.rootNode.findNodesWithData(setting.name, formData[setting.name]).length > 0) {
                     invalidFields.push(setting.name);
                 }
@@ -201,7 +201,7 @@ export class Editor extends React.Component<FormEditorProps, FormEditorState> {
     }
 
     openSettingsWindow(formNode: FormEditorNode) {
-        this.settingsWindow.current.open(formNode,  this.formElementsManager.getFormElementByName(formNode.formData.unique_name));
+        this.settingsWindow.current.open(formNode, this.formElementsManager.getFormElementByName(formNode.formData.uniqueName));
     }
 
     onSettingsWindowClosed() {

@@ -62,9 +62,9 @@ class FormDataWalker
     public function walkLinkedElements(array $inputVars = array(), string $classFilter = FormInputElem::class): Traversable
     {
         foreach ($this->walk() as $formNode) {
-            if(isset($formNode['formData']['unique_name'])) {
-                $formElem = $this->elementsCollection->getElemByUniqueName($formNode['formData']['unique_name']);
-                if($formElem instanceof $classFilter) {
+            if (isset($formNode['formData']['uniqueName'])) {
+                $formElem = $this->elementsCollection->getElemByUniqueName($formNode['formData']['uniqueName']);
+                if ($formElem instanceof $classFilter) {
                     yield new LinkedFormData($formNode, $formElem, $inputVars);
                 }
             }
@@ -112,11 +112,12 @@ class FormDataWalker
         $children = $formNode['children'] ?? [];
         $formData = $formNode['formData'] ?? null;
 
-        if ($formData && $formData['unique_name']) {
-            $registeredElement = $this->elementsCollection->getElemByUniqueName($formData['unique_name']);
-            if($registeredElement) {
+        if ($formData && $formData['uniqueName']) {
+            $registeredElement = $this->elementsCollection->getElemByUniqueName($formData['uniqueName']);
+            if ($registeredElement) {
                 if (count($children) == 0) {
-                    return $recursiveformWalker->walk($formNode, $registeredElement, $children, function () {});
+                    return $recursiveformWalker->walk($formNode, $registeredElement, $children, function () {
+                    });
                 } else {
                     return $recursiveformWalker->walk($formNode, $registeredElement, $children, function ($childNode) use ($recursiveformWalker) {
                         return $this->walkCallbackRecursive($recursiveformWalker, $childNode);

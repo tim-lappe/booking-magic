@@ -17,11 +17,13 @@ class SelectCalendarElement extends FormInputElem
     {
         parent::__construct("field_select_calendar", $localization->getText("Calendar Selection", TLBM_TEXT_DOMAIN));
 
-        $this->description   = $this->localization->getText("change the calendar in an appointment selection", TLBM_TEXT_DOMAIN);
-        $this->menu_category = "Calendar";
+        $this->description  = $this->localization->getText("change the calendar in an appointment selection", TLBM_TEXT_DOMAIN);
+        $this->menuCategory = "Calendar";
 
-        $selectionSetting                 = new CalendarSelectionRepeater("calendars", $this->localization->getText("Calendars", TLBM_TEXT_DOMAIN));
-        $selectionSetting->category_title = $localization->getText("Calendar Selection", TLBM_TEXT_DOMAIN);
+        $selectionSetting                    = new CalendarSelectionRepeater("calendars", $this->localization->getText("Calendars", TLBM_TEXT_DOMAIN));
+        $selectionSetting->categoryTitle     = $localization->getText("Calendar Selection", TLBM_TEXT_DOMAIN);
+        $selectionSetting->dataSourceProvier = "calendar_or_group";
+
         $this->addSettings($selectionSetting);
     }
 

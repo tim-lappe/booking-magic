@@ -14,22 +14,42 @@ export class CalendarSelectionRepeaterType extends BasicSettingsTypeElement {
 
         this.onAddOption = this.onAddOption.bind(this);
         this.onRemoveOption = this.onRemoveOption.bind(this);
+        this.onTitleChanged = this.onTitleChanged.bind(this);
 
-        let prevState = this.state;
         this.state = {
-            ...prevState,
-            calendarTitlePairs: []
+            value: Array.isArray(this.props.value) ? this.props.value : []
         }
     }
 
+    onCalendarChanged(event: any, index: number, item: { identifier: string, title: string }) {
+        this.setState((prevState) => {
+            item.identifier = event.target.value;
+            prevState.value[index] = item;
 
-    onChange(event: any) {
+            this.props.onChange(prevState.value)
+            return prevState;
+        });
 
+        event.preventDefault();
+    }
+
+    onTitleChanged(event: any, index: number, item: { identifier: string, title: string }) {
+        this.setState((prevState) => {
+            item.title = event.target.value;
+            prevState.value[index] = item;
+
+            this.props.onChange(prevState.value)
+            return prevState;
+        });
+
+        event.preventDefault();
     }
 
     onRemoveOption(option: any, event: any) {
-        this.setState((prevState) => {
-            prevState.calendarTitlePairs.push({identifier: "", title: ""});
+        this.setState((prevState: any) => {
+            prevState.value = prevState.value.filter((val) => val != option);
+
+            this.props.onChange(prevState.value)
             return prevState;
         });
 
@@ -38,17 +58,19 @@ export class CalendarSelectionRepeaterType extends BasicSettingsTypeElement {
 
     onAddOption(event: any) {
         this.setState((prevState) => {
-            prevState.calendarTitlePairs.push({identifier: "", title: ""});
+            prevState.value.push({identifier: "", title: ""});
+
+            this.props.onChange(prevState.value)
             return prevState;
         });
 
         event.preventDefault();
     }
 
-    getCalendarSelection(value: string) {
+    getCalendarSelection(index: number, item: { identifier: string, title: string }) {
         let settings = this.props.elementSetting as CalendarSelectElementSetting;
         return (
-            <select onChange={this.onChange} value={value}>
+            <select onChange={(event) => this.onCalendarChanged(event, index, item)} value={item.identifier}>
                 {Object.entries(settings.calendarKeyValues).map((item: any) => {
                     if (!((typeof item[1] == "string") || (typeof item[1] == "number"))) {
                         return (
@@ -57,7 +79,9 @@ export class CalendarSelectionRepeaterType extends BasicSettingsTypeElement {
                                     <React.Fragment>
                                         {Object.entries(item[1]).map((subitem: any) => {
                                             return (
-                                                <option key={subitem[0]} value={subitem[0]}>{subitem[1]}</option>
+                                                <option
+                                                    disabled={this.state.value.filter(val => val.identifier == subitem[0]).length > 0}
+                                                    key={subitem[0]} value={subitem[0]}>{subitem[1]}</option>
                                             );
                                         })}
                                     </React.Fragment>
@@ -75,16 +99,18 @@ export class CalendarSelectionRepeaterType extends BasicSettingsTypeElement {
     }
 
     render(): JSX.Element {
-        let calendarTitlePairs: { identifier: string, title: string }[] = this.state.calendarTitlePairs;
+        let calendarTitlePairs: { identifier: string, title: string }[] = this.state.value;
         return (
             <label>
                 {this.props.elementSetting.title}<br/>
-                {calendarTitlePairs.map((titlePair) => {
+                {calendarTitlePairs.map((titlePair, index) => {
                     return (
-                        <div key={titlePair.identifier} style={{display: "flex", gap: "1em", alignItems: "end"}}>
-                            <input placeholder={Localization.getText("Enter title of option")}
+                        <div key={index} style={{display: "flex", gap: "1em", alignItems: "end"}}>
+                            <input value={titlePair.title}
+                                   onChange={(event) => this.onTitleChanged(event, index, titlePair)}
+                                   placeholder={Localization.getText("Enter title of option")}
                                    className={"regular-text"} type={"text"}/>
-                            {this.getCalendarSelection(titlePair.title)}
+                            {this.getCalendarSelection(index, titlePair)}
                             <button onClick={(event) => this.onRemoveOption(titlePair, event)}
                                     className={"button tlbm-button-danger"}>{Localization.getText("Remove")}</button>
                         </div>

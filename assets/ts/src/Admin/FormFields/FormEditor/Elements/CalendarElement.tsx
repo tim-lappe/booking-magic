@@ -19,8 +19,8 @@ export class CalendarElement extends BasicEditorElement<FormElement> {
         for(let setting of settings) {
             if(setting.name == "selected_calendar" && setting.type == "select") {
                 let selectSetting = new SelectElementSetting();
-                selectSetting.key_values = (setting as SelectElementSetting)?.key_values;
-                if(selectSetting.key_values != null) {
+                selectSetting.keyValues = (setting as SelectElementSetting)?.keyValues;
+                if (selectSetting.keyValues != null) {
                     selectedCalendarLabel = selectSetting.findLabel(selectedCalendar);
                 }
             }

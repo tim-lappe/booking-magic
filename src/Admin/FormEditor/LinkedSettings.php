@@ -30,7 +30,7 @@ class LinkedSettings
         } else {
             $setting = $this->getSettingByName($name);
             if($setting != null) {
-                return trim($setting->default_value);
+                return trim($setting->defaultValue);
             }
         }
         return "";

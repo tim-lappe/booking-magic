@@ -3,19 +3,19 @@ import {ElementSetting} from "./ElementSetting";
 export class FormElement {
 
     public title: string;
-    public unique_name: string;
+    public uniqueName: string;
     public type: string;
     public settings: ElementSetting[];
-    public menu_category: string;
+    public menuCategory: string;
     public data: any;
     public description: string;
-    public only_in_root: boolean;
+    public onlyInRoot: boolean;
 
     public static getSettingsCategories(formElement: FormElement) {
         let categories = [];
         for(let setting of formElement.settings) {
-            if(categories.indexOf(setting.category_title) == -1) {
-                categories.push(setting.category_title);
+            if (categories.indexOf(setting.categoryTitle) == -1) {
+                categories.push(setting.categoryTitle);
             }
         }
 
@@ -29,7 +29,7 @@ export class FormElement {
             settings[cat] = [];
         }
         for (let setting of formElement.settings) {
-            settings[setting.category_title].push(setting);
+            settings[setting.categoryTitle].push(setting);
         }
         return settings;
     }

@@ -34,10 +34,10 @@ export class SettingsWindowItem extends React.Component<SettingsWindowItemProps,
         }
     }
 
-    onChange(newVal: any, oldVal: any) {
+    onChange(newVal: any) {
         this.setState((prevState: SettingsWindowItemState) => {
             prevState.formData[this.props.elementSetting.name] = newVal;
-            if(this.props.onChange) {
+            if (this.props.onChange) {
                 this.props.onChange(prevState.formData);
             }
 
@@ -55,17 +55,17 @@ export class SettingsWindowItem extends React.Component<SettingsWindowItemProps,
         this.setState((prevState: SettingsWindowItemState) => {
             let value = this.state.formData[this.props.elementSetting.name];
 
-            if(this.props.elementSetting.must_unique) {
+            if (this.props.elementSetting.mustUnique) {
                 let rootNode = this.props.window?.props.formEditor?.state.rootNode;
                 let duplicate = rootNode.findNodesWithData(this.props.elementSetting.name, value, this.props.formNode);
-                if(duplicate.length > 0) {
+                if (duplicate.length > 0) {
                     prevState.errorMessage = Localization.getText("This field has to be unique");
                 } else {
                     prevState.errorMessage = "";
                 }
             }
 
-            let forbidden = this.props.elementSetting.forbidden_values;
+            let forbidden = this.props.elementSetting.forbiddenValues;
             if(forbidden.indexOf(value) != -1) {
                 prevState.errorMessage = Localization.getText("This value is not allowed");
             }
@@ -79,15 +79,20 @@ export class SettingsWindowItem extends React.Component<SettingsWindowItemProps,
     }
 
     render() {
-        let val = this.state.formData[this.props.elementSetting.name] ?? this.props.elementSetting.default_value;
+        let val = this.state.formData[this.props.elementSetting.name] ?? this.props.elementSetting.defaultValue;
         let expand = this.props.elementSetting.expand ? "form-item-expand" : "";
+
+        if (this.props.elementSetting.type == "select" && this.props.elementSetting.selectDataSource) {
+
+        }
+
         return (
             <div className={"form-item-settings-control " + expand}>
                 {this.state.errorMessage.length > 0 ? (
                     <div className={"tlbm-item-settings-error"}>
                         {this.state.errorMessage}
                     </div>
-                ): null}
+                ) : null}
                 {this.props.window.settingsTypeManager.createSettingsTypeComponent(this.props.elementSetting, val, this.onChange)}
             </div>
         );

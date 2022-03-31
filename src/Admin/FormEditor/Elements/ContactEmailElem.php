@@ -25,22 +25,22 @@ final class ContactEmailElem extends FormInputElem
 
         parent::__construct("field_contact_email", $this->localization->getText("Contact E-Mail", TLBM_TEXT_DOMAIN));
 
-        $this->menu_category = $this->localization->getText("Predefined fields", TLBM_TEXT_DOMAIN);
-        $this->description   = $this->localization->getText(
+        $this->menuCategory = $this->localization->getText("Predefined fields", TLBM_TEXT_DOMAIN);
+        $this->description  = $this->localization->getText(
             "The contact email to which the user receives emails such as booking confirmations", TLBM_TEXT_DOMAIN
         );
 
-        $name_setting                = $this->getSettingsType("name");
-        $name_setting->default_value = "contact_email";
-        $name_setting->readonly      = true;
+        $name_setting               = $this->getSettingsType("name");
+        $name_setting->defaultValue = "contact_email";
+        $name_setting->readonly     = true;
 
-        $title_setting                = $this->getSettingsType("title");
-        $title_setting->default_value = $this->localization->getText("E-Mail", TLBM_TEXT_DOMAIN);
+        $title_setting               = $this->getSettingsType("title");
+        $title_setting->defaultValue = $this->localization->getText("E-Mail", TLBM_TEXT_DOMAIN);
 
-        $required                = $this->getSettingsType("required");
-        $required->default_value = "yes";
+        $required               = $this->getSettingsType("required");
+        $required->defaultValue = "yes";
 
-        $predefinedValueFieldsCollection->addField($name_setting->default_value, $title_setting->default_value, $this->description);
+        $predefinedValueFieldsCollection->addField($name_setting->defaultValue, $title_setting->defaultValue, $this->description);
     }
 
     /**

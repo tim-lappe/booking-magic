@@ -1,9 +1,9 @@
 export class FormElementData {
     [props: string]: any;
 
-    public unique_name: string;
+    public uniqueName: string;
 
     constructor() {
-        this.unique_name = "field_text";
+        this.uniqueName = "field_text";
     }
 }

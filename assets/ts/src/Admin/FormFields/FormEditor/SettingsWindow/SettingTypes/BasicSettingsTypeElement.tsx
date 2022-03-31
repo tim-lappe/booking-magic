@@ -2,7 +2,7 @@ import * as React from "react";
 import {ElementSetting} from "../../../../Entity/FormEditor/ElementSetting";
 
 export interface BasicSettingsTypeElementProps {
-    onChange?: (newVal: any, oldVal: any) => void;
+    onChange?: (newVal: any) => void;
     elementSetting: ElementSetting;
     value?: any;
 }
@@ -30,7 +30,7 @@ export class BasicSettingsTypeElement extends React.Component<BasicSettingsTypeE
 
         if(target.validity.valid) {
             if (this.props.onChange != null) {
-                this.props.onChange(newVal, this.state.value);
+                this.props.onChange(newVal);
             }
 
             this.setState((prevState: BasicSettingsTypeElementState) => {
@@ -45,8 +45,13 @@ export class BasicSettingsTypeElement extends React.Component<BasicSettingsTypeE
     render() {
         return (
             <label>
-                {this.props.elementSetting.title}<br />
-                <input maxLength={this.props.elementSetting.input_maxlength ?? 100} minLength={this.props.elementSetting.input_minlength ?? 0} pattern={this.props.elementSetting.input_regex ?? ".*"} type={this.props.elementSetting.input_type ?? "text"} disabled={this.props.elementSetting.readonly} onChange={this.onChange} value={this.state.value ?? this.props.elementSetting.default_value} />
+                {this.props.elementSetting.title}<br/>
+                <input maxLength={this.props.elementSetting.input_maxlength ?? 100}
+                       minLength={this.props.elementSetting.input_minlength ?? 0}
+                       pattern={this.props.elementSetting.input_regex ?? ".*"}
+                       type={this.props.elementSetting.input_type ?? "text"}
+                       disabled={this.props.elementSetting.readonly} onChange={this.onChange}
+                       value={this.state.value ?? this.props.elementSetting.defaultValue}/>
             </label>
         );
     }

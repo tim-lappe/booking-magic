@@ -23,7 +23,7 @@ abstract class FormElem
     /**
      * @var string
      */
-    public string $unique_name;
+    public string $uniqueName;
 
     /**
      * @var string
@@ -38,7 +38,7 @@ abstract class FormElem
     /**
      * @var string
      */
-    public $menu_category = "General";
+    public string $menuCategory = "General";
 
     /**
      * @var string
@@ -48,12 +48,7 @@ abstract class FormElem
     /**
      * @var bool
      */
-    public bool $only_in_root = false;
-
-    /**
-     * @var bool
-     */
-    public bool $has_user_input = false;
+    public bool $onlyInRoot = false;
 
     /**
      * @var LocalizationInterface
@@ -62,16 +57,15 @@ abstract class FormElem
 
     public function __construct($name, $title)
     {
-        $this->localization  = MainFactory::get(LocalizationInterface::class);
-        $this->title         = $title;
-        $this->unique_name   = $name;
-        $this->menu_category = $this->localization->getText("General", TLBM_TEXT_DOMAIN);
-        $this->description   = "";
-        $this->type          = $name;
+        $this->localization = MainFactory::get(LocalizationInterface::class);
+        $this->title        = $title;
+        $this->uniqueName   = $name;
+        $this->menuCategory = $this->localization->getText("General", TLBM_TEXT_DOMAIN);
+        $this->description  = "";
+        $this->type         = $name;
 
-        $setting_css_class = new Input("css_classes", $this->localization->getText("Custom CSS Classes (seperate with whitespace)", TLBM_TEXT_DOMAIN), "text", "", false, false, [], $this->localization->getText("Advanced", TLBM_TEXT_DOMAIN));
-
-        $this->addSettings($setting_css_class);
+        $settingCssClass = new Input("css_classes", $this->localization->getText("Custom CSS Classes (seperate with whitespace)", TLBM_TEXT_DOMAIN), "text", "", false, false, [], $this->localization->getText("Advanced", TLBM_TEXT_DOMAIN));
+        $this->addSettings($settingCssClass);
     }
 
     public function addSettings(ElementSetting ...$settings)

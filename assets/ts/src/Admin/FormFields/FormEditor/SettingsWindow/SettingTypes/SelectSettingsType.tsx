@@ -14,7 +14,7 @@ export class SelectSettingsType extends BasicSettingsTypeElement {
                     <option disabled={true} value={""}>
                         {Localization.getText("Nothing selected")}
                     </option>
-                    {Object.entries(settings.key_values).map((item: any) => {
+                    {Object.entries(settings.keyValues).map((item: any) => {
                         if (!((typeof item[1] == "string") || (typeof item[1] == "number"))) {
                             return (
                                 <optgroup key={item[0]} label={item[0]}>

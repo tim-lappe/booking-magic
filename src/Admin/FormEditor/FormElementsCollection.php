@@ -33,10 +33,10 @@ class FormElementsCollection implements FormElementsCollectionInterface
         return $this->formElements;
     }
 
-    public function getElemByUniqueName($unique_name): ?FormElem
+    public function getElemByUniqueName($uniqueName): ?FormElem
     {
         foreach ($this->formElements as $elem) {
-            if ($elem->unique_name == $unique_name) {
+            if ($elem->uniqueName == $uniqueName) {
                 return $elem;
             }
         }

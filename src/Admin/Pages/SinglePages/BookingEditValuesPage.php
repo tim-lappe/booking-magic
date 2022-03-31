@@ -72,61 +72,86 @@ class BookingEditValuesPage extends EntityEditPage
             $booking = new Booking();
         }
 
-        $form = $booking->getForm();
-        $inputVars = $booking->getBookingKeyValuesPairs();
+        $form          = $booking->getForm();
+        $inputVars     = $booking->getBookingKeyValuesPairs();
         $bookingValues = $booking->getBookingValues();
 
-        $formWalker = MainFactory::create(FormDataWalker::class);
-        $formWalker->setFormDataTree($form->getFormData());
+        if ($form) {
+            $formWalker = MainFactory::create(FormDataWalker::class);
+            $formWalker->setFormDataTree($form->getFormData());
 
-        $formFieldNames = [];
-        $missed = [];
+            $formFieldNames = [];
+            $missed         = [];
 
-        foreach($formWalker->walkLinkedElements($inputVars) as $field) {
-            $name = $field->getLinkedSettings()->getValue("name");
-            $formFieldNames[] = $name;
-        }
+            foreach ($formWalker->walkLinkedElements($inputVars) as $field) {
+                $name             = $field->getLinkedSettings()->getValue("name");
+                $formFieldNames[] = $name;
+            }
 
-        foreach ($bookingValues as $value) {
-            if (!in_array($value->getName(), $formFieldNames)) {
-                $missed[$value->getTitle()] = $value->getValue();
+
+            foreach ($bookingValues as $value) {
+                if ( !in_array($value->getName(), $formFieldNames)) {
+                    $missed[$value->getTitle()] = $value->getValue();
+                }
             }
         }
 
+
         ?>
 
-        <?php if(count($missed) > 0): ?>
+        <?php
+        if ( !$form): ?>
             <div class="notice notice-warning is-dismissible">
-                <p><?php _e("Some fields cannot be edited because the associated form was changed after the booking was made. The following fields are affected: ", TLBM_TEXT_DOMAIN) ?></p>
+                <p><?php
+                    $this->localization->echoText("The fields of this booking can no longer be edited because the associated form is missing or has been deleted", TLBM_TEXT_DOMAIN) ?></p>
+            </div>
+        <?php
+        elseif (count($missed) > 0): ?>
+            <div class="notice notice-warning is-dismissible">
+                <p><?php
+                    $this->localization->echoText("Some fields cannot be edited because the associated form was changed after the booking was made. The following fields are affected: ", TLBM_TEXT_DOMAIN) ?></p>
                 <ul>
-                    <?php foreach ($missed as $name => $value): ?>
-                        <li><?php echo $name ?>: <b><?php echo $value ?></b></li>
-                    <?php endforeach; ?>
+                    <?php
+                    foreach ($missed as $name => $value): ?>
+                        <li><?php
+                            echo $name ?>: <b><?php
+                                echo $value ?></b></li>
+                    <?php
+                    endforeach; ?>
                 </ul>
             </div>
-        <?php endif; ?>
+        <?php
+        endif; ?>
         <div class="tlbm-admin-page-tile-row">
-            <div class="tlbm-admin-page-tile">
-                <div class="tlbm-frontend-form">
-                    <?php
-                    $formWalker    = FormDataWalker::createFromData($form->getFormData());
-                    $contentWalker = new RecursiveFormContentWalker($inputVars);
-                    $contentWalker->setExcludeElementClasses([ CalendarElem::class ]);
-                    $result        = $formWalker->walkCallback($contentWalker);
-                    echo $result;
-                    ?>
+            <?php
+            if ($form): ?>
+                <div class="tlbm-admin-page-tile">
+                    <div class="tlbm-frontend-form">
+                        <?php
+                        $formWalker    = FormDataWalker::createFromData($form->getFormData());
+                        $contentWalker = new RecursiveFormContentWalker($inputVars);
+                        $contentWalker->setExcludeElementClasses([CalendarElem::class]);
+                        $result = $formWalker->walkCallback($contentWalker);
+                        echo $result;
+                        ?>
+                    </div>
                 </div>
-            </div>
+            <?php
+            endif; ?>
             <div class="tlbm-admin-page-tile">
-                <?php foreach($booking->getCalendarBookings() as $calendarBooking):
+                <?php
+                foreach ($booking->getCalendarBookings() as $calendarBooking):
                     $calendarsQuery = MainFactory::create(CalendarQuery::class);
                     ?>
-                    <span class='tlbm-calendar-edit-title'><?php echo $calendarBooking->getTitleFromForm() ?></span>
+                    <span class='tlbm-calendar-edit-title'><?php
+                        echo $calendarBooking->getTitleFromForm() ?></span>
                     <div class='tlbm-admin-calendar-field tlbm-admin-content-box'>
                         <div>
                             <div>
-                                <small><?php _e("Calendar", TLBM_TEXT_DOMAIN) ?></small><br>
-                                <select name='calendarBookings[<?php echo $calendarBooking->getNameFromForm() ?>][calendar_id]'>
+                                <small><?php
+                                    _e("Calendar", TLBM_TEXT_DOMAIN) ?></small><br>
+                                <select name='calendarBookings[<?php
+                                echo $calendarBooking->getNameFromForm() ?>][calendar_id]'>
                                     <?php
 
                                     $currentId = -1;
@@ -138,15 +163,23 @@ class BookingEditValuesPage extends EntityEditPage
                                      * @var Calendar $calendar
                                      */
                                     foreach ($calendarsQuery->getResult() as $calendar): ?>
-                                        <option <?php selected($calendar->getId(), $currentId, true); ?> value='<?php echo $calendar->getId() ?>'>
-                                            <?php echo $calendar->getTitle() ?>
+                                        <option <?php
+                                        selected($calendar->getId(), $currentId, true); ?> value='<?php
+                                        echo $calendar->getId() ?>'>
+                                            <?php
+                                            echo $calendar->getTitle() ?>
                                         </option>
-                                    <?php endforeach; ?>
+                                    <?php
+                                    endforeach; ?>
                                 </select>
                             </div>
                             <div style='margin-top: 1em'>
-                                <small><?php _e("Time", TLBM_TEXT_DOMAIN) ?></small><br>
-                                <div class='tlbm-date-range-field' data-name='calendarBookings[<?php echo $calendarBooking->getNameFromForm() ?>][time]' data-to='<?php echo urlencode(json_encode($calendarBooking->getToDateTime())) ?>' data-from='<?php echo urlencode(json_encode($calendarBooking->getFromDateTime())) ?>'></div>
+                                <small><?php
+                                    $this->localization->echoText("Time", TLBM_TEXT_DOMAIN) ?></small><br>
+                                <div class='tlbm-date-range-field' data-name='calendarBookings[<?php
+                                echo $calendarBooking->getNameFromForm() ?>][time]' data-to='<?php
+                                echo urlencode(json_encode($calendarBooking->getToDateTime())) ?>' data-from='<?php
+                                echo urlencode(json_encode($calendarBooking->getFromDateTime())) ?>'></div>
                             </div>
                         </div>
                     </div>
@@ -167,27 +200,26 @@ class BookingEditValuesPage extends EntityEditPage
         }
 
         $form = $booking->getForm();
-        $formWalker = MainFactory::create(FormDataWalker::class);
-        $formWalker->setFormDataTree($form->getFormData());
+        if ($form) {
+            $bookingProcessor = MainFactory::create(BookingProcessor::class);
+            $bookingProcessor->setForm($form);
+            $bookingProcessor->setVars($vars);
+            $wrong = $bookingProcessor->validateVars(CalendarElem::class);
 
-        $bookingProcessor = MainFactory::create(BookingProcessor::class);
-        $bookingProcessor->setForm($form);
-        $bookingProcessor->setVars($vars);
-        $wrong = $bookingProcessor->validateVars(CalendarElem::class);
-
-        if(count($wrong) > 0) {
-            return ["error" => $this->localization->getText("Some fields are required", TLBM_TEXT_DOMAIN)
-            ];
-        }
-
-        $bookingValues = $bookingProcessor->createBookingValues();
-        foreach ($bookingValues as $bookingValue) {
-            $keys = array_keys($booking->getBookingKeyValuesPairs());
-            if(in_array($bookingValue->getName(), $keys)) {
-                $booking->removeBookingValueByName($bookingValue->getName());
+            if (count($wrong) > 0) {
+                return ["error" => $this->localization->getText("Some fields are required", TLBM_TEXT_DOMAIN)
+                ];
             }
 
-            $booking->addBookingValue($bookingValue);
+            $bookingValues = $bookingProcessor->createBookingValues();
+            foreach ($bookingValues as $bookingValue) {
+                $keys = array_keys($booking->getBookingKeyValuesPairs());
+                if (in_array($bookingValue->getName(), $keys)) {
+                    $booking->removeBookingValueByName($bookingValue->getName());
+                }
+
+                $booking->addBookingValue($bookingValue);
+            }
         }
 
         if($vars['calendarBookings'] && is_array($vars['calendarBookings'])) {

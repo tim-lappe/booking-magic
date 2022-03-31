@@ -1154,6 +1154,7 @@
     overflow: hidden;
     font-size: 1.1em;
     word-wrap: normal;
+    min-width: 2em;
 }
 .tlbm-calendar-container .tlbm-calendar-table .tlbm-cell {
     padding: 5px;

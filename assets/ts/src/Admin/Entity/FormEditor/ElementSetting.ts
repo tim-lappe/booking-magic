@@ -3,11 +3,11 @@ export class ElementSetting {
 
     public name: string;
     public title: string;
-    public default_value: string;
+    public defaultValue: string;
     public readonly: boolean;
     public type: string;
-    public must_unique: boolean;
-    public forbidden_values: any[] = [];
-    public category_title: string = "General";
+    public mustUnique: boolean;
+    public forbiddenValues: any[] = [];
+    public categoryTitle: string = "General";
     public expand: boolean = false;
 }

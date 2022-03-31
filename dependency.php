@@ -14,7 +14,6 @@ use TLBM\Admin\FormEditor\Elements\EmailElem;
 use TLBM\Admin\FormEditor\Elements\FirstNameElem;
 use TLBM\Admin\FormEditor\Elements\HrElem;
 use TLBM\Admin\FormEditor\Elements\LastNameElem;
-use TLBM\Admin\FormEditor\Elements\SelectCalendarElement;
 use TLBM\Admin\FormEditor\Elements\SelectElement;
 use TLBM\Admin\FormEditor\Elements\SpacingElem;
 use TLBM\Admin\FormEditor\Elements\TextareaElem;
@@ -263,7 +262,6 @@ return [
             $formElementsCollection->registerFormElement($factory->make(SelectElement::class));
             $formElementsCollection->registerFormElement($factory->make(CustomHtmlElem::class));
             $formElementsCollection->registerFormElement($factory->make(TextareaElem::class));
-            $formElementsCollection->registerFormElement($factory->make(SelectCalendarElement::class));
         }
 
         return $formElementsCollection;

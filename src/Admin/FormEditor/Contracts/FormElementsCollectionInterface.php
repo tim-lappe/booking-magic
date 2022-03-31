@@ -12,11 +12,11 @@ interface FormElementsCollectionInterface
     public function getRegisteredFormElements(): array;
 
     /**
-     * @param string $unique_name
+     * @param string $uniqueName
      *
      * @return ?FormElem
      */
-    public function getElemByUniqueName(string $unique_name): ?FormElem;
+    public function getElemByUniqueName(string $uniqueName): ?FormElem;
 
     /**
      * @return array

@@ -15,15 +15,15 @@ class CalendarSelectionRepeater extends ElementSetting
     /**
      * @param string $name
      * @param string $title
-     * @param string $default_value
+     * @param string $defaultValue
      * @param bool $readonly
-     * @param bool $must_unique
-     * @param array $forbidden_values
-     * @param string $category_title
+     * @param bool $mustUnique
+     * @param array $forbiddenValues
+     * @param string $categoryTitle
      */
-    public function __construct($name, $title, string $default_value = "", bool $readonly = false, bool $must_unique = false, array $forbidden_values = [], string $category_title = "General")
+    public function __construct(string $name, string $title, string $defaultValue = "", bool $readonly = false, bool $mustUnique = false, array $forbiddenValues = [], string $categoryTitle = "General")
     {
-        parent::__construct($name, $title, $default_value, $readonly, $must_unique, $forbidden_values, $category_title);
+        parent::__construct($name, $title, $defaultValue, $readonly, $mustUnique, $forbiddenValues, $categoryTitle);
         $this->type = "calendar_selection_repeater";
 
         $calendarHelper          = MainFactory::create(CalendarHelper::class);
