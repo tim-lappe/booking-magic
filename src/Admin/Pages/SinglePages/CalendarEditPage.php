@@ -2,14 +2,16 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
+use TLBM\Admin\Tables\BookingListTable;
+use TLBM\Admin\Tables\RulesListTable;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\ApiUtils\Contracts\TimeUtilsInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;
-use TLBM\Output\Calendar\CalendarDisplay;
-use TLBM\Output\Calendar\ViewSettings\MonthViewSetting;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
+use TLBM\Repository\Query\BookingsQuery;
+use TLBM\Repository\Query\RulesQuery;
 use TLBM\Validation\ValidatorFactory;
 
 /**
@@ -41,7 +43,7 @@ class CalendarEditPage extends EntityEditPage
     public function displayEntityEditForm(): void
     {
         $calendar = $this->getEditingEntity();
-        if (!$calendar) {
+        if ( !$calendar) {
             $calendar = new Calendar();
         }
 
@@ -50,23 +52,44 @@ class CalendarEditPage extends EntityEditPage
         <div class="tlbm-admin-page-tile">
             <input value="<?php
             echo $calendar->getTitle() ?>" placeholder="<?php
-            _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title"
-                   class="tlbm-admin-form-input-title">
+            $this->localization->echoText("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
         </div>
+        <?php
+        if ($this->getEditingEntity()): ?>
+            <div class="tlbm-admin-page-tile-row">
+                <div class="tlbm-admin-page-tile">
+                    <h2><?php
+                        $this->localization->echoText("Last Bookings", TLBM_TEXT_DOMAIN) ?></h2>
+                    <?php
+                    $bookingsTable = MainFactory::create(BookingListTable::class);
+                    $bookingsTable->setSlim(true);
 
-        <div class="tlbm-admin-page-tile">
-            <?php
-            $display = MainFactory::create(CalendarDisplay::class);
-            if($calendar->getId() != null) {
-                $display->setCalendarIds([$calendar->getId()]);
-            }
-            $display->setView("month");
-            $display->setViewSettings(MainFactory::create(MonthViewSetting::class));
-            $display->setReadonly(true);
+                    $query = MainFactory::create(BookingsQuery::class);
+                    $query->setFilterCalendars([$calendar]);
+                    $query->setLimit(5);
+                    $bookingsTable->setFixedItems(iterator_to_array($query->getResult()));
+                    $bookingsTable->prepare_items();
+                    $bookingsTable->display();
+                    ?>
+                </div>
+                <div class="tlbm-admin-page-tile">
+                    <h2><?php
+                        $this->localization->echoText("Rules", TLBM_TEXT_DOMAIN) ?></h2>
+                    <?php
+                    $rulesTable = MainFactory::create(RulesListTable::class);
+                    $rulesTable->setSlim(true);
 
-            echo $display->getDisplayContent();
-            ?>
-        </div>
+                    $query = MainFactory::create(RulesQuery::class);
+                    $query->setFilterCalendarsIds([$calendar->getId()]);
+                    $query->setLimit(10);
+                    $rulesTable->setFixedItems(iterator_to_array($query->getResult()));
+                    $rulesTable->prepare_items();
+                    $rulesTable->display();
+                    ?>
+                </div>
+            </div>
+        <?php
+        endif; ?>
 
         <?php
     }
@@ -80,8 +103,7 @@ class CalendarEditPage extends EntityEditPage
     public function onSaveEntity($vars, ?ManageableEntity &$savedEntity): array
     {
         $timeUtils = MainFactory::get(TimeUtilsInterface::class);
-
-        $calendar = $this->getEditingEntity();
+        $calendar  = $this->getEditingEntity();
         if (!$calendar) {
             $calendar = new Calendar();
         }

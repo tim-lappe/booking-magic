@@ -25,9 +25,9 @@ abstract class TableBase extends WP_List_Table
     protected int $itemsPerPage = 10;
 
     /**
-     * @var array
+     * @var ?array
      */
-    protected array $fixedItems = [];
+    protected ?array $fixedItems = null;
 
     /**
      * @var Column[]
@@ -90,17 +90,17 @@ abstract class TableBase extends WP_List_Table
     }
 
     /**
-     * @return array
+     * @return ?array
      */
-    public function getFixedItems(): array
+    public function getFixedItems(): ?array
     {
         return $this->fixedItems;
     }
 
     /**
-     * @param array $fixedItems
+     * @param ?array $fixedItems
      */
-    public function setFixedItems(array $fixedItems): void
+    public function setFixedItems(?array $fixedItems): void
     {
         $this->fixedItems = $fixedItems;
     }
@@ -154,15 +154,13 @@ abstract class TableBase extends WP_List_Table
      */
     protected function getFinalItems(string $orderby, string $order, int $page = 1): array
     {
-        if(count($this->fixedItems) > 0) {
+        if ($this->fixedItems !== null) {
             usort($this->fixedItems, function ($a, $b) use ($orderby, $order) {
-                if(isset($a->{$orderby}) && isset($b->{$orderby})) {
-                    if($order == "ASC") {
-                        return is_numeric($a) && is_numeric($b) ?
-                            (intval($a) > intval($b) ? 1 : -1) : strcmp($a->{$orderby}, $b->{$orderby});
+                if (isset($a->{$orderby}) && isset($b->{$orderby})) {
+                    if ($order == "ASC") {
+                        return is_numeric($a) && is_numeric($b) ? (intval($a) > intval($b) ? 1 : -1) : strcmp($a->{$orderby}, $b->{$orderby});
                     } elseif ($orderby == "DESC") {
-                        return is_numeric($a) && is_numeric($b) ?
-                            (intval($a) < intval($b) ? 1 : -1) : strcmp($b->{$orderby}, $a->{$orderby});
+                        return is_numeric($a) && is_numeric($b) ? (intval($a) < intval($b) ? 1 : -1) : strcmp($b->{$orderby}, $a->{$orderby});
                     }
                 }
 
