@@ -4,6 +4,7 @@
 namespace TLBM\Repository;
 
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\Platforms\MySQL57Platform;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Events;
@@ -35,18 +36,21 @@ class ORMManager implements ORMInterface
             $configuration = Setup::createAnnotationMetadataConfiguration([TLBM_DIR . "/src/Entity"], true, null, null, false);
             $this->addCustomFunctions($configuration);
 
-            $connection    = [
-                "driver"   => "mysqli",
-                "user"     => DB_USER,
+            $connection    = ["driver" => "mysqli",
+                "user" => DB_USER,
                 "password" => DB_PASSWORD,
-                "dbname"   => DB_NAME,
-                'host'     => DB_HOST,
-                "charset"  => DB_CHARSET
+                "dbname" => DB_NAME,
+                'host' => DB_HOST,
+                "charset" => DB_CHARSET
             ];
 
             $this->initEvents();
             $this->entityManager = EntityManager::create($connection, $configuration, $this->eventManager);
 
+            $dbPlatform = $this->entityManager->getConnection()->getDatabasePlatform();
+            if ($dbPlatform instanceof MySQL57Platform) {
+                $dbPlatform->registerDoctrineTypeMapping('bit', 'boolean');
+            }
         } catch (Throwable $error) {
             echo $error->getMessage();
         }
