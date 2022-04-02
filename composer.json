@@ -30,6 +30,6 @@
   "scripts": {
     "phpstan": "vendor/bin/phpstan -c phpstan.neon",
     "test": "vendor/bin/phpunit",
-    "create-package": "@php bin/build.sh"
+    "create-package": "cd bin;/bin/bash build.sh"
   }
 }

@@ -4,7 +4,6 @@
 namespace TLBM\Repository;
 
 use Doctrine\Common\EventManager;
-use Doctrine\DBAL\Platforms\MySQL57Platform;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Events;
@@ -46,13 +45,26 @@ class ORMManager implements ORMInterface
 
             $this->initEvents();
             $this->entityManager = EntityManager::create($connection, $configuration, $this->eventManager);
+            $this->mysqlPolyfill();
 
-            $dbPlatform = $this->entityManager->getConnection()->getDatabasePlatform();
-            if ($dbPlatform instanceof MySQL57Platform) {
-                $dbPlatform->registerDoctrineTypeMapping('bit', 'boolean');
-            }
         } catch (Throwable $error) {
             echo $error->getMessage();
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function mysqlPolyfill(): void
+    {
+        try {
+            $conn = $this->entityManager->getConnection();
+            $conn->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+            $conn->getDatabasePlatform()->registerDoctrineTypeMapping('bit', 'boolean');
+        } catch (Throwable $throwable) {
+            if(WP_DEBUG) {
+                echo $throwable->getMessage();
+            }
         }
     }
 

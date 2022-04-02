@@ -32,7 +32,7 @@ class RulePeriod implements JsonSerializable
 
     /**
      * @var bool
-     * @Doctrine\ORM\Mapping\Column (type="boolean", nullable=false)
+     * @Doctrine\ORM\Mapping\Column (type="smallint", nullable=false)
      */
     protected bool $fromFullDay = false;
 
@@ -44,7 +44,7 @@ class RulePeriod implements JsonSerializable
 
     /**
      * @var bool
-     * @Doctrine\ORM\Mapping\Column (type="boolean", nullable=false)
+     * @Doctrine\ORM\Mapping\Column (type="smallint", nullable=false)
      */
     protected bool $toFullDay = false;
 

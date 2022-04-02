@@ -6,7 +6,7 @@ export class HtmlSettingsType extends BasicSettingsTypeElement {
 
     onChange(value: string) {
         if (this.props.onChange != null) {
-            this.props.onChange(value, this.state.value);
+            this.props.onChange(value);
         }
 
         this.setState((prevState: BasicSettingsTypeElementState) => {

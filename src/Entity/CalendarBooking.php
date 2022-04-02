@@ -51,7 +51,7 @@ class CalendarBooking implements JsonSerializable
 
     /**
      * @var bool
-     * @Doctrine\ORM\Mapping\Column (type="boolean", nullable=false)
+     * @Doctrine\ORM\Mapping\Column (type="smallint", nullable=false)
      */
     protected bool $toFullDay = true;
 
@@ -63,7 +63,7 @@ class CalendarBooking implements JsonSerializable
 
     /**
      * @var bool
-     * @Doctrine\ORM\Mapping\Column (type="boolean", nullable=false)
+     * @Doctrine\ORM\Mapping\Column (type="smallint", nullable=false)
      */
     protected bool $fromFullDay = true;
 

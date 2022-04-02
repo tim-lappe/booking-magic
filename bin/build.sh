@@ -4,9 +4,11 @@ buildPath="booking-magic"
 srcPath=".."
 
 cd ..
-composer install
+composer install || exit
+npm install || exit
+npm run build || exit
 
-cd bin
+cd bin || exit
 
 rm -r $buildPath
 
@@ -32,3 +34,7 @@ cp  $srcPath/README.md $buildPath
 cp  $srcPath/startup.php $buildPath
 
 zip -r booking-magic.zip $buildPath
+
+rm -r $buildPath
+
+echo "Package created successfully!"

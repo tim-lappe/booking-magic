@@ -6,6 +6,7 @@
   "scripts": {
     "env:start": "docker-compose up wordpress wordpress_phpmyadmin",
     "watch": "webpack --watch",
+    "build": "webpack build",
     "test": "docker-compose run composer test",
     "composer": "docker-compose run composer "
   },
