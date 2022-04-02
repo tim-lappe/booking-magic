@@ -2,7 +2,7 @@
 /*
 Plugin Name: Booking Magic
 Description: Das All-in-one Buchungstool
-Version: Dev 1.0
+Version: v1.0.1-beta
 Author: Tim Lappe
 Author URI: https://www.tlappe.de
 */
