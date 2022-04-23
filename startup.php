@@ -45,6 +45,12 @@ try {
      */
     if(in_array(plugin_basename(TLBM_PLUGIN_FILE), apply_filters('active_plugins', get_option('active_plugins')))) {
         $hooks->addAction("init", function () {
+            if(get_locale() == "de_DE") {
+                define("TLBM_NEWS_FEED_URL", "https://booking-magic.de/news-feed/");
+            } else {
+                define("TLBM_NEWS_FEED_URL", "https://booking-magic-plugin.com/news-feed/");
+            }
+
             $requestManager = MainFactory::get(RequestManagerInterface::class);
             $requestManager->init();
 
