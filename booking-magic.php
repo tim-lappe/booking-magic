@@ -1,10 +1,15 @@
 <?php
 /*
 Plugin Name: Booking Magic
+Plugin URI: https://www.booking-magic.de
+Requires PHP: 7.4
+Text Domain: booking-magic-plugin
 Description: Das All-in-one Buchungstool
-Version: v1.0.1-beta
+Version: v1.0.2
 Author: Tim Lappe
 Author URI: https://www.tlappe.de
+License: GPL v2
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
 
 if( ! defined( 'ABSPATH' ) ) {

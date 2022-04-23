@@ -17,16 +17,6 @@ class BookingsPage extends PageBase
         $this->parentSlug = "booking-magic";
     }
 
-    public function displayDefaultHeadBar()
-    {
-        ?>
-        <a href="<?php
-        echo admin_url('post-new.php?post_type=' . TLBM_PT_BOOKING); ?>"
-           class="button button-primary tlbm-admin-button-bar"><?php
-            _e("Add New Booking", TLBM_TEXT_DOMAIN) ?></a>
-        <?php
-    }
-
     public function displayPageBody()
     {
         ?>
