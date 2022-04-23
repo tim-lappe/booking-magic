@@ -1,8 +1,8 @@
 {
   "name": "tl-booking",
   "description": "flexible and powerful Booking-Plugin for WordPress",
-  "license": "MIT",
-  "version": "1.0.0",
+  "license": "GPL-2.0-or-later",
+  "version": "1.0.2",
   "scripts": {
     "env:start": "docker-compose up wordpress wordpress_phpmyadmin",
     "watch": "webpack --watch",
