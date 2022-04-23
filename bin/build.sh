@@ -4,7 +4,7 @@ buildPath="booking-magic"
 srcPath=".."
 
 cd ..
-composer install || exit
+composer install --no-dev || exit
 npm install || exit
 npm run build || exit
 
