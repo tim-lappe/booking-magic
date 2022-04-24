@@ -1,18 +1,16 @@
 {
-  "autoload": {
-    "psr-4": {
-      "TLBM\\": "src/",
-      "TLBMTEST\\": "tests/php/src"
-    }
-  },
-  "config": {
-    "platform": {
-      "php": "7.4"
-    }
-  },
+  "name": "tim-lappe/booking-magic",
   "description": "flexible and powerful Booking-Plugin for WordPress",
-  "license": "GPL-2.0-or-later",
-  "name": "tlappe/tl-booking",
+  "license": "GPL-3.0-or-later",
+  "version": "1.0.2",
+  "authors": [
+    {
+      "name": "Tim Lappe",
+      "email": "info@tlappe.de",
+      "homepage": "https://www.tlappe.de",
+      "role": "Developer"
+    }
+  ],
   "require": {
     "php": "7.4",
     "ext-json": "*",
@@ -31,5 +29,16 @@
     "phpstan": "vendor/bin/phpstan -c phpstan.neon",
     "test": "vendor/bin/phpunit",
     "create-package": "cd bin;/bin/bash build.sh"
+  },
+  "autoload": {
+    "psr-4": {
+      "TLBM\\": "src/",
+      "TLBMTEST\\": "tests/php/src"
+    }
+  },
+  "config": {
+    "platform": {
+      "php": "7.4"
+    }
   }
 }
