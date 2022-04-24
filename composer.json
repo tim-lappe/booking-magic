@@ -12,7 +12,7 @@
     }
   ],
   "require": {
-    "php": "7.4",
+    "php": ">=7.4",
     "ext-json": "*",
     "doctrine/orm": "^2.11",
     "symfony/cache": "^5.3",
