@@ -8,8 +8,8 @@ Description: Das All-in-one Buchungstool
 Version: 1.0.2
 Author: Tim Lappe
 Author URI: https://www.tlappe.de
-License: GPL v2
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+License: GPL v3
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 */
 
 if( ! defined( 'ABSPATH' ) ) {
