@@ -5,15 +5,19 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 
 use TLBM\Admin\Tables\RulesListTable;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\MainFactory;
 
 class RulesPage extends PageBase
 {
-    public function __construct(LocalizationInterface $localization)
+    protected EscapingInterface $escaping;
+
+    public function __construct(EscapingInterface $escaping, LocalizationInterface $localization)
     {
         parent::__construct($localization->getText("Rules", TLBM_TEXT_DOMAIN), "booking-magic-rules");
         $this->parentSlug = "booking-magic";
+        $this->escaping = $escaping;
     }
 
     public function displayDefaultHeadBar()
@@ -32,8 +36,7 @@ class RulesPage extends PageBase
         <div class="tlbm-admin-page">
             <div class="tlbm-admin-page-tile">
                 <form method="get">
-                    <input type="hidden" name="page" value="<?php
-                    echo $_REQUEST['page'] ?>"/>
+                    <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr($_REQUEST['page']) ?>"/>
                     <?php
                     $rulesListTable = MainFactory::create(RulesListTable::class);
                     $rulesListTable->views();

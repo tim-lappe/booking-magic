@@ -2,6 +2,8 @@
 
 namespace TLBM\Request;
 
+use TLBM\ApiUtils\Contracts\EscapingInterface;
+use TLBM\ApiUtils\Contracts\SanitizingInterface;
 use TLBM\Request\Contracts\RequestManagerInterface;
 
 class RequestManager implements RequestManagerInterface
@@ -16,13 +18,33 @@ class RequestManager implements RequestManagerInterface
      */
     private ?RequestBase $currentRequest = null;
 
-    /**
+	/**
+	 * @var EscapingInterface
+	 */
+	protected EscapingInterface $escaping;
+
+	/**
+	 * @var SanitizingInterface
+	 */
+	protected SanitizingInterface $sanitizing;
+
+	/**
+	 * @param SanitizingInterface $sanitizing
+	 * @param EscapingInterface $escaping
+	 */
+	public function __construct(SanitizingInterface $sanitizing, EscapingInterface $escaping)
+	{
+		$this->escaping = $escaping;
+		$this->sanitizing = $sanitizing;
+	}
+
+	/**
      * @return void
      */
     public function init()
     {
         if (isset($_REQUEST['tlbm_action'])) {
-            $request = $this->getEndpointByAction($_REQUEST['tlbm_action']);
+            $request = $this->getEndpointByAction($this->sanitizing->sanitizeKey($_REQUEST['tlbm_action']));
             if ($request != null) {
                 $request->setVars($this->getVars());
                 $request->onAction();
@@ -83,7 +105,7 @@ class RequestManager implements RequestManagerInterface
     public function beforeInit()
     {
         if (isset($_REQUEST['tlbm_action'])) {
-            $action  = $_REQUEST['tlbm_action'];
+            $action  = $this->sanitizing->sanitizeKey($_REQUEST['tlbm_action']);
             $request = $this->getEndpointByAction($action);
             if ($request != null) {
                 $this->currentRequest = $request;
@@ -104,7 +126,7 @@ class RequestManager implements RequestManagerInterface
      */
     public function getVars(): array
     {
-        $vars   = $_REQUEST;
+        $vars = $_REQUEST;
         if (isset($_REQUEST['tlbm_action'])) {
             unset($vars['tlbm_action']);
         }

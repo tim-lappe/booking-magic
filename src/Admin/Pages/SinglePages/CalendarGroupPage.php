@@ -3,7 +3,9 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 use TLBM\Admin\Tables\CalendarGroupTable;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\SanitizingInterface;
 use TLBM\MainFactory;
 
 class CalendarGroupPage extends PageBase
@@ -14,10 +16,22 @@ class CalendarGroupPage extends PageBase
      */
     private LocalizationInterface $localization;
 
-    public function __construct(LocalizationInterface $localization)
+	/**
+	 * @var SanitizingInterface
+	 */
+    private SanitizingInterface $sanitizing;
+
+	/**
+	 * @var EscapingInterface
+	 */
+    private EscapingInterface $escaping;
+
+    public function __construct(LocalizationInterface $localization, EscapingInterface $escaping, SanitizingInterface $sanitizing)
     {
         parent::__construct($localization->getText("Calendar Groups", TLBM_TEXT_DOMAIN), "booking-magic-calendar-group");
         $this->parentSlug   = "booking-magic";
+        $this->sanitizing = $sanitizing;
+        $this->escaping = $escaping;
         $this->localization = $localization;
     }
 
@@ -44,8 +58,7 @@ class CalendarGroupPage extends PageBase
         <div class="tlbm-admin-page">
             <div class="tlbm-admin-page-tile">
                 <form method="get">
-                    <input type="hidden" name="page" value="<?php
-                    echo $_REQUEST['page'] ?>"/>
+                    <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr($_REQUEST['page']) ?>"/>
                     <?php
                     $calendarGroupListTable = MainFactory::create(CalendarGroupTable::class);
                     $calendarGroupListTable->views();

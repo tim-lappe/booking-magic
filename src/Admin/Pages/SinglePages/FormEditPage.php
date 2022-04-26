@@ -95,7 +95,7 @@ class FormEditPage extends EntityEditPage
         }
 
         $formValidator = new FormEntityValidator($form);
-        $form->setTitle($vars['title']);
+        $form->setTitle($this->sanitizing->sanitizeTitle($vars['title']));
 
         try {
             if(isset($vars['form'])) {

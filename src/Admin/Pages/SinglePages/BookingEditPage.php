@@ -213,10 +213,10 @@ class BookingEditPage extends EntityEditPage
 
         $bookingChange = MainFactory::create(BookingChangeManager::class);
         $bookingChange->setBooking($booking);
-        $bookingChange->setState($vars['state']);
+        $bookingChange->setState($this->sanitizing->sanitizeKey($vars['state']));
         $bookingChange->storeValuesToBooking();
 
-        $booking->setNotes($vars['notes']);
+        $booking->setNotes($this->sanitizing->sanitizeTextfield($vars['notes']));
 
 
         if ($this->entityRepository->saveEntity($booking)) {

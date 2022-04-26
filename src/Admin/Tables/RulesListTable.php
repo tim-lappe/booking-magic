@@ -128,7 +128,7 @@ class RulesListTable extends ManagableEntityTable
                     <?php
                     foreach ($calendars as $calendar): ?>
                         <option <?php
-                        selected($calendar->getId(), $_GET['filter_calendar'], true) ?> value="<?php
+                        selected($calendar->getId(), $this->sanitizing->sanitizeKey($_GET['filter_calendar']), true) ?> value="<?php
                         echo $calendar->getId() ?>"><?php
                             echo $calendar->getTitle() ?></option>
                     <?php

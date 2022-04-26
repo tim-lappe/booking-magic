@@ -3,6 +3,7 @@
 namespace TLBM\Session;
 
 use Exception;
+use TLBM\ApiUtils\Contracts\SanitizingInterface;
 use TLBM\ApiUtils\Contracts\TimeUtilsInterface;
 use TLBM\Entity\Session;
 use TLBM\Repository\Contracts\ORMInterface;
@@ -24,14 +25,21 @@ class SessionManager
      */
     protected ?Session $currentSession = null;
 
-    /**
-     * @param ORMInterface $repository
-     * @param TimeUtilsInterface $timeUtils
-     */
-    public function __construct(ORMInterface $repository, TimeUtilsInterface $timeUtils)
+	/**
+	 * @var SanitizingInterface
+	 */
+	protected SanitizingInterface $sanitizing;
+
+	/**
+	 * @param SanitizingInterface $sanitizing
+	 * @param ORMInterface $repository
+	 * @param TimeUtilsInterface $timeUtils
+	 */
+    public function __construct(SanitizingInterface $sanitizing, ORMInterface $repository, TimeUtilsInterface $timeUtils)
     {
         $this->repository = $repository;
         $this->timeUtils  = $timeUtils;
+		$this->sanitizing = $sanitizing;
 
         $this->deleteExpiredSessions();
         $this->currentSession = $this->getCurrentSession();
@@ -87,7 +95,7 @@ class SessionManager
     private function getCurrentSessionKey(): ?string
     {
         if (isset($_REQUEST['BM_SESSION']) && !empty($_REQUEST['BM_SESSION'])) {
-            return $_REQUEST['BM_SESSION'];
+            return $this->sanitizing->sanitizeKey($_REQUEST['BM_SESSION']);
         }
 
         return null;

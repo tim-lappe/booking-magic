@@ -110,7 +110,7 @@ class CalendarEditPage extends EntityEditPage
 
         $calendarValidator = ValidatorFactory::createCalendarValidator($calendar);
         $calendar->setTimestampEdited($timeUtils->time());
-        $calendar->setTitle($vars['title']);
+        $calendar->setTitle($this->sanitizing->sanitizeTitle($vars['title']));
 
         $validationResult = $calendarValidator->getValidationErrors();
 

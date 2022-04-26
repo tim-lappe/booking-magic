@@ -117,8 +117,8 @@ class RuleEditPage extends EntityEditPage
             $rule = new Rule();
         }
 
-        $rule->setTitle($vars['title']);
-        $rule->setPriority($vars['rule_priority']);
+        $rule->setTitle($this->sanitizing->sanitizeTitle($vars['title']));
+        $rule->setPriority($this->sanitizing->sanitizeKey($vars['rule_priority']));
 
         $actions            = $this->formBuilder->readVars("rule_actions", $vars);
         $calendar_selection = $this->formBuilder->readVars("calendars", $vars);

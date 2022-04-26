@@ -2,6 +2,7 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;
@@ -28,10 +29,16 @@ abstract class EntityEditPage extends FormPageBase
      */
     protected LocalizationInterface $localization;
 
+	/**
+	 * @var EscapingInterface
+	 */
+    protected EscapingInterface $escaping;
+
     public function __construct(string $entityTitle, string $menuTitle, string $menuSlug, bool $showInMenu = true, bool $displayDefaultHead = true, string $defaultHeadTitle = "")
     {
         $this->entityTitle = $entityTitle;
         $this->localization = MainFactory::get(LocalizationInterface::class);
+        $this->escaping = MainFactory::get(EscapingInterface::class);
         parent::__construct($menuTitle, $menuSlug, $showInMenu, $displayDefaultHead, $defaultHeadTitle);
     }
 
@@ -78,7 +85,7 @@ abstract class EntityEditPage extends FormPageBase
         }
 
         if (isset($_REQUEST['edit_id'])) {
-            return $this->getEntityById($_REQUEST['edit_id']);
+            return $this->getEntityById(intval($_REQUEST['edit_id']));
         }
 
         return null;

@@ -72,20 +72,24 @@ use TLBM\Ajax\PingPong;
 use TLBM\ApiUtils\AdminPagesWrapper;
 use TLBM\ApiUtils\Contracts\AdminPagesInterface;
 use TLBM\ApiUtils\Contracts\EnqueueAssetsInterface;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\HooksInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface as LocalizationInterfaceAlias;
 use TLBM\ApiUtils\Contracts\MailInterface;
 use TLBM\ApiUtils\Contracts\OptionsInterface;
 use TLBM\ApiUtils\Contracts\PluginActivationInterface;
+use TLBM\ApiUtils\Contracts\SanitizingInterface;
 use TLBM\ApiUtils\Contracts\ShortcodeInterface;
 use TLBM\ApiUtils\Contracts\TimeUtilsInterface;
 use TLBM\ApiUtils\Contracts\UrlUtilsInterface;
 use TLBM\ApiUtils\EnqueueAssetsWrapper;
+use TLBM\ApiUtils\EscapingWrapper;
 use TLBM\ApiUtils\HooksWrapper;
 use TLBM\ApiUtils\LocalizationWrapper;
 use TLBM\ApiUtils\MailWrapper;
 use TLBM\ApiUtils\OptionsWrapper;
 use TLBM\ApiUtils\PluginActivationWrapper;
+use TLBM\ApiUtils\SanitizingWrapper;
 use TLBM\ApiUtils\ShortcodeWrapper;
 use TLBM\ApiUtils\TimeUtilsWrapper;
 use TLBM\ApiUtils\UrlUtilsWrapper;
@@ -138,7 +142,6 @@ use TLBM\Validation\RulesActionEntityValidator;
 use TLBM\Validation\RulesEntityValidator;
 use TLBM\Validation\RulesPeriodEntityValidator;
 use TLBM\Validation\TimeSlotEntityValidator;
-
 use function DI\autowire;
 use function DI\factory;
 
@@ -176,7 +179,8 @@ return [
     UrlUtilsInterface::class => autowire(UrlUtilsWrapper::class),
     TimeUtilsInterface::class => autowire(TimeUtilsWrapper::class),
     MailInterface::class => autowire(MailWrapper::class),
-
+	SanitizingInterface::class => autowire(SanitizingWrapper::class),
+	EscapingInterface::class => autowire( EscapingWrapper::class),
 
     RuleActionsEditorCollectionInterface::class => factory(function (ContainerInterface $container, FactoryInterface $factory) {
         $ruleActionsEditorCollection = $container->get(RuleActionsEditorCollection::class);

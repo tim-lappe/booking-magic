@@ -1,5 +1,5 @@
 {
-  "name": "tl-booking",
+  "name": "booking-magic",
   "description": "flexible and powerful Booking-Plugin for WordPress",
   "license": "GPL-2.0-or-later",
   "version": "1.0.2",
@@ -8,7 +8,7 @@
     "watch": "webpack --watch",
     "build": "webpack build",
     "test": "docker-compose run composer test",
-    "composer": "docker-compose run composer "
+    "composer": "docker-compose run composer"
   },
   "devDependencies": {
     "@types/react": "^17.0.37",

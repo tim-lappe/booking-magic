@@ -3,6 +3,7 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 use TLBM\Admin\WpForm\Contracts\FormBuilderInterface;
+use TLBM\ApiUtils\Contracts\SanitizingInterface;
 use TLBM\MainFactory;
 
 abstract class FormPageBase extends PageBase
@@ -16,6 +17,11 @@ abstract class FormPageBase extends PageBase
      * @var array
      */
     protected array $notices = array();
+
+	/**
+	 * @var SanitizingInterface
+	 */
+    protected SanitizingInterface $sanitizing;
 
     /**
      * @param string $menuTitle
@@ -33,6 +39,7 @@ abstract class FormPageBase extends PageBase
         string $defaultHeadTitle = ""
     ) {
         $this->formBuilder = MainFactory::create(FormBuilderInterface::class);
+        $this->sanitizing = MainFactory::get(SanitizingInterface::class);
 
         parent::__construct(
             $menuTitle, $menuSlug, $showInMenu, $displayDefaultHead, $defaultHeadTitle
@@ -70,7 +77,7 @@ abstract class FormPageBase extends PageBase
     final public function display()
     {
         if (isset($_POST['tlbm-save-form-nonce'])) {
-            if (wp_verify_nonce($_POST['tlbm-save-form-nonce'], "tlbm-save-form-nonce-" . $this->menuSlug)) {
+            if (wp_verify_nonce($this->sanitizing->sanitizeKey($_POST['tlbm-save-form-nonce']), "tlbm-save-form-nonce-" . $this->menuSlug)) {
                 $this->notices = $this->onSave($_POST);
             }
         }

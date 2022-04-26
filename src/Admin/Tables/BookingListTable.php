@@ -91,7 +91,7 @@ class BookingListTable extends ManagableEntityTable
                     <?php
                     foreach ($calendars as $calendar): ?>
                         <option <?php
-                        selected($calendar->getId(), $_GET['filter_calendar'], true) ?> value="<?php
+                        selected($calendar->getId(),  $this->sanitizing->sanitizeKey($_GET['filter_calendar']), true) ?> value="<?php
                         echo $calendar->getId() ?>"><?php
                             echo $calendar->getTitle() ?></option>
                     <?php
@@ -103,7 +103,7 @@ class BookingListTable extends ManagableEntityTable
                     <?php
                     foreach ($states as $key => $title): ?>
                         <option <?php
-                        selected($key, $_GET['filter_state'], true) ?> value="<?php
+                        selected($key, $this->sanitizing->sanitizeKey($_GET['filter_state']), true) ?> value="<?php
                         echo $key ?>"><?php
                             echo $title ?></option>
                     <?php
@@ -158,7 +158,7 @@ class BookingListTable extends ManagableEntityTable
                     $statesSetting = $this->settingsManager->getSetting(BookingStates::class);
                     $statesKeys    = array_keys($statesSetting->getStatesKeyValue());
                     if (in_array($_GET['filter_state'], $statesKeys)) {
-                        $query->setFilterStates([$_GET['filter_state']]);
+                        $query->setFilterStates([$this->sanitizing->sanitizeKey($_GET['filter_state'])]);
                     }
                 }
             }

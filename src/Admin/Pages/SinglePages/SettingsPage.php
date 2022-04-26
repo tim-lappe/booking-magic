@@ -5,6 +5,7 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
+use TLBM\ApiUtils\Contracts\SanitizingInterface;
 
 class SettingsPage extends PageBase
 {
@@ -13,16 +14,22 @@ class SettingsPage extends PageBase
      */
     private SettingsManagerInterface $settingsManager;
 
-    public function __construct(SettingsManagerInterface $settingsManager)
+	/**
+	 * @var SanitizingInterface
+	 */
+    private SanitizingInterface $sanitizing;
+
+    public function __construct(SettingsManagerInterface $settingsManager, SanitizingInterface $sanitizing)
     {
         parent::__construct("Settings", "booking-magic-settings");
+        $this->sanitizing = $sanitizing;
         $this->settingsManager = $settingsManager;
         $this->parentSlug      = "booking-magic";
     }
 
     public function displayPageBody()
     {
-        $tab = $_GET['tab'] ?? "general";
+        $tab = $this->sanitizing->sanitizeKey($_GET['tab'] ?? "general");
         ?>
         <div class="wrap">
             <nav class="nav-tab-wrapper">

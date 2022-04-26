@@ -4,6 +4,7 @@
 namespace TLBM\Admin\Tables;
 
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\SanitizingInterface;
 use TLBM\MainFactory;
 use WP_List_Table;
 
@@ -39,9 +40,15 @@ abstract class TableBase extends WP_List_Table
      */
     protected LocalizationInterface $localization;
 
+	/**
+	 * @var SanitizingInterface
+	 */
+	protected SanitizingInterface $sanitizing;
+
     public function __construct($titlePlural, $titleSingular, $itemsPerPage = 10)
     {
         $this->localization = MainFactory::get(LocalizationInterface::class);
+		$this->sanitizing = MainFactory::get(SanitizingInterface::class);
 
         parent::__construct(array(
                                 "plural" => $titlePlural,
@@ -123,9 +130,9 @@ abstract class TableBase extends WP_List_Table
      */
     public function prepare_items()
     {
-        $orderby = $_REQUEST['orderby'] ?? "id";
-        $order   = $_REQUEST['order'] ?? "desc";
-        $page    = $_REQUEST['paged'] ?? 1;
+        $orderby = $this->sanitizing->sanitizeKey($_REQUEST['orderby'] ?? "id");
+        $order   = $this->sanitizing->sanitizeKey($_REQUEST['order'] ?? "desc");
+        $page    = $this->sanitizing->sanitizeKey($_REQUEST['paged'] ?? 1);
         $page    = intval($page);
 
         if(!in_array($order, ["asc", "desc"])) {
@@ -180,7 +187,17 @@ abstract class TableBase extends WP_List_Table
      */
     public function process_bulk_action()
     {
-        if (isset($_POST['_wpnonce']) && !empty($_POST['_wpnonce'])) {
+		$nonce = $this->sanitizing->sanitizeKey($_POST['_wpnonce']);
+		$action = $this->sanitizing->sanitizeKey($_REQUEST['action']);
+		$ids = [];
+
+		if(is_array($_REQUEST['ids'])) {
+			foreach ( $_REQUEST['ids'] as $id ) {
+				$ids[] = $this->sanitizing->sanitizeKey( $id );
+			}
+		}
+
+        if (!empty($nonce)) {
             $nonce  = filter_input(INPUT_POST, '_wpnonce', FILTER_SANITIZE_STRING);
             $action = 'bulk-' . $this->_args['plural'];
             if ( !wp_verify_nonce($nonce, $action)) {
@@ -188,16 +205,8 @@ abstract class TableBase extends WP_List_Table
             }
         }
 
-        if(isset($_REQUEST['action'])) {
-            $action = $_REQUEST['action'];
-            if(isset($_REQUEST['ids'])) {
-                $ids = $_REQUEST['ids'];
-                if (is_array($ids)) {
-                    if ($action) {
-                        $this->processBuldActions($action, $ids);
-                    }
-                }
-            }
+        if(!empty($action) && count($ids) > 0) {
+			$this->processBuldActions($action, $ids);
         }
     }
 
@@ -232,7 +241,7 @@ abstract class TableBase extends WP_List_Table
 
     public function getCurrentView(): string
     {
-        return $_REQUEST['filter'] ?? "";
+        return $this->sanitizing->sanitizeKey($_REQUEST['filter'] ?? "");
     }
 
     /**
@@ -364,7 +373,7 @@ abstract class TableBase extends WP_List_Table
     {
         $views            = array();
         $view_definitions = $this->getViews();
-        $current          = !empty($_REQUEST['filter']) ? $_REQUEST['filter'] : 'all';
+        $current          = !empty($_REQUEST['filter']) ? $this->sanitizing->sanitizeKey($_REQUEST['filter']) : 'all';
 
         foreach ($view_definitions as $key => $title) {
             $class       = ($current == $key ? ' class="current"' : '');

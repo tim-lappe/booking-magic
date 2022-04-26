@@ -5,16 +5,26 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 use Exception;
 use TLBM\Admin\Tables\BookingListTable;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\MainFactory;
 
 
 class BookingsPage extends PageBase
 {
 
-    public function __construct()
+	/**
+	 * @var EscapingInterface
+	 */
+    private EscapingInterface $escaping;
+
+	/**
+	 * @param EscapingInterface $escaping
+	 */
+    public function __construct(EscapingInterface $escaping)
     {
         parent::__construct("Bookings", "booking-magic-bookings");
         $this->parentSlug = "booking-magic";
+        $this->escaping = $escaping;
     }
 
     public function displayPageBody()
@@ -24,7 +34,7 @@ class BookingsPage extends PageBase
             <div class="tlbm-admin-page-tile">
                 <form method="get">
                     <input type="hidden" name="page" value="<?php
-                    echo $_REQUEST['page'] ?>"/>
+                    echo $this->escaping->escAttr($_REQUEST['page']) ?>"/>
                     <?php
                     try {
                         $bookingsListTable = MainFactory::create(BookingListTable::class);

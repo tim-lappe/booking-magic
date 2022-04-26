@@ -5,16 +5,27 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 
 use TLBM\Admin\Tables\FormListTable;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\MainFactory;
 
 class FormPage extends PageBase
 {
 
-    public function __construct(LocalizationInterface $localization)
+	/**
+	 * @var EscapingInterface
+	 */
+    protected EscapingInterface $escaping;
+
+	/**
+	 * @param EscapingInterface $escaping
+	 * @param LocalizationInterface $localization
+	 */
+    public function __construct(EscapingInterface $escaping, LocalizationInterface $localization)
     {
         parent::__construct($localization->getText("Form", TLBM_TEXT_DOMAIN), "booking-magic-form");
         $this->parentSlug = "booking-magic";
+        $this->escaping = $escaping;
     }
 
     public function displayDefaultHeadBar()
@@ -36,8 +47,7 @@ class FormPage extends PageBase
         <div class="tlbm-admin-page">
             <div class="tlbm-admin-page-tile">
                 <form method="get">
-                    <input type="hidden" name="page" value="<?php
-                    echo $_REQUEST['page'] ?>"/>
+                    <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr($_REQUEST['page']) ?>"/>
                     <?php
                     $formListTable = MainFactory::create(FormListTable::class);
                     $formListTable->views();

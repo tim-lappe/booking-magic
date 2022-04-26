@@ -224,7 +224,7 @@ class BookingEditValuesPage extends EntityEditPage
 
         if($vars['calendarBookings'] && is_array($vars['calendarBookings'])) {
             foreach ($vars['calendarBookings'] as $name => $value) {
-                $calendarBookingOriginal = $booking->getCalendarBookingByName($name);
+                $calendarBookingOriginal = $booking->getCalendarBookingByName($this->sanitizing->sanitizeKey($name));
                 if(isset($value['time'])) {
                     try {
                         $data = json_decode(urldecode($value['time']), JSON_OBJECT_AS_ARRAY);
@@ -249,7 +249,7 @@ class BookingEditValuesPage extends EntityEditPage
                     }
                 }
                 if(isset($value['calendar_id'])) {
-                    $calendarBookingOriginal->setCalendar($this->entityRepository->getEntity(Calendar::class, $value['calendar_id']));
+                    $calendarBookingOriginal->setCalendar($this->entityRepository->getEntity(Calendar::class, intval($value['calendar_id'])));
                 }
             }
         }

@@ -87,11 +87,11 @@ class CalendarGroupEditPage extends EntityEditPage
         }
 
         //TODO: Validator für Calendar Group implementieren
-        $calendarGroup->setTitle($vars['title']);
+        $calendarGroup->setTitle( $this->sanitizing->sanitizeTitle($vars['title']));
         $calendarSelection = $this->formBuilder->readVars("calendars", $vars);
 
         $calendarGroup->setCalendarSelection($calendarSelection);
-        $calendarGroup->setBookingDisitribution($vars['booking_distribution']);
+        $calendarGroup->setBookingDisitribution($this->sanitizing->sanitizeKey($vars['booking_distribution']));
 
         if($this->entityRepository->saveEntity($calendarGroup)) {
             $savedEntity = $calendarGroup;
