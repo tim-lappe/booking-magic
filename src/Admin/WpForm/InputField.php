@@ -3,6 +3,9 @@
 
 namespace TLBM\Admin\WpForm;
 
+use TLBM\ApiUtils\Contracts\EscapingInterface;
+use TLBM\MainFactory;
+
 if ( !defined('ABSPATH')) {
     return;
 }
@@ -39,6 +42,8 @@ class InputField extends FormFieldBase
      */
     public function displayContent($value): void
     {
+        $escaping = MainFactory::get(EscapingInterface::class);
+
         $classes = "";
         if ($this->input_type == "text") {
             $classes = "regular-text";
@@ -48,15 +53,13 @@ class InputField extends FormFieldBase
 
         ?>
         <tr>
-            <th scope="row"><label for="<?php
-                echo $this->name ?>"><?php
-                    echo $this->title ?></label></th>
+            <th scope="row"><label for="<?php echo $escaping->escAttr($this->name) ?>"><?php echo $escaping->escHtml($this->title); ?></label></th>
             <td><input id="<?php
-                echo $this->name ?>" class="<?php
-                echo $classes ?>" type="<?php
-                echo $this->input_type ?>" name="<?php
-                echo $this->name ?>" value="<?php
-                echo $value ?>"></td>
+                echo $escaping->escAttr($this->name )?>" class="<?php
+                echo $escaping->escAttr($classes) ?>" type="<?php
+                echo $escaping->escAttr($this->input_type) ?>" name="<?php
+                echo $escaping->escAttr($this->name) ?>" value="<?php
+                echo $escaping->escAttr($value) ?>"></td>
         </tr>
         <?php
     }

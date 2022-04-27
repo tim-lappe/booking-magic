@@ -5,6 +5,7 @@ namespace TLBM\Admin\Tables;
 
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\FormEditPage;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Form;
 use TLBM\Repository\Query\ManageableEntityQuery;
@@ -17,8 +18,19 @@ class FormListTable extends ManagableEntityTable
      */
     private AdminPageManagerInterface $adminPageManager;
 
-    public function __construct(AdminPageManagerInterface $adminPageManager, LocalizationInterface $localization)
+	/**
+	 * @var EscapingInterface
+	 */
+	private EscapingInterface $escaping;
+
+	/**
+	 * @param EscapingInterface $escaping
+	 * @param AdminPageManagerInterface $adminPageManager
+	 * @param LocalizationInterface $localization
+	 */
+    public function __construct(EscapingInterface $escaping, AdminPageManagerInterface $adminPageManager, LocalizationInterface $localization)
     {
+		$this->escaping = $escaping;
         $this->adminPageManager = $adminPageManager;
         parent::__construct(
             Form::class, $localization->getText("Forms", TLBM_TEXT_DOMAIN), $localization->getText("Form", TLBM_TEXT_DOMAIN), 10, $localization->getText("You haven't created any forms yet", TLBM_TEXT_DOMAIN)
@@ -47,9 +59,9 @@ class FormListTable extends ManagableEntityTable
             if ($page instanceof FormEditPage) {
                 $link = $page->getEditLink($item->getId());
                 if ( !empty($item->getTitle())) {
-                    echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
+                    echo "<strong><a href='" . $this->escaping->escAttr($link) . "'>" . $this->escaping->escHtml($item->getTitle()) . "</a></strong>";
                 } else {
-                    echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
+                    echo "<strong><a href='" . $this->escaping->escAttr($link) . "'>" . $this->escaping->escHtml($item->getId()) . "</a></strong>";
                 }
             }
         })

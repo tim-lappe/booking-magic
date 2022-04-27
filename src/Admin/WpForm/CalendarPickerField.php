@@ -8,6 +8,7 @@ if ( !defined('ABSPATH')) {
 }
 
 use TLBM\Admin\WpForm\Contracts\FormFieldReadVarsInterface;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarSelection;
 use TLBM\MainFactory;
@@ -17,7 +18,15 @@ use TLBM\Repository\Query\CalendarQuery;
 class CalendarPickerField extends FormFieldBase implements FormFieldReadVarsInterface
 {
 
+	/**
+	 * @var EntityRepositoryInterface
+	 */
     private EntityRepositoryInterface $entityRepository;
+
+	/**
+	 * @var EscapingInterface
+	 */
+    private EscapingInterface $escaping;
 
     /**
      * @param EntityRepositoryInterface $entityRepository
@@ -30,6 +39,7 @@ class CalendarPickerField extends FormFieldBase implements FormFieldReadVarsInte
         string $title
     ) {
         $this->entityRepository = $entityRepository;
+        $this->escaping = MainFactory::get(EscapingInterface::class);
 
         parent::__construct($name, $title);
     }
@@ -54,17 +64,12 @@ class CalendarPickerField extends FormFieldBase implements FormFieldReadVarsInte
 
         ?>
         <tr>
-            <th scope="row"><label for="<?php
-                echo $this->name ?>"><?php
-                    echo $this->title ?></label></th>
+            <th scope="row"><label for="<?php echo $this->escaping->escAttr($this->name) ?>"><?php echo $this->escaping->escHtml($this->title) ?></label></th>
             <td>
                 <div
-                        data-json="<?php
-                        echo urlencode(json_encode($value)) ?>"
-                        data-calendars="<?php
-                        echo urlencode(json_encode($calendars)) ?>"
-                        data-name="<?php
-                        echo $this->name ?>"
+                        data-json="<?php echo $this->escaping->escAttr(urlencode(json_encode($value))); ?>"
+                        data-calendars="<?php echo $this->escaping->escAttr(urlencode(json_encode($calendars))); ?>"
+                        data-name="<?php echo $this->escaping->escAttr($this->name) ?>"
                         class="tlbm-calendar-picker"></div>
             </td>
         </tr>

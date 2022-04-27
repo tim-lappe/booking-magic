@@ -24,7 +24,7 @@ class CalendarGroupPage extends PageBase
 	/**
 	 * @var EscapingInterface
 	 */
-    private EscapingInterface $escaping;
+    protected EscapingInterface $escaping;
 
     public function __construct(LocalizationInterface $localization, EscapingInterface $escaping, SanitizingInterface $sanitizing)
     {
@@ -46,8 +46,7 @@ class CalendarGroupPage extends PageBase
         $addCalendarGroupLink = $calendarGroupPage->getEditLink();
 
         ?>
-        <a href="<?php
-        echo $addCalendarGroupLink ?>" class="button button-primary tlbm-admin-button-bar"><?php
+        <a href="<?php echo $this->escaping->escAttr($addCalendarGroupLink); ?>" class="button button-primary tlbm-admin-button-bar"><?php
             _e("Add New Group", TLBM_TEXT_DOMAIN) ?></a>
         <?php
     }

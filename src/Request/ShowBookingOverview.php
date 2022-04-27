@@ -41,12 +41,13 @@ class ShowBookingOverview extends RequestBase
      */
     private BookingRepositoryInterface $bookingRepository;
 
-    /**
-     * @param SemanticFrontendMessenger $frontendMessenger
-     * @param LocalizationInterface $localization
-     * @param SettingsManager $settingsManager
-     * @param SessionManager $sessionManager
-     */
+	/**
+	 * @param SemanticFrontendMessenger $frontendMessenger
+	 * @param LocalizationInterface $localization
+	 * @param SettingsManager $settingsManager
+	 * @param SessionManager $sessionManager
+	 * @param BookingRepositoryInterface $bookingRepository
+	 */
     public function __construct(
         SemanticFrontendMessenger $frontendMessenger,
         LocalizationInterface $localization,
@@ -110,8 +111,7 @@ class ShowBookingOverview extends RequestBase
 
     public function getContent(): string
     {
-        $vars = $this->getVars();
-        if($this->bookingProcessor != null) {
+	    if($this->bookingProcessor != null) {
             $html = "<h2>" . $this->localization->getText("Booking overview", TLBM_TEXT_DOMAIN) . "</h2>";
 
             $semantic = $this->bookingProcessor->getSemantic();

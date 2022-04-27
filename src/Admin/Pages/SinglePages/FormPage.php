@@ -33,8 +33,7 @@ class FormPage extends PageBase
         $formEditPage = $this->adminPageManager->getPage(FormEditPage::class);
         if ($formEditPage instanceof FormEditPage) {
             ?>
-            <a href="<?php
-            echo $formEditPage->getEditLink() ?>" class="button button-primary tlbm-admin-button-bar"><?php
+            <a href="<?php echo $this->escaping->escAttr($formEditPage->getEditLink()); ?>" class="button button-primary tlbm-admin-button-bar"><?php
                 _e("Add New Form", TLBM_TEXT_DOMAIN) ?></a>
             <?php
         }

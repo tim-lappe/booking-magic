@@ -15,7 +15,7 @@ class BookingsPage extends PageBase
 	/**
 	 * @var EscapingInterface
 	 */
-    private EscapingInterface $escaping;
+    protected EscapingInterface $escaping;
 
 	/**
 	 * @param EscapingInterface $escaping
@@ -33,8 +33,7 @@ class BookingsPage extends PageBase
         <div class="tlbm-admin-page">
             <div class="tlbm-admin-page-tile">
                 <form method="get">
-                    <input type="hidden" name="page" value="<?php
-                    echo $this->escaping->escAttr($_REQUEST['page']) ?>"/>
+                    <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr($_REQUEST['page']) ?>"/>
                     <?php
                     try {
                         $bookingsListTable = MainFactory::create(BookingListTable::class);

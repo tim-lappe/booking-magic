@@ -23,9 +23,7 @@ class RulesPage extends PageBase
     public function displayDefaultHeadBar()
     {
         ?>
-        <a href="<?php
-        echo admin_url('admin.php?page=booking-magic-rule-edit'); ?>"
-           class="button button-primary tlbm-admin-button-bar"><?php
+        <a href="<?php echo admin_url('admin.php?page=booking-magic-rule-edit'); ?>" class="button button-primary tlbm-admin-button-bar"><?php
             _e("Add New Rule", TLBM_TEXT_DOMAIN) ?></a>
         <?php
     }

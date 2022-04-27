@@ -50,8 +50,7 @@ class CalendarEditPage extends EntityEditPage
         ?>
 
         <div class="tlbm-admin-page-tile">
-            <input value="<?php
-            echo $calendar->getTitle() ?>" placeholder="<?php
+            <input value="<?php echo $this->escaping->escAttr($calendar->getTitle()); ?>" placeholder="<?php
             $this->localization->echoText("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
         </div>
         <?php
@@ -110,7 +109,7 @@ class CalendarEditPage extends EntityEditPage
 
         $calendarValidator = ValidatorFactory::createCalendarValidator($calendar);
         $calendar->setTimestampEdited($timeUtils->time());
-        $calendar->setTitle($this->sanitizing->sanitizeTitle($vars['title']));
+        $calendar->setTitle($this->sanitizing->sanitizeTextfield($vars['title']));
 
         $validationResult = $calendarValidator->getValidationErrors();
 

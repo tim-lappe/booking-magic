@@ -55,7 +55,7 @@ interface SanitizingInterface {
 	 *
 	 * @return string
 	 */
-	public function anitizeMeta(string $metaKey, $metaValue, string $objectType, string $objectSubtype = '' ): string;
+	public function sanitizeMeta(string $metaKey, $metaValue, string $objectType, string $objectSubtype = '' ): string;
 
 	/**
 	 * @param string $mimeType

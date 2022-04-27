@@ -49,7 +49,7 @@ class SanitizingWrapper implements Contracts\SanitizingInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function anitizeMeta( string $metaKey, $metaValue, string $objectType, string $objectSubtype = '' ): string {
+	public function sanitizeMeta( string $metaKey, $metaValue, string $objectType, string $objectSubtype = '' ): string {
 		return sanitize_meta($metaKey, $metaValue, $objectType, $objectSubtype);
 	}
 

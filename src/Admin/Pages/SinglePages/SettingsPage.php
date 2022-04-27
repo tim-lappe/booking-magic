@@ -29,23 +29,18 @@ class SettingsPage extends PageBase
 
     public function displayPageBody()
     {
-        $tab = $this->sanitizing->sanitizeKey($_GET['tab'] ?? "general");
+        $tab = $this->sanitizing->sanitizeTextfield($_GET['tab'] ?? "general");
         ?>
         <div class="wrap">
             <nav class="nav-tab-wrapper">
                 <?php
                 foreach ($this->settingsManager->getAllSettingsGroups() as $key => $group): ?>
-                    <a href="?page=<?php
-                    echo $this->menuSlug ?>&tab=<?php
-                    echo $key ?>" class="nav-tab <?php
-                    if ($tab == $key): ?>nav-tab-active<?php
-                    endif; ?>"><?php
-                        echo $group ?></a>
+                    <a href="?page=<?php echo $this->escaping->escAttr($this->menuSlug); ?>&tab=<?php echo $this->escaping->escAttr($key) ?>" class="nav-tab <?php if ($tab == $key): ?>nav-tab-active<?php endif; ?>">
+                        <?php echo $this->escaping->escHtml($group); ?></a>
                 <?php
                 endforeach; ?>
             </nav>
-            <form method="post" action="<?php
-            echo admin_url() . "options.php" ?>">
+            <form method="post" action="<?php echo admin_url() . "options.php" ?>">
                 <?php
                 do_settings_sections("tlbm_settings_" . $tab); ?>
                 <?php

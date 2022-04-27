@@ -50,7 +50,7 @@ abstract class EntityEditPage extends FormPageBase
         $entity = $this->getEditingEntity();
         if ($entity) {
             ?>
-            <input type="hidden" name="edit_id" value="<?php echo $entity->getId() ?>">
+            <input type="hidden" name="edit_id" value="<?php echo $this->escaping->escAttr($entity->getId()); ?>">
             <?php
         }
 

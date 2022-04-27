@@ -59,7 +59,7 @@ class CalendarGroupEditPage extends EntityEditPage
         ?>
 
         <div class="tlbm-admin-page-tile">
-            <input value="<?php echo $calendarGroup->getTitle() ?>" placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
+            <input value="<?php echo $this->escaping->escAttr($calendarGroup->getTitle()) ?>" placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
         </div>
 
         <div class="tlbm-admin-page-tile">
@@ -87,11 +87,11 @@ class CalendarGroupEditPage extends EntityEditPage
         }
 
         //TODO: Validator für Calendar Group implementieren
-        $calendarGroup->setTitle( $this->sanitizing->sanitizeTitle($vars['title']));
+        $calendarGroup->setTitle( $this->sanitizing->sanitizeTextfield($vars['title']));
         $calendarSelection = $this->formBuilder->readVars("calendars", $vars);
 
         $calendarGroup->setCalendarSelection($calendarSelection);
-        $calendarGroup->setBookingDisitribution($this->sanitizing->sanitizeKey($vars['booking_distribution']));
+        $calendarGroup->setBookingDisitribution($this->sanitizing->sanitizeTextfield($vars['booking_distribution']));
 
         if($this->entityRepository->saveEntity($calendarGroup)) {
             $savedEntity = $calendarGroup;

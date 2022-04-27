@@ -5,6 +5,8 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
+use TLBM\MainFactory;
 
 abstract class PageBase
 {
@@ -58,6 +60,10 @@ abstract class PageBase
      */
     protected AdminPageManagerInterface $adminPageManager;
 
+	/**
+	 * @var EscapingInterface
+	 */
+    protected EscapingInterface $escaping;
 
     /**
      * @param string $menuTitle
@@ -77,6 +83,8 @@ abstract class PageBase
         $this->menuSlug     = $menuSlug;
         $this->showInMenu = $showInMenu;
         $this->displayDefaultHead = $displayDefaultHead;
+
+        $this->escaping = MainFactory::get(EscapingInterface::class);
 
         if (empty($defaultHeadTitle)) {
             $this->displayDefaultHeadTitle = $menuTitle;
@@ -121,8 +129,7 @@ abstract class PageBase
     {
         ?>
         <div class="tlbm-admin-page-head">
-            <span class="tlbm-admin-page-head-title"><?php
-                echo $this->getHeadTitle() ?></span>
+            <span class="tlbm-admin-page-head-title"><?php echo $this->escaping->escHtml($this->getHeadTitle()); ?></span>
             <div class="tlbm-admin-page-head-bar">
                 <?php
                 $this->displayDefaultHeadBar() ?>

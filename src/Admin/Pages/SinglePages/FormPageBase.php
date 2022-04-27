@@ -3,6 +3,7 @@
 namespace TLBM\Admin\Pages\SinglePages;
 
 use TLBM\Admin\WpForm\Contracts\FormBuilderInterface;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\SanitizingInterface;
 use TLBM\MainFactory;
 
@@ -23,6 +24,11 @@ abstract class FormPageBase extends PageBase
 	 */
     protected SanitizingInterface $sanitizing;
 
+	/**
+	 * @var EscapingInterface
+	 */
+    protected EscapingInterface $escaping;
+
     /**
      * @param string $menuTitle
      * @param string $menuSlug
@@ -40,7 +46,7 @@ abstract class FormPageBase extends PageBase
     ) {
         $this->formBuilder = MainFactory::create(FormBuilderInterface::class);
         $this->sanitizing = MainFactory::get(SanitizingInterface::class);
-
+        $this->escaping = MainFactory::get(EscapingInterface::class);
         parent::__construct(
             $menuTitle, $menuSlug, $showInMenu, $displayDefaultHead, $defaultHeadTitle
         );
@@ -77,7 +83,7 @@ abstract class FormPageBase extends PageBase
     final public function display()
     {
         if (isset($_POST['tlbm-save-form-nonce'])) {
-            if (wp_verify_nonce($this->sanitizing->sanitizeKey($_POST['tlbm-save-form-nonce']), "tlbm-save-form-nonce-" . $this->menuSlug)) {
+            if (wp_verify_nonce($this->sanitizing->sanitizeTextfield($_POST['tlbm-save-form-nonce']), "tlbm-save-form-nonce-" . $this->menuSlug)) {
                 $this->notices = $this->onSave($_POST);
             }
         }
@@ -111,7 +117,7 @@ abstract class FormPageBase extends PageBase
         if (count($this->notices) > 0) {
             foreach ($this->notices as $key => $msg) {
                 ?>
-                <div class="notice notice-<?php echo is_numeric($key) ? "error" : $key ?> is-dismissible">
+                <div class="notice notice-<?php echo $this->escaping->escAttr(is_numeric($key) ? "error" : $key); ?> is-dismissible">
                     <p><?php _e($msg, TLBM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php

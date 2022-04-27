@@ -18,7 +18,7 @@ class CalendarPage extends PageBase
 	/**
 	 * @var EscapingInterface
 	 */
-    private EscapingInterface $escaping;
+    protected EscapingInterface $escaping;
 
     public function __construct(EscapingInterface $escaping, LocalizationInterface $localization) {
         parent::__construct($localization->getText("Calendars", TLBM_TEXT_DOMAIN), "booking-magic-calendar");
@@ -38,7 +38,7 @@ class CalendarPage extends PageBase
         $addCalendarLink = $calendarPage->getEditLink();
 
         ?>
-        <a href="<?php echo $addCalendarLink ?>" class="button button-primary tlbm-admin-button-bar"><?php _e("Add New Calendar", TLBM_TEXT_DOMAIN) ?></a>
+        <a href="<?php echo $this->escaping->escAttr($addCalendarLink); ?>" class="button button-primary tlbm-admin-button-bar"><?php _e("Add New Calendar", TLBM_TEXT_DOMAIN) ?></a>
         <?php
     }
 

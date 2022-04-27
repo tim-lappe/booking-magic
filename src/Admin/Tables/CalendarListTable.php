@@ -5,6 +5,7 @@ namespace TLBM\Admin\Tables;
 
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Repository\Query\ManageableEntityQuery;
@@ -22,10 +23,22 @@ class CalendarListTable extends ManagableEntityTable
      */
     protected LocalizationInterface $localization;
 
-    public function __construct(AdminPageManagerInterface $adminPageManager, LocalizationInterface $localization)
+	/**
+	 * @var EscapingInterface
+	 */
+	protected EscapingInterface $escaping;
+
+	/**
+	 * @param EscapingInterface $escaping
+	 * @param AdminPageManagerInterface $adminPageManager
+	 * @param LocalizationInterface $localization
+	 */
+    public function __construct(EscapingInterface $escaping, AdminPageManagerInterface $adminPageManager, LocalizationInterface $localization)
     {
         $this->localization = $localization;
         $this->adminPageManager = $adminPageManager;
+		$this->escaping = $escaping;
+
         parent::__construct(
             Calendar::class, $this->localization->getText("Calendars", TLBM_TEXT_DOMAIN), $this->localization->getText("Calendar", TLBM_TEXT_DOMAIN), 10, $this->localization->getText("You haven't created any calendars yet", TLBM_TEXT_DOMAIN)
         );
@@ -60,9 +73,9 @@ class CalendarListTable extends ManagableEntityTable
                         if ($calendarEditPage != null) {
                             $link = $calendarEditPage->getEditLink($item->getId());
                             if ( !empty($item->getTitle())) {
-                                echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
+                                echo "<strong><a href='" . $this->escaping->escAttr($link) . "'>" . $this->escaping->escHtml($item->getTitle()) . "</a></strong>";
                             } else {
-                                echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
+                                echo "<strong><a href='" . $this->escaping->escAttr($link) . "'>" . $this->escaping->escHtml($item->getId()) . "</a></strong>";
                             }
                         }
                     })

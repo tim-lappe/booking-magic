@@ -3,6 +3,9 @@
 
 namespace TLBM\Admin\WpForm;
 
+use TLBM\ApiUtils\Contracts\EscapingInterface;
+use TLBM\MainFactory;
+
 if ( !defined('ABSPATH')) {
     return;
 }
@@ -30,10 +33,11 @@ class RadioField extends FormFieldBase
      */
     public function displayContent($value): void
     {
+        $escaping = MainFactory::get(EscapingInterface::class);
+
         ?>
         <tr>
-            <th scope="row"><?php
-                echo $this->title ?></th>
+            <th scope="row"><?php echo $escaping->escHtml($this->title) ?></th>
             <td>
                 <?php
                 foreach ($this->radios as $key => $text): ?>
@@ -42,17 +46,12 @@ class RadioField extends FormFieldBase
                             <input
                                 <?php
                                 echo $key == $value && !empty($value) ? "checked='checked'" : "" ?>
-                                    id="<?php
-                                    echo $this->name ?>-<?php
-                                    echo $key ?>"
+                                    id="<?php echo $escaping->escAttr($this->name) ?>-<?php echo $escaping->escAttr($key) ?>"
                                     class="regular-text"
                                     type="radio"
-                                    name="<?php
-                                    echo $this->name ?>"
-                                    value="<?php
-                                    echo $key ?>"/>
-                            <?php
-                            echo $text ?>
+                                    name="<?php echo $escaping->escAttr($this->name) ?>"
+                                    value="<?php echo $escaping->escAttr($key) ?>"/>
+                            <?php echo $escaping->escHtml($text); ?>
                         </label>
                     </div>
                 <?php

@@ -5,6 +5,7 @@ namespace TLBM\Admin\Settings\SingleSettings\BookingProcess;
 
 
 use TLBM\Admin\Settings\SingleSettings\SettingsBase;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 
 //TODO: Booking States Setting neu schreiben
@@ -17,9 +18,19 @@ class BookingStates extends SettingsBase
      */
     protected LocalizationInterface $localization;
 
-    public function __construct(LocalizationInterface $localization)
+	/**
+	 * @var EscapingInterface
+	 */
+    protected EscapingInterface $escaping;
+
+	/**
+	 * @param EscapingInterface $escaping
+	 * @param LocalizationInterface $localization
+	 */
+    public function __construct(EscapingInterface $escaping, LocalizationInterface $localization)
     {
         $this->localization = $localization;
+        $this->escaping = $escaping;
         parent::__construct("booking_process", "booking_states", $this->localization->getText("Booking States", TLBM_TEXT_DOMAIN), $this->getDefaultStates());
     }
 
@@ -106,14 +117,10 @@ class BookingStates extends SettingsBase
         <table class="tlbm-inner-settings-table">
             <thead>
             <tr>
-                <th><?php
-                    echo $this->localization->getText("Enabled", TLBM_TEXT_DOMAIN) ?></th>
-                <th><?php
-                    echo $this->localization->getText("Name", TLBM_TEXT_DOMAIN) ?></th>
-                <th><?php
-                    echo $this->localization->getText("Title", TLBM_TEXT_DOMAIN) ?></th>
-                <th><?php
-                    echo $this->localization->getText("Color", TLBM_TEXT_DOMAIN) ?></th>
+                <th><?php $this->localization->echoText("Enabled", TLBM_TEXT_DOMAIN) ?></th>
+                <th><?php $this->localization->echoText("Name", TLBM_TEXT_DOMAIN) ?></th>
+                <th><?php $this->localization->echoText("Title", TLBM_TEXT_DOMAIN) ?></th>
+                <th><?php $this->localization->echoText("Color", TLBM_TEXT_DOMAIN) ?></th>
             </tr>
             </thead>
             <tbody>
@@ -122,42 +129,37 @@ class BookingStates extends SettingsBase
                 <tr>
                     <td>
                         <label>
-                            <input type="checkbox" name="<?php
-                            echo $this->optionName ?>[<?php
-                            echo $key ?>][enabled]" <?php
+                            <input type="checkbox" name="<?php echo $this->escaping->escAttr($this->optionName); ?>[<?php echo $this->escaping->escAttr($key); ?>][enabled]" <?php
                             checked(boolval($state['enabled'])) ?> value="true">
                         </label>
                     </td>
                     <td>
                         <label>
-                            <input class="tlbm-status-name-input" readonly type="text" value="<?php
-                            echo $state['name'] ?>" name="<?php
-                            echo $this->optionName ?>[<?php
-                            echo $key ?>][name]">
+                            <input class="tlbm-status-name-input" readonly type="text" value="<?php echo $this->escaping->escAttr($state['name']) ?>" name="<?php echo $this->escaping->escAttr($this->optionName) ?>[<?php echo $this->escaping->escAttr($key) ?>][name]">
                         </label>
                     </td>
                     <td>
                         <label>
                             <input type="text" class="regular-text tlbm-settings-table-short-input" name="<?php
-                            echo $this->optionName ?>[<?php
-                            echo $key ?>][title]" value="<?php
-                            echo $state['title']; ?>">
+                            echo $this->escaping->escAttr($this->optionName) ?>[<?php
+                            echo $this->escaping->escAttr($key) ?>][title]" value="<?php
+                            echo $this->escaping->escAttr($state['title']); ?>">
                         </label>
                     </td>
                     <td>
                         <label>
                             <input type="color" class="tlbm-settings-table-short-input" name="<?php
-                            echo $this->optionName ?>[<?php
-                            echo $key ?>][color]" value="<?php
-                            echo $state['color']; ?>">
+                            echo $this->escaping->escAttr($this->optionName) ?>[<?php
+                            echo $this->escaping->escAttr($key) ?>][color]" value="<?php
+                            echo $this->escaping->escAttr($state['color']); ?>">
                         </label>
                     </td>
                     <?php
                     if (isset($state['custom']) && $state['custom']): ?>
                         <td>
                             <input type='hidden' name="<?php
-                            echo $this->optionName ?>[<?php
-                            echo $key ?>][custom]" value='true'>
+                            echo $this->escaping->escAttr($this->optionName); ?>[<?php
+                            echo $this->escaping->escAttr($key); ?>][custom]" value='true'>
                             <a class='button-status-delete button-link-delete' href='#'><span
                                         class="dashicons dashicons-trash"></span></a>
                         </td>
@@ -165,20 +167,17 @@ class BookingStates extends SettingsBase
                     else: ?>
                         <td>
                             <input type='hidden' name="<?php
-                            echo $this->optionName ?>[<?php
-                            echo $key ?>][custom]" value=''>
+                            echo $this->escaping->escAttr($this->optionName); ?>[<?php
+                            echo $this->escaping->escAttr($key); ?>][custom]" value=''>
                         </td>
                     <?php
                     endif; ?>
                 </tr>
                 <?php
             } ?>
-            <tr class="tlbm-booking-states-edit" data-nametag="<?php
-            echo $this->optionName ?>" data-count="<?php
-            echo sizeof($states) ?>">
+            <tr class="tlbm-booking-states-edit" data-nametag="<?php echo $this->escaping->escAttr($this->optionName); ?>" data-count="<?php echo sizeof($states) ?>">
                 <td>
-                    <button class="button tlbm-add-booking-state"><?php
-                        echo $this->localization->getText("Add Custom Status", TLBM_TEXT_DOMAIN) ?></button>
+                    <button class="button tlbm-add-booking-state"><?php $this->localization->echoText("Add Custom Status", TLBM_TEXT_DOMAIN) ?></button>
                 </td>
             </tr>
             </tbody>

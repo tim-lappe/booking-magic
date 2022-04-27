@@ -4,6 +4,8 @@ namespace TLBM\Repository;
 
 use Exception;
 use Iterator;
+use Throwable;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\TimeUtilsInterface;
 use TLBM\Entity\ManageableEntity;
 use TLBM\MainFactory;
@@ -28,8 +30,20 @@ class EntityRepository implements EntityRepositoryInterface
      */
     private CacheManager $cacheManager;
 
-    public function __construct(ORMInterface $repository, TimeUtilsInterface $timeUtils, CacheManager $cacheManager)
+	/**
+	 * @var EscapingInterface
+	 */
+	private EscapingInterface $escaping;
+
+	/**
+	 * @param EscapingInterface $escaping
+	 * @param ORMInterface $repository
+	 * @param TimeUtilsInterface $timeUtils
+	 * @param CacheManager $cacheManager
+	 */
+    public function __construct(EscapingInterface $escaping, ORMInterface $repository, TimeUtilsInterface $timeUtils, CacheManager $cacheManager)
     {
+		$this->escaping     = $escaping;
         $this->repository   = $repository;
         $this->timeUtils    = $timeUtils;
         $this->cacheManager = $cacheManager;
@@ -117,8 +131,7 @@ class EntityRepository implements EntityRepositoryInterface
     public function saveEntity(ManageableEntity $entity): bool
     {
         try {
-            $mgr = $this->repository->getEntityManager();
-
+	        $mgr = $this->repository->getEntityManager();
             if ( !$mgr->contains($entity)) {
                 $entity->setTimestampCreated($this->timeUtils->time());
             }
@@ -128,11 +141,13 @@ class EntityRepository implements EntityRepositoryInterface
             $mgr->persist($entity);
             $mgr->flush();
 
+
             $this->cacheManager->clearCache();
+
             return true;
-        } catch (Exception $exception) {
+        } catch ( Throwable $exception) {
             if(WP_DEBUG) {
-                echo $exception->getMessage();
+                echo $this->escaping->escHtml($exception->getMessage());
             }
         }
 

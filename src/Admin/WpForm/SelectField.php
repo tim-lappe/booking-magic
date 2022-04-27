@@ -3,6 +3,9 @@
 
 namespace TLBM\Admin\WpForm;
 
+use TLBM\ApiUtils\Contracts\EscapingInterface;
+use TLBM\MainFactory;
+
 if ( !defined('ABSPATH')) {
     return;
 }
@@ -18,7 +21,7 @@ class SelectField extends FormFieldBase
     /**
      * @var bool
      */
-    private bool $wide = false;
+    private bool $wide;
 
     /**
      * @param string $name
@@ -40,24 +43,23 @@ class SelectField extends FormFieldBase
      */
     public function displayContent($value): void
     {
+        $escaping = MainFactory::get(EscapingInterface::class);
+
         ?>
         <tr>
-            <th scope="row"><label for="<?php
-                echo $this->name ?>"><?php
-                    echo $this->title ?></label></th>
+            <th scope="row"><label for="<?php echo $escaping->escAttr($this->name) ?>"><?php echo $escaping->escHtml($this->title); ?></label></th>
             <td>
-                <select <?php echo $this->wide ? 'class="tlbm-select-wide"' : '' ?> name="<?php echo $this->name ?>">
-                    <?php
-                    foreach ($this->options as $key => $option): ?>
-                        <option <?php
-                        echo $value == $key ? "selected='selected'" : "" ?> value="<?php
-                        echo $key ?>">
-                            <?php
-                            echo $option ?>
-                        </option>
-                    <?php
-                    endforeach; ?>
-                </select>
+                <label>
+                    <select <?php echo $this->wide ? 'class="tlbm-select-wide"' : '' ?> name="<?php echo $escaping->escAttr($this->name) ?>">
+                        <?php
+                        foreach ($this->options as $key => $option): ?>
+                            <option <?php echo $value == $key ? "selected='selected'" : "" ?> value="<?php echo $escaping->escAttr($key) ?>">
+                                <?php echo $escaping->escHtml($option) ?>
+                            </option>
+                        <?php
+                        endforeach; ?>
+                    </select>
+                </label>
             </td>
         </tr>
         <?php

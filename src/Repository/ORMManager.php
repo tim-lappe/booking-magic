@@ -10,6 +10,7 @@ use Doctrine\ORM\Events;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
 use Throwable;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\Repository\Contracts\ORMInterface;
 use TLBM\Repository\Functions\Date;
 
@@ -26,11 +27,18 @@ class ORMManager implements ORMInterface
      */
     private ?EventManager $eventManager;
 
+	/**
+	 * @var EscapingInterface
+	 */
+	private EscapingInterface $escaping;
+
     /**
      *
      */
-    public function __construct()
+    public function __construct(EscapingInterface $escaping)
     {
+		$this->escaping = $escaping;
+
         try {
             $configuration = Setup::createAnnotationMetadataConfiguration([TLBM_DIR . "/src/Entity"], true, null, null, false);
             $this->addCustomFunctions($configuration);
@@ -48,7 +56,7 @@ class ORMManager implements ORMInterface
             $this->mysqlPolyfill();
 
         } catch (Throwable $error) {
-            echo $error->getMessage();
+            echo $this->escaping->escHtml($error->getMessage());
         }
     }
 
@@ -63,7 +71,7 @@ class ORMManager implements ORMInterface
             $conn->getDatabasePlatform()->registerDoctrineTypeMapping('bit', 'boolean');
         } catch (Throwable $throwable) {
             if(WP_DEBUG) {
-                echo $throwable->getMessage();
+                echo $this->escaping->escHtml($throwable->getMessage());
             }
         }
     }

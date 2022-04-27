@@ -4,6 +4,9 @@
 namespace TLBM\Admin\Pages\SinglePages\Dashboard;
 
 
+use TLBM\ApiUtils\Contracts\EscapingInterface;
+use TLBM\MainFactory;
+
 abstract class DashboardTile
 {
     /**
@@ -16,8 +19,17 @@ abstract class DashboardTile
      */
     public int $growLevel = 1;
 
+	/**
+	 * @var EscapingInterface
+	 */
+    private EscapingInterface $escaping;
+
+	/**
+	 * @param string $title
+	 */
     public function __construct(string $title = "")
     {
+        $this->escaping = MainFactory::get(EscapingInterface::class);
         $this->title = $title;
     }
 
@@ -35,8 +47,8 @@ abstract class DashboardTile
 
 
         ?>
-        <div class="<?php echo implode(" ", $css ) ?>">
-            <h2><?php echo $this->title ?></h2>
+        <div class="<?php echo $this->escaping->escAttr(implode(" ", $css )) ?>">
+            <h2><?php echo $this->escaping->escHtml($this->title) ?></h2>
             <?php $this->displayBody(); ?>
         </div>
         <?php

@@ -156,7 +156,7 @@ class BookingProcessor
         $bookingValues = $this->createBookingValues();
         $calendarBookings = $this->createCalendarBookings();
 
-        if($calendarBookings != null) {
+        if($calendarBookings !== null) {
             foreach ($calendarBookings as $calendarBooking) {
                 $booking->addCalendarBooking($calendarBooking);
             }
@@ -167,6 +167,7 @@ class BookingProcessor
 
             if ($this->entityRepository->saveEntity($booking)) {
                 $this->pendingBooking = $booking;
+
                 return $booking;
             }
         }

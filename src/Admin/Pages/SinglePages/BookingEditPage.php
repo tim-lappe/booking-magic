@@ -6,6 +6,7 @@ use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\BookingStates;
 use TLBM\Admin\WpForm\SelectField;
 use TLBM\Admin\WpForm\TextareaField;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Booking\BookingChangeManager;
 use TLBM\Booking\Semantic\BookingValueSemantic;
@@ -41,10 +42,19 @@ class BookingEditPage extends EntityEditPage
      */
     protected LocalizationInterface $localization;
 
+	/**
+	 * @var MailSenderInterface
+	 */
     protected MailSenderInterface $mailSender;
 
-    public function __construct(MailSenderInterface $mail, EntityRepositoryInterface $entityRepository, BookingRepositoryInterface $bookingManager, SettingsManagerInterface $settingsManager, LocalizationInterface $localization)
+	/**
+	 * @var EscapingInterface
+	 */
+    protected EscapingInterface $escaping;
+
+    public function __construct(EscapingInterface $escaping, MailSenderInterface $mail, EntityRepositoryInterface $entityRepository, BookingRepositoryInterface $bookingManager, SettingsManagerInterface $settingsManager, LocalizationInterface $localization)
     {
+        $this->escaping         = $escaping;
         $this->mailSender       = $mail;
         $this->settingsManager  = $settingsManager;
         $this->bookingManager   = $bookingManager;
@@ -90,7 +100,7 @@ class BookingEditPage extends EntityEditPage
         <div class="tlbm-admin-page-tile-row">
             <div class="tlbm-admin-page-tile tlbm-admin-page-tile-grow-2 tlbm-admin-page-booking-value-tile">
                 <div class="tlbm-admin-booking-id"> <?php
-                    echo sprintf($this->localization->getText("#%s", TLBM_TEXT_DOMAIN), $booking->getId()) ?></div>
+                    echo $this->escaping->escHtml(sprintf($this->localization->getText("#%s", TLBM_TEXT_DOMAIN), $booking->getId())) ?></div>
                 <div class="tlbm-admin-booking-values">
                     <?php
                     if ($semantic->hasFullName()): ?>
@@ -98,7 +108,7 @@ class BookingEditPage extends EntityEditPage
                             <span class="tlbm-booking-value-title"><?php
                                 _e("Name", TLBM_TEXT_DOMAIN); ?></span>
                             <span class="tlbm-booking-value-content"><?php
-                                echo $semantic->getFullName() ?></span>
+                                echo $this->escaping->escHtml($semantic->getFullName()); ?></span>
                         </div>
                     <?php
                     endif; ?>
@@ -108,7 +118,7 @@ class BookingEditPage extends EntityEditPage
                             <span class="tlbm-booking-value-title"><?php
                                 _e("Address", TLBM_TEXT_DOMAIN); ?></span>
                             <span class="tlbm-booking-value-content"><?php
-                                echo $semantic->getFullAddress() ?></span>
+                                echo $this->escaping->escHtml($semantic->getFullAddress()) ?></span>
                         </div>
                     <?php
                     endif; ?>
@@ -118,8 +128,8 @@ class BookingEditPage extends EntityEditPage
                             <span class="tlbm-booking-value-title"><?php
                                 _e("E-Mail", TLBM_TEXT_DOMAIN); ?></span>
                             <span class="tlbm-booking-value-content">
-                                <a href="mailto:<?php echo $semantic->getContactEmail() ?>">
-                                    <?php echo $semantic->getContactEmail() ?>
+                                <a href="mailto:<?php echo $this->escaping->escAttr($semantic->getContactEmail()) ?>">
+                                    <?php echo $this->escaping->escHtml($semantic->getContactEmail()); ?>
                                 </a>
                             </span>
                         </div>
@@ -130,9 +140,9 @@ class BookingEditPage extends EntityEditPage
                         if(!in_array( $value->getName(), $semantic->getAllSemanticFieldNames())) {
                             ?>
                             <div class="tlbm-admin-booking-block">
-                                <span class="tlbm-booking-value-title"><?php echo $value->getTitle(); ?></span>
+                                <span class="tlbm-booking-value-title"><?php echo $this->escaping->escHtml($value->getTitle()); ?></span>
                                 <span class="tlbm-booking-value-content">
-                                    <?php echo $value->getValue(); ?>
+                                    <?php echo $this->escaping->escHtml($value->getValue()); ?>
                                 </span>
                             </div>
                             <?php
@@ -148,12 +158,12 @@ class BookingEditPage extends EntityEditPage
                             $fromDt = $calendarBooking->getFromDateTime();
                             $toDt = $calendarBooking->getToDateTime();
                             ?>
-                            <span class="tlbm-booking-value-title"><?php echo $calendarBooking->getTitleFromForm(); ?></span>
+                            <span class="tlbm-booking-value-title"><?php echo $this->escaping->escHtml($calendarBooking->getTitleFromForm()); ?></span>
                             <span class="tlbm-booking-calendar-content">
                                 <?php if($toDt == null || $fromDt->isEqualTo($toDt)): ?>
-                                    <?php echo $calendarBooking->getFromDateTime(); ?>
+                                    <?php echo $this->escaping->escHtml($calendarBooking->getFromDateTime()); ?>
                                 <?php else: ?>
-                                    <?php echo $calendarBooking->getFromDateTime(); ?> - <?php echo $calendarBooking->getToDateTime(); ?>
+                                    <?php echo $this->escaping->escHtml($calendarBooking->getFromDateTime()); ?> - <?php echo $this->escaping->escHtml($calendarBooking->getToDateTime()); ?>
                                 <?php endif; ?>
                             </span>
                             <?php
@@ -180,7 +190,7 @@ class BookingEditPage extends EntityEditPage
         $booking = $this->getEditingEntity();
         if($booking != null) {
             ?>
-            <a class="button tlbm-admin-button-bar" href="<?php echo $this->adminPageManager->getPage(BookingEditValuesPage::class)->getEditLink($booking->getId()); ?>">
+            <a class="button tlbm-admin-button-bar" href="<?php echo $this->escaping->escAttr($this->adminPageManager->getPage(BookingEditValuesPage::class)->getEditLink($booking->getId())); ?>">
                 <span class="dashicons dashicons-edit" style="margin-right: 0.25em"></span> <?php _e("Edit Booking", TLBM_TEXT_DOMAIN); ?>
             </a>
             <?php
@@ -213,7 +223,7 @@ class BookingEditPage extends EntityEditPage
 
         $bookingChange = MainFactory::create(BookingChangeManager::class);
         $bookingChange->setBooking($booking);
-        $bookingChange->setState($this->sanitizing->sanitizeKey($vars['state']));
+        $bookingChange->setState($this->sanitizing->sanitizeTextfield($vars['state']));
         $bookingChange->storeValuesToBooking();
 
         $booking->setNotes($this->sanitizing->sanitizeTextfield($vars['notes']));

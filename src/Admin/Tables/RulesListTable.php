@@ -11,6 +11,7 @@ use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\Rules\PriorityLevels;
 use TLBM\Admin\Tables\DisplayHelper\DisplayCalendarSelection;
 use TLBM\Admin\Tables\DisplayHelper\DisplayPeriods;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\Calendar;
 use TLBM\Entity\Rule;
@@ -32,8 +33,21 @@ class RulesListTable extends ManagableEntityTable
      */
     private SettingsManagerInterface $settingsManager;
 
-    public function __construct(EntityRepositoryInterface $entityRepository, AdminPageManagerInterface $adminPageManager, SettingsManagerInterface $settingsManager, LocalizationInterface $localization)
+	/**
+	 * @var EscapingInterface
+	 */
+    protected EscapingInterface $escaping;
+
+	/**
+	 * @param EscapingInterface $escaping
+	 * @param EntityRepositoryInterface $entityRepository
+	 * @param AdminPageManagerInterface $adminPageManager
+	 * @param SettingsManagerInterface $settingsManager
+	 * @param LocalizationInterface $localization
+	 */
+    public function __construct(EscapingInterface $escaping, EntityRepositoryInterface $entityRepository, AdminPageManagerInterface $adminPageManager, SettingsManagerInterface $settingsManager, LocalizationInterface $localization)
     {
+        $this->escaping = $escaping;
         $this->entityRepository = $entityRepository;
         $this->adminPageManager = $adminPageManager;
         $this->settingsManager  = $settingsManager;
@@ -85,9 +99,9 @@ class RulesListTable extends ManagableEntityTable
             if ($ruleEditPage instanceof RuleEditPage) {
                 $link = $ruleEditPage->getEditLink($item->getId());
                 if ( !empty($item->getTitle())) {
-                    echo "<strong><a href='" . $link . "'>" . $item->getTitle() . "</a></strong>";
+                    echo "<strong><a href='" . $this->escaping->escAttr($link) . "'>" . $this->escaping->escHtml($item->getTitle()) . "</a></strong>";
                 } else {
-                    echo "<strong><a href='" . $link . "'>" . $item->getId() . "</a></strong>";
+                    echo "<strong><a href='" . $this->escaping->escAttr($link) . "'>" . $this->escaping->escHtml($item->getId()) . "</a></strong>";
                 }
             }
         }),
@@ -100,7 +114,7 @@ class RulesListTable extends ManagableEntityTable
             }),
             new Column("priority", $this->localization->getText("Priority", TLBM_TEXT_DOMAIN), true, function ($item) {
                 $levels = $this->settingsManager->getValue(PriorityLevels::class);
-                echo $levels[$item->getPriority()];
+                echo $this->escaping->escHtml($levels[$item->getPriority()]);
             }),
             new Column("periods", $this->localization->getText("Periods", TLBM_TEXT_DOMAIN), false, function ($item) {
                 $periods        = $item->getPeriods();
@@ -123,14 +137,10 @@ class RulesListTable extends ManagableEntityTable
             ?>
             <div class="alignleft actions bulkactions">
                 <select name="filter_calendar">
-                    <option value=""><?php
-                        echo $this->localization->getText("All Calendars", TLBM_TEXT_DOMAIN); ?></option>
+                    <option value=""><?php $this->localization->echoText("All Calendars", TLBM_TEXT_DOMAIN); ?></option>
                     <?php
                     foreach ($calendars as $calendar): ?>
-                        <option <?php
-                        selected($calendar->getId(), $this->sanitizing->sanitizeKey($_GET['filter_calendar']), true) ?> value="<?php
-                        echo $calendar->getId() ?>"><?php
-                            echo $calendar->getTitle() ?></option>
+                        <option <?php selected($calendar->getId(), $this->sanitizing->sanitizeKey($_GET['filter_calendar'] ?? ""), true) ?> value="<?php echo $calendar->getId() ?>"><?php echo $this->escaping->escHtml($calendar->getTitle()) ?></option>
                     <?php
                     endforeach; ?>
                 </select>

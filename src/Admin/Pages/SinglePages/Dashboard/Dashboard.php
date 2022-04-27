@@ -4,6 +4,7 @@
 namespace TLBM\Admin\Pages\SinglePages\Dashboard;
 
 use TLBM\Admin\Pages\SinglePages\Dashboard\Contracts\DashboardInterface;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 
 class Dashboard implements DashboardInterface
@@ -14,10 +15,23 @@ class Dashboard implements DashboardInterface
      */
     private array $tiles = array();
 
+	/**
+	 * @var LocalizationInterface
+	 */
     private LocalizationInterface $localization;
 
-    public function __construct(LocalizationInterface $localization)
+	/**
+	 * @var EscapingInterface
+	 */
+    private EscapingInterface $escaping;
+
+	/**
+	 * @param EscapingInterface $escaping
+	 * @param LocalizationInterface $localization
+	 */
+    public function __construct(EscapingInterface $escaping, LocalizationInterface $localization)
     {
+        $this->escaping = $escaping;
         $this->localization = $localization;
     }
 
@@ -75,9 +89,9 @@ class Dashboard implements DashboardInterface
                         ?>
                         <div class="tlbm-news-sidebar tlbm-admin-page-tile">
                             <h2><?php $this->localization->echoText("News", TLBM_TEXT_DOMAIN) ?></h2>
-                            <?php echo $newscontent; ?>
+	                        <?php echo strip_tags($newscontent, "<div><p><br><h2><h3><span><b><a>"); ?>
                         </div>
-                        <?php
+	                    <?php
                     }
                 }
                 ?>

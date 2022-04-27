@@ -3,6 +3,7 @@
 
 namespace TLBM\Admin\Tables;
 
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\ApiUtils\Contracts\SanitizingInterface;
 use TLBM\MainFactory;
@@ -118,8 +119,10 @@ abstract class TableBase extends WP_List_Table
      * @return Column
      */
     protected function getCheckboxColumn(callable $getIdCallback): Column {
-        return new Column("cb", "<input type='checkbox' />", false, function ($item) use ($getIdCallback) {
-            echo '<input type="checkbox" name="ids[]" value="' . call_user_func($getIdCallback, $item) . '" />';
+		$escaping = MainFactory::get(EscapingInterface::class);
+
+        return new Column("cb", "<input type='checkbox' />", false, function ($item) use ($getIdCallback, $escaping) {
+            echo '<input type="checkbox" name="ids[]" value="' . $escaping->escAttr(call_user_func($getIdCallback, $item)) . '" />';
         });
     }
 
@@ -187,11 +190,11 @@ abstract class TableBase extends WP_List_Table
      */
     public function process_bulk_action()
     {
-		$nonce = $this->sanitizing->sanitizeKey($_POST['_wpnonce']);
-		$action = $this->sanitizing->sanitizeKey($_REQUEST['action']);
+		$nonce = $this->sanitizing->sanitizeKey($_POST['_wpnonce'] ?? "");
+		$action = $this->sanitizing->sanitizeKey($_REQUEST['action'] ?? "");
 		$ids = [];
 
-		if(is_array($_REQUEST['ids'])) {
+		if(isset($_REQUEST['ids']) && is_array($_REQUEST['ids'])) {
 			foreach ( $_REQUEST['ids'] as $id ) {
 				$ids[] = $this->sanitizing->sanitizeKey( $id );
 			}

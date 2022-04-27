@@ -33,6 +33,9 @@ abstract class RequestBase
      */
     protected LocalizationInterface $localization;
 
+	/**
+	 * @param LocalizationInterface $localization
+	 */
     public function __construct(LocalizationInterface $localization)
     {
         $this->localization = $localization;

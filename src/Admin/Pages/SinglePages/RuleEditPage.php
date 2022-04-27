@@ -77,7 +77,7 @@ class RuleEditPage extends EntityEditPage
         ?>
 
         <div class="tlbm-admin-page-tile">
-            <input value="<?php echo $rule->getTitle() ?>" placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
+            <input value="<?php echo $this->escaping->escAttr($rule->getTitle()); ?>" placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
         </div>
         <div class="tlbm-admin-page-tile-row">
             <div class="tlbm-admin-page-tile">
@@ -117,8 +117,8 @@ class RuleEditPage extends EntityEditPage
             $rule = new Rule();
         }
 
-        $rule->setTitle($this->sanitizing->sanitizeTitle($vars['title']));
-        $rule->setPriority($this->sanitizing->sanitizeKey($vars['rule_priority']));
+        $rule->setTitle($this->sanitizing->sanitizeTextfield($vars['title']));
+        $rule->setPriority($this->sanitizing->sanitizeTextfield($vars['rule_priority']));
 
         $actions            = $this->formBuilder->readVars("rule_actions", $vars);
         $calendar_selection = $this->formBuilder->readVars("calendars", $vars);

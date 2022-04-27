@@ -63,16 +63,21 @@ class FormEditPage extends EntityEditPage
     public function displayEntityEditForm(): void
     {
         $form = $this->getEditingEntity();
+	    ?>
+
+	    <?php if($form != null): ?>
+            <input type="hidden" name="form_id" value="<?php echo $this->escaping->escAttr($form->getId()) ?>" />
+        <?php endif; ?>
+        <?php
         if(!$form) {
             $form = new Form();
         }
-
         ?>
-        <?php if($form != null): ?>
-            <input type="hidden" name="form_id" value="<?php echo $form->getId() ?>" />
-        <?php endif; ?>
+
         <div class="tlbm-admin-page-tile">
-            <input value="<?php echo $form->getTitle() ?>" placeholder="<?php _e("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
+            <label>
+                <input value="<?php echo $this->escaping->escAttr($form->getTitle()) ?>" placeholder="<?php $this->localization->echoText("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
+            </label>
         </div>
         <div class="tlbm-admin-page-tile">
             <?php
@@ -95,7 +100,7 @@ class FormEditPage extends EntityEditPage
         }
 
         $formValidator = new FormEntityValidator($form);
-        $form->setTitle($this->sanitizing->sanitizeTitle($vars['title']));
+        $form->setTitle($this->sanitizing->sanitizeTextfield($vars['title']));
 
         try {
             if(isset($vars['form'])) {

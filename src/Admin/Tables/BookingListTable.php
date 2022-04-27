@@ -85,30 +85,34 @@ class BookingListTable extends ManagableEntityTable
             $states        = $statesSetting->getStatesKeyValue();
             ?>
             <div class="alignleft actions bulkactions">
-                <select name="filter_calendar">
-                    <option value=""><?php
-                        echo $this->localization->getText("All Calendars", TLBM_TEXT_DOMAIN); ?></option>
-                    <?php
-                    foreach ($calendars as $calendar): ?>
-                        <option <?php
-                        selected($calendar->getId(),  $this->sanitizing->sanitizeKey($_GET['filter_calendar']), true) ?> value="<?php
-                        echo $calendar->getId() ?>"><?php
-                            echo $calendar->getTitle() ?></option>
-                    <?php
-                    endforeach; ?>
-                </select>
-                <select name="filter_state">
-                    <option value=""><?php
-                        echo $this->localization->getText("All States", TLBM_TEXT_DOMAIN); ?></option>
-                    <?php
-                    foreach ($states as $key => $title): ?>
-                        <option <?php
-                        selected($key, $this->sanitizing->sanitizeKey($_GET['filter_state']), true) ?> value="<?php
-                        echo $key ?>"><?php
-                            echo $title ?></option>
-                    <?php
-                    endforeach; ?>
-                </select>
+                <label>
+                    <select name="filter_calendar">
+                        <option value=""><?php
+                            echo $this->localization->getText("All Calendars", TLBM_TEXT_DOMAIN); ?></option>
+                        <?php
+                        foreach ($calendars as $calendar): ?>
+                            <option <?php
+                            selected($calendar->getId(),  $this->sanitizing->sanitizeTextfield($_GET['filter_calendar'] ?? ""), true) ?> value="<?php
+                            echo $calendar->getId() ?>"><?php
+                                echo $calendar->getTitle() ?></option>
+                        <?php
+                        endforeach; ?>
+                    </select>
+                </label>
+                <label>
+                    <select name="filter_state">
+                        <option value=""><?php
+                            echo $this->localization->getText("All States", TLBM_TEXT_DOMAIN); ?></option>
+                        <?php
+                        foreach ($states as $key => $title): ?>
+                            <option <?php
+                            selected($key, $this->sanitizing->sanitizeTextfield($_GET['filter_state'] ?? ""), true) ?> value="<?php
+                            echo $key ?>"><?php
+                                echo $title ?></option>
+                        <?php
+                        endforeach; ?>
+                    </select>
+                </label>
                 <button class="button" type="submit">Filter</button>
             </div>
 
@@ -158,7 +162,7 @@ class BookingListTable extends ManagableEntityTable
                     $statesSetting = $this->settingsManager->getSetting(BookingStates::class);
                     $statesKeys    = array_keys($statesSetting->getStatesKeyValue());
                     if (in_array($_GET['filter_state'], $statesKeys)) {
-                        $query->setFilterStates([$this->sanitizing->sanitizeKey($_GET['filter_state'])]);
+                        $query->setFilterStates([$this->sanitizing->sanitizeTextfield($_GET['filter_state'])]);
                     }
                 }
             }

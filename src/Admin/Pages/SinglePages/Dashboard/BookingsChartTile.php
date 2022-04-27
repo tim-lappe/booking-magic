@@ -4,6 +4,7 @@
 namespace TLBM\Admin\Pages\SinglePages\Dashboard;
 
 
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Booking\Statistics;
 use TLBM\Utilities\ExtendedDateTime;
@@ -15,12 +16,19 @@ class BookingsChartTile extends DashboardTile
      */
     private Statistics $statistics;
 
-    /**
-     * @param LocalizationInterface $localization
-     * @param Statistics $statistics
-     */
-    public function __construct(LocalizationInterface $localization, Statistics $statistics)
+	/**
+	 * @var EscapingInterface
+	 */
+    private EscapingInterface $escaping;
+
+	/**
+	 * @param LocalizationInterface $localization
+	 * @param Statistics $statistics
+	 * @param EscapingInterface $escaping
+	 */
+    public function __construct(LocalizationInterface $localization, Statistics $statistics, EscapingInterface $escaping)
     {
+        $this->escaping = $escaping;
         $this->statistics = $statistics;
         parent::__construct($localization->getText("Bookings", TLBM_TEXT_DOMAIN));
     }
@@ -32,7 +40,7 @@ class BookingsChartTile extends DashboardTile
 
         $bookingsCount = $this->statistics->getBookingsCountMonthly($dt, new ExtendedDateTime());
         ?>
-        <div class="tlbm-admin-line-chart" data-json="<?php echo urlencode(json_encode($bookingsCount)) ?>">
+        <div class="tlbm-admin-line-chart" data-json="<?php echo $this->escaping->escAttr(urlencode(json_encode($bookingsCount))); ?>">
 
         </div>
         <?php
