@@ -74,7 +74,7 @@ class BookingStates extends SettingsBase
                 "color" => "#a10b0b",
                 "custom" => false
             ),
-            ["name" => "cancelled",
+            [ "name" => "cancelled",
                 "title" => $this->localization->getText("Cancelled", TLBM_TEXT_DOMAIN),
                 "enabled" => true,
                 "default" => false,
@@ -93,6 +93,22 @@ class BookingStates extends SettingsBase
         }
 
         return $stateskeyval;
+    }
+
+	/**
+	 * @return array
+	 */
+    public function getEnabledStatesKeyValue(): array
+    {
+	    $states       = $this->getValue();
+	    $stateskeyval = array();
+	    foreach ($states as $state) {
+            if(isset($state['enabled']) && $state['enabled']) {
+	            $stateskeyval[$state['name']] = $state['title'];
+            }
+	    }
+
+	    return $stateskeyval;
     }
 
     public function getStateByName($name): array

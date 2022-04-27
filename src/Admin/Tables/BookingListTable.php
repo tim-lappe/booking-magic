@@ -57,7 +57,7 @@ class BookingListTable extends ManagableEntityTable
         parent::processBuldActions($action, $ids);
 
         $settingsStates = $this->settingsManager->getSetting(BookingStates::class);
-        $states = $settingsStates->getStatesKeyValue();
+        $states = $settingsStates->getEnabledStatesKeyValue();
 
         foreach ($states as $key => $title) {
             if($action == "set_state_" . $key) {
@@ -82,7 +82,7 @@ class BookingListTable extends ManagableEntityTable
              */
             $calendars     = $this->entityRepository->getEntites(Calendar::class);
             $statesSetting = $this->settingsManager->getSetting(BookingStates::class);
-            $states        = $statesSetting->getStatesKeyValue();
+            $states        = $statesSetting->getEnabledStatesKeyValue();
             ?>
             <div class="alignleft actions bulkactions">
                 <label>
@@ -124,7 +124,7 @@ class BookingListTable extends ManagableEntityTable
     {
         $bulkActions    = parent::getBulkActions();
         $settingsStates = $this->settingsManager->getSetting(BookingStates::class);
-        $states         = $settingsStates->getStatesKeyValue();
+        $states         = $settingsStates->getEnabledStatesKeyValue();
 
         $cstatelabel               = $this->localization->getText("Set state", TLBM_TEXT_DOMAIN);
         $bulkActions[$cstatelabel] = [];
@@ -160,7 +160,7 @@ class BookingListTable extends ManagableEntityTable
 
                 if (isset($_GET['filter_state'])) {
                     $statesSetting = $this->settingsManager->getSetting(BookingStates::class);
-                    $statesKeys    = array_keys($statesSetting->getStatesKeyValue());
+                    $statesKeys    = array_keys($statesSetting->getEnabledStatesKeyValue());
                     if (in_array($_GET['filter_state'], $statesKeys)) {
                         $query->setFilterStates([$this->sanitizing->sanitizeTextfield($_GET['filter_state'])]);
                     }

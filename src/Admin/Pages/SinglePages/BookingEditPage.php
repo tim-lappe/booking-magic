@@ -71,7 +71,7 @@ class BookingEditPage extends EntityEditPage
         $states   = [];
         $settings = $this->settingsManager->getSetting(BookingStates::class);
         if ($settings instanceof BookingStates) {
-            $states = $settings->getStatesKeyValue();
+            $states = $settings->getEnabledStatesKeyValue();
         }
 
         $this->formBuilder->defineFormField(new SelectField("state", $this->localization->getText("State", TLBM_TEXT_DOMAIN), $states, true));
