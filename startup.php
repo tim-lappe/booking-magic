@@ -30,8 +30,11 @@ try {
     $tlbmContainerBuilder = new ContainerBuilder();
     $tlbmContainerBuilder->addDefinitions ( __DIR__ . "/dependency.php" );
 
-    if ( ! WP_DEBUG) {
-        $tlbmContainerBuilder->enableCompilation ( sys_get_temp_dir () );
+    if (!WP_DEBUG) {
+		if(!file_exists(sys_get_temp_dir () . "/booking-magic-tmp")) {
+			mkdir(sys_get_temp_dir () . "/booking-magic-tmp");
+		}
+        $tlbmContainerBuilder->enableCompilation ( sys_get_temp_dir () . "/booking-magic-tmp" );
     }
 
     $tlbmContainer = $tlbmContainerBuilder->build ();

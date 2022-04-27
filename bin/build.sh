@@ -5,6 +5,7 @@ srcPath=".."
 
 cd ..
 composer install --no-dev || exit
+composer dump-autoload || exit
 npm install || exit
 npm run build || exit
 

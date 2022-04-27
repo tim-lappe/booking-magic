@@ -23,6 +23,12 @@ class PluginActivation
     }
 
     public function onActivation() {
+		if(file_exists(sys_get_temp_dir () . "/booking-magic-tmp/CompiledContainer.php")) {
+			unlink(sys_get_temp_dir () . "/booking-magic-tmp/CompiledContainer.php");
+		} else {
+			mkdir(sys_get_temp_dir () . "/booking-magic-tmp");
+		}
+
         $this->repository->buildSchema();
     }
 
