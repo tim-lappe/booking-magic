@@ -1,8 +1,7 @@
 {
   "name": "booking-magic",
   "description": "flexible and powerful Booking-Plugin for WordPress",
-  "license": "GPL-2.0-or-later",
-  "version": "1.0.2",
+  "license": "GPL-3.0-or-later",
   "scripts": {
     "env:start": "docker-compose up wordpress wordpress_phpmyadmin",
     "watch": "webpack --watch",

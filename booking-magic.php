@@ -5,7 +5,7 @@ Plugin URI: https://www.booking-magic.de
 Requires PHP: 7.4
 Text Domain: booking-magic-plugin
 Description: Das All-in-one Buchungstool
-Version: 1.0.2
+Version: 1.0.3
 Author: Tim Lappe
 Author URI: https://www.tlappe.de
 License: GPL v3
