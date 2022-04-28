@@ -73,9 +73,9 @@ class CalendarListTable extends ManagableEntityTable
                         if ($calendarEditPage != null) {
                             $link = $calendarEditPage->getEditLink($item->getId());
                             if ( !empty($item->getTitle())) {
-                                echo "<strong><a href='" . $this->escaping->escAttr($link) . "'>" . $this->escaping->escHtml($item->getTitle()) . "</a></strong>";
+                                echo "<strong><a href='" . $this->escaping->escUrl($link) . "'>" . $this->escaping->escHtml($item->getTitle()) . "</a></strong>";
                             } else {
-                                echo "<strong><a href='" . $this->escaping->escAttr($link) . "'>" . $this->escaping->escHtml($item->getId()) . "</a></strong>";
+                                echo "<strong><a href='" . $this->escaping->escUrl($link) . "'>" . $this->escaping->escHtml($item->getId()) . "</a></strong>";
                             }
                         }
                     })

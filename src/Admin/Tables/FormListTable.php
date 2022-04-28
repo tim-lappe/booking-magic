@@ -21,7 +21,7 @@ class FormListTable extends ManagableEntityTable
 	/**
 	 * @var EscapingInterface
 	 */
-	private EscapingInterface $escaping;
+	protected EscapingInterface $escaping;
 
 	/**
 	 * @param EscapingInterface $escaping
@@ -59,9 +59,9 @@ class FormListTable extends ManagableEntityTable
             if ($page instanceof FormEditPage) {
                 $link = $page->getEditLink($item->getId());
                 if ( !empty($item->getTitle())) {
-                    echo "<strong><a href='" . $this->escaping->escAttr($link) . "'>" . $this->escaping->escHtml($item->getTitle()) . "</a></strong>";
+                    echo "<strong><a href='" . $this->escaping->escUrl($link) . "'>" . $this->escaping->escHtml($item->getTitle()) . "</a></strong>";
                 } else {
-                    echo "<strong><a href='" . $this->escaping->escAttr($link) . "'>" . $this->escaping->escHtml($item->getId()) . "</a></strong>";
+                    echo "<strong><a href='" . $this->escaping->escUrl($link) . "'>" . $this->escaping->escHtml($item->getId()) . "</a></strong>";
                 }
             }
         })

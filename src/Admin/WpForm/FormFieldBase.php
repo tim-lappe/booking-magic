@@ -3,6 +3,9 @@
 
 namespace TLBM\Admin\WpForm;
 
+use TLBM\ApiUtils\Contracts\EscapingInterface;
+use TLBM\MainFactory;
+
 if ( !defined('ABSPATH')) {
     return;
 }
@@ -20,6 +23,11 @@ abstract class FormFieldBase
      */
     public string $title;
 
+	/**
+	 * @var EscapingInterface
+	 */
+	protected EscapingInterface $escaping;
+
     /**
      * @param string $name
      * @param string $title
@@ -28,6 +36,8 @@ abstract class FormFieldBase
     {
         $this->name  = $name;
         $this->title = $title;
+
+		$this->escaping = MainFactory::get(EscapingInterface::class);
     }
 
     /**

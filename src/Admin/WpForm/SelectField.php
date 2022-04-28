@@ -51,13 +51,11 @@ class SelectField extends FormFieldBase
             <td>
                 <label>
                     <select <?php echo $this->wide ? 'class="tlbm-select-wide"' : '' ?> name="<?php echo $escaping->escAttr($this->name) ?>">
-                        <?php
-                        foreach ($this->options as $key => $option): ?>
+                        <?php foreach ($this->options as $key => $option): ?>
                             <option <?php echo $value == $key ? "selected='selected'" : "" ?> value="<?php echo $escaping->escAttr($key) ?>">
                                 <?php echo $escaping->escHtml($option) ?>
                             </option>
-                        <?php
-                        endforeach; ?>
+                        <?php endforeach; ?>
                     </select>
                 </label>
             </td>

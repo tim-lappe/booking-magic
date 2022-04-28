@@ -31,13 +31,11 @@ class PeriodEditorField extends FormFieldBase implements FormFieldReadVarsInterf
         }
         ?>
         <tr>
-            <th scope="row"><label for="<?php
-                echo $this->name ?>"><?php
-                    echo $this->title ?></label></th>
+            <th scope="row"><label for="<?php echo $this->escaping->escAttr($this->name) ?>"><?php echo $this->escaping->escHtml($this->title) ?></label></th>
             <td>
-                <div class="tlbm-period-select-field" data-name="<?php
-                echo $this->name ?>" data-json="<?php
-                echo urlencode(json_encode($periods)) ?>"></div>
+                <div class="tlbm-period-select-field"
+                     data-name="<?php echo $this->escaping->escAttr($this->name) ?>"
+                     data-json="<?php echo $this->escaping->escAttr(urlencode(json_encode($periods))); ?>"></div>
             </td>
         </tr>
         <?php

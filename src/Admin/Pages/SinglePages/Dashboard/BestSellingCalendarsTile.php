@@ -90,7 +90,7 @@ class BestSellingCalendarsTile extends DashboardTile
                         $link     = $editPage->getEditLink($calendarId);
                         ?>
                         <tr>
-                            <td><a href="<?php echo $this->escaping->escAttr($link) ?>"><?php echo $this->escaping->escHtml($calendar->getTitle()); ?></a></td>
+                            <td><a href="<?php echo $this->escaping->escUrl($link) ?>"><?php echo $this->escaping->escHtml($calendar->getTitle()); ?></a></td>
                             <td><?php echo $this->escaping->escHtml($amount); ?></td>
                         </tr>
                         <?php

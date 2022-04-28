@@ -19,7 +19,7 @@ class SinglePageBooking extends SettingsBase
     {
         ?>
         <label>
-            <input type="checkbox" name="<?php echo $this->optionName ?>" <?php checked($this->getValue() == "on"); ?>>
+            <input type="checkbox" name="<?php echo $this->escaping->escAttr($this->optionName); ?>" <?php checked($this->getValue() == "on"); ?>>
         </label>
         <?php
     }

@@ -5,6 +5,7 @@ namespace TLBM\Admin\Settings\SingleSettings;
 
 
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\ApiUtils\Contracts\OptionsInterface;
 use TLBM\MainFactory;
@@ -46,6 +47,11 @@ abstract class SettingsBase
      */
     protected LocalizationInterface $localization;
 
+	/**
+	 * @var EscapingInterface
+	 */
+    protected EscapingInterface $escaping;
+
     /**
      * @param string $optionGroup
      * @param string $optionName
@@ -67,6 +73,7 @@ abstract class SettingsBase
         $this->description   = $description;
 
         $this->localization = MainFactory::get(LocalizationInterface::class);
+        $this->escaping = MainFactory::get(EscapingInterface::class);
     }
 
     public function getSettingsManager(): SettingsManagerInterface
@@ -107,9 +114,7 @@ abstract class SettingsBase
     {
         ?>
         <label>
-            <input type="text" class="regular-text" name="<?php
-            echo $this->optionName ?>" value="<?php
-            echo get_option($this->optionName); ?>">
+            <input type="text" class="regular-text" name="<?php echo $this->escaping->escAttr($this->optionName); ?>" value="<?php echo $this->escaping->escAttr(get_option($this->optionName)); ?>">
         </label>
         <?php
     }

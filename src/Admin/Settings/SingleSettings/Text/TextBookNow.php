@@ -17,7 +17,7 @@ class TextBookNow extends SettingsBase
     {
         ?>
         <label>
-            <input type="text" value="<?php echo $this->getValue() ?>" class="regular-text" name="<?php echo $this->optionName ?>">
+            <input type="text" value="<?php echo $this->escaping->escAttr($this->getValue()); ?>" class="regular-text" name="<?php echo $this->escaping->escAttr($this->optionName); ?>">
         </label>
         <?php
     }

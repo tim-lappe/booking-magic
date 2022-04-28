@@ -18,14 +18,9 @@ class TextareaField extends FormFieldBase
     {
         ?>
         <tr>
-            <th scope="row"><label for="<?php
-                echo $this->name ?>"><?php
-                    echo $this->title ?></label></th>
+            <th scope="row"><label for="<?php echo $this->escaping->escAttr($this->name) ?>"><?php echo $this->escaping->escHtml($this->title); ?></label></th>
             <td>
-                <textarea id="<?php
-                echo $this->name ?>" style="width: 100%" rows="5" name="<?php
-                echo $this->name ?>"><?php
-                    echo $value ?></textarea>
+                <textarea id="<?php echo $this->escaping->escAttr($this->name) ?>" style="width: 100%" rows="5" name="<?php echo $this->escaping->escAttr($this->name); ?>"><?php echo $this->escaping->escTextarea($value); ?></textarea>
             </td>
         </tr>
         <?php

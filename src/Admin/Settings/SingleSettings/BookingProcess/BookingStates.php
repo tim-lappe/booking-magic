@@ -191,7 +191,7 @@ class BookingStates extends SettingsBase
                 </tr>
                 <?php
             } ?>
-            <tr class="tlbm-booking-states-edit" data-nametag="<?php echo $this->escaping->escAttr($this->optionName); ?>" data-count="<?php echo sizeof($states) ?>">
+            <tr class="tlbm-booking-states-edit" data-nametag="<?php echo $this->escaping->escAttr($this->optionName); ?>" data-count="<?php echo $this->escaping->escAttr(count($states)) ?>">
                 <td>
                     <button class="button tlbm-add-booking-state"><?php $this->localization->echoText("Add Custom Status", TLBM_TEXT_DOMAIN) ?></button>
                 </td>

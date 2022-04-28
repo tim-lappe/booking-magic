@@ -44,8 +44,7 @@ class RadioField extends FormFieldBase
                     <div class="tlbm-radio-item">
                         <label>
                             <input
-                                <?php
-                                echo $key == $value && !empty($value) ? "checked='checked'" : "" ?>
+                                <?php echo $key == $value && !empty($value) ? "checked='checked'" : "" ?>
                                     id="<?php echo $escaping->escAttr($this->name) ?>-<?php echo $escaping->escAttr($key) ?>"
                                     class="regular-text"
                                     type="radio"

@@ -43,7 +43,7 @@ class PriorityLevels extends SettingsBase
 
         ?>
         <label>
-            <textarea class="regular-text tlbm-admin-textarea" name="<?php echo $this->optionName ?>"><?php echo $value ?></textarea>
+            <textarea class="regular-text tlbm-admin-textarea" name="<?php echo $this->escaping->escAttr($this->optionName); ?>"><?php echo $this->escaping->escHtml($value); ?></textarea>
         </label>
         <?php
     }

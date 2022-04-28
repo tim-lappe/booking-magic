@@ -57,29 +57,22 @@ abstract class EmailSetting extends SettingsBase
         ?>
 
         <label>
-            <select name="<?php
-            echo $this->optionName ?>[enabled]">
-                <option <?php
-                selected("yes", $opt['enabled']) ?> value="yes"><?php
-                    echo $this->localization->getText("Enabled", TLBM_TEXT_DOMAIN) ?></option>
-                <option <?php
-                selected("no", $opt['enabled']) ?> value="no"><?php
-                    echo $this->localization->getText("Disabled", TLBM_TEXT_DOMAIN) ?></option>
+            <select name="<?php echo $this->escaping->escAttr($this->optionName); ?>[enabled]">
+                <option <?php selected("yes", $opt['enabled']) ?> value="yes">
+                    <?php $this->localization->echoText("Enabled", TLBM_TEXT_DOMAIN) ?>
+                </option>
+                <option <?php selected("no", $opt['enabled']) ?> value="no">
+                    <?php $this->localization->echoText("Disabled", TLBM_TEXT_DOMAIN) ?>
+                </option>
             </select>
         </label><br><br>
         <label>
-            <?php
-            echo $this->localization->getText("Subject", TLBM_TEXT_DOMAIN) ?><br>
-            <input type="text" class="regular-text" name="<?php
-            echo $this->optionName ?>[subject]" value="<?php
-            echo $opt['subject']; ?>">
+            <?php $this->localization->echoText("Subject", TLBM_TEXT_DOMAIN) ?><br>
+            <input type="text" class="regular-text" name="<?php echo $this->escaping->escAttr($this->optionName); ?>[subject]" value="<?php echo $this->escaping->escAttr($opt['subject']); ?>">
         </label><br><br>
         <label>
-            <?php
-            echo $this->localization->getText("Message", TLBM_TEXT_DOMAIN) ?><br>
-            <div class="tlbm-html-editor" data-name="<?php
-            echo $this->optionName ?>[message]" data-value="<?php
-            echo urlencode($opt['message']); ?>"></div>
+            <?php $this->localization->echoText("Message", TLBM_TEXT_DOMAIN) ?><br>
+            <div class="tlbm-html-editor" data-name="<?php echo $this->escaping->escAttr($this->optionName); ?>[message]" data-value="<?php echo $this->escaping->escAttr(urlencode($opt['message'])); ?>"></div>
         </label>
 
         <?php

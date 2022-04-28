@@ -149,4 +149,11 @@ interface SanitizingInterface {
 	 * @return string
 	 */
 	public function ksesPost(string $data): string;
+
+	/**
+	 * @param string $data
+	 *
+	 * @return string
+	 */
+	public function ksesPostAndForm(string $data): string;
 }

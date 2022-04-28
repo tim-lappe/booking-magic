@@ -6,6 +6,7 @@ namespace TLBM\Request;
 use TLBM\Admin\Settings\SettingsManager;
 use TLBM\Admin\Settings\SingleSettings\Text\TextBookNow;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\SanitizingInterface;
 use TLBM\Booking\BookingProcessor;
 use TLBM\MainFactory;
 use TLBM\Output\SemanticFrontendMessenger;
@@ -42,6 +43,12 @@ class ShowBookingOverview extends RequestBase
     private BookingRepositoryInterface $bookingRepository;
 
 	/**
+	 * @var SanitizingInterface
+	 */
+	private SanitizingInterface $sanitizing;
+
+	/**
+	 * @param SanitizingInterface $sanitizing
 	 * @param SemanticFrontendMessenger $frontendMessenger
 	 * @param LocalizationInterface $localization
 	 * @param SettingsManager $settingsManager
@@ -49,6 +56,7 @@ class ShowBookingOverview extends RequestBase
 	 * @param BookingRepositoryInterface $bookingRepository
 	 */
     public function __construct(
+		SanitizingInterface $sanitizing,
         SemanticFrontendMessenger $frontendMessenger,
         LocalizationInterface $localization,
         SettingsManager $settingsManager,
@@ -56,6 +64,8 @@ class ShowBookingOverview extends RequestBase
         BookingRepositoryInterface $bookingRepository
     ) {
         parent::__construct($localization);
+
+		$this->sanitizing                = $sanitizing;
         $this->bookingRepository         = $bookingRepository;
         $this->action                    = "showbookingoverview";
         $this->semanticFrontendMessenger = $frontendMessenger;
@@ -117,7 +127,7 @@ class ShowBookingOverview extends RequestBase
             $semantic = $this->bookingProcessor->getSemantic();
             $semantic->getFirstName();
 
-            $html .= "<form action='" . $_SERVER['REQUEST_URI'] . "' method='post'>";
+            $html .= "<form action='" . $this->sanitizing->sanitizeUrl($_SERVER['REQUEST_URI']) . "' method='post'>";
             $html .= "<div class='tlbm-booking-overview-box'><div class='tlbm-formular-content'>";
 
             if ($semantic->hasFullName()) {

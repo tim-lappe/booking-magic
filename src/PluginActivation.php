@@ -14,6 +14,10 @@ class PluginActivation
      */
     private ORMInterface $repository;
 
+	/**
+	 * @param ORMInterface $repository
+	 * @param PluginActivationInterface $pluginActivation
+	 */
     public function __construct(ORMInterface $repository, PluginActivationInterface $pluginActivation)
     {
         $this->repository = $repository;
@@ -22,6 +26,9 @@ class PluginActivation
         $pluginActivation->registerDeactivationHook(TLBM_PLUGIN_FILE, array($this, "onDeactivation"));
     }
 
+	/**
+	 * @return void
+	 */
     public function onActivation() {
 		if(file_exists(sys_get_temp_dir () . "/booking-magic-tmp/CompiledContainer.php")) {
 			unlink(sys_get_temp_dir () . "/booking-magic-tmp/CompiledContainer.php");

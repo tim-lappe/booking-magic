@@ -35,20 +35,15 @@ class RuleActionsField extends FormFieldBase implements FormFieldReadVarsInterfa
         ?>
         <tr>
             <th scope="row">
-                <label for="<?php
-                echo $this->name ?>">
-                    <?php
-                    echo $this->title ?>
+                <label for="<?php echo $this->escaping->escAttr($this->name) ?>">
+                    <?php echo $this->escaping->escHtml($this->title); ?>
                 </label>
             </th>
             <td>
                 <div
-                        data-value="<?php
-                        echo urlencode(json_encode($actions)) ?>"
-                        data-actions="<?php
-                        echo urlencode(json_encode($actionsCollection->getRegisteredRuleActions())) ?>"
-                        data-name="<?php
-                        echo $this->name ?>"
+                        data-value="<?php echo $this->escaping->escAttr(urlencode(json_encode($actions))); ?>"
+                        data-actions="<?php echo $this->escaping->escAttr(urlencode(json_encode($actionsCollection->getRegisteredRuleActions()))); ?>"
+                        data-name="<?php echo $this->escaping->escAttr($this->name) ?>"
                         class="tlbm-actions tlbm-rule-actions-field">
                 </div>
             </td>

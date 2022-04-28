@@ -20,9 +20,7 @@ class AdminMail extends SettingsBase
     {
         ?>
         <label>
-            <input type="email" class="regular-text" name="<?php
-            echo $this->optionName ?>" value="<?php
-            echo $this->getValue(); ?>">
+            <input type="email" class="regular-text" name="<?php echo $this->escaping->escAttr($this->optionName); ?>" value="<?php echo $this->escaping->escAttr($this->getValue()); ?>">
         </label>
         <?php
     }

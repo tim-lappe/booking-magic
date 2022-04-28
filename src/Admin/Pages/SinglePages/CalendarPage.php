@@ -6,6 +6,7 @@ namespace TLBM\Admin\Pages\SinglePages;
 use TLBM\Admin\Tables\CalendarListTable;
 use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\SanitizingInterface;
 use TLBM\MainFactory;
 
 class CalendarPage extends PageBase
@@ -20,11 +21,22 @@ class CalendarPage extends PageBase
 	 */
     protected EscapingInterface $escaping;
 
-    public function __construct(EscapingInterface $escaping, LocalizationInterface $localization) {
+	/**
+	 * @var SanitizingInterface
+	 */
+    protected SanitizingInterface $sanitizing;
+
+	/**
+	 * @param SanitizingInterface $sanitizing
+	 * @param EscapingInterface $escaping
+	 * @param LocalizationInterface $localization
+	 */
+    public function __construct(SanitizingInterface $sanitizing, EscapingInterface $escaping, LocalizationInterface $localization) {
         parent::__construct($localization->getText("Calendars", TLBM_TEXT_DOMAIN), "booking-magic-calendar");
         $this->parentSlug   = "booking-magic";
         $this->localization = $localization;
         $this->escaping = $escaping;
+        $this->sanitizing = $sanitizing;
     }
 
     public function getHeadTitle(): string
@@ -38,7 +50,7 @@ class CalendarPage extends PageBase
         $addCalendarLink = $calendarPage->getEditLink();
 
         ?>
-        <a href="<?php echo $this->escaping->escAttr($addCalendarLink); ?>" class="button button-primary tlbm-admin-button-bar"><?php _e("Add New Calendar", TLBM_TEXT_DOMAIN) ?></a>
+        <a href="<?php echo $this->escaping->escUrl($addCalendarLink); ?>" class="button button-primary tlbm-admin-button-bar"><?php $this->localization->echoText("Add New Calendar", TLBM_TEXT_DOMAIN); ?></a>
         <?php
     }
 
@@ -48,7 +60,7 @@ class CalendarPage extends PageBase
         <div class="tlbm-admin-page">
             <div class="tlbm-admin-page-tile">
                 <form method="get">
-                    <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr($_REQUEST['page']) ?>"/>
+                    <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr($this->sanitizing->sanitizeKey($_REQUEST['page'])) ?>"/>
                     <?php
                     $calendarListTable = MainFactory::create(CalendarListTable::class);
                     $calendarListTable->views();

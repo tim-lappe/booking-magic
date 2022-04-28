@@ -67,7 +67,7 @@ class EntityRepository implements EntityRepositoryInterface
             }
         } catch (Exception $e) {
             if(WP_DEBUG) {
-                echo $e->getMessage();
+                echo $this->escaping->escHtml($e->getMessage());
             }
         }
 
@@ -91,7 +91,7 @@ class EntityRepository implements EntityRepositoryInterface
             return true;
         } catch (Exception $e) {
             if(WP_DEBUG) {
-                echo $e->getMessage();
+                echo $this->escaping->escHtml($e->getMessage());
             }
         }
         return false;
@@ -204,7 +204,7 @@ class EntityRepository implements EntityRepositoryInterface
             }
         } catch (Exception $e) {
             if(WP_DEBUG) {
-                echo $e->getMessage();
+                echo $this->escaping->escHtml($e->getMessage());
             }
         }
 

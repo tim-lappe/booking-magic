@@ -46,10 +46,21 @@ abstract class TableBase extends WP_List_Table
 	 */
 	protected SanitizingInterface $sanitizing;
 
-    public function __construct($titlePlural, $titleSingular, $itemsPerPage = 10)
+	/**
+	 * @var EscapingInterface
+	 */
+	protected EscapingInterface $escaping;
+
+	/**
+	 * @param $titlePlural
+	 * @param $titleSingular
+	 * @param int $itemsPerPage
+	 */
+    public function __construct($titlePlural, $titleSingular, int $itemsPerPage = 10)
     {
         $this->localization = MainFactory::get(LocalizationInterface::class);
 		$this->sanitizing = MainFactory::get(SanitizingInterface::class);
+		$this->escaping = MainFactory::get(EscapingInterface::class);
 
         parent::__construct(array(
                                 "plural" => $titlePlural,
@@ -380,7 +391,7 @@ abstract class TableBase extends WP_List_Table
 
         foreach ($view_definitions as $key => $title) {
             $class       = ($current == $key ? ' class="current"' : '');
-            $all_url     = add_query_arg('filter', $key);
+            $all_url     = $this->escaping->escUrl(add_query_arg('filter', $key));
             $html        = $current == $key ? "<input type='hidden' name='filter' value='" . $key . "'>" : "";
             $html        .= "<a href='$all_url' $class >" . $title . "</a>";
             $views[$key] = $html;

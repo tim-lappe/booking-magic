@@ -72,9 +72,9 @@ class CalendarGroupTable extends ManagableEntityTable
             $link          = $groupEditPage->getEditLink($item->getId());
 
             if ( !empty($item->getTitle())) {
-                echo "<strong><a href='" . $this->escaping->escAttr($link) . "'>" . $this->escaping->escHtml($item->getTitle()) . "</a></strong>";
+                echo "<strong><a href='" . $this->escaping->escUrl($link) . "'>" . $this->escaping->escHtml($item->getTitle()) . "</a></strong>";
             } else {
-                echo "<strong><a href='" . $this->escaping->escAttr($link) . "'>" . $this->escaping->escHtml($item->getId()) . "</a></strong>";
+                echo "<strong><a href='" . $this->escaping->escUrl($link) . "'>" . $this->escaping->escHtml($item->getId()) . "</a></strong>";
             }
         }),
             new Column("selected_calendars", $this->localization->getText('Selected Calendars', TLBM_TEXT_DOMAIN), false, function ($item) {

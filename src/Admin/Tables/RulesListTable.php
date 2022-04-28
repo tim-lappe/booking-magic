@@ -99,9 +99,9 @@ class RulesListTable extends ManagableEntityTable
             if ($ruleEditPage instanceof RuleEditPage) {
                 $link = $ruleEditPage->getEditLink($item->getId());
                 if ( !empty($item->getTitle())) {
-                    echo "<strong><a href='" . $this->escaping->escAttr($link) . "'>" . $this->escaping->escHtml($item->getTitle()) . "</a></strong>";
+                    echo "<strong><a href='" . $this->escaping->escUrl($link) . "'>" . $this->escaping->escHtml($item->getTitle()) . "</a></strong>";
                 } else {
-                    echo "<strong><a href='" . $this->escaping->escAttr($link) . "'>" . $this->escaping->escHtml($item->getId()) . "</a></strong>";
+                    echo "<strong><a href='" . $this->escaping->escUrl($link) . "'>" . $this->escaping->escHtml($item->getId()) . "</a></strong>";
                 }
             }
         }),
@@ -140,11 +140,11 @@ class RulesListTable extends ManagableEntityTable
                     <option value=""><?php $this->localization->echoText("All Calendars", TLBM_TEXT_DOMAIN); ?></option>
                     <?php
                     foreach ($calendars as $calendar): ?>
-                        <option <?php selected($calendar->getId(), $this->sanitizing->sanitizeKey($_GET['filter_calendar'] ?? ""), true) ?> value="<?php echo $calendar->getId() ?>"><?php echo $this->escaping->escHtml($calendar->getTitle()) ?></option>
+                        <option <?php selected($calendar->getId(), $this->sanitizing->sanitizeKey($_GET['filter_calendar'] ?? ""), true) ?> value="<?php echo $this->escaping->escAttr($calendar->getId()) ?>"><?php echo $this->escaping->escHtml($calendar->getTitle()) ?></option>
                     <?php
                     endforeach; ?>
                 </select>
-                <button class="button" type="submit">Filter</button>
+                <button class="button" type="submit"><?php $this->localization->echoText("Filter", TLBM_TEXT_DOMAIN) ?></button>
             </div>
             <?php
         }

@@ -4,8 +4,8 @@
 namespace TLBM\Admin\Pages\SinglePages\Dashboard;
 
 use TLBM\Admin\Pages\SinglePages\Dashboard\Contracts\DashboardInterface;
-use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\SanitizingInterface;
 
 class Dashboard implements DashboardInterface
 {
@@ -20,19 +20,20 @@ class Dashboard implements DashboardInterface
 	 */
     private LocalizationInterface $localization;
 
-	/**
-	 * @var EscapingInterface
-	 */
-    private EscapingInterface $escaping;
 
 	/**
-	 * @param EscapingInterface $escaping
+	 * @var SanitizingInterface
+	 */
+    private SanitizingInterface $sanitizing;
+
+	/**
+	 * @param SanitizingInterface $sanitizing
 	 * @param LocalizationInterface $localization
 	 */
-    public function __construct(EscapingInterface $escaping, LocalizationInterface $localization)
+    public function __construct(SanitizingInterface $sanitizing, LocalizationInterface $localization)
     {
-        $this->escaping = $escaping;
         $this->localization = $localization;
+        $this->sanitizing = $sanitizing;
     }
 
     /**
@@ -89,7 +90,7 @@ class Dashboard implements DashboardInterface
                         ?>
                         <div class="tlbm-news-sidebar tlbm-admin-page-tile">
                             <h2><?php $this->localization->echoText("News", TLBM_TEXT_DOMAIN) ?></h2>
-	                        <?php echo strip_tags($newscontent, "<div><p><br><h2><h3><span><b><a>"); ?>
+	                        <?php echo $this->sanitizing->ksesPost($newscontent); ?>
                         </div>
 	                    <?php
                     }

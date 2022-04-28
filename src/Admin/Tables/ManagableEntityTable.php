@@ -51,14 +51,14 @@ abstract class ManagableEntityTable extends TableBase
                 /**
                  * @var ManageableEntity $item
                  */
-                echo $item->getDateTimeEdited();
+                echo $this->escaping->escHtml($item->getDateTimeEdited());
             }),
 
             new Column("date_created", $this->localization->getText('Date created', TLBM_TEXT_DOMAIN), true, function ($item) {
                 /**
                  * @var ManageableEntity $item
                  */
-                echo $item->getDateTimeCreated();
+                echo $this->escaping->escHtml($item->getDateTimeCreated());
             }),
         );
     }

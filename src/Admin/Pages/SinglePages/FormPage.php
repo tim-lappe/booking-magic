@@ -7,6 +7,7 @@ namespace TLBM\Admin\Pages\SinglePages;
 use TLBM\Admin\Tables\FormListTable;
 use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\SanitizingInterface;
 use TLBM\MainFactory;
 
 class FormPage extends PageBase
@@ -18,14 +19,28 @@ class FormPage extends PageBase
     protected EscapingInterface $escaping;
 
 	/**
+	 * @var LocalizationInterface
+	 */
+    protected LocalizationInterface $localization;
+
+	/**
+	 * @var SanitizingInterface
+	 */
+    protected SanitizingInterface $sanitizing;
+
+	/**
+	 * @param SanitizingInterface $sanitizing
 	 * @param EscapingInterface $escaping
 	 * @param LocalizationInterface $localization
 	 */
-    public function __construct(EscapingInterface $escaping, LocalizationInterface $localization)
+    public function __construct(SanitizingInterface $sanitizing, EscapingInterface $escaping, LocalizationInterface $localization)
     {
         parent::__construct($localization->getText("Form", TLBM_TEXT_DOMAIN), "booking-magic-form");
+
+        $this->localization = $localization;
         $this->parentSlug = "booking-magic";
         $this->escaping = $escaping;
+        $this->sanitizing = $sanitizing;
     }
 
     public function displayDefaultHeadBar()
@@ -33,8 +48,7 @@ class FormPage extends PageBase
         $formEditPage = $this->adminPageManager->getPage(FormEditPage::class);
         if ($formEditPage instanceof FormEditPage) {
             ?>
-            <a href="<?php echo $this->escaping->escAttr($formEditPage->getEditLink()); ?>" class="button button-primary tlbm-admin-button-bar"><?php
-                _e("Add New Form", TLBM_TEXT_DOMAIN) ?></a>
+            <a href="<?php echo $this->escaping->escUrl($formEditPage->getEditLink()); ?>" class="button button-primary tlbm-admin-button-bar"><?php $this->localization->echoText("Add New Form", TLBM_TEXT_DOMAIN) ?></a>
             <?php
         }
     }
@@ -46,7 +60,7 @@ class FormPage extends PageBase
         <div class="tlbm-admin-page">
             <div class="tlbm-admin-page-tile">
                 <form method="get">
-                    <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr($_REQUEST['page']) ?>"/>
+                    <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr($this->sanitizing->sanitizeKey($_REQUEST['page'])); ?>"/>
                     <?php
                     $formListTable = MainFactory::create(FormListTable::class);
                     $formListTable->views();

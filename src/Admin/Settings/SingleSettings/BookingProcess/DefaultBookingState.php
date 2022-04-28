@@ -33,8 +33,9 @@ class DefaultBookingState extends SettingsBase
                 <?php
                 $states = $this->settingsManager->getValue(BookingStates::class);
                 foreach ($states as $state): ?>
-                    <option value="<?php echo $this->escaping->escAttr($state['name']) ?>" <?php selected($state['name'] == $this->getValue()) ?>><?php
-                        echo $this->escaping->escHtml($state['title']) ?></option>
+                    <option value="<?php echo $this->escaping->escAttr($state['name']) ?>" <?php selected($state['name'] == $this->getValue()) ?>>
+                        <?php echo $this->escaping->escHtml($state['title']) ?>
+                    </option>
                 <?php
                 endforeach; ?>
             </select>

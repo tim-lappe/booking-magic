@@ -4,6 +4,7 @@ namespace TLBM\Booking;
 
 use Exception;
 use Iterator;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
 use TLBM\Entity\CalendarBooking;
 use TLBM\MainFactory;
@@ -18,9 +19,19 @@ class CalendarBookingManager implements CalendarBookingManagerInterface
      */
     private RulesCapacityManagerInterface $capacityManager;
 
-    public function __construct(RulesCapacityManagerInterface $capacityManager)
+	/**
+	 * @var EscapingInterface
+	 */
+	private EscapingInterface $escaping;
+
+	/**
+	 * @param EscapingInterface $escaping
+	 * @param RulesCapacityManagerInterface $capacityManager
+	 */
+    public function __construct(EscapingInterface $escaping, RulesCapacityManagerInterface $capacityManager)
     {
         $this->capacityManager = $capacityManager;
+		$this->escaping = $escaping;
     }
 
     /**
@@ -66,7 +77,7 @@ class CalendarBookingManager implements CalendarBookingManagerInterface
             return $query->getQuery()->getSingleScalarResult() ?? 0;
         } catch (Exception $e) {
             if (WP_DEBUG) {
-                echo $e->getMessage();
+                echo $this->escaping->escHtml($e->getMessage());
             }
         }
 

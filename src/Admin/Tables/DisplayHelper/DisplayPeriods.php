@@ -3,7 +3,9 @@
 namespace TLBM\Admin\Tables\DisplayHelper;
 
 use Doctrine\Common\Collections\Collection;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\SanitizingInterface;
 use TLBM\Entity\RulePeriod;
 use TLBM\Utilities\ExtendedDateTime;
 
@@ -14,14 +16,31 @@ class DisplayPeriods
      */
     private Collection $rulePeriods;
 
+	/**
+	 * @var LocalizationInterface
+	 */
     private LocalizationInterface $localization;
 
-    /**
-     * @param LocalizationInterface $localization
-     */
-    public function __construct(LocalizationInterface $localization)
+	/**
+	 * @var EscapingInterface
+	 */
+	protected EscapingInterface $escaping;
+
+	/**
+	 * @var SanitizingInterface
+	 */
+	protected SanitizingInterface $sanitizing;
+
+	/**
+	 * @param EscapingInterface $escaping
+	 * @param SanitizingInterface $sanitizing
+	 * @param LocalizationInterface $localization
+	 */
+    public function __construct(EscapingInterface $escaping, SanitizingInterface $sanitizing, LocalizationInterface $localization)
     {
         $this->localization = $localization;
+		$this->escaping = $escaping;
+		$this->sanitizing = $sanitizing;
     }
 
     /**
@@ -45,12 +64,12 @@ class DisplayPeriods
                 $toDt->setFullDay($period->isToFullDay());
 
                 if($fromDt->isEqualTo($toDt)) {
-                    $html .= sprintf($this->localization->getText("Only on <b>%s</b>", TLBM_TEXT_DOMAIN), $fromDt->format());
+                    $html .= sprintf($this->localization->getText("Only on <b>%s</b>", TLBM_TEXT_DOMAIN),  $this->escaping->escHtml($fromDt->format()));
                 } else {
-                    $html .= sprintf($this->localization->getText("From <b>%s</b><br />Until <b>%s</b>", TLBM_TEXT_DOMAIN), $fromDt->format(), $toDt->format());
+                    $html .= sprintf($this->localization->getText("From <b>%s</b><br />Until <b>%s</b>", TLBM_TEXT_DOMAIN), $this->escaping->escHtml($fromDt->format()), $this->escaping->escHtml($toDt->format()));
                 }
             } else {
-                $html .= sprintf($this->localization->getText("From <b>%s</b>", TLBM_TEXT_DOMAIN), $fromDt->format());
+                $html .= sprintf($this->localization->getText("From <b>%s</b>", TLBM_TEXT_DOMAIN), $this->escaping->escHtml($fromDt->format()));
             }
 
             $htmlarr[] = $html;
@@ -60,7 +79,7 @@ class DisplayPeriods
             $htmlarr[] = $this->localization->getText("Always", TLBM_TEXT_DOMAIN);
         }
 
-        echo implode("<br /><br />", $htmlarr);
+        echo $this->sanitizing->ksesPost(implode("<br /><br />", $htmlarr));
     }
 
     /**

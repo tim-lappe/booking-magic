@@ -26,7 +26,7 @@ class CalendarPickerField extends FormFieldBase implements FormFieldReadVarsInte
 	/**
 	 * @var EscapingInterface
 	 */
-    private EscapingInterface $escaping;
+    protected EscapingInterface $escaping;
 
     /**
      * @param EntityRepositoryInterface $entityRepository
@@ -70,7 +70,9 @@ class CalendarPickerField extends FormFieldBase implements FormFieldReadVarsInte
                         data-json="<?php echo $this->escaping->escAttr(urlencode(json_encode($value))); ?>"
                         data-calendars="<?php echo $this->escaping->escAttr(urlencode(json_encode($calendars))); ?>"
                         data-name="<?php echo $this->escaping->escAttr($this->name) ?>"
-                        class="tlbm-calendar-picker"></div>
+                        class="tlbm-calendar-picker">
+
+                </div>
             </td>
         </tr>
         <?php

@@ -87,30 +87,24 @@ class BookingListTable extends ManagableEntityTable
             <div class="alignleft actions bulkactions">
                 <label>
                     <select name="filter_calendar">
-                        <option value=""><?php
-                            echo $this->localization->getText("All Calendars", TLBM_TEXT_DOMAIN); ?></option>
+                        <option value=""><?php $this->localization->echoText("All Calendars", TLBM_TEXT_DOMAIN); ?></option>
                         <?php
                         foreach ($calendars as $calendar): ?>
-                            <option <?php
-                            selected($calendar->getId(),  $this->sanitizing->sanitizeTextfield($_GET['filter_calendar'] ?? ""), true) ?> value="<?php
-                            echo $calendar->getId() ?>"><?php
-                                echo $calendar->getTitle() ?></option>
+                            <option <?php selected($calendar->getId(),$this->sanitizing->sanitizeTextfield($_GET['filter_calendar'] ?? ""), true) ?> value="<?php echo $this->escaping->escAttr($calendar->getId()) ?>">
+                                <?php echo $this->escaping->escHtml($calendar->getTitle()) ?>
+                            </option>
                         <?php
                         endforeach; ?>
                     </select>
                 </label>
                 <label>
                     <select name="filter_state">
-                        <option value=""><?php
-                            echo $this->localization->getText("All States", TLBM_TEXT_DOMAIN); ?></option>
-                        <?php
-                        foreach ($states as $key => $title): ?>
-                            <option <?php
-                            selected($key, $this->sanitizing->sanitizeTextfield($_GET['filter_state'] ?? ""), true) ?> value="<?php
-                            echo $key ?>"><?php
-                                echo $title ?></option>
-                        <?php
-                        endforeach; ?>
+                        <option value=""><?php $this->localization->echoText("All States", TLBM_TEXT_DOMAIN); ?></option>
+                        <?php foreach ($states as $key => $title): ?>
+                            <option <?php selected($key, $this->sanitizing->sanitizeTextfield($_GET['filter_state'] ?? ""), true) ?> value="<?php echo $this->escaping->escAttr($key); ?>">
+                                <?php echo $this->escaping->escHtml($title); ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </label>
                 <button class="button" type="submit">Filter</button>
@@ -184,10 +178,7 @@ class BookingListTable extends ManagableEntityTable
                 $semantic = MainFactory::create(BookingValueSemantic::class);
                 $semantic->setValuesFromBooking($booking);
 
-                $content = $semantic->getFullName() . "<br>";
-                $content .= $semantic->getFullAddress();
-
-                echo $content;
+                echo $this->escaping->escHtml($semantic->getFullName()) . "<br>" . $this->escaping->escHtml($semantic->getFullAddress());
             }),
             new Column("calendar", $this->localization->getText("Calendar", TLBM_TEXT_DOMAIN), false, [$this, "columnDisplayCalendar"]),
             new Column("state", $this->localization->getText("State", TLBM_TEXT_DOMAIN), true, [$this, "columnDisplayState"]),
@@ -205,7 +196,7 @@ class BookingListTable extends ManagableEntityTable
         $editPage = $this->adminPageManager->getPage(BookingEditPage::class);
         if ($editPage != null) {
             $link = $editPage->getEditLink($item->getId());
-            echo "<strong><a href ='" . $link . "'># " . $item->getId() . "</a></strong>";
+            echo "<strong><a href ='" . $this->escaping->escUrl($link) . "'># " . $this->escaping->escHtml($item->getId()) . "</a></strong>";
         }
     }
 
@@ -225,13 +216,15 @@ class BookingListTable extends ManagableEntityTable
                     $prefix = $calendarBooking->getTitleFromForm() . "&nbsp;&nbsp;&nbsp;";
                 }
 
+                $prefix = $this->escaping->escHtml($prefix);
+
                 if ($calendar != null) {
                     $link = $calendarEditPage->getEditLink($calendar->getId());
                     //TODO: Es wird derzeit nur "From" in der Tabelle angezeigt.
 
-                    echo $prefix . "<a href='" . $link . "'>" . $calendar->getTitle() . "</a>&nbsp;&nbsp;&nbsp;" . $calendarBooking->getFromDateTime() . "<br>";
+                    echo $prefix . "<a href='" . $this->escaping->escUrl($link) . "'>" . $this->escaping->escHtml($calendar->getTitle()) . "</a>&nbsp;&nbsp;&nbsp;" . $this->escaping->escHtml($calendarBooking->getFromDateTime()) . "<br>";
                 } else {
-                    echo $prefix . "<strong>" . $this->localization->getText("Calendar deleted", TLBM_TEXT_DOMAIN) . "</strong>&nbsp;&nbsp;&nbsp;" . $calendarBooking->getFromDateTime() . "<br>";
+                    echo $prefix . "<strong>" . $this->localization->getText("Calendar deleted", TLBM_TEXT_DOMAIN) . "</strong>&nbsp;&nbsp;&nbsp;" . $this->escaping->escHtml($calendarBooking->getFromDateTime()) . "<br>";
                 }
             }
 
@@ -247,13 +240,13 @@ class BookingListTable extends ManagableEntityTable
         $state = $bookingStatesSetting->getStateByName($item->getState());
         $rgb   = $this->colors->getRgbFromHex($state['color']); ?>
 
-         <div class='tlbm-table-list-state' style="background-color: rgba(<?php echo $rgb[0] . "," . $rgb[1] . "," . $rgb[2] ?>, 0.4)">
-             <span><?php echo $state['title'] ?></span>
-         </div>
+        <div class='tlbm-table-list-state' style="background-color: rgba(<?php echo $this->escaping->escAttr( $rgb[0] . "," . $rgb[1] . "," . $rgb[2]); ?>, 0.4)">
+            <span><?php echo $this->escaping->escHtml($state['title']); ?></span>
+        </div>
         <?php
     }
 
     protected function columnDisplayDate(Booking $item) {
-        echo new ExtendedDateTime($item->getTimestampCreated());
+        echo $this->escaping->escHtml(new ExtendedDateTime($item->getTimestampCreated()));
     }
 }

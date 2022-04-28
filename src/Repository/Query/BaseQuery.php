@@ -6,6 +6,8 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
 use Iterator;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
+use TLBM\MainFactory;
 use TLBM\Repository\Contracts\ORMInterface;
 
 abstract class BaseQuery
@@ -31,6 +33,11 @@ abstract class BaseQuery
      */
     protected ORMInterface $repository;
 
+	/**
+	 * @var EscapingInterface
+	 */
+	protected EscapingInterface $escaping;
+
     /**
      * @var array
      */
@@ -39,6 +46,7 @@ abstract class BaseQuery
     public function __construct(ORMInterface $repository)
     {
         $this->repository = $repository;
+		$this->escaping = MainFactory::get(EscapingInterface::class);
     }
 
     /**
@@ -63,7 +71,7 @@ abstract class BaseQuery
             return $queryBuilder->getQuery();
         } catch (Exception $exception) {
             if(WP_DEBUG) {
-                echo $exception->getMessage();
+                echo $this->escaping->escHtml($exception->getMessage());
             }
         }
 
@@ -91,7 +99,7 @@ abstract class BaseQuery
             return intval($queryBuilder->getQuery()->getSingleScalarResult());
         } catch (Exception $exception) {
             if(WP_DEBUG) {
-                echo $exception->getMessage() . " " . $exception->getTraceAsString();
+                echo $this->escaping->escHtml($exception->getMessage()) . " " . $this->escaping->escHtml($exception->getTraceAsString());
             }
         }
 

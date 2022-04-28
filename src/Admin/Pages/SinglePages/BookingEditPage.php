@@ -99,36 +99,30 @@ class BookingEditPage extends EntityEditPage
 
         <div class="tlbm-admin-page-tile-row">
             <div class="tlbm-admin-page-tile tlbm-admin-page-tile-grow-2 tlbm-admin-page-booking-value-tile">
-                <div class="tlbm-admin-booking-id"> <?php
-                    echo $this->escaping->escHtml(sprintf($this->localization->getText("#%s", TLBM_TEXT_DOMAIN), $booking->getId())) ?></div>
+                <div class="tlbm-admin-booking-id"> <?php echo $this->escaping->escHtml(sprintf("#%s", $booking->getId())) ?></div>
                 <div class="tlbm-admin-booking-values">
                     <?php
                     if ($semantic->hasFullName()): ?>
                         <div class="tlbm-admin-booking-block">
-                            <span class="tlbm-booking-value-title"><?php
-                                _e("Name", TLBM_TEXT_DOMAIN); ?></span>
-                            <span class="tlbm-booking-value-content"><?php
-                                echo $this->escaping->escHtml($semantic->getFullName()); ?></span>
+                            <span class="tlbm-booking-value-title"><?php $this->localization->echoText("Name", TLBM_TEXT_DOMAIN); ?></span>
+                            <span class="tlbm-booking-value-content"><?php echo $this->escaping->escHtml($semantic->getFullName()); ?></span>
                         </div>
                     <?php
                     endif; ?>
                     <?php
                     if ($semantic->hasFullAddress()): ?>
                         <div class="tlbm-admin-booking-block">
-                            <span class="tlbm-booking-value-title"><?php
-                                _e("Address", TLBM_TEXT_DOMAIN); ?></span>
-                            <span class="tlbm-booking-value-content"><?php
-                                echo $this->escaping->escHtml($semantic->getFullAddress()) ?></span>
+                            <span class="tlbm-booking-value-title"><?php $this->localization->echoText("Address", TLBM_TEXT_DOMAIN); ?></span>
+                            <span class="tlbm-booking-value-content"><?php echo $this->escaping->escHtml($semantic->getFullAddress()) ?></span>
                         </div>
                     <?php
                     endif; ?>
                     <?php
                     if ($semantic->hasContactEmail()): ?>
                         <div class="tlbm-admin-booking-block">
-                            <span class="tlbm-booking-value-title"><?php
-                                _e("E-Mail", TLBM_TEXT_DOMAIN); ?></span>
+                            <span class="tlbm-booking-value-title"><?php $this->localization->echoText("E-Mail", TLBM_TEXT_DOMAIN); ?></span>
                             <span class="tlbm-booking-value-content">
-                                <a href="mailto:<?php echo $this->escaping->escAttr($semantic->getContactEmail()) ?>">
+                                <a href="mailto:<?php echo $this->escaping->escUrl($semantic->getContactEmail()) ?>">
                                     <?php echo $this->escaping->escHtml($semantic->getContactEmail()); ?>
                                 </a>
                             </span>
@@ -190,7 +184,7 @@ class BookingEditPage extends EntityEditPage
         $booking = $this->getEditingEntity();
         if($booking != null) {
             ?>
-            <a class="button tlbm-admin-button-bar" href="<?php echo $this->escaping->escAttr($this->adminPageManager->getPage(BookingEditValuesPage::class)->getEditLink($booking->getId())); ?>">
+            <a class="button tlbm-admin-button-bar" href="<?php echo $this->escaping->escUrl($this->adminPageManager->getPage(BookingEditValuesPage::class)->getEditLink($booking->getId())); ?>">
                 <span class="dashicons dashicons-edit" style="margin-right: 0.25em"></span> <?php _e("Edit Booking", TLBM_TEXT_DOMAIN); ?>
             </a>
             <?php

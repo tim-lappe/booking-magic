@@ -29,10 +29,8 @@ class DaysTypeField extends FormFieldBase
         ?>
         <tr>
             <th scope="row">
-                <label for="<?php
-                echo $this->name ?>">
-                    <?php
-                    echo $this->title ?>
+                <label for="<?php echo $this->escaping->escAttr($this->name) ?>">
+                    <?php echo $this->escaping->escHtml($this->title); ?>
                 </label>
             </th>
             <td>
@@ -40,10 +38,8 @@ class DaysTypeField extends FormFieldBase
                 foreach ($this->day_types as $day_type): ?>
                     <p>
                         <label>
-                            <input type="checkbox" name="<?php
-                            echo $this->name ?>[]">
-                            <?php
-                            echo $day_type ?>
+                            <input type="checkbox" name="<?php echo $this->escaping->escAttr($this->name) ?>[]">
+                            <?php echo $this->escaping->escHtml($day_type); ?>
                         </label>
                     </p>
                 <?php

@@ -3,6 +3,7 @@
 namespace TLBM\Session;
 
 use Exception;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\SanitizingInterface;
 use TLBM\ApiUtils\Contracts\TimeUtilsInterface;
 use TLBM\Entity\Session;
@@ -31,15 +32,22 @@ class SessionManager
 	protected SanitizingInterface $sanitizing;
 
 	/**
+	 * @var EscapingInterface
+	 */
+	protected EscapingInterface $escaping;
+
+	/**
+	 * @param EscapingInterface $escaping
 	 * @param SanitizingInterface $sanitizing
 	 * @param ORMInterface $repository
 	 * @param TimeUtilsInterface $timeUtils
 	 */
-    public function __construct(SanitizingInterface $sanitizing, ORMInterface $repository, TimeUtilsInterface $timeUtils)
+    public function __construct(EscapingInterface $escaping, SanitizingInterface $sanitizing, ORMInterface $repository, TimeUtilsInterface $timeUtils)
     {
         $this->repository = $repository;
         $this->timeUtils  = $timeUtils;
 		$this->sanitizing = $sanitizing;
+		$this->escaping = $escaping;
 
         $this->deleteExpiredSessions();
         $this->currentSession = $this->getCurrentSession();
@@ -60,7 +68,7 @@ class SessionManager
                 $em->remove($session);
             } catch (Exception $e) {
                 if (WP_DEBUG) {
-                    echo $e->getMessage();
+                    echo $this->escaping->escHtml($e->getMessage());
                 }
             }
         }
@@ -119,7 +127,7 @@ class SessionManager
             $this->repository->getEntityManager()->persist($session);
         } catch (Exception $e) {
             if (WP_DEBUG) {
-                echo $e->getMessage();
+                echo $this->escaping->escHtml($e->getMessage());
             }
 
             return null;
@@ -155,8 +163,12 @@ class SessionManager
         return null;
     }
 
-    public function removeValue(string $key)
-    {
+	/**
+	 * @param string $key
+	 *
+	 * @return bool
+	 */
+    public function removeValue(string $key): bool {
         $session = $this->getCurrentSession();
         $em      = $this->repository->getEntityManager();
         if ($session) {
@@ -165,14 +177,15 @@ class SessionManager
             try {
                 $em->persist($session);
                 $em->flush();
+				return true;
             } catch (Exception $e) {
                 if (WP_DEBUG) {
-                    echo $e->getMessage();
-
-                    return false;
+                    echo $this->escaping->escHtml($e->getMessage());
                 }
             }
         }
+
+		return false;
     }
 
     /**
@@ -193,15 +206,12 @@ class SessionManager
                 $em->flush();
             } catch (Exception $e) {
                 if (WP_DEBUG) {
-                    echo $e->getMessage();
-
+                    echo $this->escaping->escHtml($e->getMessage());
                     return false;
                 }
             }
-
             return true;
         }
-
         return false;
     }
 

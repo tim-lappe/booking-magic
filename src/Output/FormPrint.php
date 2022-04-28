@@ -12,6 +12,7 @@ use TLBM\Admin\FormEditor\RecursiveFormContentWalker;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\SinglePageBooking;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
+use TLBM\ApiUtils\Contracts\SanitizingInterface;
 use TLBM\Entity\Form;
 use TLBM\Output\Contracts\FormPrintInterface;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
@@ -35,11 +36,17 @@ class FormPrint implements FormPrintInterface
      */
     private SettingsManagerInterface $settingsManager;
 
-    public function __construct(EntityRepositoryInterface $entityRepository, LocalizationInterface $localization, SettingsManagerInterface $settingsManager)
+	/**
+	 * @var SanitizingInterface
+	 */
+	private SanitizingInterface $sanitizing;
+
+    public function __construct(SanitizingInterface $sanitizing, EntityRepositoryInterface $entityRepository, LocalizationInterface $localization, SettingsManagerInterface $settingsManager)
     {
         $this->entityRepository = $entityRepository;
         $this->localization     = $localization;
         $this->settingsManager  = $settingsManager;
+		$this->sanitizing = $sanitizing;
     }
 
     /**
@@ -54,10 +61,10 @@ class FormPrint implements FormPrintInterface
         if($form != null) {
             $formWalker    = FormDataWalker::createFromData($form->getFormData());
             $contentWalker = new RecursiveFormContentWalker($inputVars);
-            $result        = $formWalker->walkCallback($contentWalker);
+            $result        = $this->sanitizing->ksesPostAndForm($formWalker->walkCallback($contentWalker));
 
             if ($form instanceof Form) {
-                $html = "<form class='tlbm-frontend-form' action='" . $_SERVER['REQUEST_URI'] . "' method='post'>";
+                $html = "<form class='tlbm-frontend-form' action='" . $this->sanitizing->sanitizeUrl($_SERVER['REQUEST_URI']) . "' method='post'>";
                 $html .= $result;
                 $html .= "<input type='hidden' name='form' value='" . $form->getId() . "'>";
 
@@ -72,7 +79,6 @@ class FormPrint implements FormPrintInterface
                 }
 
                 $html .= "</form>";
-
                 return $html;
             }
         }

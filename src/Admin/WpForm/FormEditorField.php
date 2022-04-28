@@ -34,10 +34,9 @@ class FormEditorField extends FormFieldBase
         $form_data = $value;
         ?>
 
-        <div class="tlbm-form-editor-field" data-name="<?php
-        echo $this->name ?>" data-fields="<?php
-        echo urlencode(json_encode($this->elementsCollection->getCategorizedFormElements())) ?>" data-json="<?php
-        echo urlencode(json_encode($form_data)) ?>"></div>
+        <div class="tlbm-form-editor-field" data-name="<?php echo $this->escaping->escAttr($this->name) ?>" data-fields="<?php
+        echo $this->escaping->escAttr(urlencode(json_encode($this->elementsCollection->getCategorizedFormElements()))); ?>" data-json="<?php
+        echo $this->escaping->escAttr(urlencode(json_encode($form_data))) ?>"></div>
         <?php
     }
 }

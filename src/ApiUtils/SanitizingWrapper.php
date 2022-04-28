@@ -136,4 +136,42 @@ class SanitizingWrapper implements Contracts\SanitizingInterface {
 	public function ksesPost( string $data ): string {
 		return wp_kses_post($data);
 	}
+
+	/**
+	 * @param string $data
+	 *
+	 * @return string
+	 */
+	public function ksesPostAndForm( string $data ): string {
+		global $allowedposttags;
+
+		$tags = $allowedposttags;
+		$tags += [
+			"input" => [
+				"name" => true,
+				"class" => true,
+				"id" => true,
+				"value" => true,
+				"type" => true,
+				"checked" => true
+			],
+			"select" => [
+				"name" => true,
+				"class" => true,
+				"id" => true,
+				"value" => true
+			],
+			"option" => [
+				"value" => true,
+				"selected" => true
+			],
+			"textarea" => [
+				"name" => true,
+				"class" => true,
+				"id" => true
+			],
+		];
+
+		return $this->kses($data, $tags);
+	}
 }

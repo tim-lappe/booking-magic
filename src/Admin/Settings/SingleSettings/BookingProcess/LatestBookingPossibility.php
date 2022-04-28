@@ -46,30 +46,21 @@ class LatestBookingPossibility extends SettingsBase
 
         ?>
         <label>
-            <select name="<?php
-            echo $this->optionName ?>[days]">
-                <?php
-                for ($i = 0; $i < 365; $i++): ?>
-                    <option <?php
-                    echo selected($i, $value['days']) ?> value="<?php
-                    echo $i ?>"><?php
-                        echo $i . "&nbsp;" . $this->localization->getText("Days", TLBM_TEXT_DOMAIN) ?></option>
-                <?php
-                endfor; ?>
+            <select name="<?php echo $this->escaping->escAttr($this->optionName); ?>[days]">
+                <?php for ($i = 0; $i < 365; $i++): ?>
+                    <option <?php selected($i, $value['days']) ?> value="<?php echo $this->escaping->escAttr($i); ?>">
+                        <?php echo $this->escaping->escHtml($i . "&nbsp;" . $this->localization->getText("Days", TLBM_TEXT_DOMAIN)); ?>
+                    </option>
+                <?php endfor; ?>
             </select>
-            <select name="<?php
-            echo $this->optionName ?>[hours]">
-                <?php
-                for ($i = 0; $i < 24; $i++): ?>
-                    <option <?php
-                    echo selected($i, $value['hours']) ?> value="<?php
-                    echo $i ?>"><?php
-                        echo $i . "&nbsp;" . $this->localization->getText("Hours", TLBM_TEXT_DOMAIN) ?></option>
-                <?php
-                endfor; ?>
+            <select name="<?php echo $this->escaping->escAttr($this->optionName); ?>[hours]">
+                <?php for ($i = 0; $i < 24; $i++): ?>
+                    <option <?php selected($i, $value['hours']) ?> value="<?php echo $this->escaping->escAttr($i); ?>">
+                        <?php echo $this->escaping->escHtml($i . "&nbsp;" . $this->localization->getText("Hours", TLBM_TEXT_DOMAIN)); ?>
+                    </option>
+                <?php endfor; ?>
             </select>
-            <b><?php
-                echo $this->localization->getText("Before booking time", TLBM_TEXT_DOMAIN) ?></b>
+            <b><?php $this->localization->echoText("Before booking time", TLBM_TEXT_DOMAIN) ?></b>
         </label>
         <?php
     }

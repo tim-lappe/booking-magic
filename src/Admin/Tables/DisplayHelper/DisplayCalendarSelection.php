@@ -66,7 +66,7 @@ class DisplayCalendarSelection
                         echo ", ";
                     }
 
-                    echo "<a href='" . $this->escaping->escAttr($link) . "'>" . $this->escaping->escHtml($cal->getTitle()) . "</a>";
+                    echo "<a href='" . $this->escaping->escUrl($link) . "'>" . $this->escaping->escHtml($cal->getTitle()) . "</a>";
                 }
             } elseif ($this->calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
 				$this->localization->echoText("All but ", TLBM_TEXT_DOMAIN);
@@ -77,7 +77,7 @@ class DisplayCalendarSelection
                         echo ", ";
                     }
 
-                    echo "<a href='" . $this->escaping->escAttr($link) . "'><s>" . $this->escaping->escHtml($cal->getTitle()) . "</s></a>";
+                    echo "<a href='" . $this->escaping->escUrl($link) . "'><s>" . $this->escaping->escHtml($cal->getTitle()) . "</s></a>";
                 }
             }
         } else {

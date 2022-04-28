@@ -10,6 +10,7 @@ use TLBM\Admin\Settings\SingleSettings\Emails\AdminEmailBookingReceived;
 use TLBM\Admin\Settings\SingleSettings\Emails\EmailBookingReceived;
 use TLBM\Admin\Settings\SingleSettings\General\AdminMail;
 use TLBM\Admin\Settings\SingleSettings\Text\TextBookingReceived;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Booking\BookingProcessor;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
@@ -66,6 +67,21 @@ class CompleteBookingRequest extends RequestBase
      */
     private SessionManager $sessionManager;
 
+	/**
+	 * @var EscapingInterface
+	 */
+	private EscapingInterface $escaping;
+
+	/**
+	 * @param LocalizationInterface $localization
+	 * @param SemanticFrontendMessenger $frontendMessenger
+	 * @param CalendarBookingManagerInterface $calendarBookingManager
+	 * @param BookingRepositoryInterface $bookingManager
+	 * @param MailSenderInterface $mailSender
+	 * @param SettingsManagerInterface $settingsManager
+	 * @param SessionManager $sessionManager
+	 * @param EscapingInterface $escaping
+	 */
     public function __construct(
         LocalizationInterface $localization,
         SemanticFrontendMessenger $frontendMessenger,
@@ -73,7 +89,8 @@ class CompleteBookingRequest extends RequestBase
         BookingRepositoryInterface $bookingManager,
         MailSenderInterface $mailSender,
         SettingsManagerInterface $settingsManager,
-        SessionManager $sessionManager
+        SessionManager $sessionManager,
+	    EscapingInterface $escaping
     )
     {
         parent::__construct($localization);
@@ -151,7 +168,7 @@ class CompleteBookingRequest extends RequestBase
                     return;
                 } catch (Throwable $exception) {
                     if (WP_DEBUG) {
-                        echo $exception->getMessage();
+                        echo $this->escaping->escHtml($exception->getMessage());
                     }
                 }
             }

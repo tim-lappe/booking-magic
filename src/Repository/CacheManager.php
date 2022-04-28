@@ -4,6 +4,7 @@ namespace TLBM\Repository;
 
 use Exception;
 use InvalidArgumentException;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\Entity\CacheEntity;
 use TLBM\Repository\Contracts\CacheManagerInterface;
 use TLBM\Repository\Contracts\ORMInterface;
@@ -15,7 +16,12 @@ class CacheManager implements CacheManagerInterface
      */
     private ORMInterface $repository;
 
-    public function __construct(ORMInterface $repository)
+	/**
+	 * @var EscapingInterface
+	 */
+	private EscapingInterface $escaping;
+
+    public function __construct(EscapingInterface $escaping, ORMInterface $repository)
     {
         $this->repository = $repository;
     }
@@ -34,7 +40,7 @@ class CacheManager implements CacheManagerInterface
             return true;
         } catch (Exception $exception) {
             if (WP_DEBUG) {
-                echo $exception->getMessage();
+                echo $this->escaping->escHtml($exception->getMessage());
             }
         }
 
@@ -55,7 +61,7 @@ class CacheManager implements CacheManagerInterface
             return $mgr->find(CacheEntity::class, $hash) != null;
         } catch (Exception $exception) {
             if (WP_DEBUG) {
-                echo $exception->getMessage();
+                echo $this->escaping->escHtml($exception->getMessage());
             }
         }
 
@@ -80,7 +86,7 @@ class CacheManager implements CacheManagerInterface
             }
         } catch (Exception $exception) {
             if(WP_DEBUG) {
-                echo $exception->getMessage();
+                echo $this->escaping->escHtml($exception->getMessage());
             }
         }
 
@@ -109,7 +115,7 @@ class CacheManager implements CacheManagerInterface
 
         } catch (Exception $exception) {
             if(WP_DEBUG) {
-                echo $exception->getMessage();
+                echo $this->escaping->escHtml($exception->getMessage());
             }
         }
 

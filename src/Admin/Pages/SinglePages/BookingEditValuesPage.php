@@ -32,6 +32,7 @@ class BookingEditValuesPage extends EntityEditPage
      */
     protected LocalizationInterface $localization;
 
+
     public function __construct(EntityRepositoryInterface $entityRepository, LocalizationInterface $localization)
     {
         $this->entityRepository = $entityRepository;
@@ -67,6 +68,8 @@ class BookingEditValuesPage extends EntityEditPage
      */
     protected function displayEntityEditForm(): void
     {
+
+
         $booking = $this->getEditingEntity();
         if ( !$booking) {
             $booking = new Booking();
@@ -96,7 +99,6 @@ class BookingEditValuesPage extends EntityEditPage
             }
         }
 
-
         ?>
 
         <?php
@@ -113,9 +115,7 @@ class BookingEditValuesPage extends EntityEditPage
                 <ul>
                     <?php
                     foreach ($missed as $name => $value): ?>
-                        <li><?php
-                            echo $name ?>: <b><?php
-                                echo $value ?></b></li>
+                        <li><?php echo $this->escaping->escHtml($name) ?>: <b><?php echo $this->escaping->escHtml($value); ?></b></li>
                     <?php
                     endforeach; ?>
                 </ul>
@@ -131,8 +131,8 @@ class BookingEditValuesPage extends EntityEditPage
                         $formWalker    = FormDataWalker::createFromData($form->getFormData());
                         $contentWalker = new RecursiveFormContentWalker($inputVars);
                         $contentWalker->setExcludeElementClasses([CalendarElem::class]);
-                        $result = $formWalker->walkCallback($contentWalker);
-                        echo $result;
+
+                        echo $this->sanitizing->ksesPostAndForm($formWalker->walkCallback($contentWalker));
                         ?>
                     </div>
                 </div>
@@ -143,43 +143,37 @@ class BookingEditValuesPage extends EntityEditPage
                 foreach ($booking->getCalendarBookings() as $calendarBooking):
                     $calendarsQuery = MainFactory::create(CalendarQuery::class);
                     ?>
-                    <span class='tlbm-calendar-edit-title'><?php
-                        echo $calendarBooking->getTitleFromForm() ?></span>
+                    <span class='tlbm-calendar-edit-title'><?php echo $this->escaping->escHtml($calendarBooking->getTitleFromForm()) ?></span>
                     <div class='tlbm-admin-calendar-field tlbm-admin-content-box'>
                         <div>
                             <div>
-                                <small><?php
-                                    _e("Calendar", TLBM_TEXT_DOMAIN) ?></small><br>
-                                <select name='calendarBookings[<?php
-                                echo $calendarBooking->getNameFromForm() ?>][calendar_id]'>
-                                    <?php
+                                <small><?php $this->localization->echoText("Calendar", TLBM_TEXT_DOMAIN) ?></small><br>
+                                <label>
+                                    <select name='calendarBookings[<?php echo $this->escaping->escAttr($calendarBooking->getNameFromForm()) ?>][calendar_id]'>
+                                        <?php
 
-                                    $currentId = -1;
-                                    if($calendarBooking->getCalendar() != null) {
-                                        $currentId = $calendarBooking->getCalendar()->getId();
-                                    }
+                                        $currentId = -1;
+                                        if($calendarBooking->getCalendar() != null) {
+                                            $currentId = $calendarBooking->getCalendar()->getId();
+                                        }
 
-                                    /**
-                                     * @var Calendar $calendar
-                                     */
-                                    foreach ($calendarsQuery->getResult() as $calendar): ?>
-                                        <option <?php
-                                        selected($calendar->getId(), $currentId, true); ?> value='<?php
-                                        echo $calendar->getId() ?>'>
-                                            <?php
-                                            echo $calendar->getTitle() ?>
-                                        </option>
-                                    <?php
-                                    endforeach; ?>
-                                </select>
+                                        /**
+                                         * @var Calendar $calendar
+                                         */
+                                        foreach ($calendarsQuery->getResult() as $calendar): ?>
+                                            <option <?php selected($calendar->getId(), $currentId, true); ?> value='<?php echo $this->escaping->escAttr($calendar->getId()); ?>'>
+                                                <?php echo $this->escaping->escHtml($calendar->getTitle()); ?>
+                                            </option>
+                                        <?php
+                                        endforeach; ?>
+                                    </select>
+                                </label>
                             </div>
                             <div style='margin-top: 1em'>
-                                <small><?php
-                                    $this->localization->echoText("Time", TLBM_TEXT_DOMAIN) ?></small><br>
-                                <div class='tlbm-date-range-field' data-name='calendarBookings[<?php
-                                echo $calendarBooking->getNameFromForm() ?>][time]' data-to='<?php
-                                echo urlencode(json_encode($calendarBooking->getToDateTime())) ?>' data-from='<?php
-                                echo urlencode(json_encode($calendarBooking->getFromDateTime())) ?>'></div>
+                                <small><?php $this->localization->echoText("Time", TLBM_TEXT_DOMAIN) ?></small><br>
+                                <div class='tlbm-date-range-field' data-name='calendarBookings[<?php echo $this->escaping->escAttr($calendarBooking->getNameFromForm()); ?>][time]' data-to='<?php
+                                echo $this->escaping->escAttr(urlencode(json_encode($calendarBooking->getToDateTime()))); ?>' data-from='<?php
+                                echo $this->escaping->escAttr(urlencode(json_encode($calendarBooking->getFromDateTime()))); ?>'></div>
                             </div>
                         </div>
                     </div>
