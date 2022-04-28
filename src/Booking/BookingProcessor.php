@@ -7,6 +7,7 @@ use TLBM\Admin\FormEditor\CalendarElementSettingHelper;
 use TLBM\Admin\FormEditor\Elements\CalendarElem;
 use TLBM\Admin\FormEditor\FormDataWalker;
 use TLBM\Admin\FormEditor\LinkedFormData;
+use TLBM\ApiUtils\Contracts\SanitizingInterface;
 use TLBM\Booking\Contracts\CalendarBookingManagerInterface;
 use TLBM\Booking\Semantic\BookingValueSemantic;
 use TLBM\Calendar\CalendarSelectionHandler;
@@ -64,15 +65,22 @@ class BookingProcessor
      */
     private ?Booking $pendingBooking;
 
+	/**
+	 * @var SanitizingInterface
+	 */
+	private SanitizingInterface $sanitizing;
+
     public function __construct(
         EntityRepositoryInterface $entityRepository,
         CalendarBookingManagerInterface $calendarBookingManager,
+		SanitizingInterface $sanitizing,
         CacheManager $cacheManager
     )
     {
         $this->entityRepository       = $entityRepository;
         $this->calendarBookingManager = $calendarBookingManager;
         $this->cacheManager           = $cacheManager;
+		$this->sanitizing             = $sanitizing;
     }
 
     /**
@@ -127,7 +135,7 @@ class BookingProcessor
         $escapedVars = [];
         foreach ($vars as $key => $value) {
             if(is_string($value) && is_string($key)) {
-                $key   = htmlspecialchars($key);
+                $key   = $this->sanitizing->sanitizeTextfield($key);
                 $value = htmlspecialchars($value);
             }
 
@@ -162,6 +170,7 @@ class BookingProcessor
             }
 
             foreach ($bookingValues as $value) {
+				var_dump($value);
                 $booking->addBookingValue($value);
             }
 

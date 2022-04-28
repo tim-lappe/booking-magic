@@ -11,6 +11,7 @@ use TLBM\Booking\BookingProcessor;
 use TLBM\MainFactory;
 use TLBM\Output\SemanticFrontendMessenger;
 use TLBM\Repository\Contracts\BookingRepositoryInterface;
+use TLBM\Repository\Contracts\EntityRepositoryInterface;
 use TLBM\Session\SessionManager;
 
 class ShowBookingOverview extends RequestBase
@@ -43,11 +44,17 @@ class ShowBookingOverview extends RequestBase
     private BookingRepositoryInterface $bookingRepository;
 
 	/**
+	 * @var EntityRepositoryInterface
+	 */
+	private EntityRepositoryInterface $entityRepository;
+
+	/**
 	 * @var SanitizingInterface
 	 */
 	private SanitizingInterface $sanitizing;
 
 	/**
+	 * @param EntityRepositoryInterface $entityRepository
 	 * @param SanitizingInterface $sanitizing
 	 * @param SemanticFrontendMessenger $frontendMessenger
 	 * @param LocalizationInterface $localization
@@ -56,6 +63,7 @@ class ShowBookingOverview extends RequestBase
 	 * @param BookingRepositoryInterface $bookingRepository
 	 */
     public function __construct(
+		EntityRepositoryInterface $entityRepository,
 		SanitizingInterface $sanitizing,
         SemanticFrontendMessenger $frontendMessenger,
         LocalizationInterface $localization,
@@ -71,6 +79,7 @@ class ShowBookingOverview extends RequestBase
         $this->semanticFrontendMessenger = $frontendMessenger;
         $this->settingsManager           = $settingsManager;
         $this->sessionManager            = $sessionManager;
+		$this->entityRepository          = $entityRepository;
     }
 
     public function onAction()
@@ -82,12 +91,11 @@ class ShowBookingOverview extends RequestBase
             if (intval($pendingBookingId)) {
                 $pendingBooking = $this->bookingRepository->getBooking($pendingBookingId);
                 if ($pendingBooking) {
-                    $bookingProcessor = MainFactory::create(BookingProcessor::class);
-                    $bookingProcessor->setFromPendingBooking($pendingBooking);
-                    $this->bookingProcessor = $bookingProcessor;
-                    $this->hasContent       = true;
-
-                    return;
+                    if(!$this->entityRepository->deleteEntityPermanently($pendingBooking)) {
+	                    if (!$this->hasContent) {
+		                    $this->semanticFrontendMessenger->addMessage($this->localization->getText("An internal error occured!", TLBM_TEXT_DOMAIN));
+	                    }
+                    }
                 }
             }
 
@@ -154,7 +162,6 @@ class ShowBookingOverview extends RequestBase
                 $html .= "<div class='tlbm-overview-section-title'>" . $this->localization->getText("City", TLBM_TEXT_DOMAIN) . "</div>";
                 $html .= "<span>" . $semantic->getCity() . "</span>";
             }
-
 
             if ($semantic->hasContactEmail()) {
                 $html .= "<div class='tlbm-overview-section-title'>" . $this->localization->getText("E-Mail", TLBM_TEXT_DOMAIN) . "</div>";
