@@ -34,7 +34,7 @@ try {
 		if(!file_exists(sys_get_temp_dir () . "/booking-magic-tmp")) {
 			mkdir(sys_get_temp_dir () . "/booking-magic-tmp");
 		}
-        $tlbmContainerBuilder->enableCompilation ( sys_get_temp_dir () . "/booking-magic-tmp" );
+		$tlbmContainerBuilder->enableCompilation ( sys_get_temp_dir () . "/booking-magic-tmp" );
     }
 
     $tlbmContainer = $tlbmContainerBuilder->build ();
