@@ -82,10 +82,9 @@ class FullRuleActionQuery extends TimeBasedQuery implements FullRuleActionQueryI
         }
 
         $queryBuilder->from(RuleAction::class, "actions")
-                     ->distinct(true)
+                     ->distinct()
                      ->leftJoin('actions.rule', "rule")
                      ->leftJoin('rule.calendarSelection', 'calendarSelection')
-                     ->leftJoin("calendarSelection.calendars", "calendarSelectionCalendars")
                      ->leftJoin("rule.periods", "periods");
 
         $where = $queryBuilder->expr()->andX();

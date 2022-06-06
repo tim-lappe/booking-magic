@@ -26,6 +26,8 @@ use TLBM\Admin\Pages\SinglePages\BookingEditPage;
 use TLBM\Admin\Pages\SinglePages\BookingEditValuesPage;
 use TLBM\Admin\Pages\SinglePages\BookingMagicRoot;
 use TLBM\Admin\Pages\SinglePages\BookingsPage;
+use TLBM\Admin\Pages\SinglePages\CalendarCategoryEditPage;
+use TLBM\Admin\Pages\SinglePages\CalendarCategoryPage;
 use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
 use TLBM\Admin\Pages\SinglePages\CalendarGroupEditPage;
 use TLBM\Admin\Pages\SinglePages\CalendarGroupPage;
@@ -132,7 +134,9 @@ use TLBM\Rules\Contracts\RulesCapacityManagerInterface;
 use TLBM\Rules\RulesCapacityManager;
 use TLBM\Utilities\Colors;
 use TLBM\Utilities\Contracts\ColorsInterface;
+use TLBM\Validation\CalendarCategoryValidator;
 use TLBM\Validation\CalendarEntityValidator;
+use TLBM\Validation\Contracts\CalendarCategoryEntityValidatorInterface;
 use TLBM\Validation\Contracts\CalendarEntityValidatorInterface;
 use TLBM\Validation\Contracts\RulesActionEntityValidatorInterface;
 use TLBM\Validation\Contracts\RulesEntityValidatorInterface;
@@ -142,6 +146,7 @@ use TLBM\Validation\RulesActionEntityValidator;
 use TLBM\Validation\RulesEntityValidator;
 use TLBM\Validation\RulesPeriodEntityValidator;
 use TLBM\Validation\TimeSlotEntityValidator;
+
 use function DI\autowire;
 use function DI\factory;
 
@@ -168,6 +173,7 @@ return [
     RulesPeriodEntityValidatorInterface::class => autowire(RulesPeriodEntityValidator::class),
     TimeSlotEntityValidatorInterface::class    => autowire(TimeSlotEntityValidator::class),
     RulesEntityValidatorInterface::class       => autowire(RulesEntityValidator::class),
+    CalendarCategoryEntityValidatorInterface::class => autowire(CalendarCategoryValidator::class),
 
     PluginActivationInterface::class => autowire(PluginActivationWrapper::class),
     HooksInterface::class => autowire(HooksWrapper::class),
@@ -295,7 +301,6 @@ return [
             $adminPageManager->registerPage(BookingsPage::class);
             $adminPageManager->registerPage(CalendarPage::class);
             $adminPageManager->registerPage(CalendarGroupPage::class);
-
             $adminPageManager->registerPage(CalendarEditPage::class);
             $adminPageManager->registerPage(RulesPage::class);
             $adminPageManager->registerPage(RuleEditPage::class);
@@ -305,6 +310,8 @@ return [
             $adminPageManager->registerPage(BookingEditPage::class);
             $adminPageManager->registerPage(CalendarGroupEditPage::class);
             $adminPageManager->registerPage(BookingEditValuesPage::class);
+            $adminPageManager->registerPage(CalendarCategoryEditPage::class);
+            $adminPageManager->registerPage(CalendarCategoryPage::class);
         }
 
         return $adminPageManager;

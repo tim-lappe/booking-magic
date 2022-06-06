@@ -6,7 +6,7 @@ use Exception;
 use Throwable;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\Rules\PriorityLevels;
-use TLBM\Admin\WpForm\CalendarPickerField;
+use TLBM\Admin\WpForm\CalendarSelectionField;
 use TLBM\Admin\WpForm\PeriodEditorField;
 use TLBM\Admin\WpForm\RuleActionsField;
 use TLBM\Admin\WpForm\SelectField;
@@ -55,7 +55,7 @@ class RuleEditPage extends EntityEditPage
     public function defineFormFields()
     {
         $this->formBuilder->defineFormField(
-            new CalendarPickerField($this->entityRepository, "calendars", $this->localization->getText("Calendars", TLBM_TEXT_DOMAIN))
+            new CalendarSelectionField("calendars", $this->localization->getText("Calendars", TLBM_TEXT_DOMAIN))
         );
         $this->formBuilder->defineFormField(
             new RuleActionsField("rule_actions", $this->localization->getText("Actions", TLBM_TEXT_DOMAIN))

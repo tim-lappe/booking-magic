@@ -4,9 +4,9 @@ namespace TLBM\Admin\Tables\DisplayHelper;
 
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Pages\SinglePages\CalendarEditPage;
+use TLBM\Admin\Pages\SinglePages\CalendarGroupEditPage;
 use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
-use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarSelection;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
 
@@ -53,31 +53,52 @@ class DisplayCalendarSelection
 
     public function display() {
         $calendarEditPage = $this->adminPageManager->getPage(CalendarEditPage::class);
-
+        $groupEditPage = $this->adminPageManager->getPage(CalendarGroupEditPage::class);
 
         if($this->calendarSelection) {
             if ($this->calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
                 $this->localization->echoText("All", TLBM_TEXT_DOMAIN);
             } elseif ($this->calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
-                foreach ($this->calendarSelection->getCalendarIds() as $key => $id) {
-                    $cal  = $this->entityRepository->getEntity(Calendar::class, $id);
-                    $link = $calendarEditPage->getEditLink($id);
-                    if ($key > 0) {
+                $c = 0;
+                foreach ($this->calendarSelection->getCalendars() as $key => $calendar) {
+                    $link = $calendarEditPage->getEditLink($calendar->getId());
+                    if ($c > 0) {
                         echo ", ";
                     }
 
-                    echo "<a href='" . $this->escaping->escUrl($link) . "'>" . $this->escaping->escHtml($cal->getTitle()) . "</a>";
+                    echo "<a href='" . $this->escaping->escUrl($link) . "'>" . $this->escaping->escHtml($calendar->getTitle()) . "</a>";
+                    $c++;
                 }
+                foreach ($this->calendarSelection->getCategories() as $key => $group) {
+                    $link = $groupEditPage->getEditLink($group->getId());
+                    if ($c > 0) {
+                        echo ", ";
+                    }
+
+                    echo "<a href='" . $this->escaping->escUrl($link) . "'>" . $this->escaping->escHtml($group->getTitle()) . "</a>";
+                    $c++;
+                }
+
             } elseif ($this->calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
 				$this->localization->echoText("All but ", TLBM_TEXT_DOMAIN);
-                foreach ($this->calendarSelection->getCalendarIds() as $key => $id) {
-                    $cal  = $this->entityRepository->getEntity(Calendar::class, $id);
-                    $link = $calendarEditPage->getEditLink($id);
-                    if ($key > 0) {
+                $c = 0;
+                foreach ($this->calendarSelection->getCalendars() as $calendar) {
+                    $link = $calendarEditPage->getEditLink($calendar->getId());
+                    if ($c > 0) {
                         echo ", ";
                     }
 
-                    echo "<a href='" . $this->escaping->escUrl($link) . "'><s>" . $this->escaping->escHtml($cal->getTitle()) . "</s></a>";
+                    echo "<a href='" . $this->escaping->escUrl($link) . "'><s>" . $this->escaping->escHtml($calendar->getTitle()) . "</s></a>";
+                    $c++;
+                }
+                foreach ($this->calendarSelection->getCategories() as $group) {
+                    $link = $groupEditPage->getEditLink($group->getId());
+                    if ($c > 0) {
+                        echo ", ";
+                    }
+
+                    echo "<a href='" . $this->escaping->escUrl($link) . "'><s>" . $this->escaping->escHtml($group->getTitle()) . "</s></a>";
+                    $c++;
                 }
             }
         } else {

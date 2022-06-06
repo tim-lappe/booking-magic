@@ -4,6 +4,7 @@ namespace TLBM\Admin\Pages\SinglePages;
 
 use TLBM\Admin\WpForm\Contracts\FormBuilderInterface;
 use TLBM\ApiUtils\Contracts\EscapingInterface;
+use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\ApiUtils\Contracts\SanitizingInterface;
 use TLBM\MainFactory;
 
@@ -30,6 +31,11 @@ abstract class FormPageBase extends PageBase
     protected EscapingInterface $escaping;
 
     /**
+     * @var LocalizationInterface
+     */
+    protected LocalizationInterface $localization;
+
+    /**
      * @param string $menuTitle
      * @param string $menuSlug
      * @param bool $showInMenu
@@ -47,6 +53,8 @@ abstract class FormPageBase extends PageBase
         $this->formBuilder = MainFactory::create(FormBuilderInterface::class);
         $this->sanitizing = MainFactory::get(SanitizingInterface::class);
         $this->escaping = MainFactory::get(EscapingInterface::class);
+        $this->localization = MainFactory::get(LocalizationInterface::class);
+
         parent::__construct(
             $menuTitle, $menuSlug, $showInMenu, $displayDefaultHead, $defaultHeadTitle
         );
@@ -75,8 +83,7 @@ abstract class FormPageBase extends PageBase
     public function displayDefaultHeadBar()
     {
         ?>
-        <button class="button button-primary tlbm-admin-button-bar"><?php
-            _e("Save Changes", TLBM_TEXT_DOMAIN) ?></button>
+        <button class="button button-primary tlbm-admin-button-bar"><?php $this->localization->echoText("Save Changes", TLBM_TEXT_DOMAIN) ?></button>
         <?php
     }
 

@@ -38,9 +38,9 @@ class CalendarSelectionHandler implements CalendarSelectionHandlerInterface
         if ($calendar_selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL) {
             return true;
         } elseif ($calendar_selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
-            return in_array($calendar_id, $calendar_selection->getCalendarIds());
+            return in_array($calendar_id, $calendar_selection->getCombinedCalendarIds());
         } elseif ($calendar_selection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
-            return !in_array($calendar_id, $calendar_selection->getCalendarIds());
+            return !in_array($calendar_id, $calendar_selection->getCombinedCalendarIds());
         }
 
         return false;
@@ -60,7 +60,7 @@ class CalendarSelectionHandler implements CalendarSelectionHandlerInterface
             return $allCalendars;
         } elseif ($calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
             $list = array();
-            foreach ($calendarSelection->getCalendarIds() as $id) {
+            foreach ($calendarSelection->getCombinedCalendarIds() as $id) {
                 $cal    = $this->entityRepository->getEntity(Calendar::class, $id);
                 $list[] = $cal;
             }
@@ -70,7 +70,7 @@ class CalendarSelectionHandler implements CalendarSelectionHandlerInterface
             $allcals = $allCalendars;
             $list    = array();
             foreach ($allcals as $cal) {
-                if ( !in_array($cal->getId(), $calendarSelection->getCalendarIds())) {
+                if ( !in_array($cal->getId(), $calendarSelection->getCombinedCalendarIds())) {
                     $list[] = $cal;
                 }
             }

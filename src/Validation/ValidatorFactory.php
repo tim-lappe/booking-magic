@@ -4,11 +4,13 @@ namespace TLBM\Validation;
 
 use Throwable;
 use TLBM\Entity\Calendar;
+use TLBM\Entity\CalendarCategory;
 use TLBM\Entity\Rule;
 use TLBM\Entity\RuleAction;
 use TLBM\Entity\RulePeriod;
 use TLBM\Entity\TimeSlot;
 use TLBM\MainFactory;
+use TLBM\Validation\Contracts\CalendarCategoryEntityValidatorInterface;
 use TLBM\Validation\Contracts\CalendarEntityValidatorInterface;
 use TLBM\Validation\Contracts\RulesActionEntityValidatorInterface;
 use TLBM\Validation\Contracts\RulesEntityValidatorInterface;
@@ -41,6 +43,20 @@ abstract class ValidatorFactory
     {
         try {
             return MainFactory::create(CalendarEntityValidatorInterface::class, ["calendar" => $calendar]);
+        } catch (Throwable $exception) {
+            return null;
+        }
+    }
+
+    /**
+     * @param CalendarCategory $calendarCategory
+     *
+     * @return CalendarEntityValidatorInterface|null
+     */
+    public static function createCalendarCategoryValidator(CalendarCategory $calendarCategory): ?CalendarCategoryEntityValidatorInterface
+    {
+        try {
+            return MainFactory::create(CalendarCategoryEntityValidatorInterface::class, ["calendarCategory" => $calendarCategory]);
         } catch (Throwable $exception) {
             return null;
         }

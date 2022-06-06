@@ -22,12 +22,20 @@ class Calendar extends ManageableEntity implements JsonSerializable
     protected string $title = "";
 
     /**
+     * @var Collection
+     *
+     * @ORM\ManyToMany(targetEntity=CalendarCategory::class, inversedBy="calendars", cascade={"all"})
+     */
+    protected Collection $categories;
+
+    /**
      * @param string $title
      */
     public function __construct(string $title = "")
     {
         parent::__construct();
         $this->title = $title;
+        $this->categories = new ArrayCollection();
     }
 
     /**
@@ -56,5 +64,47 @@ class Calendar extends ManageableEntity implements JsonSerializable
         return [
             "title" => $this->title
         ];
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param CalendarCategory[] $categories
+     */
+    public function setCategories(array $categories): void
+    {
+        $this->categories->clear();
+        foreach ($categories as $category) {
+            $category->addCalendar($this);
+            $this->categories->add($category);
+        }
+    }
+
+    /**
+     * @param CalendarCategory $category
+     * @return void
+     */
+    public function removeCategory(CalendarCategory $category)
+    {
+        if($this->categories->contains($category)) {
+            $this->categories->remove($category);
+        }
+    }
+
+    /**
+     * @param CalendarCategory $category
+     * @return void
+     */
+    public function addCategory(CalendarCategory $category)
+    {
+        if(!$this->categories->contains($category)) {
+            $this->categories->add($category);
+        }
     }
 }

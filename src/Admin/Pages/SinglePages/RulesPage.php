@@ -61,17 +61,15 @@ class RulesPage extends PageBase
     {
         ?>
         <div class="tlbm-admin-page">
-            <div class="tlbm-admin-page-tile">
-                <form method="get">
-                    <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr($this->sanitizing->sanitizeKey($_REQUEST['page'])); ?>"/>
-                    <?php
-                    $rulesListTable = MainFactory::create(RulesListTable::class);
-                    $rulesListTable->views();
-                    $rulesListTable->prepare_items();
-                    $rulesListTable->display();
-                    ?>
-                </form>
-            </div>
+            <form method="get">
+                <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr($this->sanitizing->sanitizeKey($_REQUEST['page'])); ?>"/>
+                <?php
+                $rulesListTable = MainFactory::create(RulesListTable::class);
+                $rulesListTable->views();
+                $rulesListTable->prepare_items();
+                $rulesListTable->display();
+                ?>
+            </form>
         </div>
         <?php
     }

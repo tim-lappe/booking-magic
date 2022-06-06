@@ -47,7 +47,7 @@ class CalendarGroupPage extends PageBase
 
         ?>
         <a href="<?php echo $this->escaping->escUrl($addCalendarGroupLink); ?>" class="button button-primary tlbm-admin-button-bar"><?php
-            _e("Add New Group", TLBM_TEXT_DOMAIN) ?></a>
+            $this->localization->echoText("Add New Group", TLBM_TEXT_DOMAIN) ?></a>
         <?php
     }
 
@@ -55,17 +55,15 @@ class CalendarGroupPage extends PageBase
     {
         ?>
         <div class="tlbm-admin-page">
-            <div class="tlbm-admin-page-tile">
-                <form method="get">
-                    <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr($this->sanitizing->sanitizeKey($_REQUEST['page'])); ?>"/>
-                    <?php
-                    $calendarGroupListTable = MainFactory::create(CalendarGroupTable::class);
-                    $calendarGroupListTable->views();
-                    $calendarGroupListTable->prepare_items();
-                    $calendarGroupListTable->display();
-                    ?>
-                </form>
-            </div>
+            <form method="get">
+                <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr($this->sanitizing->sanitizeKey($_REQUEST['page'])); ?>"/>
+                <?php
+                $calendarGroupListTable = MainFactory::create(CalendarGroupTable::class);
+                $calendarGroupListTable->views();
+                $calendarGroupListTable->prepare_items();
+                $calendarGroupListTable->display();
+                ?>
+            </form>
         </div>
         <?php
     }

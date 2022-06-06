@@ -67,7 +67,7 @@ class EntityRepository implements EntityRepositoryInterface
             }
         } catch (Exception $e) {
             if(WP_DEBUG) {
-                echo $this->escaping->escHtml($e->getMessage());
+                die($this->escaping->escHtml(substr($e->getMessage(), 0, 1000)));
             }
         }
 
@@ -91,7 +91,7 @@ class EntityRepository implements EntityRepositoryInterface
             return true;
         } catch (Exception $e) {
             if(WP_DEBUG) {
-                echo $this->escaping->escHtml($e->getMessage());
+                die($this->escaping->escHtml(substr($e->getMessage(), 0, 1000)));
             }
         }
         return false;
@@ -145,9 +145,9 @@ class EntityRepository implements EntityRepositoryInterface
             $this->cacheManager->clearCache();
 
             return true;
-        } catch ( Throwable $exception) {
+        } catch ( Throwable $e) {
             if(WP_DEBUG) {
-                echo $this->escaping->escHtml($exception->getMessage());
+                die($this->escaping->escHtml(substr($e->getMessage(), 0, 1000)));
             }
         }
 
@@ -175,7 +175,7 @@ class EntityRepository implements EntityRepositoryInterface
      * @param int|null $offset
      * @param int|null $limit
      *
-     * @return Iterator
+     * @return Iterator<T>
      */
     public function getEntites(string $className, ?int $offset = null, ?int $limit = null): Iterator
     {
@@ -204,7 +204,7 @@ class EntityRepository implements EntityRepositoryInterface
             }
         } catch (Exception $e) {
             if(WP_DEBUG) {
-                echo $this->escaping->escHtml($e->getMessage());
+                die($this->escaping->escHtml(substr($e->getMessage(), 0, 1000)));
             }
         }
 

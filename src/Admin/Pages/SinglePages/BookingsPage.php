@@ -38,24 +38,22 @@ class BookingsPage extends PageBase
     {
         ?>
         <div class="tlbm-admin-page">
-            <div class="tlbm-admin-page-tile">
-                <form method="get">
-                    <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr( $this->sanitizing->sanitizeKey($_REQUEST['page'])); ?>"/>
-                    <?php
-                    try {
-                        $bookingsListTable = MainFactory::create(BookingListTable::class);
-                        $bookingsListTable->views();
-                        $bookingsListTable->prepare_items();
-                        $bookingsListTable->display();
+            <form method="get">
+                <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr( $this->sanitizing->sanitizeKey($_REQUEST['page'])); ?>"/>
+                <?php
+                try {
+                    $bookingsListTable = MainFactory::create(BookingListTable::class);
+                    $bookingsListTable->views();
+                    $bookingsListTable->prepare_items();
+                    $bookingsListTable->display();
 
-                    } catch (Exception $exception) {
-                        if(WP_DEBUG) {
-                            var_dump($exception->getMessage());
-                        }
+                } catch (Exception $exception) {
+                    if(WP_DEBUG) {
+                        echo $this->escaping->escHtml($exception->getMessage());
                     }
-                    ?>
-                </form>
-            </div>
+                }
+                ?>
+            </form>
         </div>
         <?php
     }

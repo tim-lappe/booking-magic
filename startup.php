@@ -70,8 +70,8 @@ try {
         $tlbmContainer->get(FormElementsCollectionInterface::class);
 
     }
-} catch (Exception $e) {
+} catch (Throwable $e) {
     if(WP_DEBUG) {
-        var_dump($e);
+        die($e->getMessage());
     }
 }

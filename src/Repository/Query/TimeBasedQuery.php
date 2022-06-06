@@ -7,6 +7,8 @@ use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\QueryBuilder;
 use Iterator;
 use Throwable;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
+use TLBM\MainFactory;
 use TLBM\Repository\Query\Contracts\TimeBasedQueryInterface;
 use TLBM\Utilities\ExtendedDateTime;
 
@@ -46,9 +48,10 @@ abstract class TimeBasedQuery extends BaseQuery implements TimeBasedQueryInterfa
                     yield new TimeBasedQueryResult($dt, $this->getTimedQueryResult(false, $dt));
                 }
             }
-        } catch (Throwable $exception) {
+        } catch (Throwable $e) {
             if(WP_DEBUG) {
-                var_dump($exception->getMessage());
+                $escaping = MainFactory::get(EscapingInterface::class);
+                die($escaping->escHtml($e->getMessage()));
             }
         }
     }

@@ -9,7 +9,9 @@ use Exception;
 use Throwable;
 use TLBM\Admin\Settings\Contracts\SettingsManagerInterface;
 use TLBM\Admin\Settings\SingleSettings\BookingProcess\ExpiryTime;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\Entity\Booking;
+use TLBM\MainFactory;
 use TLBM\Repository\Contracts\BookingRepositoryInterface;
 use TLBM\Repository\Contracts\ORMInterface;
 use TLBM\Utilities\ExtendedDateTime;
@@ -103,7 +105,8 @@ class BookingRepository implements BookingRepositoryInterface
                 return $booking;
             }
         } catch (Exception $e) {
-            var_dump($e->getMessage());
+            $escaping = MainFactory::get(EscapingInterface::class);
+            die($escaping->escHtml($e->getMessage()));
         }
 
         return null;
@@ -132,9 +135,10 @@ class BookingRepository implements BookingRepositoryInterface
 
             $mgr->flush();
 
-        } catch (Throwable $exception) {
+        } catch (Throwable $e) {
             if(WP_DEBUG) {
-                var_dump($exception->getMessage());
+                $escaping = MainFactory::get(EscapingInterface::class);
+                die($escaping->escHtml($e->getMessage()));
             }
         }
     }

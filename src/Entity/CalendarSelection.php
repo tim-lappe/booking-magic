@@ -6,11 +6,9 @@ namespace TLBM\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use JsonSerializable;
+use TLBM\Calendar\CalendarSelectionHandler;
 use TLBM\Entity\Traits\IndexedEntity;
-
-define("TLBM_CALENDAR_SELECTION_TYPE_ALL", "all");
-define("TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT", "all_but");
-define("TLBM_CALENDAR_SELECTION_TYPE_ONLY", "only");
+use TLBM\MainFactory;
 
 
 /**
@@ -21,7 +19,6 @@ define("TLBM_CALENDAR_SELECTION_TYPE_ONLY", "only");
  */
 class CalendarSelection implements JsonSerializable
 {
-
     use IndexedEntity;
 
     /**
@@ -29,18 +26,34 @@ class CalendarSelection implements JsonSerializable
      */
     protected Collection $calendars;
 
+	/**
+	 * @Doctrine\ORM\Mapping\ManyToMany(targetEntity=CalendarCategory::class)
+	 */
+	protected Collection $categories;
+
     /**
      * @var string
      * @Doctrine\ORM\Mapping\Column(type="string", nullable=false)
      */
     protected string $selectionMode = TLBM_CALENDAR_SELECTION_TYPE_ALL;
 
-    public function __construct(string $selectionMode = TLBM_CALENDAR_SELECTION_TYPE_ALL, ?array $calendars = null)
+    /**
+     * @param string $selectionMode
+     * @param array|null $calendars
+     * @param array|null $categories
+     */
+    public function __construct(string $selectionMode = TLBM_CALENDAR_SELECTION_TYPE_ALL, ?array $calendars = null, ?array $categories = null)
     {
         if($calendars == null) {
             $this->calendars = new ArrayCollection();
         } else {
             $this->calendars = new ArrayCollection($calendars);
+        }
+
+        if($categories == null) {
+            $this->categories = new ArrayCollection();
+        } else {
+            $this->categories = new ArrayCollection($categories);
         }
 
         $this->selectionMode = $selectionMode;
@@ -49,12 +62,26 @@ class CalendarSelection implements JsonSerializable
     /**
      * @return array
      */
-    public function getCalendarIds(): array
+    public function getCombinedCalendarIds(): array
     {
         $calendars = $this->getCalendars();
         $ids       = array();
         foreach ($calendars as $calendar) {
             $ids[] = $calendar->getId();
+        }
+
+        /**
+         * @var CalendarGroup[] $groups
+         */
+        $groups = $this->getCategories();
+        foreach ($groups as $group) {
+            $selectionHandler = MainFactory::create(CalendarSelectionHandler::class);
+            $calendars = $selectionHandler->getSelectedCalendarList($group->getCalendarSelection());
+            foreach ($calendars as $calendar) {
+                if ( ! in_array($calendar->getId(), $ids)) {
+                    $ids[] = $calendar->getId();
+                }
+            }
         }
 
         return $ids;
@@ -98,15 +125,20 @@ class CalendarSelection implements JsonSerializable
 
     public function jsonSerialize(): array
     {
-        $calendars = $this->getCalendars()->toArray();
-        $cal_ids   = array();
-        foreach ($this->calendars as $cal) {
-            $cal_ids[] = $cal->getId();
+        $calendarIds   = array();
+        foreach ($this->getCalendars() as $calendar) {
+            $calendarIds[] = $calendar->getId();
+        }
+
+        $categoryIds = [];
+        foreach($this->getCategories() as $category) {
+            $categoryIds[] = $category->getId();
         }
 
         return array(
             "selection_mode" => $this->getSelectionMode(),
-            "calendar_ids"   => $cal_ids
+            "calendar_ids"   => $calendarIds,
+            "tag_ids"      => $categoryIds
         );
     }
 
@@ -133,6 +165,37 @@ class CalendarSelection implements JsonSerializable
 
         return false;
     }
+
+    /**
+     * @return Collection<CalendarCategory>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param Collection<CalendarCategory> $categories
+     */
+    public function setCategories(Collection $categories): void
+    {
+        $this->categories = $categories;
+    }
+
+    /**
+     * @param CalendarCategory $category
+     *
+     * @return CalendarCategory
+     */
+    public function addCalendarCategory(CalendarCategory $category): CalendarCategory
+    {
+        if ( !$this->categories->contains($category)) {
+            $this->categories[] = $category;
+        }
+
+        return $category;
+    }
+
 
     public static function isValidSelectionMode($selection_mode): bool
     {

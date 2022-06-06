@@ -58,17 +58,15 @@ class FormPage extends PageBase
     {
         ?>
         <div class="tlbm-admin-page">
-            <div class="tlbm-admin-page-tile">
-                <form method="get">
-                    <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr($this->sanitizing->sanitizeKey($_REQUEST['page'])); ?>"/>
-                    <?php
-                    $formListTable = MainFactory::create(FormListTable::class);
-                    $formListTable->views();
-                    $formListTable->prepare_items();
-                    $formListTable->display();
-                    ?>
-                </form>
-            </div>
+            <form method="get">
+                <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr($this->sanitizing->sanitizeKey($_REQUEST['page'])); ?>"/>
+                <?php
+                $formListTable = MainFactory::create(FormListTable::class);
+                $formListTable->views();
+                $formListTable->prepare_items();
+                $formListTable->display();
+                ?>
+            </form>
         </div>
         <?php
     }

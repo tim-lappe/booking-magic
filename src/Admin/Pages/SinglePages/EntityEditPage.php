@@ -99,10 +99,10 @@ abstract class EntityEditPage extends FormPageBase
     public function getEditLink(?int $entityId = null): string
     {
         if ($entityId != null) {
-            return admin_url() . "admin.php?page=" . urlencode($this->menuSlug) . "&edit_id=" . urlencode($entityId);
+            return $this->getUrl() . "&edit_id=" . urlencode($entityId);
         }
 
-        return admin_url() . "admin.php?page=" . urlencode($this->menuSlug);
+        return $this->getUrl();
     }
 
     /**

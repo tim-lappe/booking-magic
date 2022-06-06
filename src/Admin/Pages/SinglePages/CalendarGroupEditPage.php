@@ -2,7 +2,7 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
-use TLBM\Admin\WpForm\CalendarPickerField;
+use TLBM\Admin\WpForm\CalendarSelectionField;
 use TLBM\Admin\WpForm\SelectField;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\Entity\CalendarGroup;
@@ -25,6 +25,7 @@ class CalendarGroupEditPage extends EntityEditPage
      */
     protected LocalizationInterface $localization;
 
+
     public function __construct(EntityRepositoryInterface $entityRepository, LocalizationInterface $localization)
     {
         $this->entityRepository = $entityRepository;
@@ -38,8 +39,9 @@ class CalendarGroupEditPage extends EntityEditPage
     public function defineFormFields()
     {
         $this->formBuilder->defineFormField(
-            new CalendarPickerField($this->entityRepository, "calendars", $this->localization->getText("Calendars", TLBM_TEXT_DOMAIN))
+            new CalendarSelectionField("calendars", $this->localization->getText("Calendars", TLBM_TEXT_DOMAIN), false)
         );
+
         $this->formBuilder->defineFormField(
             new SelectField("booking_distribution", $this->localization->getText("Booking Distribution", TLBM_TEXT_DOMAIN), [TLBM_BOOKING_DISTRIBUTION_EVENLY => $this->localization->getText("Evenly", TLBM_TEXT_DOMAIN),
                 TLBM_BOOKING_DISTRIBUTION_FILL_ONE => $this->localization->getText("Fill One", TLBM_TEXT_DOMAIN)

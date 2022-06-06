@@ -3,7 +3,7 @@
 namespace TLBM;
 
 use DI\Container;
-use Exception;
+use Throwable;
 
 class MainFactory
 {
@@ -23,11 +23,7 @@ class MainFactory
             if ($TLBM_DICONTAINER) {
                 return $TLBM_DICONTAINER->make($class, $parameters);
             }
-        } catch (Exception $exception) {
-            if(WP_DEBUG) {
-                var_dump($exception->getMessage());
-            }
-        }
+        } catch (Throwable $exception) { }
 
         return null;
     }
@@ -48,11 +44,7 @@ class MainFactory
             if($TLBM_DICONTAINER) {
                 return $TLBM_DICONTAINER->get($class);
             }
-        } catch (Exception $exception) {
-            if(WP_DEBUG) {
-                var_dump($exception->getMessage());
-            }
-        }
+        } catch (Throwable $exception) { }
 
         return null;
     }

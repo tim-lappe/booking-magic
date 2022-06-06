@@ -7,8 +7,8 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Events;
+use Doctrine\ORM\ORMSetup;
 use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\ORM\Tools\Setup;
 use Throwable;
 use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\Repository\Contracts\ORMInterface;
@@ -40,7 +40,7 @@ class ORMManager implements ORMInterface
 		$this->escaping = $escaping;
 
         try {
-            $configuration = Setup::createAnnotationMetadataConfiguration([TLBM_DIR . "/src/Entity"], true, null, null, false);
+            $configuration = ORMSetup::createAnnotationMetadataConfiguration([TLBM_DIR . "/src/Entity"], true);
             $this->addCustomFunctions($configuration);
 
             $connection    = ["driver" => "mysqli",
@@ -51,12 +51,16 @@ class ORMManager implements ORMInterface
                 "charset" => DB_CHARSET
             ];
 
+
+
             $this->initEvents();
             $this->entityManager = EntityManager::create($connection, $configuration, $this->eventManager);
             $this->mysqlPolyfill();
 
-        } catch (Throwable $error) {
-            echo $this->escaping->escHtml($error->getMessage());
+        } catch (Throwable $e) {
+            if(WP_DEBUG) {
+                die($this->escaping->escHtml(substr($e->getMessage(), 0, 1000)));
+            }
         }
     }
 
@@ -69,9 +73,9 @@ class ORMManager implements ORMInterface
             $conn = $this->entityManager->getConnection();
             $conn->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
             $conn->getDatabasePlatform()->registerDoctrineTypeMapping('bit', 'boolean');
-        } catch (Throwable $throwable) {
+        } catch (Throwable $e) {
             if(WP_DEBUG) {
-                echo $this->escaping->escHtml($throwable->getMessage());
+                die($this->escaping->escHtml(substr($e->getMessage(), 0, 1000)));
             }
         }
     }

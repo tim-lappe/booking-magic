@@ -58,17 +58,15 @@ class CalendarPage extends PageBase
     {
         ?>
         <div class="tlbm-admin-page">
-            <div class="tlbm-admin-page-tile">
-                <form method="get">
-                    <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr($this->sanitizing->sanitizeKey($_REQUEST['page'])) ?>"/>
-                    <?php
-                    $calendarListTable = MainFactory::create(CalendarListTable::class);
-                    $calendarListTable->views();
-                    $calendarListTable->prepare_items();
-                    $calendarListTable->display();
-                    ?>
-                </form>
-            </div>
+            <form method="get">
+                <input type="hidden" name="page" value="<?php echo $this->escaping->escAttr($this->sanitizing->sanitizeKey($_REQUEST['page'])) ?>"/>
+                <?php
+                $calendarListTable = MainFactory::create(CalendarListTable::class);
+                $calendarListTable->views();
+                $calendarListTable->prepare_items();
+                $calendarListTable->display();
+                ?>
+            </form>
         </div>
         <?php
     }

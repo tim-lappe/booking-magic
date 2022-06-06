@@ -8,14 +8,14 @@ if ( !defined('ABSPATH')) {
 }
 
 use TLBM\Admin\WpForm\Contracts\FormFieldReadVarsInterface;
-use TLBM\ApiUtils\Contracts\EscapingInterface;
+use TLBM\Calendar\CalendarHelper;
 use TLBM\Entity\Calendar;
+use TLBM\Entity\CalendarCategory;
 use TLBM\Entity\CalendarSelection;
 use TLBM\MainFactory;
 use TLBM\Repository\Contracts\EntityRepositoryInterface;
-use TLBM\Repository\Query\CalendarQuery;
 
-class CalendarPickerField extends FormFieldBase implements FormFieldReadVarsInterface
+class CalendarSelectionField extends FormFieldBase implements FormFieldReadVarsInterface
 {
 
 	/**
@@ -23,25 +23,25 @@ class CalendarPickerField extends FormFieldBase implements FormFieldReadVarsInte
 	 */
     private EntityRepositoryInterface $entityRepository;
 
-	/**
-	 * @var EscapingInterface
-	 */
-    protected EscapingInterface $escaping;
+    /**
+     * @var bool
+     */
+    protected bool $allowTagSelection;
 
     /**
-     * @param EntityRepositoryInterface $entityRepository
      * @param string $name
      * @param string $title
+     * @param bool $allowTagSelection
      */
     public function __construct(
-        EntityRepositoryInterface $entityRepository,
         string $name,
-        string $title
+        string $title,
+        bool $allowTagSelection = true
     ) {
-        $this->entityRepository = $entityRepository;
-        $this->escaping = MainFactory::get(EscapingInterface::class);
-
         parent::__construct($name, $title);
+
+        $this->entityRepository = MainFactory::get(EntityRepositoryInterface::class);
+        $this->allowTagSelection = $allowTagSelection;
     }
 
     /**
@@ -55,23 +55,23 @@ class CalendarPickerField extends FormFieldBase implements FormFieldReadVarsInte
             $value = new CalendarSelection();
         }
 
-        $calendarQuery = MainFactory::create(CalendarQuery::class);
-        $cals      = $calendarQuery->getResult();
-        $calendars = array();
-        foreach ($cals as $cal) {
-            $calendars[$cal->getId()] = empty($cal->getTitle()) ? $cal->getId() : $cal->getTitle();
-        }
+        $calendarHelper = MainFactory::create(CalendarHelper::class);
+        $calendarKeyValues      = $calendarHelper->getCalendarKeyValues();
 
+        $tagKeyValues = [];
+        if($this->allowTagSelection) {
+            $tagKeyValues = $calendarHelper->getTagKeyValues();
+        }
         ?>
         <tr>
             <th scope="row"><label for="<?php echo $this->escaping->escAttr($this->name) ?>"><?php echo $this->escaping->escHtml($this->title) ?></label></th>
             <td>
                 <div
                         data-json="<?php echo $this->escaping->escAttr(urlencode(json_encode($value))); ?>"
-                        data-calendars="<?php echo $this->escaping->escAttr(urlencode(json_encode($calendars))); ?>"
+                        data-calendars="<?php echo $this->escaping->escAttr(urlencode(json_encode($calendarKeyValues))); ?>"
+                        data-tags="<?php echo $this->escaping->escAttr(urlencode(json_encode($tagKeyValues))); ?>"
                         data-name="<?php echo $this->escaping->escAttr($this->name) ?>"
                         class="tlbm-calendar-picker">
-
                 </div>
             </td>
         </tr>
@@ -88,15 +88,22 @@ class CalendarPickerField extends FormFieldBase implements FormFieldReadVarsInte
     {
         if (isset($vars[$name])) {
             $decoded_var = urldecode($vars[$name]);
-            $json        = json_decode($decoded_var);
-            if ($json) {
-                if (isset($json->calendar_ids) && isset($json->selection_mode)) {
+            $jsonObject        = json_decode($decoded_var);
+            if ($jsonObject) {
+                if (isset($jsonObject->calendar_ids) && isset($jsonObject->tag_ids) && isset($jsonObject->selection_mode)) {
                     $selection = new CalendarSelection();
-                    if ($selection->setSelectionMode($json->selection_mode)) {
-                        foreach ($json->calendar_ids as $calendar_id) {
+                    if ($selection->setSelectionMode($jsonObject->selection_mode)) {
+                        foreach ($jsonObject->calendar_ids as $calendar_id) {
                             $calendar = $this->entityRepository->getEntity(Calendar::class,intval($calendar_id));
                             if ($calendar) {
                                 $selection->addCalendar($calendar);
+                            }
+                        }
+
+                        foreach ($jsonObject->tag_ids as $tag_id) {
+                            $category = $this->entityRepository->getEntity(CalendarCategory::class,intval($tag_id));
+                            if ($category) {
+                                $selection->addCalendarCategory($category);
                             }
                         }
                     }

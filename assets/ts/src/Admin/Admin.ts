@@ -7,5 +7,6 @@ export default class Admin {
         BookingStatesSettingEditor.init();
         Charts.attachLineCharts();
         FormFields.attachFormFields();
+
     }
 }

@@ -170,7 +170,6 @@ class BookingProcessor
             }
 
             foreach ($bookingValues as $value) {
-				var_dump($value);
                 $booking->addBookingValue($value);
             }
 

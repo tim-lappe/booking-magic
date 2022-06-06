@@ -3,7 +3,6 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
-
 use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\MainFactory;
@@ -97,6 +96,13 @@ abstract class PageBase
         }
     }
 
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return admin_url() . "admin.php?page=" . urlencode($this->menuSlug);
+    }
 
     /**
      * @return AdminPageManagerInterface
@@ -131,8 +137,7 @@ abstract class PageBase
         <div class="tlbm-admin-page-head">
             <span class="tlbm-admin-page-head-title"><?php echo $this->escaping->escHtml($this->getHeadTitle()); ?></span>
             <div class="tlbm-admin-page-head-bar">
-                <?php
-                $this->displayDefaultHeadBar() ?>
+                <?php $this->displayDefaultHeadBar() ?>
             </div>
         </div>
         <?php

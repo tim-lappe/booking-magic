@@ -7,14 +7,17 @@ use TLBM\Entity\Calendar;
 use TLBM\Entity\CalendarSelection;
 use TLBM\Repository\Contracts\ORMInterface;
 
-
 class CalendarQuery extends ManageableEntityQuery
 {
+
     /**
      * @var CalendarSelection|null
      */
     private ?CalendarSelection $calendarSelection = null;
 
+    /**
+     * @param ORMInterface $repository
+     */
     public function __construct(ORMInterface $repository)
     {
         parent::__construct($repository);
@@ -34,9 +37,9 @@ class CalendarQuery extends ManageableEntityQuery
         $where = $queryBuilder->expr()->andX();
         if($this->calendarSelection && $this->calendarSelection->getSelectionMode() != TLBM_CALENDAR_SELECTION_TYPE_ALL) {
             if($this->calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ONLY) {
-                $where->add($queryBuilder->expr()->in(TLBM_ENTITY_QUERY_ALIAS . ".id", $this->calendarSelection->getCalendarIds()));
+                $where->add($queryBuilder->expr()->in(TLBM_ENTITY_QUERY_ALIAS . ".id", $this->calendarSelection->getCombinedCalendarIds()));
             } elseif ($this->calendarSelection->getSelectionMode() == TLBM_CALENDAR_SELECTION_TYPE_ALL_BUT) {
-                $where->add($queryBuilder->expr()->notIn(TLBM_ENTITY_QUERY_ALIAS . ".id", $this->calendarSelection->getCalendarIds()));
+                $where->add($queryBuilder->expr()->notIn(TLBM_ENTITY_QUERY_ALIAS . ".id", $this->calendarSelection->getCombinedCalendarIds()));
             }
         }
 

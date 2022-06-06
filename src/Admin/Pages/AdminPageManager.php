@@ -54,6 +54,7 @@ class AdminPageManager implements AdminPageManagerInterface
     public function loadMenuPages()
     {
         foreach ($this->pages as $pageClass) {
+
             /**
              * @var PageBase $page
              */

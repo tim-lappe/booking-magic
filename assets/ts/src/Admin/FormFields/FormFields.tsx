@@ -7,12 +7,17 @@ import {DateRangeSelect} from "./DateRangeSelect";
 import {DateTime} from "../../Core/Adapter/DateTime";
 import {Utils} from "../../Utils";
 import {HtmlEditorComponent} from "./HtmlEditorComponent";
+import {CalendarCategoryField} from "./CalendarCategoryField";
 import ReactDOM = require("react-dom");
 
 
 export default class FormFields {
 
     public static attachFormFields() {
+        document.querySelectorAll(".tlbm-calendar-tag-field").forEach((htmlelement: HTMLElement) => {
+            ReactDOM.render(<CalendarCategoryField dataset={htmlelement.dataset}/>, htmlelement);
+        });
+
         document.querySelectorAll(".tlbm-period-select-field").forEach((htmlelement: HTMLElement) => {
             ReactDOM.render(<PeriodSelect dataset={htmlelement.dataset}/>, htmlelement);
         });

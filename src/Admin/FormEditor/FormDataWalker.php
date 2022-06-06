@@ -6,6 +6,7 @@ use Exception;
 use TLBM\Admin\FormEditor\Contracts\FormElementsCollectionInterface;
 use TLBM\Admin\FormEditor\Contracts\RecursiveFormDataWalkerInterface;
 use TLBM\Admin\FormEditor\Elements\FormInputElem;
+use TLBM\ApiUtils\Contracts\EscapingInterface;
 use TLBM\MainFactory;
 use Traversable;
 
@@ -143,10 +144,12 @@ class FormDataWalker
         try {
             $formDataWalker = MainFactory::create(FormDataWalker::class);
             $formDataWalker->setFormDataTree($formData);
+
             return $formDataWalker;
         } catch (Exception $exception) {
             if(WP_DEBUG) {
-                var_dump($exception->getMessage());
+                $escaping = MainFactory::get(EscapingInterface::class);
+                die($escaping->escHtml($exception->getMessage()));
             }
         }
 

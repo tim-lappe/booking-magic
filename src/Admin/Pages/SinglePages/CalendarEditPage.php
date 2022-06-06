@@ -2,8 +2,10 @@
 
 namespace TLBM\Admin\Pages\SinglePages;
 
+use TLBM\Admin\Pages\Contracts\AdminPageManagerInterface;
 use TLBM\Admin\Tables\BookingListTable;
 use TLBM\Admin\Tables\RulesListTable;
+use TLBM\Admin\WpForm\CategorySelectionField;
 use TLBM\ApiUtils\Contracts\LocalizationInterface;
 use TLBM\ApiUtils\Contracts\TimeUtilsInterface;
 use TLBM\Entity\Calendar;
@@ -30,11 +32,31 @@ class CalendarEditPage extends EntityEditPage
      */
     protected LocalizationInterface $localization;
 
-    public function __construct(EntityRepositoryInterface $entityRepository, LocalizationInterface $localization)
+    /**
+     * @var AdminPageManagerInterface
+     */
+    protected AdminPageManagerInterface $adminPageManager;
+
+    /**
+     * @param AdminPageManagerInterface $adminPageManager
+     * @param EntityRepositoryInterface $entityRepository
+     * @param LocalizationInterface $localization
+     */
+    public function __construct(AdminPageManagerInterface $adminPageManager, EntityRepositoryInterface $entityRepository, LocalizationInterface $localization)
     {
         $this->localization     = $localization;
         $this->entityRepository = $entityRepository;
+        $this->adminPageManager = $adminPageManager;
         parent::__construct($this->localization->getText("Calendar", TLBM_TEXT_DOMAIN), "calendar-edit", "booking-calendar-edit", false);
+
+        $this->defineFormFields();
+    }
+
+    public function defineFormFields()
+    {
+        $this->formBuilder->defineFormField(
+            new CategorySelectionField("categories", $this->localization->getText("Categories", TLBM_TEXT_DOMAIN))
+        );
     }
 
     /**
@@ -48,17 +70,24 @@ class CalendarEditPage extends EntityEditPage
         }
 
         ?>
-
         <div class="tlbm-admin-page-tile">
-            <input value="<?php echo $this->escaping->escAttr($calendar->getTitle()); ?>" placeholder="<?php
-            $this->localization->echoText("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
+            <label>
+                <input value="<?php echo $this->escaping->escAttr($calendar->getTitle()); ?>" placeholder="<?php
+                $this->localization->echoText("Enter Title here", TLBM_TEXT_DOMAIN) ?>" type="text" name="title" class="tlbm-admin-form-input-title">
+            </label>
+        </div>
+        <div class="tlbm-admin-page-tile">
+            <?php
+            $this->formBuilder->displayFormHead();
+            $this->formBuilder->displayFormField("categories", $calendar->getCategories()->toArray());
+            $this->formBuilder->displayFormFooter();
+            ?>
         </div>
         <?php
         if ($this->getEditingEntity()): ?>
             <div class="tlbm-admin-page-tile-row">
-                <div class="tlbm-admin-page-tile">
-                    <h2><?php
-                        $this->localization->echoText("Last Bookings", TLBM_TEXT_DOMAIN) ?></h2>
+                <div class="tlbm-admin-page-tile tlbm-admin-page-tile-grow-2">
+                    <h2><?php $this->localization->echoText("Last Bookings", TLBM_TEXT_DOMAIN) ?></h2>
                     <?php
                     $bookingsTable = MainFactory::create(BookingListTable::class);
                     $bookingsTable->setSlim(true);
@@ -72,8 +101,7 @@ class CalendarEditPage extends EntityEditPage
                     ?>
                 </div>
                 <div class="tlbm-admin-page-tile">
-                    <h2><?php
-                        $this->localization->echoText("Rules", TLBM_TEXT_DOMAIN) ?></h2>
+                    <h2><?php $this->localization->echoText("Rules", TLBM_TEXT_DOMAIN) ?></h2>
                     <?php
                     $rulesTable = MainFactory::create(RulesListTable::class);
                     $rulesTable->setSlim(true);
@@ -87,9 +115,7 @@ class CalendarEditPage extends EntityEditPage
                     ?>
                 </div>
             </div>
-        <?php
-        endif; ?>
-
+        <?php endif; ?>
         <?php
     }
 
@@ -111,17 +137,16 @@ class CalendarEditPage extends EntityEditPage
         $calendar->setTimestampEdited($timeUtils->time());
         $calendar->setTitle($this->sanitizing->sanitizeTextfield($vars['title']));
 
-        $validationResult = $calendarValidator->getValidationErrors();
+        $calendarCategories = $this->formBuilder->readVars("categories", $vars);
+        $calendar->setCategories($calendarCategories);
 
+        $validationResult = $calendarValidator->getValidationErrors();
         if(count($validationResult) == 0) {
             if($this->entityRepository->saveEntity($calendar)) {
                 $savedEntity = $calendar;
-
-                return ["success" => $this->localization->getText("Calendar has been saved", TLBM_TEXT_DOMAIN)
-                ];
+                return ["success" => $this->localization->getText("Calendar has been saved", TLBM_TEXT_DOMAIN)];
             } else {
-                return ["error" => $this->localization->getText("An internal error occured. ", TLBM_TEXT_DOMAIN)
-                ];
+                return ["error" => $this->localization->getText("An internal error occured. ", TLBM_TEXT_DOMAIN)];
             }
         }
 
